@@ -1,0 +1,26 @@
+{
+  "@@locale": "fr",
+
+  "appTitle": "Fabrique",
+  "@appTitle": {
+    "description": "Nom de l'app, barre de titre et accueil"
+  },
+
+  "settings": "Réglages",
+
+  "theme": "Thème",
+  "themeLightLocked": "Clair",
+
+  "haptics": "Retour haptique",
+  "hapticsHelp": "Vibration brève sur les boutons − / + et les sélecteurs.",
+
+  "language": "Langue",
+  "languageFrench": "Français",
+
+  "settingsLockedSection": "Verrouillé pour cette version",
+
+  "settingsLoadFailed": "Réglages illisibles",
+  "@settingsLoadFailed": {
+    "description": "Titre affiché si shared_preferences échoue à l'ouverture"
+  }
+}
