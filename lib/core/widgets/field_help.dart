@@ -89,8 +89,8 @@ class _FieldHelpSheet extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Un tiret cadratin plutôt qu'une puce : c'est la
-                    // ponctuation du reste de l'app.
+                    // Un tiret cadratin plutôt qu'une puce : ici il sépare
+                    // visuellement, il n'est pas de la ponctuation de phrase.
                     Text('—', style: body?.copyWith(color: AppColors.label)),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(child: Text(bullet, style: body)),

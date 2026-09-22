@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Design system — cf. SPECS_UI.md.
+/// Design system de l'app.
 ///
 /// Thème clair uniquement, un seul accent chaud bois/ambre, orange réservé au
 /// surlignage des pièces à couper dans les schémas.
@@ -61,7 +61,7 @@ abstract final class AppRadii {
 
 /// Hauteur fixe d'un champ de saisie (et des boutons − / + qui l'encadrent).
 ///
-/// Exactement la cible tactile minimale de SPECS_UI.md : tout ce qui se
+/// Exactement la cible tactile minimale : tout ce qui se
 /// saisit ou se choisit tient cette hauteur — champ, sélecteur segmenté,
 /// dropdown, ligne de switch, boutons de pas.
 const double kFieldHeight = 48;
@@ -93,8 +93,8 @@ const double _dropdownVerticalPadding = (kFieldHeight - _controlLineHeight) / 2;
 /// panneau déroulant. Une seule taille pour tous les contrôles.
 ///
 /// Fonction partagée plutôt qu'un `titleLarge` recopié dans chaque widget :
-/// c'est exactement comme ça que le dropdown avait dérivé du champ de saisie,
-/// puis les entrées de menu des segments.
+/// un style recopié dérive, et des contrôles qui dérivent cessent de se lire
+/// comme un seul jeu.
 ///
 /// [emphasized] ne joue que sur la graisse, pour l'option retenue d'une liste
 /// de choix — en appui de la pastille brune, qui reste le vrai indicateur.

@@ -17,6 +17,12 @@
 - **Typo :** sans-serif géométrique, chiffres tabulaires pour les résultats.
 - **Espacement :** généreux, aéré. Composants Material 3 de base, peu customisés.
 
+## Écriture des textes
+- **Vocabulaire d'atelier, un seul mot par chose.** Une cote qui s'appelle « largeur totale » à l'écran ne s'appelle pas « longueur » dans son aide ni dans un message d'erreur.
+- **Ni tiret cadratin ni point-virgule dans un texte explicatif** (corps et points d'un `FieldHelp`, message d'erreur, toute prose de plus d'une ligne) : deux phrases, un deux-points ou une parenthèse. Un lecteur debout, en atelier, ne démêle pas une incise.
+- **Le tiret reste où il sépare visuellement** : libellés à deux étages (`Surface — largeur`), notes de tuile, lignes `help` d'une ligne, légendes de schéma. Test : remplaçable par un saut de ligne, il reste ; incise au milieu d'une phrase, il part.
+- **`help` énonce une contrainte, `about` explique.** Le premier reste affiché sous le champ, le second n'ouvre sa feuille qu'à la demande.
+
 ## Écran 1 — Accueil
 - Titre + bouton **Réglages** (icône, haut droite).
 - **Grille de cartes** d'outils : 2 colonnes mobile, 3–4 en web large (largeur de carte cible, pas un nombre fixe).
@@ -57,15 +63,17 @@ Thème (clair, verrouillé) · Retour haptique (on/off) · Langue (FR).
 - **Visu :** coupe des 2 pièces vissées (trou de passage, guidage, lamage, pénétration).
 - **Résultats :** Ø passage · Ø guidage · lamage · longueur de vis, avec courte justification.
 
-### 3. Répartition de points
-Outil de **calcul** avant tout : répartir des points équidistants sur une longueur.
+### 3. Répartition
+Outil de **calcul** avant tout : répartir des éléments identiques sur une largeur.
 
-- **Règle de calcul :** N points → **N+1 espaces**. Les extrémités (0 % et 100 %) ne sont jamais des points ; seuls les points intermédiaires comptent. Ex. : 1 point = 2 espaces = longueur ÷ 2 (point au milieu) ; 3 points sur 100 = points à 25, 50, 75.
-- **Saisie :** longueur totale (num) · nombre de points **⇔** nombre d'espaces (deux champs **liés** : espaces = points + 1 ; le champ en cours d'édition pilote l'autre).
-- **Visu :** barre horizontale, points cotés, espaces égaux affichés (le visuel porte l'explication du modèle « pas de point aux extrémités »).
-- **Résultats :** entraxe (longueur d'un espace) · positions cumulées de chaque point depuis l'origine.
+- **Règle de calcul :** on répartit des **éléments de largeur**, les points purs n'étant que le cas `largeur = 0`. Le nombre de jeux dépend des bords : `N + 1` bordé de deux écarts, `N − 1` bordé de deux éléments, `N` en mixte. Ex. : 3 points sur 100, bordés d'écarts → 25, 50, 75.
+- **Deux modes** (segmented, `Calcul écart` · `Calcul nombre`) : nombre d'éléments connu → écart, ou écart souhaité → les deux nombres entiers qui encadrent la cible.
+- **Saisie :** `Largeur totale` (num) · `Largeur d'un élément` (num, 0 = repères sans épaisseur) · selon le mode, `Nombre d'éléments` ou `Écart souhaité`.
+- **Réglages avancés** (repliés, sans effet par défaut) : `Type de répartition` (les quatre dispositions de bords, en tuiles pictogramme + texte) · `Marges` (symétriques ⇒ un champ `Marge`, asymétriques ⇒ `Marge début` et `Marge fin`), retirées de la largeur totale avant le calcul.
+- **Visu :** rangée cotée, largeur totale au-dessus, chaîne des jeux en dessous, marges hachurées. Zoom/pan.
+- **Résultats :** écart · entraxe (si l'élément a une largeur) · l'autre borne entière en mode `Calcul nombre` · table des positions.
 
-> Hors périmètre : éléments avec largeur, toggle extrémités, gestion des bords. On reste sur des points purs.
+> Chaque champ porte un ⓘ qui ouvre son explication en feuille basse ; les contenus vivent dans `distribution_help.dart`.
 
 ### 4. Calepinage — *outil signature*
 Un seul outil unifié, pas de sélecteur de mode. Surface rectangulaire, éléments rectangulaires identiques.

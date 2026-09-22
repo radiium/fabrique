@@ -16,9 +16,9 @@ const kAboutMode = FieldHelp(
       'Détermine si l’écart entre les éléments ou leur nombre doit être '
       'calculé à partir des autres valeurs.',
   bullets: [
-    'Calcul écart — vous donnez le nombre d’éléments, l’outil rend l’écart '
+    'Calcul écart : vous donnez le nombre d’éléments, l’outil rend l’écart '
         'entre eux.',
-    'Calcul nombre — vous donnez l’écart voulu, l’outil rend le nombre '
+    'Calcul nombre : vous donnez l’écart voulu, l’outil rend le nombre '
         'd’éléments qui s’en approche le plus.',
   ],
 );
@@ -61,15 +61,15 @@ const kAboutEdges = FieldHelp(
   body:
       'Définit par quoi la rangée commence et finit : un élément collé au '
       'bord, ou un écart. Chaque combinaison change le nombre d’écarts, donc '
-      'le résultat — le schéma de chaque tuile le montre.',
+      'le résultat. Le schéma de chaque tuile le montre.',
 );
 
 const kAboutOffsetMode = FieldHelp(
   title: 'Marges',
   body:
       'Définit si les deux marges se règlent ensemble ou séparément. Une '
-      'marge réserve une bande à une extrémité — un chant, un tasseau déjà '
-      'en place — retirée de la largeur totale avant le calcul.',
+      'marge réserve une bande à une extrémité (un chant, un tasseau déjà '
+      'en place), retirée de la largeur totale avant le calcul.',
   bullets: [
     'Symétriques : une seule marge, reprise à l’identique des deux côtés.',
     'Asymétriques : une marge par côté. C’est le cas dès qu’une extrémité '
@@ -87,13 +87,13 @@ const kAboutOffset = FieldHelp(
 const kAboutOffsetStart = FieldHelp(
   title: 'Marge début',
   body:
-      'Marge appliquée au début — le côté gauche du schéma. Sa valeur est '
+      'Marge appliquée au début, côté gauche du schéma. Sa valeur est '
       'retirée de la largeur totale avant le calcul de la répartition.',
 );
 
 const kAboutOffsetEnd = FieldHelp(
   title: 'Marge fin',
   body:
-      'Marge appliquée à la fin — le côté droit du schéma. Sa valeur est '
+      'Marge appliquée à la fin, côté droit du schéma. Sa valeur est '
       'retirée de la largeur totale avant le calcul de la répartition.',
 );

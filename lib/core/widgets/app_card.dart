@@ -4,7 +4,7 @@ import '../../app/theme.dart';
 
 /// La carte de l'app — sans élévation, cernée de [AppColors.cardBorder].
 ///
-/// Deux variantes seulement (SPECS_UI.md §Design system) :
+/// Deux variantes seulement :
 /// - claire ([AppColors.cardSurface]) : saisie et résultats ;
 /// - teintée ([AppColors.cardTinted], `tinted: true`) : schémas.
 ///

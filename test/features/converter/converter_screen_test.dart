@@ -107,8 +107,8 @@ void main() {
     tester,
   ) async {
     // Le segmented tronque en silence (`overflow: ellipsis`) : un symbole trop
-    // large donnerait « mba… » sans que rien ne lève. C'est ce qui a coûté le
-    // millibar, et c'est la seule façon de s'en apercevoir sans regarder.
+    // large donnerait « mba… » sans que rien ne lève, et c'est la seule façon
+    // de s'en apercevoir sans regarder.
     tester.view.physicalSize = const Size(400, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);

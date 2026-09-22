@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
 
-/// Une valeur calculée, copiable d'un tap (SPECS_UI.md §Principes UX).
+/// Une valeur calculée, copiable d'un tap.
 class ResultTile extends StatelessWidget {
   const ResultTile({
     required this.label,

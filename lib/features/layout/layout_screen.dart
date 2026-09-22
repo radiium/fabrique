@@ -88,7 +88,7 @@ class LayoutScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.md),
           AppSwitchField(
             label: 'Inverser l’orientation',
-            help: 'Pose les éléments dans l’autre sens ; le décalage suit.',
+            help: 'Pose les éléments dans l’autre sens. Le décalage suit.',
             value: input.flip,
             onChanged: form.setFlip,
           ),

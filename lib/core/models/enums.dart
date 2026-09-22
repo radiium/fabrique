@@ -1,7 +1,7 @@
 /// Matériau de la pièce recevant la vis.
 ///
-/// Nommé `MaterialKind` et non `Material` (spec) pour ne pas entrer en
-/// collision avec le widget `Material` de Flutter côté UI.
+/// Nommé `MaterialKind` et non `Material` pour ne pas entrer en collision
+/// avec le widget `Material` de Flutter côté UI.
 enum MaterialKind { softwood, hardwood, chipboard, plywood }
 
 /// Décalage du départ de chaque rangée en calepinage.

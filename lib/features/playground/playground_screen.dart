@@ -82,8 +82,6 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
     );
   }
 
-  // --- Saisie ---------------------------------------------------------------
-
   List<Widget> _inputWidgets() => [
     WidgetShowcase(
       name: 'LabeledField',
@@ -226,8 +224,6 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
     ),
   ];
 
-  // --- Actions & retours ----------------------------------------------------
-
   List<Widget> _actionWidgets() => [
     WidgetShowcase(
       name: 'FilledButton / OutlinedButton / TextButton',
@@ -288,8 +284,6 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
       ),
     ),
   ];
-
-  // --- Structure & surfaces -------------------------------------------------
 
   List<Widget> _structureWidgets() => [
     const WidgetShowcase(
@@ -355,8 +349,6 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
     ),
   ];
 
-  // --- Visualisation --------------------------------------------------------
-
   List<Widget> _visualizationWidgets() => [
     const WidgetShowcase(
       name: 'CustomPaint',
@@ -393,8 +385,6 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
       ),
     ),
   ];
-
-  // --- Candidats ------------------------------------------------------------
 
   List<Widget> _candidateWidgets() => [
     WidgetShowcase(

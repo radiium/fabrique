@@ -8,9 +8,8 @@ import '../../app/theme.dart';
 /// L'habillage (fond, filet, rayon, panneau déroulant) vient du
 /// `dropdownMenuTheme` ; il ne reste ici que la géométrie et les entrées.
 ///
-/// La valeur fermée prend [controlTextStyle], comme tous les contrôles.
-/// Partagé plutôt que recopié : c'est exactement de cette façon que le
-/// dropdown avait déjà dérivé du champ numérique une première fois.
+/// La valeur fermée prend [controlTextStyle], comme tous les contrôles :
+/// recopier le style ici le laisserait dériver de celui des champs.
 class AppDropdown<T> extends StatelessWidget {
   const AppDropdown({
     required this.value,

@@ -134,31 +134,70 @@ String formatImperial(ImperialParts p); // ex. 2' 6 3/8"
 - Réduction : 6/16 → 3/8 ; 8/16 → 1/2.
 
 ## 2. Distribution — `distribution.dart`
-**But :** N points équidistants. Règle : **N points → N+1 espaces**, jamais de point aux extrémités.
+**But :** répartir N éléments identiques sur une largeur. Les points purs sont le cas `elementWidth = 0`. Le nombre de jeux est une conséquence des bords, pas une constante.
 ```dart
+enum DistributionEdge { gap, element }   // ce qui borde chaque extrémité
+
 @freezed
 class DistributionInput {
   const factory DistributionInput({
-    required double length,   // mm
-    required int pointCount,  // >= 0
+    required double length,        // largeur totale, mm
+    required int count,            // >= 0
+    @Default(0) double elementWidth,
+    @Default(DistributionEdge.gap) DistributionEdge startEdge,
+    @Default(DistributionEdge.gap) DistributionEdge endEdge,
+    @Default(0) double startOffset,  // marge de début, mm
+    @Default(0) double endOffset,    // marge de fin, mm
   }) = _DistributionInput;
+}
+
+/// Même géométrie, mais c'est le nombre que l'on cherche.
+@freezed
+class DistributionTargetInput {
+  const factory DistributionTargetInput({
+    required double length,
+    required double targetSpacing,
+    // … mêmes champs optionnels que ci-dessus
+  }) = _DistributionTargetInput;
 }
 
 @freezed
 class DistributionResult {
   const factory DistributionResult({
-    required double spacing,          // length/(pointCount+1)
-    required List<double> positions,  // cumulées depuis l'origine
+    required int count,
+    required int gapCount,            // N+1, N−1 ou N selon les bords
+    required double spacing,          // jeu libre entre deux éléments
+    required double pitch,            // entraxe = spacing + elementWidth
+    required double span,             // length moins les deux marges
+    required List<double> positions,  // bord d'attaque de chaque élément
+    required List<double> centers,
   }) = _DistributionResult;
 }
 
+/// Les deux réponses entières qui encadrent un écart visé.
+@freezed
+class DistributionTargetResult {
+  const factory DistributionTargetResult({
+    required DistributionResult best,   // écart réel le plus proche
+    required DistributionResult? other, // l'autre borne, si réalisable
+  }) = _DistributionTargetResult;
+}
+
 DistributionResult computeDistribution(DistributionInput input);
+DistributionTargetResult computeDistributionForSpacing(DistributionTargetInput input);
+int minDistributionCount(DistributionEdge start, DistributionEdge end);
+const int kMaxDistributionCount = 500;
 ```
-**Algo** — `spacing = length/(pointCount+1)` ; `positions = [spacing*1 … spacing*pointCount]` ; `pointCount==0` → `[]`, spacing = length ; `length<=0` ou `pointCount<0` → exception.
+**Algo** — `utile = length − startOffset − endOffset` ; `gapCount = count + 1 −` (nombre d'extrémités occupées par un élément) ; `spacing = (utile − count × elementWidth) / gapCount` ; les positions se déduisent par addition de l'entraxe depuis la marge de début. Le mode inverse résout `utile = N × largeur + (N + c) × écart` en N, puis rend les deux entiers voisins. **Pas de réglage d'arrondi** : qui a une contrainte de maximum lit la solution la plus serrée.
+
+**Invalides → `CalcException`** : largeur totale ≤ 0, largeur d'élément négative, marge négative, marges qui occupent toute la largeur, un seul élément bordant les deux côtés. Les messages sont rédigés pour être affichés tels quels.
 
 **Cas de test**
-- `(100,1)` → 50, `[50]` · `(100,3)` → 25, `[25,50,75]` · `(100,0)` → 100, `[]` · `(90,2)` → 30, `[30,60]`.
-- Invalides : length 0, pointCount −1 → exception.
+- Points purs : `(100,1)` → 50, `[50]` · `(100,3)` → 25, `[25,50,75]` · `(100,0)` → 100, `[]` · `(90,2)` → 30, `[30,60]`.
+- Largeur : 2 éléments de 20 sur 100, bordés de jeux → écart 20, entraxe 40, positions `[20,60]`.
+- Bords : pour 4 éléments, `gapCount` vaut 5 / 3 / 4 / 4 selon les quatre combinaisons.
+- Marges : `(1000, 3, start:100, end:100)` → span 800, écart 200, `[300,500,700]`.
+- `kMaxDistributionCount` borne les deux modes.
 
 ## 3. Layout (calepinage) — `layout.dart`
 **But :** poser des éléments rectangulaires identiques sur une surface rectangulaire (espacement optionnel, inversion d'orientation, décalage de joints). Produit la **géométrie complète**.

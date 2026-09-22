@@ -7,10 +7,10 @@ import '../../app/theme.dart';
 
 /// Panneau repliable : un en-tête cliquable, un contenu qui se déplie.
 ///
-/// Ce n'est pas un raffinement cosmétique. SPECS_UI.md interdit que la
-/// visualisation passe sous la ligne de flottaison sur mobile, et trois
-/// contrôles de plus dans une carte de saisie suffisent à l'y envoyer —
-/// c'est le problème connu du calepinage.
+/// Ce n'est pas un raffinement cosmétique. La visualisation ne doit jamais
+/// passer sous la ligne de flottaison sur mobile, et trois contrôles de plus
+/// dans une carte de saisie suffisent à l'y envoyer — c'est le problème connu
+/// du calepinage.
 ///
 /// Règle d'emploi : **ce qui est replié doit être sans effet par défaut.**
 /// Sinon on cache à l'utilisateur la raison d'un résultat qui le surprend, et

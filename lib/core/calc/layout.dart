@@ -76,10 +76,10 @@ abstract class LayoutResult with _$LayoutResult {
 LayoutResult computeLayout(LayoutInput input) {
   _validate(input);
 
-  // 1. Repère de pose. `u` est l'axe le long duquel les éléments s'alignent et
-  //    le long duquel joue le décalage ; `v` est l'axe d'empilement des
-  //    rangées. L'inversion échange les deux : tout le motif pivote, décalage
-  //    compris, et l'algorithme ci-dessous n'a pas à le savoir.
+  // Repère de pose. `u` est l'axe le long duquel les éléments s'alignent et le
+  // long duquel joue le décalage ; `v` est l'axe d'empilement des rangées.
+  // L'inversion échange les deux : tout le motif pivote, décalage compris, et
+  // l'algorithme ci-dessous n'a pas à le savoir.
   final flip = input.flip;
   final su = flip ? input.surfaceY : input.surfaceX;
   final sv = flip ? input.surfaceX : input.surfaceY;
@@ -106,17 +106,15 @@ LayoutResult computeLayout(LayoutInput input) {
   var cutCount = 0;
   var coveredArea = 0.0;
 
-  // 2. Rangées empilées le long de v ; la dernière peut être rabotée.
+  // La dernière rangée peut être rabotée par le bord de la surface.
   var rowIndex = 0;
   for (var v = 0.0; v < sv - _eps; v += ev + gapV, rowIndex++) {
     final thickness = math.min(ev, sv - v);
     final rowIsCut = thickness < ev - _eps;
 
-    // 3. Départ de rangée décalé le long de u ; un départ négatif coupe la
-    //    première pièce.
+    // Un départ de rangée négatif coupe la première pièce.
     final startU = -((rowIndex * step) % eu);
 
-    // 4. Éléments alignés le long de u, clippés à [0, su].
     for (var u = startU; u < su - _eps; u += eu + gapU) {
       final near = math.max(u, 0.0);
       final far = math.min(u + eu, su);
@@ -124,7 +122,7 @@ LayoutResult computeLayout(LayoutInput input) {
       if (length <= _eps) continue;
 
       final isCut = rowIsCut || length < eu - _eps;
-      // 5. Retour au repère de la surface.
+      // Retour au repère de la surface.
       elements.add(
         flip
             ? PlacedElement(
@@ -151,8 +149,8 @@ LayoutResult computeLayout(LayoutInput input) {
     }
   }
 
-  // 6. Dérivés. v1 : une coupe = un élément consommé, pas de réemploi de chute,
-  //    donc la perte est volontairement pessimiste.
+  // Une coupe = un élément consommé, sans réemploi de chute : la perte est
+  // volontairement pessimiste.
   final totalCount = fullCount + cutCount;
   final stockArea = totalCount * eu * ev;
   final wastePercent = stockArea <= 0

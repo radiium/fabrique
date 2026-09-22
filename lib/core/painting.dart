@@ -1,18 +1,18 @@
-import 'package:flutter/material.dart';
-
-import '../app/theme.dart';
-import 'format.dart';
-
 /// Primitives de cotation partagées par les painters.
 ///
 /// Les cinq schémas dessinent tous les mêmes choses — du texte tabulaire, des
 /// flèches, des lignes de cote détourées. Sans ce fichier, chaque painter
 /// recopierait sa propre version et les schémas finiraient par ne plus se
-/// ressembler, exactement comme les contrôles avaient divergé avant
-/// [controlTextStyle].
+/// ressembler.
 ///
 /// Rien ici ne calcule : ce sont des primitives de rendu, elles reçoivent des
 /// pixels déjà mis à l'échelle.
+library;
+
+import 'package:flutter/material.dart';
+
+import '../app/theme.dart';
+import 'format.dart';
 
 /// Longueur des branches d'une flèche de cote.
 const double kArrowArm = 5;

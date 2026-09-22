@@ -30,7 +30,7 @@ void main() {
     return container;
   }
 
-  /// Le téléphone de référence de SPECS_UI.md.
+  /// Le téléphone de référence.
   void usePhone(WidgetTester tester) {
     tester.view.physicalSize = const Size(400, 844);
     tester.view.devicePixelRatio = 1;
@@ -93,7 +93,7 @@ void main() {
     // La colonne N° est cadrée à droite : si sa largeur était ronde plutôt que
     // mesurée, le mou tomberait entièrement à gauche du chiffre et la première
     // cellule aurait plusieurs fois le blanc de la dernière. Invisible à la
-    // lecture du code, et déjà raté deux fois.
+    // lecture du code.
     usePhone(tester);
     await pumpDistribution(tester);
 
@@ -147,7 +147,7 @@ void main() {
   testWidgets('le schéma reste au-dessus de la ligne de flottaison', (
     tester,
   ) async {
-    // SPECS_UI.md : la visualisation est la vedette de chaque écran. C'est
+    // La visualisation est la vedette de chaque écran. C'est
     // précisément ce que huit contrôles dépliés feraient sauter — d'où le
     // panneau replié par défaut.
     usePhone(tester);
@@ -222,7 +222,7 @@ void main() {
   ) async {
     // Le segmented et les tuiles de bords tronquent en silence
     // (`overflow: ellipsis`) : un libellé trop large donnerait « Élément – Élé… »
-    // sans que rien ne lève. C'est ce qui a coûté le millibar au convertisseur.
+    // sans que rien ne lève.
     usePhone(tester);
     await pumpDistribution(tester);
 

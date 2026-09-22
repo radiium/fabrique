@@ -9,7 +9,7 @@ import '../persistence/settings_controller.dart';
 import 'app_card.dart';
 import 'app_disclosure.dart';
 
-/// Squelette commun à tous les écrans-outils (SPECS_UI.md §Écran 2).
+/// Squelette commun à tous les écrans-outils.
 ///
 /// Mobile : saisie / visualisation / résultats empilés, la visualisation reste
 /// visible sans scroll. Web large (> [kWideBreakpoint]) : deux colonnes,

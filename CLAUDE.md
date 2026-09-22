@@ -111,7 +111,7 @@ Trois points à ne pas défaire :
 
 ### Règles métier à connaître
 
-- **Répartition :** on répartit des **éléments de largeur**, les points purs n'étant que le cas `elementWidth = 0` (les défauts d'origine — largeur nulle, bords aux écarts, décalages nuls — redonnent exactement 3 points sur 100 → 25, 50, 75). Le nombre de jeux n'est pas une constante mais une conséquence des bords : `N + 1` bordé de deux écarts, `N − 1` bordé de deux éléments, `N` en mixte — `DistributionResult.gapCount` le rend explicite pour que l'UI n'ait pas à le redéduire. Deux modes symétriques, `computeDistribution` (nombre connu → écart) et `computeDistributionForSpacing` (écart voulu → nombre) ; le second **ne prend pas de réglage d'arrondi** : il rend les deux solutions entières qui encadrent la cible, `best` (la plus proche) et `other`, et qui a une contrainte de maximum — un barreaudage à 110 mm — lit la plus serrée. `kMaxDistributionCount` (500) borne les deux : sans lui, un écart de 0,001 mm produirait un million de positions.
+- **Répartition :** la cote totale s'appelle **largeur** partout (écran, aides, messages d'erreur), et les bandes réservées aux extrémités des **marges** — jamais « longueur » ni « décalage », ce dernier étant réservé au décalage de joints du Calepinage. Les champs `startOffset` / `endOffset` gardent leur nom de code : les renommer toucherait les clés JSON persistées. On répartit des **éléments de largeur**, les points purs n'étant que le cas `elementWidth = 0` (les défauts d'origine — largeur nulle, bords aux écarts, marges nulles — redonnent exactement 3 points sur 100 → 25, 50, 75). Le nombre de jeux n'est pas une constante mais une conséquence des bords : `N + 1` bordé de deux écarts, `N − 1` bordé de deux éléments, `N` en mixte — `DistributionResult.gapCount` le rend explicite pour que l'UI n'ait pas à le redéduire. Deux modes symétriques, `computeDistribution` (nombre connu → écart) et `computeDistributionForSpacing` (écart voulu → nombre) ; le second **ne prend pas de réglage d'arrondi** : il rend les deux solutions entières qui encadrent la cible, `best` (la plus proche) et `other`, et qui a une contrainte de maximum — un barreaudage à 110 mm — lit la plus serrée. `kMaxDistributionCount` (500) borne les deux : sans lui, un écart de 0,001 mm produirait un million de positions.
 - **Calepinage (outil signature) :** les éléments s'alignent le long d'un **axe de pose**, les rangées s'empilent perpendiculairement, et le décalage de joints décale le départ de chaque rangée le long de l'axe de pose. Sans inversion l'axe de pose est X ; **l'inversion pivote tout le motif d'un quart de tour, décalage compris** — décaler les joints d'un bardage vertical n'a de sens que le long des lames. Seuls les jeux restent définis à l'écran (`gapX` horizontal, `gapY` vertical). En v1, chaque départ de rangée décalé compte comme une coupe **sans réemploi des chutes** : le % de perte est donc volontairement pessimiste — la tuile de résultat le dit et doit continuer à le dire.
 - **Avant-trous :** les coefficients vivent dans une table unique en tête de `fasteners.dart` (règles de l'art indicatives, à valider à part) ; le calcul ne fait que l'appliquer. L'invariant `pilotHole < clearanceHole < counterboreDia` doit toujours tenir.
 - **Niveau :** seule la math vit dans `core/calc/tilt.dart` ; le flux `sensors_plus` reste dans `level_controller.dart`.
@@ -162,13 +162,69 @@ Trois raisons de ne pas y revenir :
 - **Pas de popover, pas de tooltip.** Le tooltip demande un appui long sur tactile — indécouvrable. Le popover se renvoie en visant à côté : geste de précision qui, avec un gant, atterrit sur un contrôle et change une cote. La feuille se renvoie d'un glissement n'importe où. Et elle portera un croquis le jour où l'explication en mérite un — pour la géométrie, le dessin bat la phrase (`EdgePreviewPainter` l'a déjà montré).
 - **La ligne de libellé passe de 20 à 32 px, et seulement là où il y a un ⓘ.** C'est le seul endroit où la cible descend sous `kFieldHeight`, assumé : elle fait la largeur de la carte, et rater un ⓘ n'abîme rien — là où rater un champ change une cote. Un champ sans `about` ne paie rien (test).
 
-`help` et `about` ne font pas le même métier et coexistent : `help` énonce une contrainte de saisie et reste affiché (« 0 = points sans épaisseur ») ; `about` explique, et ne s'ouvre qu'à la demande.
+`help` et `about` ne font pas le même métier et coexistent : `help` énonce une contrainte de saisie et reste affiché (« 0 = points sans épaisseur ») ; `about` explique, et ne s'ouvre qu'à la demande. Ce qu'ils ont le droit d'écrire est cadré plus bas, « Ponctuation des textes ».
+
+### Ponctuation des textes : le tiret sépare, il ne relie pas
+
+**Le tiret cadratin (—) et le point-virgule n'ont pas leur place dans un texte explicatif** : corps et points détachés d'un `FieldHelp`, message de `CalcException`, toute prose de plus d'une ligne. Ils y enchaînent des propositions que le lecteur d'atelier doit démêler debout, souvent sans lire jusqu'au bout. Deux phrases, ou un deux-points, ou une parenthèse. Jamais une incise entre tirets.
+
+Ils restent en revanche **là où ils séparent visuellement**, et c'est un rôle utile :
+
+- **libellés** — `Surface — largeur`, `Lamage — Ø × profondeur` : le tiret y tient lieu de colonne, il ne ponctue rien ;
+- **notes de `ResultTile`** et lignes `help` d'une seule ligne, où il accroche une précision à ce qui précède ;
+- **légendes de schéma** (`Rapport hors échelle — formes non à l'échelle`) ;
+- **`kNoValue`** et la puce des `FieldHelp.bullets`, qui sont des glyphes, pas de la ponctuation.
+
+Le test : si le tiret pourrait être remplacé par un saut de ligne ou un `:` dans un tableau, il sépare — il reste. S'il porte une incise au milieu d'une phrase, il part.
 
 ### Tuiles de résultat
 
 `ResultTile` sépare la valeur de son unité : `unit` se rend après le chiffre, en plus petit et dans le gris des libellés, comme le `suffixText` d'un `NumberField`. L'unité ne va pas entre parenthèses dans le libellé — une cote se lit d'un bloc (`12,5 %`, `250 mm`), et le chiffre garde pour lui le gros style tabulaire, donc les valeurs restent alignées d'une tuile à l'autre. Exception assumée : dans une **table**, l'unité va en en-tête de colonne, parce qu'elle qualifie la colonne entière.
 
 `ToolScaffold.results` prend une **liste**, pas une `Column` : c'est la carte qui intercale les filets (`AppColors.cardBorder`, de bord à bord, jamais avant le premier ni après le dernier).
+
+---
+
+## Commentaires
+
+Les commentaires sont en **français**. Ils documentent le *pourquoi* du code tel qu'il est — jamais son évolution, c'est le rôle de git.
+
+### Forme
+
+- **`///` (dartdoc)** sur tout ce qui est déclaré : types, membres, constantes, champs `@freezed`. **`//`** uniquement pour une subtilité à l'intérieur d'un corps.
+- Première ligne = une phrase courte qui se suffit, terminée par un point. Puis une ligne `///` vide, puis l'explication.
+- Commencer par un verbe (« Répartit… ») ou un groupe nominal (« Vue de dessus : … »). Jamais « Cette fonction… », « Widget qui… ».
+- Référencer les symboles entre crochets : `[computeDistribution]`, `[kFieldHeight]`. C'est un lien, pas une décoration.
+- `// TODO(scope):` seulement pour ce qui figure au « Reste à faire » ci-dessous.
+- Le tiret cadratin et le point-virgule sont **autorisés ici** : la règle de ponctuation plus haut ne vise que les textes lus dans l'app.
+
+### À supprimer
+
+- La paraphrase du code, et le découpage narratif d'un `build()` (`// la colonne des résultats`).
+- Le code commenté, les TODO périmés, les commentaires devenus faux.
+- Toute référence à un document de travail : notes, plans, comptes-rendus, fichiers de spec. Ils bougent ou disparaissent, le commentaire reste et ment. On énonce la contrainte elle-même, pas où elle est écrite.
+- Tout ce qui retrace un historique : « avant on faisait X », « ajouté pour la v2 ».
+- Les en-têtes de fichier décoratifs et les séparateurs `// ====`.
+
+### À conserver et améliorer
+
+Un commentaire se garde s'il porte une **contrainte métier** (règle de l'art d'un avant-trou), une **mesure** (les 198 px de la police de test), une **unité ou un invariant** (tout est en mm ; `pilotHole < clearanceHole`), un **choix non trivial** (pourquoi `ref.read` et pas `ref.watch`), ou une **décision à ne pas défaire**.
+
+Ces derniers ont le droit d'être longs : c'est ce qui empêche de refaire l'erreur. On les resserre, on ne les tronque pas. Tout le reste tient en une ou deux lignes.
+
+### Par couche
+
+- **`core/calc/`** — documenter l'unité, les bornes, et ce qui lève `CalcException`. C'est la seule couche testable sans appareil, et son dartdoc est ce que lisent les écrans qui l'appellent.
+- **Painters** — aucun commentaire de géométrie : la math est dans `core`. On y explique un ordre de tracé ou un seuil de densité, rien d'autre.
+- **Widgets partagés** — les valeurs de thème et les hauteurs se justifient (pourquoi 48 px, pourquoi ce `contentPadding`), surtout les pièges vérifiés à la mesure.
+- **Tests** — le nom du `test()` est le commentaire. On ne commente qu'un nombre magique ou la raison d'être d'un garde-fou.
+- **Fichiers générés** (`*.g.dart`, `*.freezed.dart`, `app_localizations*.dart`) — jamais touchés.
+
+### Consignes de passe
+
+- Ne modifier que les commentaires, jamais la logique.
+- Dans le doute, garder.
+- `dart format lib` et `flutter analyze` doivent rester propres après la passe.
 
 ---
 

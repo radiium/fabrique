@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Tout ce qui se saisit ou se choisit fait [kFieldHeight] de haut et
-/// [kControlFontSize] de police. C'est la règle de SPECS_UI.md, et elle ne se
-/// lit dans aucun de ces widgets : chacun y arrive par un chemin différent —
+/// [kControlFontSize] de police. Cette règle ne se lit dans aucun de ces
+/// widgets : chacun y arrive par un chemin différent —
 /// `SizedBox` pour le champ, `contentPadding` pour le `DropdownMenu`, cible
 /// tactile dégonflée plus marge pour la ligne de switch. Un seul de ces
 /// chemins qui bouge, et les contrôles cessent de s'aligner sans que rien ne

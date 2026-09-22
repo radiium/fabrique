@@ -213,7 +213,7 @@ class _AdvancedSettings extends StatelessWidget {
             about: kAboutOffset,
             value: input.startOffset,
             onChanged: form.setStartOffset,
-            step: 5,
+            step: 1,
           )
         else
           _Pair(

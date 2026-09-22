@@ -15,8 +15,7 @@ const int kMaxDistributionCount = 500;
 ///
 /// C'est ce choix, et lui seul, qui fixe le nombre de jeux : une rangée bordée
 /// de deux écarts en a un de plus que d'éléments, une rangée bordée de deux
-/// éléments un de moins. La règle « N points → N+1 espaces » de la v1 n'était
-/// que le cas [gap]/[gap].
+/// éléments un de moins.
 enum DistributionEdge {
   /// La rangée commence (ou finit) par un jeu : aucun élément ne touche le
   /// bord. Le barreaudage entre deux montants.
@@ -37,8 +36,7 @@ abstract class DistributionInput with _$DistributionInput {
     /// Nombre d'éléments à répartir (>= 0).
     required int count,
 
-    /// Largeur d'un élément, en mm. `0` = répartition de points purs, le
-    /// comportement historique de l'outil.
+    /// Largeur d'un élément, en mm. `0` = répartition de points purs.
     @Default(0) double elementWidth,
 
     /// Bord de départ, à l'origine.

@@ -3,7 +3,7 @@ import 'package:fabrique/core/calc/distribution.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  /// Le cas historique de l'outil : des points sans épaisseur, bordés de jeux.
+  /// Des points sans épaisseur, bordés de jeux.
   DistributionResult points(double length, int count) =>
       computeDistribution(DistributionInput(length: length, count: count));
 
