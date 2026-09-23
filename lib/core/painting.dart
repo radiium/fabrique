@@ -44,11 +44,15 @@ TextPainter schemaText(
 
 /// Pose [text] centré sur [center], sur un fond plein qui « coupe » ce qu'il y
 /// a dessous — sinon le libellé se lit par-dessus sa propre ligne de cote.
+///
+/// [knockout] doit valoir la couleur du fond sur lequel le schéma est dessiné,
+/// sinon le détourage laisse un pavé visible. Les schémas vivent tous sur la
+/// feuille blanche de `SchemaSheet`, d'où ce défaut.
 void drawSchemaLabel(
   Canvas canvas,
   TextPainter text,
   Offset center, {
-  Color knockout = AppColors.cardTinted,
+  Color knockout = AppColors.cardSurface,
   double padding = 4,
 }) {
   canvas.drawRect(
@@ -87,7 +91,7 @@ bool drawHDimension(
   required double y,
   String? label,
   Color color = AppColors.label,
-  Color knockout = AppColors.cardTinted,
+  Color knockout = AppColors.cardSurface,
   double labelSize = 11,
 }) {
   final paint = Paint()

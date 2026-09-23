@@ -16,7 +16,7 @@ import 'app_disclosure.dart';
 /// saisie + résultats à gauche, visualisation fixe à droite.
 ///
 /// C'est ici que les trois blocs reçoivent leur carte : claire pour la saisie
-/// et les résultats, teintée pour le schéma (via [ZoomableCanvas]). Les écrans
+/// et les résultats, teintée pour le schéma (via `SchemaCard`). Les écrans
 /// passent donc leur contenu nu.
 class ToolScaffold extends StatelessWidget {
   const ToolScaffold({
@@ -164,7 +164,7 @@ class ToolScaffold extends StatelessWidget {
         children: [
           _inputCard,
           const SizedBox(height: AppSpacing.md),
-          // Schéma compact, visible sans scroll, extensible au tap.
+          // Schéma compact, visible sans scroll, agrandi au tap.
           AspectRatio(aspectRatio: 16 / 10, child: visualization),
           const SizedBox(height: AppSpacing.md),
           _resultsCard,

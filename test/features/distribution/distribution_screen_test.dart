@@ -1,6 +1,6 @@
 import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/distribution.dart';
-import 'package:fabrique/core/widgets/zoomable_canvas.dart';
+import 'package:fabrique/core/widgets/schema_card.dart';
 import 'package:fabrique/features/distribution/distribution_controller.dart';
 import 'package:fabrique/features/distribution/distribution_form.dart';
 import 'package:fabrique/features/distribution/distribution_screen.dart';
@@ -153,7 +153,7 @@ void main() {
     usePhone(tester);
     await pumpDistribution(tester);
 
-    final canvas = tester.getRect(find.byType(ZoomableCanvas));
+    final canvas = tester.getRect(find.byType(SchemaCard));
     // La règle, c'est que le schéma tienne entier sans scroll.
     expect(
       canvas.bottom,

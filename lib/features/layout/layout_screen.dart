@@ -11,9 +11,9 @@ import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/tool_scaffold.dart';
-import '../../core/widgets/zoomable_canvas.dart';
+import '../../core/widgets/schema_card.dart';
 import 'layout_controller.dart';
-import 'layout_painter.dart';
+import 'layout_schema.dart';
 
 /// Millimètres carrés dans un mètre carré.
 ///
@@ -107,8 +107,9 @@ class LayoutScreen extends ConsumerWidget {
           ),
         ],
       ),
-      visualization: ZoomableCanvas(
-        painter: LayoutPainter(result: result, input: input),
+      visualization: const SchemaCard(
+        expandFor: Tool.layout,
+        child: LayoutSchema(compact: true),
       ),
       results: [
         ResultTile(

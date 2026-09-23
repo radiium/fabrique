@@ -60,7 +60,9 @@ class LevelPainter extends CustomPainter {
   /// s'épaissit et prend l'accent dès que l'aplomb est atteint — le signal se
   /// voit du coin de l'œil, sans lire le texte.
   void _paintVial(Canvas canvas, Offset center, double radius, bool isLevel) {
-    canvas.drawCircle(center, radius, Paint()..color = AppColors.surface);
+    // Le beige des champs : la feuille du schéma est blanche, une fiole
+    // blanche n'y tiendrait que par son contour.
+    canvas.drawCircle(center, radius, Paint()..color = AppColors.field);
 
     final ring = Paint()
       ..color = AppColors.border

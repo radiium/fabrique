@@ -57,6 +57,14 @@ abstract final class AppRadii {
   /// piste d'`AppSegmentedButton` (dont la pastille reprend ce rayon moins
   /// son jeu, pour rester concentrique).
   static const double field = 9;
+
+  /// Feuille blanche d'un schéma, posée dans sa carte teintée.
+  ///
+  /// Le rembourrage de la carte ([AppSpacing.md]) est plus large que [card],
+  /// donc la concentricité ne contraint plus rien : le coin de la feuille est
+  /// libre. 8 px, soit juste en dessous de la carte qui la porte — une feuille
+  /// plus arrondie que son cadre se décollerait du coin.
+  static const double schemaSheet = 8;
 }
 
 /// Hauteur fixe d'un champ de saisie (et des boutons − / + qui l'encadrent).

@@ -47,6 +47,7 @@ class DistributionPainter extends CustomPainter {
     required this.elementWidth,
     required this.startOffset,
     required this.endOffset,
+    this.compact = false,
   });
 
   final DistributionResult? result;
@@ -54,6 +55,10 @@ class DistributionPainter extends CustomPainter {
   final double elementWidth;
   final double startOffset;
   final double endOffset;
+
+  /// Vignette : la numérotation des éléments tombe. Elle ne sert qu'à relier
+  /// le dessin à la table des positions, qu'on lit en plein écran.
+  final bool compact;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -83,7 +88,11 @@ class DistributionPainter extends CustomPainter {
     _paintChain(canvas, r, dx, barBottom + _chainGap);
   }
 
-  /// La pièce : un rectangle clair posé sur la carte teintée.
+  /// La pièce : un rectangle beige posé sur la feuille blanche.
+  ///
+  /// Le beige des champs et non le blanc : une pièce blanche sur la feuille ne
+  /// se distinguerait que par son filet, et les marges hachurées perdraient le
+  /// fond sur lequel elles se lisent.
   void _paintBar(
     Canvas canvas,
     double left,
@@ -96,7 +105,7 @@ class DistributionPainter extends CustomPainter {
       const Radius.circular(3),
     );
     canvas
-      ..drawRRect(rect, Paint()..color = AppColors.surface)
+      ..drawRRect(rect, Paint()..color = AppColors.field)
       ..drawRRect(
         rect,
         Paint()
@@ -208,7 +217,9 @@ class DistributionPainter extends CustomPainter {
         ..drawRect(rect, stroke);
     }
 
-    _paintIndices(canvas, r, dx, barTop, usable * r.pitch / length);
+    if (!compact) {
+      _paintIndices(canvas, r, dx, barTop, usable * r.pitch / length);
+    }
   }
 
   /// Le numéro d'ordre au-dessus de chaque élément — c'est ce qui relie le
@@ -297,6 +308,7 @@ class DistributionPainter extends CustomPainter {
       old.result != result ||
       old.length != length ||
       old.elementWidth != elementWidth ||
+      old.compact != compact ||
       old.startOffset != startOffset ||
       old.endOffset != endOffset;
 }

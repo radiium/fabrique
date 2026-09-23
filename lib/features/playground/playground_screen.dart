@@ -362,10 +362,11 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
       ),
     ),
     WidgetShowcase(
-      name: 'InteractiveViewer — via ZoomableCanvas',
+      name: 'InteractiveViewer — via SchemaScreen',
       usage:
-          'Zoom et déplacement au doigt sur le schéma. Pincez la zone '
-          'ci-dessous.',
+          'Zoom et déplacement au doigt sur le schéma agrandi. Les vignettes '
+          'des écrans-outils ne zooment pas : elles ouvrent cette page. '
+          'Pincez la zone ci-dessous.',
       child: SizedBox(
         height: 90,
         width: double.infinity,

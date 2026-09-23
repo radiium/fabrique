@@ -14,6 +14,10 @@ const double _topMargin = 26;
 const double _rightMargin = 14;
 const double _bottomMargin = 14;
 
+/// Marge de la vignette, où il n'y a plus de cote à loger : juste de quoi ne
+/// pas coller le contour de la surface au bord de la feuille.
+const double _compactMargin = 8;
+
 /// Au-delà, on cesse de cerner chaque élément : à cette densité les filets se
 /// touchent et forment un aplat, et le dessin coûte cher pour rien.
 const int _strokeBudget = 1500;
@@ -25,9 +29,18 @@ const int _strokeBudget = 1500;
 /// Le painter ne fait que mettre la surface à l'échelle du canvas et recopier
 /// les rectangles que le cœur a posés, `isCut` compris.
 class LayoutPainter extends CustomPainter {
-  const LayoutPainter({required this.result, required this.input});
+  const LayoutPainter({
+    required this.result,
+    required this.input,
+    this.compact = false,
+  });
 
   final LayoutResult? result;
+
+  /// Vignette : sans les deux cotes, la surface récupère les 46 px de marge
+  /// gauche et les 26 du haut. À 200 px de haut, c'est un quart du dessin —
+  /// et les cotes sont déjà dans les champs, juste au-dessus.
+  final bool compact;
 
   /// Les cotes de la surface : [LayoutResult] n'expose que son aire, dont X et
   /// Y ne se déduisent pas.
@@ -43,8 +56,13 @@ class LayoutPainter extends CustomPainter {
       return;
     }
 
-    final availableWidth = size.width - _leftMargin - _rightMargin;
-    final availableHeight = size.height - _topMargin - _bottomMargin;
+    final leftMargin = compact ? _compactMargin : _leftMargin;
+    final topMargin = compact ? _compactMargin : _topMargin;
+    final rightMargin = compact ? _compactMargin : _rightMargin;
+    final bottomMargin = compact ? _compactMargin : _bottomMargin;
+
+    final availableWidth = size.width - leftMargin - rightMargin;
+    final availableHeight = size.height - topMargin - bottomMargin;
     if (availableWidth <= 0 || availableHeight <= 0) return;
 
     // Échelle uniforme : un calepinage déformé ne veut rien dire, on doit
@@ -58,17 +76,19 @@ class LayoutPainter extends CustomPainter {
     final drawnWidth = input.surfaceX * scale;
     final drawnHeight = input.surfaceY * scale;
     final origin = Offset(
-      _leftMargin + (availableWidth - drawnWidth) / 2,
-      _topMargin + (availableHeight - drawnHeight) / 2,
+      leftMargin + (availableWidth - drawnWidth) / 2,
+      topMargin + (availableHeight - drawnHeight) / 2,
     );
 
     _paintSurface(canvas, origin, drawnWidth, drawnHeight);
     _paintElements(canvas, r, origin, scale);
     _paintSurfaceOutline(canvas, origin, drawnWidth, drawnHeight);
-    _paintDimensions(canvas, origin, drawnWidth, drawnHeight);
+    if (!compact) _paintDimensions(canvas, origin, drawnWidth, drawnHeight);
   }
 
-  /// Le fond de la surface — ce qui reste visible là où aucun élément ne tombe.
+  /// Le fond de la surface — ce qui reste visible là où aucun élément ne
+  /// tombe, donc un vide : il prend la couleur de la feuille, comme les
+  /// perçages des Avant-trous.
   void _paintSurface(
     Canvas canvas,
     Offset origin,
@@ -77,7 +97,7 @@ class LayoutPainter extends CustomPainter {
   ) {
     canvas.drawRect(
       origin & Size(width, height),
-      Paint()..color = AppColors.background,
+      Paint()..color = AppColors.cardSurface,
     );
   }
 
@@ -89,7 +109,10 @@ class LayoutPainter extends CustomPainter {
   ) {
     final stroked = r.elements.length <= _strokeBudget;
 
-    final fullFill = Paint()..color = AppColors.surface;
+    // Beige et non blanc : c'est de la matière posée sur la surface, et sur
+    // une feuille blanche un élément blanc ne se lirait plus que par ses
+    // joints — le découvert et le couvert se confondraient.
+    final fullFill = Paint()..color = AppColors.field;
     final cutFill = Paint()..color = AppColors.cut.withValues(alpha: 0.3);
 
     // **Un seul trait de joint, quel que soit le remplissage.** Cerner les
@@ -180,5 +203,5 @@ class LayoutPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(LayoutPainter old) =>
-      old.result != result || old.input != input;
+      old.result != result || old.input != input || old.compact != compact;
 }

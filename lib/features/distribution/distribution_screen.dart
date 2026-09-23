@@ -14,11 +14,12 @@ import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/tool_scaffold.dart';
-import '../../core/widgets/zoomable_canvas.dart';
+import '../../core/widgets/schema_card.dart';
 import 'distribution_controller.dart';
 import 'distribution_form.dart';
 import 'distribution_help.dart';
 import 'distribution_painter.dart';
+import 'distribution_schema.dart';
 
 class DistributionScreen extends ConsumerWidget {
   const DistributionScreen({super.key});
@@ -111,14 +112,9 @@ class DistributionScreen extends ConsumerWidget {
         title: 'Réglages avancés',
         child: _AdvancedSettings(input: input, form: form),
       ),
-      visualization: ZoomableCanvas(
-        painter: DistributionPainter(
-          result: result,
-          length: input.length,
-          elementWidth: input.elementWidth,
-          startOffset: input.startOffset,
-          endOffset: input.endOffset,
-        ),
+      visualization: const SchemaCard(
+        expandFor: Tool.distribution,
+        child: DistributionSchema(compact: true),
       ),
       results: [
         if (input.mode == DistributionMode.count)

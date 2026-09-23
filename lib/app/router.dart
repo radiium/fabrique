@@ -10,6 +10,7 @@ import '../features/home/home_screen.dart';
 import '../features/layout/layout_screen.dart';
 import '../features/level/level_screen.dart';
 import '../features/playground/playground_screen.dart';
+import '../features/schema/schema_screen.dart';
 import '../features/settings/settings_screen.dart';
 
 /// Navigation déclarative, deep-linking prêt pour le web : accueil, réglages,
@@ -44,6 +45,23 @@ final routerProvider = Provider<GoRouter>((ref) {
                 null => const _UnknownToolScreen(),
               };
             },
+            routes: [
+              // Le schéma seul, par-dessus son outil. Empilé et non substitué :
+              // on y entre pour regarder, on en sort par le geste de retour, et
+              // la saisie reste derrière, intacte.
+              GoRoute(
+                path: 'schema',
+                pageBuilder: (context, state) {
+                  final tool = Tool.fromId(state.pathParameters['id'] ?? '');
+                  return MaterialPage(
+                    fullscreenDialog: true,
+                    child: tool == null
+                        ? const _UnknownToolScreen()
+                        : SchemaScreen(tool: tool),
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),

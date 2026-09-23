@@ -7,9 +7,9 @@ import '../../core/format.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/tool_scaffold.dart';
-import '../../core/widgets/zoomable_canvas.dart';
+import '../../core/widgets/schema_card.dart';
 import 'level_controller.dart';
-import 'level_painter.dart';
+import 'level_schema.dart';
 
 /// Aucune saisie : lecture capteur, plus un bouton de calibrage.
 class LevelScreen extends ConsumerWidget {
@@ -26,7 +26,7 @@ class LevelScreen extends ConsumerWidget {
       input: reading.hasError
           ? const _SensorUnavailable()
           : _Calibration(reading: reading.value, zero: zero),
-      visualization: ZoomableCanvas(painter: LevelPainter(result: result)),
+      visualization: const SchemaCard(child: LevelSchema()),
       results: [
         ResultTile(
           label: 'Inclinaison latérale',

@@ -11,9 +11,9 @@ import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/tool_scaffold.dart';
-import '../../core/widgets/zoomable_canvas.dart';
+import '../../core/widgets/schema_card.dart';
 import 'fasteners_controller.dart';
-import 'fasteners_painter.dart';
+import 'fasteners_schema.dart';
 
 class FastenersScreen extends ConsumerWidget {
   const FastenersScreen({super.key});
@@ -60,8 +60,9 @@ class FastenersScreen extends ConsumerWidget {
           ),
         ],
       ),
-      visualization: ZoomableCanvas(
-        painter: FastenersPainter(result: result, input: input),
+      visualization: const SchemaCard(
+        expandFor: Tool.fasteners,
+        child: FastenersSchema(compact: true),
       ),
       results: [
         ResultTile(

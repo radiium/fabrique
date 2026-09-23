@@ -13,10 +13,9 @@ import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/tool_scaffold.dart';
-import '../../core/widgets/zoomable_canvas.dart';
-import 'comparison_painter.dart';
+import '../../core/widgets/schema_card.dart';
 import 'converter_controller.dart';
-import 'converter_painter.dart';
+import 'converter_schema.dart';
 
 class ConverterScreen extends ConsumerWidget {
   const ConverterScreen({super.key});
@@ -86,10 +85,9 @@ class ConverterScreen extends ConsumerWidget {
       ),
       // La double règle ne vaut que pour des longueurs ; les autres grandeurs
       // se lisent en rapport à un repère.
-      visualization: ZoomableCanvas(
-        painter: isLength
-            ? RulerPainter(result: result)
-            : ComparisonPainter(result: result, unit: input.unit),
+      visualization: const SchemaCard(
+        expandFor: Tool.converter,
+        child: ConverterSchema(),
       ),
       results: [
         for (final unit in quantity.units)

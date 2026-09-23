@@ -6,7 +6,7 @@ Ce fichier guide Claude Code (claude.ai/code) lorsqu'il travaille sur ce dépôt
 
 `fabrique` est l'app **« Menuiserie »** — une app portfolio de 5 outils de calcul pour l'atelier, sur iOS, Android et Web.
 
-Le cœur de calcul est **entièrement implémenté et couvert** (156 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
+Le cœur de calcul est **entièrement implémenté et couvert** (166 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
 
 La référence, ce sont les deux documents de spec :
 - **`SPECS.md`** — architecture + couche `core/calc` : signatures exactes, algorithmes et cas de test attendus pour chaque fonction pure. À lire avant d'implémenter un calcul.
@@ -22,7 +22,7 @@ flutter run                          # appareil / simulateur
 flutter run -d chrome                # web
 flutter analyze                      # doit rester propre
 dart format lib
-flutter test                         # 156 tests — cœur de calcul et écrans, sans appareil
+flutter test                         # 166 tests — cœur de calcul et écrans, sans appareil
 
 # codegen — obligatoire après toute modif d'une déclaration @freezed / @riverpod
 dart run build_runner build
@@ -60,20 +60,33 @@ lib/core/models/ value objects partagés (LengthUnit, MaterialKind, JointOffset,
 lib/core/format.dart   formatNumber() + kNoValue — rendu des nombres, partagé par tous les écrans
 lib/core/persistence/  PreferencesStore + SettingsController global
 lib/core/widgets/      AppCard, ToolScaffold, ResultTile, NumberField, LabeledField,
-                       AppSegmentedButton, AppSwitchField, AppDropdown, ZoomableCanvas,
-                       AppDisclosure, FieldHelp
-lib/features/    home, settings, converter, distribution, layout, fasteners, level, playground
+                       AppSegmentedButton, AppSwitchField, AppDropdown, SchemaCard,
+                       SchemaSheet, AppDisclosure, FieldHelp
+lib/features/    home, settings, converter, distribution, layout, fasteners, level,
+                 schema (le schéma d'un outil en plein écran), playground
 lib/l10n/        app_fr.arb → AppLocalizations générée
 test/core/calc/  tests unitaires du cœur — tournent sans appareil
 test/features/   tests d'écran, pour ce que ni `analyze` ni le cœur ne peuvent
                  attraper : un painter qui lève, un libellé tronqué en silence
 ```
 
-Routes : `/` (accueil) · `/settings` · `/tool/:id`, où `id` vient de l'enum `Tool`.
+Routes : `/` (accueil) · `/settings` · `/tool/:id` · `/tool/:id/schema`, où `id` vient de l'enum `Tool`.
 
 `/playground` est une **page de référence hors périmètre produit** : l'inventaire des widgets Material, pour vérifier d'un coup d'œil que le thème tient et trancher un choix de contrôle avant de l'implémenter. Accessible depuis l'accueil en debug. C'est le seul écran qui utilise `setState` — la règle « zéro setState » vaut pour le flux de calcul des outils, pas pour un état local jetable.
 
-Chaque feature-outil suit le même trio : `*_screen.dart` (vue) · `*_controller.dart` (notifier de saisie + provider dérivé du résultat) · `*_painter.dart` (`CustomPaint`).
+Chaque feature-outil suit le même quatuor : `*_screen.dart` (vue) · `*_controller.dart` (notifier de saisie + provider dérivé du résultat) · `*_schema.dart` (le `CustomPaint` branché sur les providers) · `*_painter.dart` (le dessin).
+
+### Le schéma : une vignette qui s'ouvre en plein écran
+
+`SchemaCard` (carte teintée, tapable) porte le schéma sur l'écran de l'outil ; `SchemaScreen` (`/tool/:id/schema`) le montre seul, zoomable. Trois décisions :
+
+- **Le zoom ne vit qu'en plein écran.** Un geste à deux doigts dans une carte de 200 px, coincée entre deux zones de scroll, se déclenche de travers. La vignette ne fait que montrer, et *toute* la carte est la cible du tap — un bouton d'agrandissement se viserait, et viser avec un gant, c'est rater. L'indice ⤢ en bas à droite est là parce que sans lui un schéma ressemble à une image.
+- **Une page, pas une boîte de dialogue.** Le geste de retour du système la ferme, la rotation en paysage donne au Calepinage la largeur qui lui manque, et le web y gagne une URL. Une boîte de dialogue n'offre aucun des trois.
+- **La réduction descend à un tiers de l'ajustement, et « ajuster » la rattrape.** `InteractiveViewer` plafonne la réduction à `viewport / cadre` : tant que le cadre est le dessin, ce plancher vaut 1 et `minScale` n'a jamais la parole — d'où le `boundaryMargin` infini, qui rend la main à `minScale` mais déborne du même coup le déplacement. Le bouton « ajuster à l'écran » est donc le seul retour d'un schéma réduit ou poussé hors cadre : grisé tant que rien n'a bougé, jamais masqué. Sous garde de test (un vrai pincement : rien dans le code ne montre ce plancher).
+- **Un bouton « pivoter » dans l'`AppBar`, pour le téléphone verrouillé en portrait.** Sans verrou, tourner l'appareil fait mieux — la barre suit, les cotes restent droites. Avec verrou, c'est le seul moyen de donner sa longue dimension à un schéma large. Le `RotatedBox` pivote les contraintes, donc le painter redessine dans la nouvelle boîte au lieu d'y être posé en biais, et le zoom est remis à plat au passage. Les libellés partent à 90° et **doivent y rester** : ils se redressent quand la main tourne le téléphone, ce qui est tout le geste visé — les contre-pivoter dans les painters les mettrait de travers dans le seul cas où le bouton sert.
+- **Une feuille blanche dans la carte teintée** (`SchemaSheet`) : sur l'écran de l'outil, la teinte n'est plus qu'un encadrement et le dessin récupère le reste ; en plein écran, la feuille *est* l'écran — ni rembourrage ni coin arrondi autour de la zone déplaçable. La couleur de cette feuille est aussi celle du détourage des libellés de cote (`drawSchemaLabel`) — les deux doivent bouger ensemble, sinon chaque chiffre traîne un pavé de la mauvaise teinte. Conséquence directe : sur cette feuille, **la matière se dessine en `AppColors.field` et le vide en blanc** (pièce, fiole, surface découverte). Une pièce blanche sur une feuille blanche ne tiendrait que par son filet.
+
+`*_schema.dart` est le point de construction unique du painter : la vignette et la page plein écran le traversent tous les deux, et son paramètre `compact` fait tomber les annotations secondaires dans la vignette (les deux cotes du Calepinage, les trois Ø et la colonne de hauteurs des Avant-trous, la numérotation de la Répartition — toutes reprises dans les tuiles de résultat juste en dessous). Le Convertisseur et le Niveau n'en ont pas : leurs painters se régulent déjà seuls, et une bulle n'a pas de détail à aller chercher — le Niveau est le seul outil dont la carte n'est pas tapable.
 
 ### Flux de données d'un outil
 
@@ -232,7 +245,7 @@ Ces derniers ont le droit d'être longs : c'est ce qui empêche de refaire l'err
 
 ### 1. Câblages manquants
 - **Retour haptique global** : `hapticsEnabledProvider` (dans `settings_controller.dart`) rend le réglage sans `AsyncValue` à déballer, et l'action « réinitialiser » de `ToolScaffold` s'en sert. Les quatre widgets partagés (`NumberField`, `AppSegmentedButton`, `AppSwitchField`, `AppDisclosure`) gardent en revanche un paramètre `haptics` codé à `true` — seul l'écran Réglages leur passe le réglage réel, donc les 4 écrans-outils vibrent encore quoi qu'il arrive. Il ne reste qu'à leur passer `ref.watch(hapticsEnabledProvider)` aux points d'appel. C'est le **seul** réglage que l'app expose.
-- **Schéma compact extensible au tap** (SPECS_UI.md) : `ZoomableCanvas` est en place, mais le repli mobile n'est pas implémenté. C'est ce qui réglerait le point ci-dessous.
+- **Densité de vignette pour le Convertisseur** : `RulerPainter` et `ComparisonPainter` sont les deux seuls à ne pas prendre de `compact`. Ils se régulent seuls (graduations secondaires au-dessus de 5 px, libellé qui chevauche sauté), donc rien ne presse, mais leur vignette et leur plein écran sont identiques à l'échelle près.
 
 ### 2. Calepinage : la carte de saisie déborde sur mobile
 Huit contrôles, même appariés en largeur × longueur, poussent le schéma à ~700 px du haut sur un écran de 844 — donc sous la ligne de flottaison, ce que la spec interdit. **`AppDisclosure` existe maintenant** : la Répartition règle le même problème en repliant ses trois réglages avancés (schéma à ~540 px, sous garde de test). Les jeux X/Y (optionnels, défaut 0) derrière un dépliant iraient de même. Règle d'emploi du dépliant : ce qui est replié doit être sans effet par défaut, sinon on cache la raison d'un résultat surprenant.

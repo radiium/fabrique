@@ -13,6 +13,9 @@ const double _rightMargin = 128;
 const double _topMargin = 58;
 const double _bottomMargin = 18;
 
+/// Marge de la vignette, où plus aucune cote n'est posée autour du dessin.
+const double _compactMargin = 12;
+
 /// Largeur des pièces dessinées, en multiples du Ø de lamage — assez de matière
 /// autour du perçage pour que la coupe se lise comme une coupe.
 const double _pieceWidthFactor = 7;
@@ -31,10 +34,19 @@ const double _supportFactor = 1.45;
 /// L'invariant `pilotHole < clearanceHole < counterboreDia` garanti par
 /// `core/calc` est ce qui rend ce dessin toujours cohérent.
 class FastenersPainter extends CustomPainter {
-  const FastenersPainter({required this.result, required this.input});
+  const FastenersPainter({
+    required this.result,
+    required this.input,
+    this.compact = false,
+  });
 
   final FastenerResult? result;
   final FastenerInput input;
+
+  /// Vignette : la coupe seule. Les cotes prennent 128 px à droite et 58 en
+  /// haut, soit plus de la moitié de la largeur d'une vignette — et les trois
+  /// Ø sont déjà dans les tuiles de résultat, sous le schéma.
+  final bool compact;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -51,8 +63,13 @@ class FastenersPainter extends CustomPainter {
     final pieceWidth = r.counterboreDia * _pieceWidthFactor;
     final totalHeight = thickness + support;
 
-    final availableWidth = size.width - _leftMargin - _rightMargin;
-    final availableHeight = size.height - _topMargin - _bottomMargin;
+    final leftMargin = compact ? _compactMargin : _leftMargin;
+    final rightMargin = compact ? _compactMargin : _rightMargin;
+    final topMargin = compact ? _compactMargin : _topMargin;
+    final bottomMargin = compact ? _compactMargin : _bottomMargin;
+
+    final availableWidth = size.width - leftMargin - rightMargin;
+    final availableHeight = size.height - topMargin - bottomMargin;
     if (availableWidth <= 0 || availableHeight <= 0) return;
 
     // Échelle uniforme : une coupe dont les Ø et les épaisseurs ne sont pas au
@@ -65,8 +82,8 @@ class FastenersPainter extends CustomPainter {
 
     final drawnWidth = pieceWidth * scale;
     final drawnHeight = totalHeight * scale;
-    final left = _leftMargin + (availableWidth - drawnWidth) / 2;
-    final top = _topMargin + (availableHeight - drawnHeight) / 2;
+    final left = leftMargin + (availableWidth - drawnWidth) / 2;
+    final top = topMargin + (availableHeight - drawnHeight) / 2;
     final centerX = left + drawnWidth / 2;
     final joint = top + thickness * scale;
 
@@ -76,6 +93,7 @@ class FastenersPainter extends CustomPainter {
     _paintHoles(canvas, r, centerX, top, joint, scale, halfOf);
     _paintScrew(canvas, r, centerX, top, scale, halfOf);
     _paintJoint(canvas, left, drawnWidth, joint);
+    if (compact) return;
     _paintDiameters(canvas, r, centerX, top, halfOf);
     _paintHeights(canvas, r, left + drawnWidth, top, joint, scale);
   }
@@ -89,7 +107,9 @@ class FastenersPainter extends CustomPainter {
     double joint,
     double height,
   ) {
-    final fill = Paint()..color = AppColors.surface;
+    // Le beige des champs, et non le blanc : la feuille du schéma est blanche,
+    // une pièce blanche dessus ne se distinguerait que par son filet.
+    final fill = Paint()..color = AppColors.field;
     final stroke = Paint()
       ..color = AppColors.border
       ..style = PaintingStyle.stroke
@@ -105,8 +125,8 @@ class FastenersPainter extends CustomPainter {
     }
   }
 
-  /// Les perçages, évidés à la couleur de la carte : ce sont des vides, pas des
-  /// pièces. Lamage et passage traversent la pièce du haut, le guidage s'arrête
+  /// Les perçages, évidés à la couleur de la feuille : ce sont des vides, pas
+  /// des pièces. Lamage et passage traversent la pièce du haut, le guidage s'arrête
   /// à la pénétration.
   void _paintHoles(
     Canvas canvas,
@@ -117,7 +137,7 @@ class FastenersPainter extends CustomPainter {
     double scale,
     double Function(double) halfOf,
   ) {
-    final void_ = Paint()..color = AppColors.cardTinted;
+    final void_ = Paint()..color = AppColors.cardSurface;
     final edge = Paint()
       ..color = AppColors.label.withValues(alpha: 0.55)
       ..style = PaintingStyle.stroke
@@ -275,5 +295,5 @@ class FastenersPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(FastenersPainter old) =>
-      old.result != result || old.input != input;
+      old.result != result || old.input != input || old.compact != compact;
 }
