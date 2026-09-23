@@ -290,7 +290,90 @@ void main() {
         container.read(distributionResultProvider) as DistributionReady;
     expect(outcome.best.count, 16);
     expect(outcome.other?.count, 15);
-    expect(find.text('Autre possibilité'), findsOneWidget);
+    expect(find.text('15 éléments → 105.31 mm réel'), findsOneWidget);
     expect(find.text('Nombre d’éléments'), findsWidgets);
+  });
+
+  /// Ce que l'écran fait de la borne qu'il n'a pas retenue.
+  ///
+  /// Les chiffres viennent des défauts de l'écran (1800 mm, éléments de 18,
+  /// bordés de deux éléments) : une cible de 170 mm tombe entre 11 éléments à
+  /// 160,2 et 10 à 180, une cible de 180 tombe juste.
+  group('la borne écartée', () {
+    Future<ProviderContainer> pumpTarget(
+      WidgetTester tester,
+      double target,
+    ) async {
+      final container = await pumpDistribution(tester);
+      final form = container.read(distributionFormProvider.notifier);
+      form.setMode(DistributionMode.count);
+      form.setTargetSpacing(target);
+      await tester.pumpAndSettle();
+      return container;
+    }
+
+    testWidgets('se prend d’un tap, et l’écran change de mode', (tester) async {
+      final container = await pumpTarget(tester, 170);
+
+      await tester.tap(find.text('10 éléments → 180 mm réel'));
+      await tester.pumpAndSettle();
+
+      final input = container.read(distributionFormProvider);
+      expect(input.mode, DistributionMode.spacing);
+      expect(input.count, 10);
+
+      // Le mode a changé : la question n'est plus posée, l'encart n'a plus
+      // lieu d'être. Et la saisie n'est plus neuve.
+      expect(find.text('Prendre'), findsNothing);
+      expect(input == kDistributionDefaults, isFalse);
+    });
+
+    testWidgets('devient le calcul une fois prise', (tester) async {
+      final container = await pumpTarget(tester, 170);
+
+      await tester.tap(find.text('10 éléments → 180 mm réel'));
+      await tester.pumpAndSettle();
+
+      final outcome =
+          container.read(distributionResultProvider) as DistributionReady;
+      expect(outcome.best.spacing, closeTo(180, 1e-9));
+      // Plus d'arbitrage dans ce mode : le nombre est donné.
+      expect(outcome.other, isNull);
+    });
+
+    testWidgets('n’a rien à offrir quand la cible tombe juste', (tester) async {
+      final container = await pumpTarget(tester, 180);
+
+      final outcome =
+          container.read(distributionResultProvider) as DistributionReady;
+      expect(outcome.best.count, 10);
+      expect(outcome.other, isNull);
+
+      // L'encart reste, pour que la carte ne saute pas d'un pas de saisie à
+      // l'autre — mais il n'est plus qu'une confirmation.
+      expect(find.text('10 éléments · 180 mm exact'), findsOneWidget);
+      expect(find.text('Prendre'), findsNothing);
+    });
+
+    testWidgets('fait la cible tactile, sans tronquer', (tester) async {
+      // Le libellé porte un nombre : il passe à deux lignes plutôt que de
+      // s'ellipser, et l'encart grandit avec lui. Sa surface entière est la
+      // cible, le bouton n'étant qu'un repère visuel.
+      usePhone(tester);
+      await pumpTarget(tester, 170);
+
+      const label = '10 éléments → 180 mm réel';
+      final callout = find.widgetWithText(InkWell, label);
+      expect(
+        tester.getSize(callout).height,
+        greaterThanOrEqualTo(kFieldHeight),
+      );
+      expect(
+        tester
+            .renderObject<RenderParagraph>(find.text(label))
+            .didExceedMaxLines,
+        isFalse,
+      );
+    });
   });
 }

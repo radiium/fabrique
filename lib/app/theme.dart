@@ -38,6 +38,14 @@ abstract final class AppColors {
 
   /// Libellés au-dessus des champs, et unités en suffixe.
   static const Color label = Color(0xFF6B625A);
+
+  /// Encart posé dans une carte claire — l'arbitrage de la Répartition.
+  ///
+  /// Une teinte de plus que [cardTinted], et le seul filet de l'app qui ne
+  /// soit pas [border] : un encart doit se détacher **sur** une carte blanche,
+  /// là où la carte teintée se détache sur le fond de l'écran.
+  static const Color callout = Color(0xFFEFE7D5);
+  static const Color calloutBorder = Color(0xFFDCCFB4);
 }
 
 /// Espacement généreux, aéré.

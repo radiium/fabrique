@@ -75,6 +75,16 @@ class DistributionForm extends _$DistributionForm
 
   void setTargetSpacing(double mm) => state = state.copyWith(targetSpacing: mm);
 
+  /// Adopte une des deux répartitions qui encadrent l'écart visé : son nombre
+  /// d'éléments devient la saisie, et l'écran passe en « Calcul écart ».
+  ///
+  /// Changer de mode plutôt que recopier l'écart obtenu dans [setTargetSpacing]
+  /// n'est pas un détail : recopié, l'écart reposerait la même question, et
+  /// l'inversion retomberait rarement sur un entier exact — l'écran rendrait
+  /// alors une alternative de plus, sans fin. Le nombre, lui, est la réponse.
+  void adopt(int count) =>
+      state = state.copyWith(mode: DistributionMode.spacing, count: count);
+
   void setEdges(DistributionEdge start, DistributionEdge end) =>
       state = state.copyWith(startEdge: start, endEdge: end);
 
