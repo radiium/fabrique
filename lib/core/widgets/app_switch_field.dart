@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
+import 'haptics.dart';
 
 /// Réglage booléen d'un formulaire : libellé à gauche, interrupteur à droite.
 ///
@@ -23,7 +21,6 @@ class AppSwitchField extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.help,
-    this.haptics = true,
     super.key,
   });
 
@@ -34,11 +31,8 @@ class AppSwitchField extends StatelessWidget {
   /// Précision courte sous le libellé, dans la zone tappable.
   final String? help;
 
-  /// TODO(ui): câbler sur le réglage global « retour haptique ».
-  final bool haptics;
-
-  void _toggle() {
-    if (haptics) unawaited(HapticFeedback.selectionClick());
+  void _toggle(BuildContext context) {
+    hapticSelection(context);
     onChanged(!value);
   }
 
@@ -51,7 +45,7 @@ class AppSwitchField extends StatelessWidget {
     // éléments sans rapport.
     return MergeSemantics(
       child: InkWell(
-        onTap: _toggle,
+        onTap: () => _toggle(context),
         borderRadius: BorderRadius.circular(AppRadii.field),
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: kFieldHeight),
@@ -95,7 +89,7 @@ class AppSwitchField extends StatelessWidget {
                 // c'est la ligne entière.
                 Switch(
                   value: value,
-                  onChanged: (_) => _toggle(),
+                  onChanged: (_) => _toggle(context),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ],

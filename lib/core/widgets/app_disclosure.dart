@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
+import 'haptics.dart';
 
 /// Panneau repliable : un en-tête cliquable, un contenu qui se déplie.
 ///
@@ -28,7 +26,6 @@ class AppDisclosure extends StatefulWidget {
     required this.child,
     this.icon = Icons.tune,
     this.initiallyExpanded = false,
-    this.haptics = true,
     super.key,
   });
 
@@ -36,9 +33,6 @@ class AppDisclosure extends StatefulWidget {
   final Widget child;
   final IconData icon;
   final bool initiallyExpanded;
-
-  /// TODO(ui): câbler sur le réglage global « retour haptique ».
-  final bool haptics;
 
   static const Duration _duration = Duration(milliseconds: 180);
 
@@ -56,7 +50,7 @@ class _AppDisclosureState extends State<AppDisclosure> {
   late bool _expanded = widget.initiallyExpanded;
 
   void _toggle() {
-    if (widget.haptics) unawaited(HapticFeedback.selectionClick());
+    hapticSelection(context);
     setState(() => _expanded = !_expanded);
   }
 

@@ -46,10 +46,6 @@ class _SettingsForm extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final controller = ref.read(settingsControllerProvider.notifier);
 
-    // Les contrôles de cet écran obéissent au réglage qu'ils portent : couper
-    // le retour haptique ne doit pas faire vibrer l'appui qui le coupe.
-    final haptics = settings.haptics;
-
     return Align(
       alignment: Alignment.topCenter,
       child: ConstrainedBox(
@@ -66,9 +62,8 @@ class _SettingsForm extends ConsumerWidget {
                     AppSwitchField(
                       label: l10n.haptics,
                       help: l10n.hapticsHelp,
-                      value: haptics,
+                      value: settings.haptics,
                       onChanged: controller.setHaptics,
-                      haptics: haptics,
                     ),
                   ],
                 ),

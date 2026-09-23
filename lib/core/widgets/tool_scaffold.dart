@@ -1,13 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
-import '../persistence/settings_controller.dart';
 import 'app_card.dart';
 import 'app_disclosure.dart';
+import 'haptics.dart';
 
 /// Squelette commun à tous les écrans-outils.
 ///
@@ -184,22 +180,20 @@ class ToolScaffold extends StatelessWidget {
 ///
 /// Le retour haptique est donc le seul accusé de réception : il ne coûte ni
 /// tap ni pixel, et il s'entend quand la scie tourne.
-class _ResetAction extends ConsumerWidget {
+class _ResetAction extends StatelessWidget {
   const _ResetAction({required this.onReset, required this.enabled});
 
   final VoidCallback onReset;
   final bool enabled;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.restart_alt),
       tooltip: 'Réinitialiser la saisie',
       onPressed: enabled
           ? () {
-              if (ref.read(hapticsEnabledProvider)) {
-                unawaited(HapticFeedback.mediumImpact());
-              }
+              hapticImpact(context);
               onReset();
             }
           : null,

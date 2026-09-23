@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
 import 'app_segmented_button.dart';
 import 'field_help.dart';
+import 'haptics.dart';
 
 /// Libellé statique au-dessus du contrôle, façon formulaire web.
 ///
@@ -21,7 +21,6 @@ class LabeledField extends StatelessWidget {
     required this.child,
     this.help,
     this.about,
-    this.haptics = true,
     super.key,
   });
 
@@ -39,9 +38,6 @@ class LabeledField extends StatelessWidget {
   /// `null` = pas d'icône, et le libellé retrouve exactement sa hauteur d'avant
   /// — un champ sans explication ne doit rien payer.
   final FieldHelp? about;
-
-  /// TODO(ui): câbler sur le réglage global « retour haptique ».
-  final bool haptics;
 
   /// Hauteur de la ligne de libellé quand elle porte un ⓘ.
   ///
@@ -63,12 +59,7 @@ class LabeledField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (about case final about?)
-          _AboutRow(
-            label: label,
-            style: labelStyle,
-            about: about,
-            haptics: haptics,
-          )
+          _AboutRow(label: label, style: labelStyle, about: about)
         else
           Text(label, style: labelStyle),
         const SizedBox(height: AppSpacing.sm),
@@ -97,13 +88,11 @@ class _AboutRow extends StatelessWidget {
     required this.label,
     required this.style,
     required this.about,
-    required this.haptics,
   });
 
   final String label;
   final TextStyle? style;
   final FieldHelp about;
-  final bool haptics;
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +102,7 @@ class _AboutRow extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadii.field),
         onTap: () {
-          if (haptics) unawaited(HapticFeedback.selectionClick());
+          hapticSelection(context);
           unawaited(showFieldHelp(context, about));
         },
         child: SizedBox(

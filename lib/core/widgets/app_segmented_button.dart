@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
+import 'haptics.dart';
 
 /// Une option de [AppSegmentedButton].
 class AppSegment<T> {
@@ -31,7 +29,6 @@ class AppSegmentedButton<T> extends StatefulWidget {
     required this.value,
     required this.onChanged,
     this.height = kFieldHeight,
-    this.haptics = true,
     super.key,
   });
 
@@ -44,9 +41,6 @@ class AppSegmentedButton<T> extends StatefulWidget {
 
   /// Aligné par défaut sur la hauteur d'un champ de saisie.
   final double height;
-
-  /// TODO(ui): câbler sur le réglage global « retour haptique ».
-  final bool haptics;
 
   /// Jeu entre la pastille et le bord de la piste.
   static const double _inset = 4;
@@ -168,7 +162,7 @@ class _AppSegmentedButtonState<T> extends State<AppSegmentedButton<T>> {
 
   void _select(T next) {
     if (next == widget.value) return;
-    if (widget.haptics) unawaited(HapticFeedback.selectionClick());
+    hapticSelection(context);
     widget.onChanged(next);
   }
 }

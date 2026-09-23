@@ -1,14 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
 import '../models/tool.dart';
-import '../persistence/settings_controller.dart';
 import 'app_card.dart';
+import 'haptics.dart';
 
 /// La feuille blanche sur laquelle se dessine un schéma.
 ///
@@ -47,7 +43,7 @@ class SchemaSheet extends StatelessWidget {
 /// [expandFor] `null` = rien à agrandir, la carte n'est pas tapable. C'est le
 /// cas du Niveau : sa bulle n'a pas de détail à aller chercher, et une page
 /// par-dessus couperait des yeux le flux du capteur.
-class SchemaCard extends ConsumerWidget {
+class SchemaCard extends StatelessWidget {
   const SchemaCard({required this.child, this.expandFor, super.key});
 
   /// Le schéma lui-même — un `CustomPaint` branché sur les providers de
@@ -58,7 +54,7 @@ class SchemaCard extends ConsumerWidget {
   final Tool? expandFor;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final tool = expandFor;
     return AppCard(
       tinted: true,
@@ -69,9 +65,7 @@ class SchemaCard extends ConsumerWidget {
       onTap: tool == null
           ? null
           : () {
-              if (ref.read(hapticsEnabledProvider)) {
-                unawaited(HapticFeedback.selectionClick());
-              }
+              hapticSelection(context);
               context.push('/tool/${tool.id}/schema');
             },
       child: SchemaSheet(

@@ -1,12 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
 import '../../core/models/tool.dart';
-import '../../core/persistence/settings_controller.dart';
+import '../../core/widgets/haptics.dart';
 import '../converter/converter_schema.dart';
 import '../distribution/distribution_schema.dart';
 import '../fasteners/fasteners_schema.dart';
@@ -78,9 +75,7 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
   /// un déplacement hérité de l'orientation précédente laisserait l'écran sur
   /// une zone vide, sans rien dire de ce qui s'est passé.
   void _rotate() {
-    if (ref.read(hapticsEnabledProvider)) {
-      unawaited(HapticFeedback.selectionClick());
-    }
+    hapticSelection(context);
     setState(() {
       _quarterTurns = (_quarterTurns + 1) % 4;
       _fit();

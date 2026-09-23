@@ -6,7 +6,7 @@ Ce fichier guide Claude Code (claude.ai/code) lorsqu'il travaille sur ce dépôt
 
 `fabrique` est l'app **« Menuiserie »** — une app portfolio de 5 outils de calcul pour l'atelier, sur iOS, Android et Web.
 
-Le cœur de calcul est **entièrement implémenté et couvert** (166 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
+Le cœur de calcul est **entièrement implémenté et couvert** (170 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
 
 La référence, ce sont les deux documents de spec :
 - **`SPECS.md`** — architecture + couche `core/calc` : signatures exactes, algorithmes et cas de test attendus pour chaque fonction pure. À lire avant d'implémenter un calcul.
@@ -22,7 +22,7 @@ flutter run                          # appareil / simulateur
 flutter run -d chrome                # web
 flutter analyze                      # doit rester propre
 dart format lib
-flutter test                         # 166 tests — cœur de calcul et écrans, sans appareil
+flutter test                         # 170 tests — cœur de calcul et écrans, sans appareil
 
 # codegen — obligatoire après toute modif d'une déclaration @freezed / @riverpod
 dart run build_runner build
@@ -61,7 +61,7 @@ lib/core/format.dart   formatNumber() + kNoValue — rendu des nombres, partagé
 lib/core/persistence/  PreferencesStore + SettingsController global
 lib/core/widgets/      AppCard, ToolScaffold, ResultTile, NumberField, LabeledField,
                        AppSegmentedButton, AppSwitchField, AppDropdown, SchemaCard,
-                       SchemaSheet, AppDisclosure, FieldHelp
+                       SchemaSheet, AppDisclosure, FieldHelp, HapticsScope
 lib/features/    home, settings, converter, distribution, layout, fasteners, level,
                  schema (le schéma d'un outil en plein écran), playground
 lib/l10n/        app_fr.arb → AppLocalizations générée
@@ -144,6 +144,17 @@ Contexte atelier : fort contraste, gros texte, cibles tactiles ≥ 48 px — cha
 - **Pas de barre basse fixe.** Elle retrancherait ~75 px à *chaque* écran en permanence — la ressource même pour laquelle le Calepinage se bat — pour une action utilisée une fois par chantier. Et comme le calcul est temps réel, il n'y a aucune action principale à lui tenir compagnie : la barre n'existerait que pour le reset. L'`AppBar` existe déjà : coût vertical nul, et le coin opposé au pouce rend l'appui délibéré.
 - **Pas de confirmation, pas de SnackBar « Annuler ».** Les cotes ne vivent pas dans l'app — elles viennent du mètre. Un reset accidentel fait retaper ce qui est encore mesurable à un mètre de là ; confirmer punirait les appuis voulus pour couvrir une erreur rare et bon marché. Le retour haptique est le seul accusé de réception.
 - **`canReset: false` grise, ne masque pas.** Icône éteinte = la saisie est aux défauts, rien n'a été restauré. C'est le signal qui remplace la fenêtre de fraîcheur écartée, donc il doit rester visible — jamais dans un menu déroulant ni renvoyé aux Réglages. Chaque outil compare sa saisie à sa constante `kXDefaults`, déclarée à côté de son `build()`. FR uniquement au lancement, i18n câblée via `flutter_localizations` + `lib/l10n/app_fr.arb` — en pratique seul l'écran Réglages passe par `AppLocalizations`, les écrans-outils ont leurs libellés en dur.
+
+### Le retour haptique : une portée, pas un paramètre
+
+`HapticsScope` (`core/widgets/haptics.dart`) descend le réglage depuis la racine ; les contrôles appellent `hapticSelection(context)` ou `hapticImpact(context)`, qui l'interrogent au moment de vibrer. `FabriqueApp` est le **seul** endroit qui lit `hapticsEnabledProvider`. C'est le seul réglage que l'app expose.
+
+- **Pas de paramètre `haptics` passé de main en main.** Cinq widgets vibrent, mais ils sont appelés une trentaine de fois dans les écrans : le paramètre réclamait une ligne à chaque nouveau champ, et il suffisait de l'oublier une fois pour qu'un contrôle vibre contre le réglage, sans que rien ne lève.
+- **La portée n'est pas Riverpod.** `core/widgets` reste du Flutter nu, donc ses widgets se montent seuls dans un test sans `ProviderScope` — ce que `control_metrics_test.dart` et `field_help_test.dart` font déjà.
+- **Hors portée, ça vibre.** `HapticsScope.of` rend `true` quand personne n'a posé de portée : un câblage oublié fait vibrer de trop, jamais rester muet.
+- **Lecture sans dépendance** (`getInheritedWidgetOfExactType`) : l'appelant est un gestionnaire de geste, pas un `build`. Changer le réglage ne reconstruit aucun contrôle.
+
+`test/features/haptics_test.dart` tient les deux bouts : que la portée coupée fasse taire un contrôle, et que la racine de l'app l'alimente bien.
 
 ### Typographie des contrôles
 
@@ -244,7 +255,6 @@ Ces derniers ont le droit d'être longs : c'est ce qui empêche de refaire l'err
 ## Reste à faire
 
 ### 1. Câblages manquants
-- **Retour haptique global** : `hapticsEnabledProvider` (dans `settings_controller.dart`) rend le réglage sans `AsyncValue` à déballer, et l'action « réinitialiser » de `ToolScaffold` s'en sert. Les quatre widgets partagés (`NumberField`, `AppSegmentedButton`, `AppSwitchField`, `AppDisclosure`) gardent en revanche un paramètre `haptics` codé à `true` — seul l'écran Réglages leur passe le réglage réel, donc les 4 écrans-outils vibrent encore quoi qu'il arrive. Il ne reste qu'à leur passer `ref.watch(hapticsEnabledProvider)` aux points d'appel. C'est le **seul** réglage que l'app expose.
 - **Densité de vignette pour le Convertisseur** : `RulerPainter` et `ComparisonPainter` sont les deux seuls à ne pas prendre de `compact`. Ils se régulent seuls (graduations secondaires au-dessus de 5 px, libellé qui chevauche sauté), donc rien ne presse, mais leur vignette et leur plein écran sont identiques à l'échelle près.
 
 ### 2. Calepinage : la carte de saisie déborde sur mobile

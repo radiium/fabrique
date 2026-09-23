@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
 import 'field_help.dart';
+import 'haptics.dart';
 import 'labeled_field.dart';
 
 /// Champ numérique : clavier numérique par défaut, gros texte, hauteur fixe
@@ -27,7 +28,6 @@ class NumberField extends StatefulWidget {
     this.step,
     this.min = 0,
     this.max = double.infinity,
-    this.haptics = true,
     super.key,
   });
 
@@ -49,9 +49,6 @@ class NumberField extends StatefulWidget {
 
   final double min;
   final double max;
-
-  /// TODO(ui): câbler sur le réglage global « retour haptique ».
-  final bool haptics;
 
   @override
   State<NumberField> createState() => _NumberFieldState();
@@ -84,7 +81,7 @@ class _NumberFieldState extends State<NumberField> {
     // Coupe la dérive des doubles : 0.1 + 0.2 ne doit pas donner 0.30000000004.
     final rounded = double.parse(next.toStringAsFixed(4));
     if (rounded == widget.value) return;
-    if (widget.haptics) unawaited(HapticFeedback.selectionClick());
+    hapticSelection(context);
     widget.onChanged(rounded);
   }
 
@@ -122,7 +119,6 @@ class _NumberFieldState extends State<NumberField> {
       label: widget.label,
       help: widget.help,
       about: widget.about,
-      haptics: widget.haptics,
       child: step == null
           ? field
           : Row(
