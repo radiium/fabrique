@@ -72,7 +72,7 @@ class SchemaViewport {
 /// ouverte et longue mange la cote qu'elle borne, et sur une cote serrée elle
 /// couvre le chiffre voisin.
 const double kArrowArm = 4;
-const double _arrowHalfWidth = 0.9;
+const double _arrowHalfWidth = 1.5;
 
 /// Demi-longueur d'un tiret d'extrémité de cote.
 const double kDimTick = 4;
