@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$DistributionFormState {
 
  DistributionMode get mode; double get length;/// `0` = répartition de points purs.
- double get elementWidth; int get count; double get targetSpacing; DistributionEdge get startEdge; DistributionEdge get endEdge;/// Les deux décalages sont-ils liés ? N'a d'effet que sur la saisie : le
+ double get elementWidth; int get count; double get targetSpacing; DistributionEdge get startEdge; DistributionEdge get endEdge;/// Les deux marges sont-elles liées ? N'a d'effet que sur la saisie : le
 /// calcul ne voit jamais que [startOffset] et [endOffset].
  bool get symmetricOffsets; double get startOffset; double get endOffset;
 /// Create a copy of DistributionFormState
@@ -227,7 +227,7 @@ return $default(_that.mode,_that.length,_that.elementWidth,_that.count,_that.tar
 @JsonSerializable()
 
 class _DistributionFormState extends DistributionFormState {
-  const _DistributionFormState({this.mode = DistributionMode.spacing, this.length = 1000, this.elementWidth = 20, this.count = 5, this.targetSpacing = 150, this.startEdge = DistributionEdge.gap, this.endEdge = DistributionEdge.gap, this.symmetricOffsets = true, this.startOffset = 0, this.endOffset = 0}): super._();
+  const _DistributionFormState({this.mode = DistributionMode.spacing, this.length = 1800, this.elementWidth = 18, this.count = 5, this.targetSpacing = 150, this.startEdge = DistributionEdge.element, this.endEdge = DistributionEdge.element, this.symmetricOffsets = true, this.startOffset = 0, this.endOffset = 0}): super._();
   factory _DistributionFormState.fromJson(Map<String, dynamic> json) => _$DistributionFormStateFromJson(json);
 
 @override@JsonKey() final  DistributionMode mode;
@@ -238,7 +238,7 @@ class _DistributionFormState extends DistributionFormState {
 @override@JsonKey() final  double targetSpacing;
 @override@JsonKey() final  DistributionEdge startEdge;
 @override@JsonKey() final  DistributionEdge endEdge;
-/// Les deux décalages sont-ils liés ? N'a d'effet que sur la saisie : le
+/// Les deux marges sont-elles liées ? N'a d'effet que sur la saisie : le
 /// calcul ne voit jamais que [startOffset] et [endOffset].
 @override@JsonKey() final  bool symmetricOffsets;
 @override@JsonKey() final  double startOffset;

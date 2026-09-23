@@ -243,12 +243,12 @@ class _EdgeChoice {
 }
 
 const List<_EdgeChoice> _edgeChoices = [
-  _EdgeChoice(DistributionEdge.gap, DistributionEdge.gap, 'Écart – Écart'),
   _EdgeChoice(
     DistributionEdge.element,
     DistributionEdge.element,
     'Élément – Élément',
   ),
+  _EdgeChoice(DistributionEdge.gap, DistributionEdge.gap, 'Écart – Écart'),
   _EdgeChoice(
     DistributionEdge.element,
     DistributionEdge.gap,

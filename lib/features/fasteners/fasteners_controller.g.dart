@@ -41,7 +41,7 @@ final class FastenerFormProvider
   }
 }
 
-String _$fastenerFormHash() => r'bba847137e105897448cbcaba069bcef53d989ec';
+String _$fastenerFormHash() => r'bc1ee474eb7912b7c4fe70a24ea15a641f2ac754';
 
 abstract class _$FastenerForm extends $Notifier<FastenerInput> {
   FastenerInput build();

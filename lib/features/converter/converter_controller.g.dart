@@ -86,7 +86,7 @@ final class ConverterFormProvider
   }
 }
 
-String _$converterFormHash() => r'eed9b9e204fd7820d7e3ba7d697fa9cb5d5cb2b4';
+String _$converterFormHash() => r'4e3eda66fef7748dca4853380ec26ff595fd4cd5';
 
 abstract class _$ConverterForm extends $Notifier<ConverterInput> {
   ConverterInput build();

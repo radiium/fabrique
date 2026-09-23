@@ -197,7 +197,7 @@ void main() {
     expect(header.bottom, card.bottom);
   });
 
-  testWidgets('les réglages avancés sont repliés, et sans effet', (
+  testWidgets('les réglages avancés sont repliés, les marges sans effet', (
     tester,
   ) async {
     usePhone(tester);
@@ -206,11 +206,14 @@ void main() {
     expect(find.text('Réglages avancés'), findsOneWidget);
     expect(find.text('Marges'), findsNothing);
 
+    // Les marges, elles, sont bien sans effet au départ. La disposition des
+    // bords l'est moins : élément – élément est le cas courant, et c'est le
+    // schéma, juste dessous, qui le montre sans avoir à déplier.
     final input = container.read(distributionFormProvider);
     expect(input.startOffset, 0);
     expect(input.endOffset, 0);
-    expect(input.startEdge, DistributionEdge.gap);
-    expect(input.endEdge, DistributionEdge.gap);
+    expect(input.startEdge, DistributionEdge.element);
+    expect(input.endEdge, DistributionEdge.element);
 
     await tester.tap(find.text('Réglages avancés'));
     await tester.pumpAndSettle();
@@ -275,6 +278,9 @@ void main() {
     final form = container.read(distributionFormProvider.notifier);
 
     form.setMode(DistributionMode.count);
+    // Bords épinglés : les deux bornes attendues sont celles d'une rangée
+    // bordée de deux écarts, pas celles du défaut de l'écran.
+    form.setEdges(DistributionEdge.gap, DistributionEdge.gap);
     form.setLength(2000);
     form.setElementWidth(21);
     form.setTargetSpacing(100);

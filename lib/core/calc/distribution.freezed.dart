@@ -16,16 +16,15 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DistributionInput {
 
-/// Longueur totale à garnir, en mm.
+/// Largeur totale à garnir, en mm.
  double get length;/// Nombre d'éléments à répartir (>= 0).
- int get count;/// Largeur d'un élément, en mm. `0` = répartition de points purs, le
-/// comportement historique de l'outil.
+ int get count;/// Largeur d'un élément, en mm. `0` = répartition de points purs.
  double get elementWidth;/// Bord de départ, à l'origine.
  DistributionEdge get startEdge;/// Bord d'arrivée.
- DistributionEdge get endEdge;/// « Décalage » de début : une bande de longueur soustraite avant toute
-/// répartition. Sert à réserver une marge imposée — un chant, un tasseau
+ DistributionEdge get endEdge;/// « Marge » de début : une bande de largeur soustraite avant toute
+/// répartition. Sert à réserver une largeur imposée — un chant, un tasseau
 /// existant — que le calcul n'a pas à redistribuer.
- double get startOffset;/// « Décalage » de fin. Distinct de [startOffset] : une répartition
+ double get startOffset;/// « Marge » de fin. Distinct de [startOffset] : une répartition
 /// asymétrique est un cas courant dès qu'un bord est contraint.
  double get endOffset;
 /// Create a copy of DistributionInput
@@ -235,22 +234,21 @@ class _DistributionInput implements DistributionInput {
   const _DistributionInput({required this.length, required this.count, this.elementWidth = 0, this.startEdge = DistributionEdge.gap, this.endEdge = DistributionEdge.gap, this.startOffset = 0, this.endOffset = 0});
   factory _DistributionInput.fromJson(Map<String, dynamic> json) => _$DistributionInputFromJson(json);
 
-/// Longueur totale à garnir, en mm.
+/// Largeur totale à garnir, en mm.
 @override final  double length;
 /// Nombre d'éléments à répartir (>= 0).
 @override final  int count;
-/// Largeur d'un élément, en mm. `0` = répartition de points purs, le
-/// comportement historique de l'outil.
+/// Largeur d'un élément, en mm. `0` = répartition de points purs.
 @override@JsonKey() final  double elementWidth;
 /// Bord de départ, à l'origine.
 @override@JsonKey() final  DistributionEdge startEdge;
 /// Bord d'arrivée.
 @override@JsonKey() final  DistributionEdge endEdge;
-/// « Décalage » de début : une bande de longueur soustraite avant toute
-/// répartition. Sert à réserver une marge imposée — un chant, un tasseau
+/// « Marge » de début : une bande de largeur soustraite avant toute
+/// répartition. Sert à réserver une largeur imposée — un chant, un tasseau
 /// existant — que le calcul n'a pas à redistribuer.
 @override@JsonKey() final  double startOffset;
-/// « Décalage » de fin. Distinct de [startOffset] : une répartition
+/// « Marge » de fin. Distinct de [startOffset] : une répartition
 /// asymétrique est un cas courant dès qu'un bord est contraint.
 @override@JsonKey() final  double endOffset;
 
@@ -326,7 +324,7 @@ as double,
 /// @nodoc
 mixin _$DistributionTargetInput {
 
-/// Longueur totale à garnir, en mm.
+/// Largeur totale à garnir, en mm.
  double get length;/// Écart visé entre deux éléments, en mm. Presque jamais atteignable
 /// exactement — voir [computeDistributionForSpacing].
  double get targetSpacing;/// Largeur d'un élément, en mm.
@@ -538,7 +536,7 @@ class _DistributionTargetInput implements DistributionTargetInput {
   const _DistributionTargetInput({required this.length, required this.targetSpacing, this.elementWidth = 0, this.startEdge = DistributionEdge.gap, this.endEdge = DistributionEdge.gap, this.startOffset = 0, this.endOffset = 0});
   factory _DistributionTargetInput.fromJson(Map<String, dynamic> json) => _$DistributionTargetInputFromJson(json);
 
-/// Longueur totale à garnir, en mm.
+/// Largeur totale à garnir, en mm.
 @override final  double length;
 /// Écart visé entre deux éléments, en mm. Presque jamais atteignable
 /// exactement — voir [computeDistributionForSpacing].
@@ -628,7 +626,7 @@ mixin _$DistributionResult {
  int get gapCount;/// Jeu libre entre deux éléments voisins, en mm.
  double get spacing;/// Entraxe : `spacing + elementWidth`. C'est lui que l'on reporte au
 /// crayon — le jeu, on ne le mesure jamais directement.
- double get pitch;/// Longueur réellement répartie : `length` moins les deux décalages.
+ double get pitch;/// Largeur réellement répartie : `length` moins les deux marges.
  double get span;/// Bord d'attaque de chaque élément depuis l'origine, en mm. Pour une
 /// largeur nulle, c'est la position du point.
  List<double> get positions;/// Centre de chaque élément, en mm — l'axe de perçage ou de vissage.
@@ -849,7 +847,7 @@ class _DistributionResult implements DistributionResult {
 /// Entraxe : `spacing + elementWidth`. C'est lui que l'on reporte au
 /// crayon — le jeu, on ne le mesure jamais directement.
 @override final  double pitch;
-/// Longueur réellement répartie : `length` moins les deux décalages.
+/// Largeur réellement répartie : `length` moins les deux marges.
 @override final  double span;
 /// Bord d'attaque de chaque élément depuis l'origine, en mm. Pour une
 /// largeur nulle, c'est la position du point.

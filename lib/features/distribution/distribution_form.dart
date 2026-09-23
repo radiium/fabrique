@@ -29,14 +29,14 @@ enum DistributionMode {
 abstract class DistributionFormState with _$DistributionFormState {
   const factory DistributionFormState({
     @Default(DistributionMode.spacing) DistributionMode mode,
-    @Default(1000) double length,
+    @Default(1800) double length,
 
     /// `0` = répartition de points purs.
-    @Default(20) double elementWidth,
+    @Default(18) double elementWidth,
     @Default(5) int count,
     @Default(150) double targetSpacing,
-    @Default(DistributionEdge.gap) DistributionEdge startEdge,
-    @Default(DistributionEdge.gap) DistributionEdge endEdge,
+    @Default(DistributionEdge.element) DistributionEdge startEdge,
+    @Default(DistributionEdge.element) DistributionEdge endEdge,
 
     /// Les deux marges sont-elles liées ? N'a d'effet que sur la saisie : le
     /// calcul ne voit jamais que [startOffset] et [endOffset].

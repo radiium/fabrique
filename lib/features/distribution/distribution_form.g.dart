@@ -12,16 +12,16 @@ _DistributionFormState _$DistributionFormStateFromJson(
   mode:
       $enumDecodeNullable(_$DistributionModeEnumMap, json['mode']) ??
       DistributionMode.spacing,
-  length: (json['length'] as num?)?.toDouble() ?? 1000,
-  elementWidth: (json['elementWidth'] as num?)?.toDouble() ?? 20,
+  length: (json['length'] as num?)?.toDouble() ?? 1800,
+  elementWidth: (json['elementWidth'] as num?)?.toDouble() ?? 18,
   count: (json['count'] as num?)?.toInt() ?? 5,
   targetSpacing: (json['targetSpacing'] as num?)?.toDouble() ?? 150,
   startEdge:
       $enumDecodeNullable(_$DistributionEdgeEnumMap, json['startEdge']) ??
-      DistributionEdge.gap,
+      DistributionEdge.element,
   endEdge:
       $enumDecodeNullable(_$DistributionEdgeEnumMap, json['endEdge']) ??
-      DistributionEdge.gap,
+      DistributionEdge.element,
   symmetricOffsets: json['symmetricOffsets'] as bool? ?? true,
   startOffset: (json['startOffset'] as num?)?.toDouble() ?? 0,
   endOffset: (json['endOffset'] as num?)?.toDouble() ?? 0,
