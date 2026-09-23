@@ -18,6 +18,7 @@ import '../../core/widgets/tool_scaffold.dart';
 import '../../core/widgets/schema_card.dart';
 import 'layout_controller.dart';
 import 'layout_help.dart';
+import 'layout_plan.dart';
 import 'layout_presets.dart';
 import 'layout_schema.dart';
 
@@ -158,6 +159,7 @@ class LayoutScreen extends ConsumerWidget {
           note: 'Sans réemploi des chutes — estimation pessimiste',
         ),
       ],
+      resultsFooter: const LayoutExportAction(),
     );
   }
 }

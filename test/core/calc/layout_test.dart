@@ -454,6 +454,64 @@ void main() {
     });
   });
 
+  group('summarizeCuts', () {
+    test('groupe les coupes par cote et les compte', () {
+      // Décalage ½ sur trois rangées : le motif revient à zéro une rangée
+      // sur deux, donc seule celle du milieu est décalée — une demi-pièce à
+      // chacun de ses deux bouts.
+      final r = computeLayout(
+        const LayoutInput(
+          surfaceX: 1000,
+          surfaceY: 300,
+          elementX: 200,
+          elementY: 100,
+        ),
+      );
+      final cuts = summarizeCuts(r);
+
+      expect(cuts.map((c) => c.count).reduce((a, b) => a + b), r.cutCount);
+      // Une seule cote de coupe, et deux pièces qui la portent.
+      expect(cuts, hasLength(1));
+      expect(cuts.single.w, closeTo(100, 1e-9));
+      expect(cuts.single.h, closeTo(100, 1e-9));
+      expect(cuts.single.count, 2);
+    });
+
+    test('rend la plus grande cote en premier', () {
+      final r = computeLayout(
+        const LayoutInput(
+          surfaceX: 1050,
+          surfaceY: 250,
+          elementX: 200,
+          elementY: 100,
+        ),
+      );
+      final cuts = summarizeCuts(r);
+
+      expect(cuts.length, greaterThan(1));
+      for (var i = 1; i < cuts.length; i++) {
+        expect(
+          cuts[i - 1].w * cuts[i - 1].h,
+          greaterThanOrEqualTo(cuts[i].w * cuts[i].h),
+        );
+      }
+    });
+
+    test('vide quand tout tombe juste', () {
+      final r = computeLayout(
+        const LayoutInput(
+          surfaceX: 1000,
+          surfaceY: 1000,
+          elementX: 100,
+          elementY: 1000,
+          offset: JointOffset.straight,
+        ),
+      );
+
+      expect(summarizeCuts(r), isEmpty);
+    });
+  });
+
   group('computeLayout — invariants', () {
     test('aucun élément ne sort de la surface', () {
       final r = computeLayout(

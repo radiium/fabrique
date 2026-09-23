@@ -939,4 +939,274 @@ as double?,
 
 }
 
+/// @nodoc
+mixin _$CutPiece {
+
+ double get w; double get h; int get count;
+/// Create a copy of CutPiece
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CutPieceCopyWith<CutPiece> get copyWith => _$CutPieceCopyWithImpl<CutPiece>(this as CutPiece, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as CutPiece;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CutPiece&&(identical(other.w, _this.w) || other.w == _this.w)&&(identical(other.h, _this.h) || other.h == _this.h)&&(identical(other.count, _this.count) || other.count == _this.count));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as CutPiece;
+  return Object.hash(runtimeType,_this.w,_this.h,_this.count);
+}
+
+@override
+String toString() {
+  final _this = this as CutPiece;
+  return 'CutPiece(w: ${_this.w}, h: ${_this.h}, count: ${_this.count})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CutPieceCopyWith<$Res>  {
+  factory $CutPieceCopyWith(CutPiece value, $Res Function(CutPiece) _then) = _$CutPieceCopyWithImpl;
+@useResult
+$Res call({
+ double w, double h, int count
+});
+
+
+
+
+}
+/// @nodoc
+class _$CutPieceCopyWithImpl<$Res>
+    implements $CutPieceCopyWith<$Res> {
+  _$CutPieceCopyWithImpl(this._self, this._then);
+
+  final CutPiece _self;
+  final $Res Function(CutPiece) _then;
+
+/// Create a copy of CutPiece
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? w = null,Object? h = null,Object? count = null,}) {
+  return _then(CutPiece(
+w: null == w ? _self.w : w // ignore: cast_nullable_to_non_nullable
+as double,h: null == h ? _self.h : h // ignore: cast_nullable_to_non_nullable
+as double,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [CutPiece].
+extension CutPiecePatterns on CutPiece {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CutPiece value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CutPiece() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CutPiece value)  $default,){
+final _that = this;
+switch (_that) {
+case _CutPiece():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CutPiece value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CutPiece() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double w,  double h,  int count)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CutPiece() when $default != null:
+return $default(_that.w,_that.h,_that.count);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double w,  double h,  int count)  $default,) {final _that = this;
+switch (_that) {
+case _CutPiece():
+return $default(_that.w,_that.h,_that.count);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double w,  double h,  int count)?  $default,) {final _that = this;
+switch (_that) {
+case _CutPiece() when $default != null:
+return $default(_that.w,_that.h,_that.count);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _CutPiece implements CutPiece {
+  const _CutPiece({required this.w, required this.h, required this.count});
+  
+
+@override final  double w;
+@override final  double h;
+@override final  int count;
+
+/// Create a copy of CutPiece
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CutPieceCopyWith<_CutPiece> get copyWith => __$CutPieceCopyWithImpl<_CutPiece>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CutPiece&&(identical(other.w, w) || other.w == w)&&(identical(other.h, h) || other.h == h)&&(identical(other.count, count) || other.count == count));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,w,h,count);
+}
+
+@override
+String toString() {
+    return 'CutPiece(w: $w, h: $h, count: $count)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CutPieceCopyWith<$Res> implements $CutPieceCopyWith<$Res> {
+  factory _$CutPieceCopyWith(_CutPiece value, $Res Function(_CutPiece) _then) = __$CutPieceCopyWithImpl;
+@override @useResult
+$Res call({
+ double w, double h, int count
+});
+
+
+
+
+}
+/// @nodoc
+class __$CutPieceCopyWithImpl<$Res>
+    implements _$CutPieceCopyWith<$Res> {
+  __$CutPieceCopyWithImpl(this._self, this._then);
+
+  final _CutPiece _self;
+  final $Res Function(_CutPiece) _then;
+
+/// Create a copy of CutPiece
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? w = null,Object? h = null,Object? count = null,}) {
+  return _then(_CutPiece(
+w: null == w ? _self.w : w // ignore: cast_nullable_to_non_nullable
+as double,h: null == h ? _self.h : h // ignore: cast_nullable_to_non_nullable
+as double,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
 // dart format on

@@ -106,6 +106,50 @@ abstract class LayoutResult with _$LayoutResult {
   }) = _LayoutResult;
 }
 
+/// Une cote de coupe et le nombre de pièces qui la portent.
+@freezed
+abstract class CutPiece with _$CutPiece {
+  const factory CutPiece({
+    required double w,
+    required double h,
+    required int count,
+  }) = _CutPiece;
+}
+
+/// Les pièces à couper, groupées par cote.
+///
+/// C'est la liste de débit : ce qu'on emporte à la scie. Un calepinage produit
+/// deux à cinq cotes distinctes selon le décalage, pas une par pièce — c'est le
+/// groupement qui la rend lisible, et imprimable.
+///
+/// Ici et non dans le painter : c'est une dérivation du résultat, et le painter
+/// peint. Ici et non dans l'écran non plus, pour rester testable sans appareil.
+///
+/// Les cotes se regroupent à l'arrondi d'affichage : deux coupes que la feuille
+/// écrira pareil sont la même coupe pour celui qui débite, quels que soient
+/// leurs derniers chiffres flottants.
+List<CutPiece> summarizeCuts(LayoutResult result) {
+  final counts = <(double, double), int>{};
+  for (final element in result.elements) {
+    if (!element.isCut) continue;
+    final key = (_roundCut(element.w), _roundCut(element.h));
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+
+  final pieces = [
+    for (final entry in counts.entries)
+      CutPiece(w: entry.key.$1, h: entry.key.$2, count: entry.value),
+  ];
+  // De la plus grande à la plus petite : une liste de débit se lit dans cet
+  // ordre, et les chutes minuscules finissent là où on les cherche.
+  pieces.sort((a, b) => (b.w * b.h).compareTo(a.w * a.h));
+  return List.unmodifiable(pieces);
+}
+
+/// Arrondi de regroupement, au dixième de millimètre — la précision à laquelle
+/// une cote s'écrit sur un plan.
+double _roundCut(double mm) => (mm * 10).roundToDouble() / 10;
+
 /// Pose des éléments rectangulaires identiques sur une surface rectangulaire.
 ///
 /// Sans réemploi des chutes : chaque pièce partielle consomme un élément, donc

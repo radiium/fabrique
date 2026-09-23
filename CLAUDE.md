@@ -6,7 +6,7 @@ Ce fichier guide Claude Code (claude.ai/code) lorsqu'il travaille sur ce dépôt
 
 `fabrique` est l'app **« Menuiserie »** — une app portfolio de 5 outils de calcul pour l'atelier, sur iOS, Android et Web.
 
-Le cœur de calcul est **entièrement implémenté et couvert** (219 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
+Le cœur de calcul est **entièrement implémenté et couvert** (232 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
 
 La référence, ce sont les deux documents de spec :
 - **`SPECS.md`** — architecture + couche `core/calc` : signatures exactes, algorithmes et cas de test attendus pour chaque fonction pure. À lire avant d'implémenter un calcul.
@@ -22,7 +22,7 @@ flutter run                          # appareil / simulateur
 flutter run -d chrome                # web
 flutter analyze                      # doit rester propre
 dart format lib
-flutter test                         # 219 tests — cœur de calcul et écrans, sans appareil
+flutter test                         # 232 tests — cœur de calcul et écrans, sans appareil
 
 # codegen — obligatoire après toute modif d'une déclaration @freezed / @riverpod
 dart run build_runner build
@@ -123,7 +123,7 @@ Une vue d'ensemble ne peut pas coter ce qu'elle montre. Sur une pièce de 1800 m
 
 ### Exporter un plan
 
-Le schéma de la Répartition sort de l'app en **PNG**, sur une feuille A4 à l'italienne portant son **cartouche** : le dessin, les résultats et la table des positions. `lib/core/export/` tient la feuille (`plan.dart`) et sa sortie (`plan_export.dart`) ; `distribution_plan.dart` décrit ce que le cartouche de l'outil écrit. Les quatre autres outils n'en ont pas encore.
+Les schémas de la Répartition et du Calepinage sortent de l'app en **PNG**, sur une feuille A4 à l'italienne portant leur **cartouche** : le dessin, les résultats et une table. `lib/core/export/` tient la feuille (`plan.dart`) et sa sortie (`plan_export.dart`) ; `*_plan.dart` décrit ce que le cartouche de chaque outil écrit. Les trois autres n'en ont pas encore.
 
 - **Le dessin seul ne s'exporte pas.** Les cotes vivent dans les tuiles de résultat, pas sur le schéma : partie sans elles, l'image demanderait au destinataire de deviner. Le cartouche est la convention du dessin technique, donc il n'y a rien à expliquer à qui le reçoit.
 - **La page plein écran montre le plan, pas le schéma.** C'est l'aperçu de ce qui sortira, au pixel près — les deux traversent `buildDistributionPlan`, point de construction unique du `PlanPainter`, exactement comme `*_schema.dart` l'est du painter d'outil. Un aperçu qui montrerait autre chose ferait découvrir le cartouche dans le fichier, une fois parti. Saisie refusée : il n'y a pas de plan, la page retombe sur le schéma seul et l'export s'éteint.
@@ -133,6 +133,8 @@ Le schéma de la Répartition sort de l'app en **PNG**, sur une feuille A4 à l'
 - **Le cartouche est un tableau réglé, pas une liste de valeurs.** Encre noir franc (`#000000`), une case par champ, intitulé en petites capitales interlettrées dans le coin et valeur en gras dessous, cadre de feuille à `1` et refends à `0,5` : les deux épaisseurs du dessin technique. C'est la forme qu'a le cartouche de n'importe quel plan, donc elle se lit sans qu'on l'explique — un panneau typographique, lui, se lisait comme une capture d'app. La case de tête ne porte **que le nom de l'outil** : ni nom d'app, ni sous-titre.
 - **Il ne porte que ce que le dessin ne cote pas.** La largeur totale, la largeur d'élément et les marges sont sur le schéma, aux mêmes chiffres exacts : les réécrire serait une redite. Seule exception, l'**écart souhaité** en mode « Calcul nombre » — le dessin ne porte que l'écart obtenu, et sans la cible rien n'explique le nombre trouvé. Il va donc dans les cases, juste avant sa réponse.
 - **Les hauteurs de case se dérivent, elles ne se posent pas à l'œil** : `_lineHeight` est figé, donc une boîte de ligne vaut exactement `taille × ce facteur` et la hauteur d'une case se calcule. Posée à la main, elle laissait la valeur passer sous son intitulé — et ça ne se voit qu'au rendu.
+- **La table dit ce que le dessin ne cote pas, et elle change avec l'outil.** La Répartition liste ses positions ; le Calepinage liste ses **cotes de coupe**, groupées et comptées — c'est ce qu'on emporte à la scie, et un calepinage n'a que deux à cinq cotes distinctes selon le décalage, pas une par pièce. Le groupement vit dans `summarizeCuts` (`core/calc/layout.dart`), pas dans le painter ni dans l'écran : c'est une dérivation du résultat, et elle se teste sans appareil. Les cotes se regroupent à l'arrondi d'affichage, parce que deux coupes que la feuille écrira pareil sont la même coupe pour celui qui débite.
+- ⚠️ **La première colonne d'une table est celle des numéros, étroite et fixe.** `_columnWidths` lui donne 26 px et partage le reste entre les autres : un nombre posé là se viderait en silence dès trois chiffres. Le compte des pièces du Calepinage va donc en dernière colonne, pas en première.
 - **La table des positions, c'est tout ou rien.** Vingt-deux lignes tiennent dans le cartouche ; au-delà, la table entière cède la place à `N positions — à copier depuis l'app`. Une liste tronquée sur un plan d'atelier, c'est une pièce percée en moins, et rien sur la feuille ne dirait qu'il en manque.
 - ⚠️ **La colonne des numéros doit tenir le plus grand numéro possible** (`kMaxDistributionCount`, trois chiffres). Sous-dimensionnée, une cellule ne tronque pas : elle **n'écrit rien**, et la colonne se vide en silence à partir de 10.
 - **La note du cartouche est réservée avant tout le reste.** C'est elle qui borne la table, et c'est là que va l'avertissement d'un outil — la seule ligne qu'on n'ait pas le droit de perdre sous un débordement. La Répartition n'en a pas ; le Calepinage y mettra son `%` de perte pessimiste.
@@ -329,7 +331,7 @@ Ces derniers ont le droit d'être longs : c'est ce qui empêche de refaire l'err
 ## Reste à faire
 
 ### 1. Câblages manquants
-- **Le plan des quatre autres outils.** `core/export/` est générique : il prend un painter et une description de cartouche. Il manque un `*_plan.dart` par outil, plus les deux points d'entrée (`resultsFooter` et l'action de l'`AppBar` du plein écran, toutes deux déjà branchées dans `schema_screen.dart` par un `switch` sur `Tool`). Le Niveau en est exclu : un flux capteur figé n'est pas un plan. Deux choses à vérifier au passage : le pied du cartouche doit porter l'avertissement de l'outil (le % de perte pessimiste du Calepinage, l'« indicatif » des coefficients d'avant-trou), et un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous de la zone de tracé.
+- **Le plan du Convertisseur et des Avant-trous.** `core/export/` est générique : il prend un painter et une description de cartouche. Il manque un `*_plan.dart` par outil, plus les deux points d'entrée (`resultsFooter` et l'action de l'`AppBar` du plein écran, toutes deux déjà branchées dans `schema_screen.dart` par un `switch` sur `Tool`). Le Niveau en est exclu : un flux capteur figé n'est pas un plan. Deux choses à vérifier au passage : le pied du cartouche doit porter l'avertissement de l'outil (l'« indicatif » des coefficients d'avant-trou), et un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous de la zone de tracé.
 - **Le libellé du sélecteur de matériau n'a pas été vérifié sur appareil.** La valeur fermée d'un `DropdownMenu` tronque en silence et il ne reste que ~256 px ; un nom de produit suivi de deux cotes ne tient pas dans les 14 caractères de la police des tests, donc le seuil pessimiste est inatteignable par construction pour ce contrôle. Son test garde le rapport (la mesure divisée par le facteur documenté) au lieu du seuil. À confirmer au rendu, comme l'ont été « Symétriques » et « Calcul écart ».
 - **Densité de vignette pour le Convertisseur** : `RulerPainter` et `ComparisonPainter` sont les deux seuls à ne pas prendre de `compact`. Ils se régulent seuls (graduations secondaires au-dessus de 5 px, libellé qui chevauche sauté), donc rien ne presse, mais leur vignette et leur plein écran sont identiques à l'échelle près.
 
