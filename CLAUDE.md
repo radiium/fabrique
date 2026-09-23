@@ -66,7 +66,8 @@ lib/core/export/       plan.dart (la feuille A4 + son cartouche) · plan_export.
 lib/core/widgets/      AppCard, AppCardActions, ToolScaffold, ResultTile, NumberField,
                        LabeledField,
                        AppSegmentedButton, AppSwitchField, AppDropdown, SchemaCard,
-                       SchemaSheet, AppDisclosure, FieldHelp, HapticsScope
+                       SchemaSheet, AppDisclosure, FieldHelp, ErrorBanner,
+                       HapticsScope
 lib/features/    home, settings, converter, distribution, layout, fasteners, level,
                  schema (le schéma d'un outil en plein écran), playground
 lib/l10n/        app_fr.arb → AppLocalizations générée
@@ -80,6 +81,8 @@ Routes : `/` (accueil) · `/settings` · `/tool/:id` · `/tool/:id/schema`, où 
 `/playground` est une **page de référence hors périmètre produit** : l'inventaire des widgets Material, pour vérifier d'un coup d'œil que le thème tient et trancher un choix de contrôle avant de l'implémenter. Accessible depuis l'accueil en debug. C'est le seul écran qui utilise `setState` — la règle « zéro setState » vaut pour le flux de calcul des outils, pas pour un état local jetable.
 
 Chaque feature-outil suit le même quatuor : `*_screen.dart` (vue) · `*_controller.dart` (notifier de saisie + provider dérivé du résultat) · `*_schema.dart` (le `CustomPaint` branché sur les providers) · `*_painter.dart` (le dessin).
+
+Trois fichiers s'y ajoutent quand l'outil en a besoin, et jamais avant : `*_help.dart` (les contenus des ⓘ, groupés pour se relire comme du texte) · `*_plan.dart` (ce que son cartouche écrit) · `*_presets.dart` (la table de pré-remplissage du Calepinage, côté feature parce qu'elle ne branche aucun calcul).
 
 ### Le schéma : une vignette qui s'ouvre en plein écran
 

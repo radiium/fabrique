@@ -53,6 +53,7 @@ lib/
 │   │   └── tilt.dart         # angles depuis l'accéléromètre
 │   ├── models/               # value objects freezed partagés (enums…)
 │   ├── persistence/          # wrapper shared_preferences
+│   ├── export/               # la feuille A4 + son cartouche, et la sortie PNG
 │   └── widgets/              # UI réutilisée (ToolScaffold, ResultTile,
 │                             #   NumberField, ZoomableCanvas…)
 │
@@ -67,12 +68,15 @@ lib/
 └── l10n/                     # .arb (fr) → AppLocalizations
 
 test/
-└── core/calc/                # ★ tests unitaires du cœur
-    ├── units_test.dart
-    ├── distribution_test.dart
-    ├── layout_test.dart
-    ├── fasteners_test.dart
-    └── tilt_test.dart
+├── core/calc/                # ★ tests unitaires du cœur, sans appareil
+│   ├── units_test.dart
+│   ├── distribution_test.dart
+│   ├── layout_test.dart
+│   ├── fasteners_test.dart
+│   └── tilt_test.dart
+└── features/                 # ce que ni `analyze` ni le cœur ne peuvent
+                              #   attraper : un painter qui lève, un libellé
+                              #   tronqué en silence, un plan hors gabarit
 ```
 
 Chaque feature suit le **même trio** : `_screen` (vue) · `_controller` (provider qui tient la saisie et dérive le résultat) · `_painter` (`CustomPaint`). Régularité = code parcourable, « app pensée ».
@@ -85,6 +89,20 @@ Chaque feature suit le **même trio** : `_screen` (vue) · `_controller` (provid
 5. **Painter** reçoit le résultat et dessine — il ne calcule rien.
 
 Discipline **« le painter peint, le core calcule »** : logique testable sans widget, pas de maths dupliquées dans le rendu.
+
+---
+
+## Export — `core/export/`
+Le schéma d'un outil sort de l'app en **PNG**, sur une feuille A4 à l'italienne portant son **cartouche** : le dessin, ce que le dessin ne cote pas, et une table.
+
+- **Générique.** `plan.dart` prend un painter d'outil et une description de cartouche (`Plan` : un titre, des cases, une table optionnelle, une note). `plan_export.dart` rejoue le painter **hors de l'arbre de widgets**, à 200 dpi — capturer une `RepaintBoundary` rendrait la vignette telle qu'affichée, donc une image qui dépendrait du téléphone de celui qui exporte. Chaque outil n'écrit qu'un `*_plan.dart` qui décrit son cartouche.
+- **Point de construction unique.** La page plein écran et l'export traversent le même `buildXPlan`, comme la vignette et le plein écran traversent `*_schema.dart` : l'aperçu est le fichier, au pixel près. Saisie refusée → pas de plan, la page retombe sur le schéma seul et les actions s'éteignent.
+- **Le cartouche ne porte que ce que le dessin ne cote pas.** Les cotes de la pièce sont sur le schéma, aux mêmes chiffres exacts : les réécrire remplirait la feuille de redites, et chaque case gagnée est une ligne de table de plus.
+- **La table change avec l'outil**, et c'est elle qui rend le plan utile hors de l'app : les positions pour la Répartition, la **liste de débit** pour le Calepinage. Tout ou rien — une table qui ne tient pas cède la place à un repli, parce qu'une liste tronquée sur un plan d'atelier, c'est une pièce en moins et rien sur la feuille ne le dirait.
+- ⚠️ **La première colonne d'une table est celle des numéros**, étroite et fixe. Un nombre posé là ne tronque pas, il **n'écrit rien** : les comptes vont dans les colonnes larges qui suivent.
+- **La note porte l'avertissement de l'outil** et se réserve avant tout le reste : c'est la seule ligne qu'on n'a pas le droit de perdre sous un débordement.
+
+Câblé pour la Répartition et le Calepinage. Le Niveau en est exclu — un flux capteur figé n'est pas un plan.
 
 ---
 
@@ -247,7 +265,20 @@ class LayoutResult {
 const int kMaxLayoutElements = 5000;
 
 LayoutResult computeLayout(LayoutInput input);
+
+/// Une cote de coupe et le nombre de pièces qui la portent.
+@freezed
+class CutPiece {
+  const factory CutPiece({
+    required double w, required double h, required int count,
+  }) = _CutPiece;
+}
+
+/// La liste de débit : les pièces à couper, groupées par cote.
+List<CutPiece> summarizeCuts(LayoutResult result);
 ```
+
+**Liste de débit (`summarizeCuts`)** — ce qu'on emporte à la scie, et ce que porte la table du plan. Un calepinage produit deux à cinq cotes distinctes selon le décalage, pas une par pièce : c'est le groupement qui la rend lisible, et imprimable. Ici et non dans le painter (le painter peint), ni dans l'écran (pour rester testable sans appareil). Les cotes se regroupent **à l'arrondi d'affichage**, au dixième de millimètre : deux coupes que la feuille écrira pareil sont la même coupe pour celui qui débite, quels que soient leurs derniers chiffres flottants. Triée de la plus grande cote à la plus petite, l'ordre dans lequel une liste de débit se lit.
 
 **Algo (v2 — sans réemploi des chutes)**
 1. Repère de pose : `u` = axe d'alignement des éléments (et du décalage), `v` = axe d'empilement des rangées. `su,sv = flip ? (sy,sx) : (sx,sy)` ; `eu,ev = elementX,elementY` ; `gapU,gapV = flip ? (gapY,gapX) : (gapX,gapY)` — les jeux restent définis à l'écran. Les étapes suivantes travaillent en `(u,v)` puis reviennent au repère surface.
@@ -289,6 +320,7 @@ LayoutResult computeLayout(LayoutInput input);
 - Équilibrage et décalage : avec `offset != straight`, `balancedEnd` reste nul même sous `balanceRows`.
 - Volume : élément de 1×1 sur 3000×2000 → exception `kMaxLayoutElements`.
 - Invalides : élément 0, surface négative, jeu périphérique qui mange toute la surface → exception.
+- Liste de débit : décalage ½ sur 1000×300, élém 200×100 → le motif revient à zéro une rangée sur deux, donc une seule cote de coupe (100 × 100) portée par 2 pièces. Rien à couper → liste vide. Les cotes sortent de la plus grande à la plus petite.
 
 ## 4. Fasteners (avant-trous / vis) — `fasteners.dart`
 **But :** depuis matériau + Ø vis + épaisseur pièce à fixer, proposer avant-trous, lamage, longueur de vis.
@@ -365,7 +397,7 @@ TiltResult computeTilt(AccelReading r, {
 |---|---|---|
 | units | `mmToImperial`, `toMm` | arrondi/fractions, round-trips |
 | distribution | `computeDistribution` | logique métier simple, bien couverte |
-| layout | `computeLayout` | algo non trivial + géométrie testable |
+| layout | `computeLayout`, `summarizeCuts` | algo non trivial + géométrie testable |
 | fasteners | `computeFastener` | table de règles appliquée proprement |
 | tilt | `computeTilt` | math de capteur isolée |
 

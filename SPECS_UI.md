@@ -53,6 +53,8 @@ Thème (clair, verrouillé) · Retour haptique (on/off) · Langue (FR).
 
 ## Outils
 
+> **L'export, pour les outils qui ont un plan.** Deux boutons en pied de carte de résultats : `Exporter` enregistre le PNG dans les photos de l'appareil, `Partager` ouvre la feuille du système. Les deux, parce que le sélecteur de partage d'Android ne liste que des applications — il n'y a pas d'action « enregistrer » dedans, contrairement à celui d'iOS. Sur le web, `Exporter` télécharge. Tout s'éteint sur une saisie refusée, rien ne disparaît.
+
 ### 1. Convertisseur d'unités
 - **Saisie :** valeur (num) · unité source (segmented mm/cm/m/pouce/pied) · toggle impérial composé (pied+pouce+fraction).
 - **Visu :** double règle graduée (métrique / impérial) avec curseur.
@@ -72,6 +74,8 @@ Outil de **calcul** avant tout : répartir des éléments identiques sur une lar
 - **Réglages avancés** (repliés, sans effet par défaut) : `Type de répartition` (les quatre dispositions de bords, en tuiles pictogramme + texte) · `Marges` (symétriques ⇒ un champ `Marge`, asymétriques ⇒ `Marge début` et `Marge fin`), retirées de la largeur totale avant le calcul.
 - **Visu :** rangée cotée, largeur totale au-dessus, chaîne des jeux en dessous, marges hachurées. Zoom/pan.
 - **Résultats :** écart · entraxe (si l'élément a une largeur) · l'autre borne entière en mode `Calcul nombre` · table des positions.
+- **Export :** le schéma sort en PNG sur une A4 à l'italienne avec son cartouche, `Exporter` et `Partager` en pied de la carte de résultats. La table du cartouche est celle des **positions**. La page plein écran montre le plan et non le schéma seul, donc l'aperçu vaut pour le fichier.
+- **Refus :** une saisie refusée par le cœur affiche son motif dans la carte de saisie, et non un tiret muet. Les refus sont métier — « les 11 éléments occupent 110 mm pour 100 disponibles » — et c'est l'information la plus utile que l'outil puisse rendre.
 
 > Chaque champ porte un ⓘ qui ouvre son explication en feuille basse ; les contenus vivent dans `distribution_help.dart`.
 
