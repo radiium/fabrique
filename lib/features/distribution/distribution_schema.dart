@@ -9,12 +9,12 @@ import 'distribution_painter.dart';
 /// Point de construction unique du [DistributionPainter], partagé par la
 /// vignette de l'écran et la page plein écran. Une saisie refusée passe un
 /// résultat `null` : c'est au painter de poser son tiret.
+///
+/// Pas de mode vignette ici : la vue d'ensemble ne porte que la cote totale et
+/// les deux panneaux de détail portent tout le reste, donc il n'y a rien à
+/// faire tomber. La page plein écran montre le même dessin, en plus grand.
 class DistributionSchema extends ConsumerWidget {
-  const DistributionSchema({this.compact = false, super.key});
-
-  /// Vignette : la numérotation des éléments tombe, elle ne sert qu'à relier
-  /// le dessin à la table des positions.
-  final bool compact;
+  const DistributionSchema({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +28,6 @@ class DistributionSchema extends ConsumerWidget {
         elementWidth: input.elementWidth,
         startOffset: input.startOffset,
         endOffset: input.endOffset,
-        compact: compact,
       ),
       size: Size.infinite,
     );

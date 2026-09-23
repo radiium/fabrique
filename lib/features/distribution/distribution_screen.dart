@@ -124,9 +124,14 @@ class DistributionScreen extends ConsumerWidget {
         title: 'Réglages avancés',
         child: _AdvancedSettings(input: input, form: form),
       ),
+      // Plus haute que le 16/10 commun : la vue d'ensemble et les deux
+      // panneaux de détail s'empilent, et ils s'empilent en hauteur de texte.
+      // Le rapport est calé pour que la boîte de référence du painter tienne
+      // au facteur 1 sur un téléphone — ni agrandie, ni réduite.
+      visualizationAspectRatio: 5 / 4,
       visualization: const SchemaCard(
         expandFor: Tool.distribution,
-        child: DistributionSchema(compact: true),
+        child: DistributionSchema(),
       ),
       results: [
         if (input.mode == DistributionMode.count)

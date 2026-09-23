@@ -6,7 +6,7 @@ Ce fichier guide Claude Code (claude.ai/code) lorsqu'il travaille sur ce dépôt
 
 `fabrique` est l'app **« Menuiserie »** — une app portfolio de 5 outils de calcul pour l'atelier, sur iOS, Android et Web.
 
-Le cœur de calcul est **entièrement implémenté et couvert** (170 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
+Le cœur de calcul est **entièrement implémenté et couvert** (182 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
 
 La référence, ce sont les deux documents de spec :
 - **`SPECS.md`** — architecture + couche `core/calc` : signatures exactes, algorithmes et cas de test attendus pour chaque fonction pure. À lire avant d'implémenter un calcul.
@@ -22,7 +22,7 @@ flutter run                          # appareil / simulateur
 flutter run -d chrome                # web
 flutter analyze                      # doit rester propre
 dart format lib
-flutter test                         # 170 tests — cœur de calcul et écrans, sans appareil
+flutter test                         # 182 tests — cœur de calcul et écrans, sans appareil
 
 # codegen — obligatoire après toute modif d'une déclaration @freezed / @riverpod
 dart run build_runner build
@@ -58,6 +58,8 @@ lib/app/         app.dart (MaterialApp.router) · router.dart (go_router) · the
 lib/core/calc/   ★ Dart pur, ZÉRO import Flutter — units/, distribution, layout, fasteners, tilt
 lib/core/models/ value objects partagés (LengthUnit, MaterialKind, JointOffset, Tool)
 lib/core/format.dart   formatNumber() + kNoValue — rendu des nombres, partagé par tous les écrans
+lib/core/painting.dart primitives de cotation partagées : SchemaViewport, cotes, flèches,
+                       traits de rupture — espace objet / espace papier
 lib/core/persistence/  PreferencesStore + SettingsController global
 lib/core/widgets/      AppCard, ToolScaffold, ResultTile, NumberField, LabeledField,
                        AppSegmentedButton, AppSwitchField, AppDropdown, SchemaCard,
@@ -86,7 +88,21 @@ Chaque feature-outil suit le même quatuor : `*_screen.dart` (vue) · `*_control
 - **Un bouton « pivoter » dans l'`AppBar`, pour le téléphone verrouillé en portrait.** Sans verrou, tourner l'appareil fait mieux — la barre suit, les cotes restent droites. Avec verrou, c'est le seul moyen de donner sa longue dimension à un schéma large. Le `RotatedBox` pivote les contraintes, donc le painter redessine dans la nouvelle boîte au lieu d'y être posé en biais, et le zoom est remis à plat au passage. Les libellés partent à 90° et **doivent y rester** : ils se redressent quand la main tourne le téléphone, ce qui est tout le geste visé — les contre-pivoter dans les painters les mettrait de travers dans le seul cas où le bouton sert.
 - **Une feuille blanche dans la carte teintée** (`SchemaSheet`) : sur l'écran de l'outil, la teinte n'est plus qu'un encadrement et le dessin récupère le reste ; en plein écran, la feuille *est* l'écran — ni rembourrage ni coin arrondi autour de la zone déplaçable. La couleur de cette feuille est aussi celle du détourage des libellés de cote (`drawSchemaLabel`) — les deux doivent bouger ensemble, sinon chaque chiffre traîne un pavé de la mauvaise teinte. Conséquence directe : sur cette feuille, **la matière se dessine en `AppColors.field` et le vide en blanc** (pièce, fiole, surface découverte). Une pièce blanche sur une feuille blanche ne tiendrait que par son filet.
 
-`*_schema.dart` est le point de construction unique du painter : la vignette et la page plein écran le traversent tous les deux, et son paramètre `compact` fait tomber les annotations secondaires dans la vignette (les deux cotes du Calepinage, les trois Ø et la colonne de hauteurs des Avant-trous, la numérotation de la Répartition — toutes reprises dans les tuiles de résultat juste en dessous). Le Convertisseur et le Niveau n'en ont pas : leurs painters se régulent déjà seuls, et une bulle n'a pas de détail à aller chercher — le Niveau est le seul outil dont la carte n'est pas tapable.
+`*_schema.dart` est le point de construction unique du painter : la vignette et la page plein écran le traversent tous les deux, et son paramètre `compact` fait tomber les annotations secondaires dans la vignette (les deux cotes du Calepinage, les trois Ø et la colonne de hauteurs des Avant-trous — toutes reprises dans les tuiles de résultat juste en dessous). Le Convertisseur, le Niveau et la Répartition n'en ont pas : les deux premiers se régulent seuls, et le troisième n'a plus rien à faire tomber depuis que ses cotes vivent dans ses panneaux de détail. Le Niveau est le seul outil dont la carte n'est pas tapable.
+
+### Répartition : une vue d'ensemble, deux bouts agrandis
+
+Une vue d'ensemble ne peut pas coter ce qu'elle montre. Sur une pièce de 1800 mm, une marge de 40 fait deux pixels et l'élément de 18 qu'elle borde encore moins : le chiffre ne tient pas, et la chaîne de cotes se tassait jusqu'à se replier sur une seule légende `N × écart`. Le schéma est donc en trois bandes — la pièce entière avec sa **seule cote totale**, puis **deux panneaux** qui reprennent le début et la fin, chacun terminé par un trait de rupture.
+
+- **Un agrandissement rond et écrit**, pas un « hors échelle ». Les panneaux prennent le plus grand rang de `_zoomLadder` qui laisse tenir marge + élément + écart, et le rapport se lit sous le dessin (`Détails ×1,5`). L'échelle se prend au rang inférieur, donc un rang manquant se paie en agrandissement perdu — d'où les demis jusqu'à 3, sans lesquels le cas courant d'une rangée de cinq (rapport ~1,8) retomberait à 1, c'est-à-dire à des panneaux qui n'agrandissent rien.
+- **Trois étages de cote fixes** — marge, élément, écart — occupés ou non. Les attribuer au fil des cotes présentes ferait remonter l'élément et l'écart d'un cran dès qu'on remet une marge à zéro. Le premier étage est à la même distance du bas de la barre que deux étages le sont l'un de l'autre, donc les trois tombent à une, deux et trois fois cette distance : un peigne régulier se lit comme une seule chose, trois écarts inégaux donnent à croire qu'ils veulent dire quelque chose.
+- **Les panneaux couvrent 83 % de la largeur de la vue d'ensemble** (retrait plus gouttière), et leur barre fait exactement le double de la sienne. Sans ce retrait, deux bouts se lisaient aussi longs que la pièce entière ; sans cette épaisseur, un détail agrandi en largeur seulement se lisait comme un étirement.
+- **La matière est détourée par la ligne brisée elle-même** (`schemaBreakPoints`), pas par une verticale posée dessous. Un détourage droit laisse la matière déborder des dents, et le trait de rupture ne coupe alors plus rien.
+- **Cotes serrées** : `drawHDimension(tight: true)` retourne les flèches vers l'extérieur et sort le chiffre de l'espace mesuré, au lieu de taire la cote. C'est la convention du dessin technique pour les petites cotes, et le seul moyen de coter 40 et 18 côte à côte. Le chiffre sort **hors de la pièce** (`labelSide`), vers la marge de la feuille : vers l'intérieur il tomberait au-delà des traits d'attache de l'étage voisin, qui descendent plus bas que lui. `bounds` le recale s'il n'y a pas la place.
+- **Espace objet / espace papier**, comme sur un plan. `SchemaViewport` (`core/painting.dart`) est le seul point de passage entre les millimètres de la pièce et la feuille : une place (`rect`), un millimètre d'origine, une échelle. Le schéma en pose **trois** — la vue d'ensemble, et les deux panneaux à l'échelle agrandie. Ce qui se lit (chiffres, flèches, épaisseurs de trait) reste en unités de feuille et ne traverse jamais une fenêtre, donc un chiffre garde sa taille quelle que soit l'échelle de la vue qu'il cote. C'est ce qui rend possibles deux échelles dans un même dessin sans que l'une impose sa réduction à l'autre.
+- **Le dessin ne se recompose pas avec le canvas, il s'y pose en entier.** Tout est coté dans une boîte fixe de 336 × 237, qu'une seule mise à l'échelle **uniforme** amène à la taille disponible, centrée. Sans ça, la largeur suivait le canvas et la hauteur suivait ses chiffres : le schéma s'étirait à chaque redimensionnement — invisible sur un téléphone, flagrant sur le web. Le `visualizationAspectRatio` de 4/3 est choisi pour que ce facteur vaille 1 sur la vignette d'un téléphone, là où l'outil se lit d'abord.
+- **Identique en vignette et en plein écran.** Il n'y a plus d'annotation secondaire à faire tomber : la vue d'ensemble ne porte qu'un chiffre, les panneaux portent tout le reste, et un panneau sans ses cotes serait un zoom vide. La vignette prend en échange un `visualizationAspectRatio` de 4/3 — le seul outil à relever le 16/10 commun.
+- **Pas de numérotation des éléments.** Elle reliait le schéma à la table des positions, mais elle se tassait exactement là où la table devient utile.
 
 ### Flux de données d'un outil
 

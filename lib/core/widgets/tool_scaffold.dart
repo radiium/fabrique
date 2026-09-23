@@ -20,6 +20,7 @@ class ToolScaffold extends StatelessWidget {
     required this.input,
     required this.visualization,
     required this.results,
+    this.visualizationAspectRatio = 16 / 10,
     this.inputFooter,
     this.onReset,
     this.canReset = true,
@@ -38,6 +39,13 @@ class ToolScaffold extends StatelessWidget {
   final Widget? inputFooter;
 
   final Widget visualization;
+
+  /// Le format de la vignette sur mobile.
+  ///
+  /// Un outil ne le relève que s'il a vraiment de quoi remplir la hauteur : ce
+  /// qu'il prend, il le prend à la ligne de flottaison, qui est la ressource
+  /// la plus disputée de l'écran.
+  final double visualizationAspectRatio;
 
   /// Les résultats arrivent en liste, pas en `Column` toute faite : c'est la
   /// carte qui intercale les séparateurs, donc c'est elle qui doit voir les
@@ -161,7 +169,10 @@ class ToolScaffold extends StatelessWidget {
           _inputCard,
           const SizedBox(height: AppSpacing.md),
           // Schéma compact, visible sans scroll, agrandi au tap.
-          AspectRatio(aspectRatio: 16 / 10, child: visualization),
+          AspectRatio(
+            aspectRatio: visualizationAspectRatio,
+            child: visualization,
+          ),
           const SizedBox(height: AppSpacing.md),
           _resultsCard,
         ],

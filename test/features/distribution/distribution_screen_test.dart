@@ -163,9 +163,14 @@ void main() {
     // Et le garde-fou : mesuré à ~540 px avec les cinq contrôles de premier
     // plan. Un sixième ajouté hors du panneau repliable ferait tomber ce test
     // avant de faire tomber le précédent.
+    //
+    // Le seuil suit la hauteur de la carte : au 5/4 de la Répartition elle
+    // fait 294 px sur cet écran, donc au-delà de 550 le schéma passerait sous
+    // la ligne de flottaison et c'est l'assertion précédente qui parlerait —
+    // en disant beaucoup moins.
     expect(
       canvas.top,
-      lessThan(560),
+      lessThan(550),
       reason: 'le schéma commence à ${canvas.top} px sur un écran de 844',
     );
   });

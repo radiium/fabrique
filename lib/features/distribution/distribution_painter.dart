@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
@@ -8,15 +10,70 @@ import '../../core/painting.dart';
 /// Marge latérale, pour que les cotes d'extrémité ne butent pas sur le bord.
 const double _sideMargin = 20;
 
-/// Épaisseur de la barre représentant la pièce.
-const double _barThickness = 26;
+/// Gouttière entre les deux panneaux de détail, soit entre leurs deux traits
+/// de rupture.
+const double _paneGutter = 28;
 
-/// Débord d'un tiret d'extrémité de part et d'autre de la barre.
-const double _endTickOverhang = 9;
+/// Retrait du bloc des panneaux par rapport à la vue d'ensemble, de chaque
+/// côté.
+///
+/// Avec le retrait et la gouttière, les deux panneaux couvrent 83 % de la
+/// largeur de la barre du haut. Sans, ils l'atteignaient à 6 % près et
+/// donnaient à lire deux bouts aussi longs que la pièce entière.
+const double _paneInset = 12;
 
-/// Écart barre ↔ ligne de cote, au-dessus et en dessous.
-const double _totalGap = 34;
-const double _chainGap = 28;
+/// Épaisseur de la barre, vue d'ensemble puis panneaux.
+///
+/// Le panneau fait exactement le double de la vue d'ensemble : la matière
+/// grossit avec le dessin, sinon un détail agrandi en largeur seulement se lit
+/// comme un étirement.
+const double _overviewBarThickness = 30;
+const double _detailBarThickness = 2 * _overviewBarThickness;
+
+/// Épaisseur d'un tiret d'extrémité.
+///
+/// Plus gras que le filet de la pièce, pour que le bout se distingue d'une
+/// arête, mais **sans débord** : un trait qui dépasse est un trait de rupture,
+/// c'est-à-dire le contraire de ce que celui-ci dit.
+const double _endTickStroke = 1.5;
+
+/// Débord d'un trait de rupture, de part et d'autre de la barre.
+const double _breakOverhang = 12;
+
+/// Les étages du dessin, en pixels depuis le haut du bloc.
+///
+/// Des positions absolues et non des proportions : tout ce qui se lit ici est
+/// du texte de taille fixe, donc les interlignes ne peuvent pas suivre la
+/// hauteur du canvas sans finir par se toucher.
+const double _totalDimY = 8;
+const double _overviewBarTop = 24;
+const double _titleTop = 74;
+const double _detailBarTop = 94;
+const double _firstLevelY = 178;
+const double _legendTop = 242;
+
+/// La boîte dans laquelle le schéma est dessiné, toujours la même.
+///
+/// **Le dessin ne se recompose pas avec le canvas, il s'y pose en entier.** Un
+/// schéma dont la largeur suivrait le canvas et la hauteur ses chiffres se
+/// déformerait à chaque redimensionnement — c'est d'ailleurs invisible sur un
+/// téléphone et flagrant sur le web. Ici tout est coté dans cette boîte, puis
+/// une seule mise à l'échelle uniforme l'amène à la taille disponible.
+///
+/// Sa largeur est celle de la vignette d'un téléphone de référence, sa hauteur
+/// celle qu'il faut à ses trois bandes : le rapport ainsi obtenu est celui que
+/// `visualizationAspectRatio` donne à la carte, pour que le facteur y vaille 1
+/// et que rien ne soit ni agrandi ni réduit là où l'outil se lit d'abord.
+const double _designWidth = 336;
+const double _designHeight = 255;
+
+/// Écart entre deux étages de cote, et distance du premier au bas de la barre.
+///
+/// Les deux valent la même chose, c'est voulu : les trois étages tombent alors
+/// à une, deux et trois fois cette distance sous la pièce. Un peigne régulier
+/// se lit comme une seule chose, là où trois écarts inégaux donnent à croire
+/// qu'ils veulent dire quelque chose.
+const double _levelStep = 24;
 
 /// Un élément plus fin que ça deviendrait invisible : on le dessine quand même
 /// à cette largeur, quitte à mentir d'un pixel. C'est aussi ce qui donne sa
@@ -26,7 +83,59 @@ const double _minElementPixels = 2;
 /// Tolérance de comparaison en mm : sert à ne pas coter un jeu nul.
 const double _epsilon = 1e-6;
 
-/// La rangée, cotée : largeur totale au-dessus, chaîne des jeux en dessous.
+/// Les agrandissements admis pour les panneaux de détail.
+///
+/// Un rapport rond et écrit sous le dessin plutôt qu'un agrandissement
+/// quelconque : le détail reste mesurable, ce qu'un « hors échelle » ne
+/// promet pas.
+///
+/// L'échelle se prend au rang inférieur, pour que le contenu tienne — donc un
+/// rang manquant se paie en agrandissement perdu. D'où des demis jusqu'à 3 :
+/// le cas courant d'une rangée de cinq tombe vers 1,8, et sans le rang 1,5 il
+/// s'arrondirait à 1, c'est-à-dire à des panneaux qui n'agrandissent rien.
+const List<double> _zoomLadder = [
+  1,
+  1.5,
+  2,
+  2.5,
+  3,
+  4,
+  5,
+  6,
+  8,
+  10,
+  15,
+  20,
+  30,
+  50,
+  75,
+  100,
+];
+
+/// Le plus grand agrandissement de [_zoomLadder] qui tienne dans [ratio].
+double _zoomFor(double ratio) {
+  var chosen = _zoomLadder.first;
+  for (final zoom in _zoomLadder) {
+    if (zoom <= ratio) chosen = zoom;
+  }
+  return chosen;
+}
+
+/// Une cote de panneau : son segment en millimètres, et son étage.
+///
+/// L'étage est fixe par nature de cote (marge, élément, écart) et non attribué
+/// au fil des cotes présentes : une marge remise à zéro ferait autrement
+/// remonter l'élément et l'écart d'un cran sous les doigts.
+typedef _Dim = (double from, double to, int level);
+
+/// La rangée en plan : la pièce entière cotée, puis ses deux bouts agrandis.
+///
+/// **Une vue d'ensemble ne peut pas coter ce qu'elle montre.** Une marge de
+/// 40 mm sur une pièce de 1800 fait deux pixels : le chiffre ne tient pas, et
+/// l'élément qu'elle borde encore moins. D'où les deux panneaux, qui reprennent
+/// le début et la fin à un agrandissement rond — écrit sous le dessin, pour
+/// que le détail reste mesurable. La barre du haut ne porte donc plus que la
+/// cote totale, et toutes les autres vivent dans les panneaux.
 ///
 /// **Une seule grammaire, quelle que soit la largeur** : des rectangles à
 /// l'échelle, qu'une largeur nulle réduit à un trait. Le dessin reste alors
@@ -47,7 +156,6 @@ class DistributionPainter extends CustomPainter {
     required this.elementWidth,
     required this.startOffset,
     required this.endOffset,
-    this.compact = false,
   });
 
   final DistributionResult? result;
@@ -56,74 +164,234 @@ class DistributionPainter extends CustomPainter {
   final double startOffset;
   final double endOffset;
 
-  /// Vignette : la numérotation des éléments tombe. Elle ne sert qu'à relier
-  /// le dessin à la table des positions, qu'on lit en plein écran.
-  final bool compact;
-
   @override
   void paint(Canvas canvas, Size size) {
     if (size.width <= 0 || size.height <= 0) return;
 
     final r = result;
-    if (r == null || length <= 0) {
+    if (r == null || length <= 0 || r.positions.isEmpty) {
       drawSchemaPlaceholder(canvas, size);
       return;
     }
 
-    final usable = size.width - 2 * _sideMargin;
-    if (usable <= 0) return;
-
-    // mm → px. C'est la seule « math » du painter : une mise à l'échelle.
-    double dx(double mm) => _sideMargin + usable * (mm / length);
-
-    final centerY = size.height / 2;
-    final barTop = centerY - _barThickness / 2;
-    final barBottom = centerY + _barThickness / 2;
-
-    _paintBar(canvas, dx(0), dx(length), barTop, barBottom);
-    _paintOffsets(canvas, dx, barTop, barBottom);
-    _paintTotal(canvas, dx, barTop - _totalGap);
-    _paintElements(canvas, r, dx, barTop, barBottom, usable);
-    _paintEndTicks(canvas, dx, barTop, barBottom);
-    _paintChain(canvas, r, dx, barBottom + _chainGap);
+    // Une échelle unique pour les deux axes, et le dessin centré dans ce qui
+    // reste : c'est ce qui interdit à la vignette de s'étirer.
+    final scale = math.min(
+      size.width / _designWidth,
+      size.height / _designHeight,
+    );
+    canvas
+      ..save()
+      ..translate(
+        (size.width - _designWidth * scale) / 2,
+        (size.height - _designHeight * scale) / 2,
+      )
+      ..scale(scale);
+    _paintDesign(canvas, r);
+    canvas.restore();
   }
 
-  /// La pièce : un rectangle beige posé sur la feuille blanche.
+  /// Le schéma dans la boîte de référence, en coordonnées de [_designWidth]
+  /// par [_designHeight].
+  void _paintDesign(Canvas canvas, DistributionResult r) {
+    const usable = _designWidth - 2 * _sideMargin;
+    const paneWidth = (usable - 2 * _paneInset - _paneGutter) / 2;
+
+    final overview = SchemaViewport.fit(
+      rect: const Rect.fromLTWH(
+        _sideMargin,
+        _overviewBarTop,
+        usable,
+        _overviewBarThickness,
+      ),
+      spanMm: length,
+    );
+    _paintPiece(
+      canvas,
+      r,
+      overview,
+      clip: Path()..addRect(overview.rect.inflate(1)),
+      capStart: true,
+      capEnd: true,
+    );
+    drawHDimension(
+      canvas,
+      x1: overview.x(0),
+      x2: overview.x(length),
+      y: _totalDimY,
+      label: '${formatNumber(length)} mm',
+    );
+
+    final starts = _startDimensions(r);
+    final ends = _endDimensions(r);
+    final reach = math.max(
+      starts.fold(0.0, (m, d) => math.max(m, d.$2)),
+      length - ends.fold(length, (m, d) => math.min(m, d.$1)),
+    );
+
+    final zoom = _zoomFor(
+      reach <= _epsilon ? 1 : (paneWidth / reach) / overview.scale,
+    );
+    final scale = zoom * overview.scale;
+    final window = paneWidth / scale;
+
+    const paneRect = Rect.fromLTWH(
+      _sideMargin + _paneInset,
+      _detailBarTop,
+      paneWidth,
+      _detailBarThickness,
+    );
+    final start = SchemaViewport(rect: paneRect, originMm: 0, scale: scale);
+    final end = SchemaViewport(
+      rect: paneRect.translate(paneWidth + _paneGutter, 0),
+      originMm: length - window,
+      scale: scale,
+    );
+
+    _paintTitle(canvas, 'Début', start);
+    _paintTitle(canvas, 'Fin', end);
+
+    _paintPiece(
+      canvas,
+      r,
+      start,
+      clip: _brokenPane(start, breakRight: true),
+      capStart: true,
+      capEnd: false,
+    );
+    _paintPiece(
+      canvas,
+      r,
+      end,
+      clip: _brokenPane(end, breakRight: false),
+      capStart: false,
+      capEnd: true,
+    );
+    for (final x in [start.rect.right, end.rect.left]) {
+      drawBreakLine(
+        canvas,
+        x: x,
+        y1: paneRect.top - _breakOverhang,
+        y2: paneRect.bottom + _breakOverhang,
+      );
+    }
+
+    _paintDimensions(canvas, starts, start, labelSide: -1);
+    _paintDimensions(canvas, ends, end, labelSide: 1);
+    _paintLegend(canvas, zoom);
+  }
+
+  /// La zone de matière d'un panneau : fermée par la ligne brisée du côté où
+  /// elle est coupée, par le bord du panneau des trois autres.
+  ///
+  /// Détourer sur le zigzag lui-même et non sur une verticale : sinon la
+  /// matière déborde des dents et le trait de rupture se pose dessus sans rien
+  /// couper.
+  Path _brokenPane(SchemaViewport view, {required bool breakRight}) {
+    final top = view.rect.top - _breakOverhang;
+    final bottom = view.rect.bottom + _breakOverhang;
+    final points = schemaBreakPoints(
+      x: breakRight ? view.rect.right : view.rect.left,
+      y1: top,
+      y2: bottom,
+    );
+    final far = breakRight ? view.rect.left : view.rect.right;
+
+    final path = Path()..moveTo(far, top);
+    for (final point in points) {
+      path.lineTo(point.dx, point.dy);
+    }
+    return path
+      ..lineTo(far, bottom)
+      ..close();
+  }
+
+  /// Les cotes du panneau de début : marge, premier élément, premier écart.
+  ///
+  /// L'écart coté est celui qui se présente en premier — avant le premier
+  /// élément quand un bord est un écart, après lui sinon. Les positions
+  /// suffisent à le dire, sans rejouer le choix des bords.
+  List<_Dim> _startDimensions(DistributionResult r) {
+    final first = r.positions.first;
+    return [
+      if (startOffset > _epsilon) (0.0, startOffset, 0),
+      if (elementWidth > _epsilon) (first, first + elementWidth, 1),
+      if (first - startOffset > _epsilon)
+        (startOffset, first, 2)
+      else if (r.positions.length > 1)
+        (first + elementWidth, r.positions[1], 2),
+    ];
+  }
+
+  /// Les cotes du panneau de fin, en miroir de [_startDimensions].
+  List<_Dim> _endDimensions(DistributionResult r) {
+    final lastStart = r.positions.last;
+    final lastEnd = lastStart + elementWidth;
+    final inner = length - endOffset;
+    return [
+      if (endOffset > _epsilon) (inner, length, 0),
+      if (elementWidth > _epsilon) (lastStart, lastEnd, 1),
+      if (inner - lastEnd > _epsilon)
+        (lastEnd, inner, 2)
+      else if (r.positions.length > 1)
+        (r.positions[r.positions.length - 2] + elementWidth, lastStart, 2),
+    ];
+  }
+
+  /// La pièce dans une bande : matière, marges hachurées, éléments.
   ///
   /// Le beige des champs et non le blanc : une pièce blanche sur la feuille ne
   /// se distinguerait que par son filet, et les marges hachurées perdraient le
   /// fond sur lequel elles se lisent.
-  void _paintBar(
+  ///
+  /// Un tiret d'extrémité ne se pose que du côté où la pièce s'arrête vraiment
+  /// ([capStart], [capEnd]) : l'autre bord d'un panneau est une coupe, et c'est
+  /// le trait de rupture qui le dit — [clip] porte sa ligne brisée.
+  void _paintPiece(
     Canvas canvas,
-    double left,
-    double right,
-    double top,
-    double bottom,
-  ) {
-    final rect = RRect.fromRectAndRadius(
-      Rect.fromLTRB(left, top, right, bottom),
-      const Radius.circular(3),
-    );
+    DistributionResult r,
+    SchemaViewport view, {
+    required Path clip,
+    required bool capStart,
+    required bool capEnd,
+  }) {
     canvas
-      ..drawRRect(rect, Paint()..color = AppColors.field)
-      ..drawRRect(
+      ..save()
+      ..clipPath(clip);
+
+    final rect = Rect.fromLTRB(
+      view.x(0),
+      view.rect.top,
+      view.x(length),
+      view.rect.bottom,
+    );
+    canvas.drawRect(rect, Paint()..color = AppColors.field);
+
+    _paintOffsets(canvas, view);
+    _paintElements(canvas, r, view);
+
+    // Le filet de la pièce en dernier : un élément le traverse de part en part
+    // et le recouvrirait, laissant le bas de la barre décalé d'une épaisseur de
+    // trait à chaque raccord. Sur un plan, le contour de la pièce est continu
+    // et ce qu'on y pose se dessine dedans.
+    canvas
+      ..drawRect(
         rect,
         Paint()
           ..color = AppColors.border
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1,
-      );
+      )
+      ..restore();
+
+    if (capStart) _paintEndTick(canvas, view, view.x(0));
+    if (capEnd) _paintEndTick(canvas, view, view.x(length));
   }
 
   /// Les marges, hachurées : réservées, jamais garnies.
-  void _paintOffsets(
-    Canvas canvas,
-    double Function(double) dx,
-    double top,
-    double bottom,
-  ) {
+  void _paintOffsets(Canvas canvas, SchemaViewport view) {
     final zones = <(double, double)>[
-      if (startOffset > 0) (0, startOffset),
+      if (startOffset > 0) (0.0, startOffset),
       if (endOffset > 0) (length - endOffset, length),
     ];
     if (zones.isEmpty) return;
@@ -133,7 +401,16 @@ class DistributionPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     for (final (from, to) in zones) {
-      final rect = Rect.fromLTRB(dx(from), top, dx(to), bottom);
+      // Détouré à la fenêtre avant de hachurer : au zoom, une marge hors champ
+      // lancerait une boucle sur des milliers de traits invisibles.
+      final rect = Rect.fromLTRB(
+        view.x(from),
+        view.rect.top,
+        view.x(to),
+        view.rect.bottom,
+      ).intersect(view.rect);
+      if (rect.isEmpty) continue;
+
       canvas
         ..save()
         ..clipRect(rect);
@@ -149,158 +426,120 @@ class DistributionPainter extends CustomPainter {
     }
   }
 
-  /// Les extrémités — un tiret, jamais un élément. C'est ce contraste qui
-  /// porte la règle « les extrémités ne sont pas des points ».
-  void _paintEndTicks(
-    Canvas canvas,
-    double Function(double) dx,
-    double barTop,
-    double barBottom,
-  ) {
-    final paint = Paint()
-      ..color = AppColors.label
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round;
-    for (final mm in [0.0, length]) {
-      canvas.drawLine(
-        Offset(dx(mm), barTop - _endTickOverhang),
-        Offset(dx(mm), barBottom + _endTickOverhang),
-        paint,
-      );
-    }
-  }
-
-  /// Cote d'ensemble au-dessus de la barre.
-  void _paintTotal(Canvas canvas, double Function(double) dx, double y) {
-    drawHDimension(
-      canvas,
-      x1: dx(0),
-      x2: dx(length),
-      y: y,
-      label: '${formatNumber(length)} mm',
-    );
-  }
-
-  /// Les éléments à l'échelle, numérotés quand la place le permet. Une largeur
-  /// nulle passe ici comme les autres : le `clamp` en fait un trait.
+  /// Les éléments à l'échelle. Une largeur nulle passe ici comme les autres :
+  /// le `clamp` en fait un trait.
   void _paintElements(
     Canvas canvas,
     DistributionResult r,
-    double Function(double) dx,
-    double barTop,
-    double barBottom,
-    double usable,
+    SchemaViewport view,
   ) {
-    if (r.positions.isEmpty) return;
-
     final fill = Paint()..color = AppColors.accent;
     final stroke = Paint()
       ..color = AppColors.accentDeep
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
-    final top = barTop + 3;
-    final bottom = barBottom - 3;
-
     for (final position in r.positions) {
-      final left = dx(position);
-      final right = dx(position + elementWidth);
+      final left = view.x(position);
+      // Les positions sont croissantes : passé le bord droit, c'est fini.
+      if (left > view.rect.right) break;
+      final right = view.x(position + elementWidth);
+      if (right < view.rect.left) continue;
+
+      // Toute la hauteur de la bande : un élément traverse la pièce de part en
+      // part, et un jeu au-dessus et en dessous le ferait flotter dedans.
       final rect = Rect.fromLTRB(
         left,
-        top,
+        view.rect.top,
         // Un bardage serré ne doit pas se résoudre en une trame vide.
         left + (right - left).clamp(_minElementPixels, double.infinity),
-        bottom,
+        view.rect.bottom,
       );
-      canvas
-        ..drawRect(rect, fill)
-        ..drawRect(rect, stroke);
-    }
-
-    if (!compact) {
-      _paintIndices(canvas, r, dx, barTop, usable * r.pitch / length);
+      canvas.drawRect(rect, fill);
+      // Seulement les deux chants : les arêtes horizontales appartiennent à la
+      // pièce, et c'est elle qui les trace, après.
+      for (final x in [rect.left + 0.5, rect.right - 0.5]) {
+        canvas.drawLine(Offset(x, rect.top), Offset(x, rect.bottom), stroke);
+      }
     }
   }
 
-  /// Le numéro d'ordre au-dessus de chaque élément — c'est ce qui relie le
-  /// schéma à la table de positions des résultats.
-  void _paintIndices(
-    Canvas canvas,
-    DistributionResult r,
-    double Function(double) dx,
-    double barTop,
-    double pitchPixels,
-  ) {
-    // Mesuré sur le plus long des numéros : si le dernier tient, tous tiennent.
-    final widest = schemaText('${r.count}', size: 10);
-    if (widest.width + 6 > pitchPixels) return;
-
-    for (final (i, position) in r.positions.indexed) {
-      final label = schemaText('${i + 1}', size: 10);
-      label.paint(
-        canvas,
-        Offset(
-          dx(position + elementWidth / 2) - label.width / 2,
-          barTop - 15 - label.height / 2,
-        ),
-      );
-    }
+  /// Les extrémités — un tiret, jamais un élément. C'est ce contraste qui
+  /// porte la règle « les extrémités ne sont pas des points ».
+  void _paintEndTick(Canvas canvas, SchemaViewport view, double x) {
+    canvas.drawLine(
+      Offset(x, view.rect.top),
+      Offset(x, view.rect.bottom),
+      Paint()
+        ..color = AppColors.label
+        ..strokeWidth = _endTickStroke,
+    );
   }
 
-  /// La chaîne de cotes : marges, jeux, dans l'ordre où on les lit.
-  ///
-  /// Les segments se déduisent des positions, sans rejouer le choix des bords :
-  /// entre deux éléments voisins il y a un jeu, et s'il reste de la place avant
-  /// le premier ou après le dernier, c'en est un aussi.
-  void _paintChain(
+  /// Le titre d'un panneau, centré au-dessus de lui.
+  void _paintTitle(Canvas canvas, String label, SchemaViewport view) {
+    final text = schemaText(label, size: 9);
+    text.paint(canvas, Offset(view.rect.center.dx - text.width / 2, _titleTop));
+  }
+
+  /// Les cotes d'un panneau, chacune à son étage, rattachées à la pièce.
+  /// [labelSide] envoie les chiffres serrés **hors** de la pièce, vers la marge
+  /// de la feuille. Vers l'intérieur ils tomberaient au-delà des traits
+  /// d'attache de l'étage voisin, qui descendent plus bas qu'eux : le chiffre
+  /// d'une marge se retrouverait de l'autre côté des attaches de l'élément
+  /// qu'elle borde. Dehors, il n'y a rien à traverser.
+  void _paintDimensions(
     Canvas canvas,
-    DistributionResult r,
-    double Function(double) dx,
-    double y,
-  ) {
-    // Le booléen dit « ceci est un jeu » : seuls les jeux appellent la légende
-    // de repli, une marge trop étroite pour son chiffre n'a rien à voir avec
-    // la règle qu'elle énonce.
-    final segments = <(double, double, bool)>[];
-    if (startOffset > _epsilon) segments.add((0, startOffset, false));
-
-    var cursor = startOffset;
-    for (final position in r.positions) {
-      if (position - cursor > _epsilon) segments.add((cursor, position, true));
-      cursor = position + elementWidth;
+    List<_Dim> dims,
+    SchemaViewport view, {
+    required double labelSide,
+  }) {
+    // Une attache par abscisse, tirée jusqu'à son étage le plus bas : la fin
+    // d'une marge est le début d'un élément, et deux traits superposés se
+    // voient même opaques, par leurs bords adoucis.
+    final reaches = <double, double>{};
+    for (final (from, to, level) in dims) {
+      final lineY = _firstLevelY + level * _levelStep;
+      for (final x in [view.x(from), view.x(to)]) {
+        reaches[x] = math.max(reaches[x] ?? lineY, lineY);
+      }
     }
-
-    final lastGapEnd = length - endOffset;
-    if (lastGapEnd - cursor > _epsilon) {
-      segments.add((cursor, lastGapEnd, true));
-    }
-    if (endOffset > _epsilon) segments.add((lastGapEnd, length, false));
-
-    if (segments.isEmpty) return;
-
-    var allLabelled = true;
-    for (final (from, to, isGap) in segments) {
-      final placed = drawHDimension(
+    reaches.forEach(
+      (x, lineY) => drawExtensionLine(
         canvas,
-        x1: dx(from),
-        x2: dx(to),
-        y: y,
+        Offset(x, view.rect.bottom + 2),
+        Offset(x, lineY - kDimTick),
+      ),
+    );
+
+    for (final (from, to, level) in dims) {
+      final lineY = _firstLevelY + level * _levelStep;
+      final x1 = view.x(from);
+      final x2 = view.x(to);
+      drawHDimension(
+        canvas,
+        x1: x1,
+        x2: x2,
+        y: lineY,
         label: formatNumber(to - from),
+        tight: true,
+        labelSide: labelSide,
+        bounds: const Rect.fromLTWH(0, 0, _designWidth, _designHeight),
       );
-      allLabelled = allLabelled && (placed || !isGap);
     }
+  }
 
-    // Quand les cotes ne tiennent plus une par une, une seule légende dit la
-    // même chose — et énonce la règle en toutes lettres.
-    if (!allLabelled) {
-      final caption = schemaText(
-        '${r.gapCount} × ${formatNumber(r.spacing)} mm',
-      );
-      caption.paint(
-        canvas,
-        Offset((dx(0) + dx(length) - caption.width) / 2, y + kDimTick + 6),
-      );
-    }
+  /// Le rapport d'agrandissement des panneaux, écrit sous le dessin.
+  ///
+  /// Sans lui, rien ne dit qu'un élément y est plus gros que sur la vue
+  /// d'ensemble. Un rapport chiffré plutôt qu'un « hors échelle » : il rend le
+  /// détail mesurable au lieu de seulement avertir qu'il ne l'est pas.
+  void _paintLegend(Canvas canvas, double zoom) {
+    final text = schemaText(
+      zoom == 1 ? 'Détails à l’échelle' : 'Détails ×${formatNumber(zoom)}',
+      size: 9,
+    );
+    text.paint(canvas, Offset((_designWidth - text.width) / 2, _legendTop));
   }
 
   @override
@@ -308,7 +547,6 @@ class DistributionPainter extends CustomPainter {
       old.result != result ||
       old.length != length ||
       old.elementWidth != elementWidth ||
-      old.compact != compact ||
       old.startOffset != startOffset ||
       old.endOffset != endOffset;
 }
