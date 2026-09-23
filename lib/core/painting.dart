@@ -77,8 +77,29 @@ const double _arrowHalfWidth = 1.5;
 /// Demi-longueur d'un tiret d'extrémité de cote.
 const double kDimTick = 4;
 
-/// Épaisseur d'un trait de cote.
-const double kDimStroke = 1;
+/// Les deux épaisseurs du dessin technique, dans le rapport 1:2 qu'impose la
+/// norme : [kOutlineStroke] pour un contour vu, [kDimStroke] pour tout
+/// l'appareil de cotation — trait de cote, flèche, attache, rupture, hachure.
+///
+/// Deux groupes et pas trois : c'est le rapport entre les deux qui porte la
+/// hiérarchie, pas leurs valeurs absolues. À épaisseur unique, un dessin se lit
+/// comme un diagramme et l'œil y tombe sur les cotes avant la pièce.
+///
+/// Réglées bas : c'est l'encre ([kSchemaInk]) qui porte le contraste, et un
+/// contour gras finit par cerner la pièce au lieu de la délimiter. Les deux se
+/// déplacent **ensemble**, sinon le rapport se perd.
+const double kDimStroke = 0.5;
+const double kOutlineStroke = 1;
+
+/// L'encre d'un schéma : contours vus et cotation.
+///
+/// Du noir franc sur la feuille blanche, comme sur un plan. C'est **l'encre et
+/// non l'épaisseur** qui tient le contraste que demande l'atelier : un trait
+/// fin et noir se lit à bout de bras mieux qu'un trait gras et gris, et c'est
+/// ce qui permet de descendre à [kDimStroke] sans rien perdre. Le gris reste
+/// aux lignes de construction ([kExtensionLine]) et aux hachures, qui doivent
+/// s'effacer devant ce qu'elles accompagnent.
+const Color kSchemaInk = Color(0xFF000000);
 
 /// Texte de schéma : chiffres tabulaires, comme partout ailleurs dans l'app.
 TextPainter schemaText(
@@ -110,7 +131,7 @@ void drawSchemaLabel(
   TextPainter text,
   Offset center, {
   Color knockout = AppColors.cardSurface,
-  double padding = 4,
+  double padding = kLabelPadding,
 }) {
   canvas.drawRect(
     Rect.fromCenter(
@@ -153,11 +174,40 @@ void drawSchemaArrow(Canvas canvas, Offset tip, Offset along, Paint paint) {
 /// Longueur du trait qui prolonge une cote trop étroite, de part et d'autre.
 const double _outsideArm = 13;
 
+/// Ce qu'un libellé garde de dégagé de chaque côté du texte.
+const double kLabelPadding = 4;
+
+/// Ce qui sépare un chiffre de cote de la ligne qu'il cote.
+const double kLabelLift = 2;
+
+/// L'unité d'un schéma, déclarée une fois sous le dessin.
+///
+/// Un plan annonce son unité en légende et laisse tous ses chiffres nus.
+/// Répétée sur chaque cote, elle alourdit le chiffre le plus en vue, et elle
+/// laisse croire que les cotes qui ne la portent pas se lisent autrement.
+const String kUnitNote = 'Cotes en mm';
+
+/// Pose un chiffre de cote **au-dessus** de la ligne qui passe par [y], centré
+/// sur [cx].
+///
+/// Au-dessus et non dedans : un plan écrit son nombre sur une ligne de cote
+/// **continue**. Le pavé détouré qui la perce est une habitude de diagramme, et
+/// sur un peigne de cotes il en troue tous les étages — la Répartition en
+/// alignait trois, et le peigne cessait de se lire comme une seule chose.
+void drawDimensionLabel(Canvas canvas, TextPainter text, double cx, double y) {
+  text.paint(
+    canvas,
+    Offset(cx - text.width / 2, y - kDimStroke / 2 - kLabelLift - text.height),
+  );
+}
+
 /// Cote horizontale : ligne de [x1] à [x2] à la hauteur [y], tirets aux bouts,
 /// flèches vers l'intérieur, libellé détouré au milieu.
 ///
 /// Le libellé est omis s'il ne tient pas dans la cote — mieux vaut une cote
 /// muette qu'un chiffre qui déborde sur le voisin. Rend `true` s'il a été posé.
+/// Il se pose au-dessus de la ligne ([drawDimensionLabel]), donc il ne mesure
+/// que contre l'espace coté : les pointes sont en dessous de lui.
 ///
 /// [tight] renverse ce choix, selon la convention du dessin technique pour les
 /// petites cotes : les flèches se retournent vers l'extérieur et le chiffre va
@@ -171,17 +221,22 @@ const double _outsideArm = 13;
 /// Dehors et non au-dessus du trait : un chiffre posé sur une cote de 6 px en
 /// détoure la ligne, ses flèches et parfois le trait de rappel voisin. Sorti,
 /// il ne recouvre plus rien.
+///
+/// [ticks] pose un tiret à chaque extrémité. À couper dès qu'une ligne
+/// d'attache arrive au même point : le tiret n'y ajoute rien et trois traits
+/// convergents font un pâté. Un plan marque le bout d'une cote par un tiret
+/// **ou** par une flèche, jamais par les deux.
 bool drawHDimension(
   Canvas canvas, {
   required double x1,
   required double x2,
   required double y,
   String? label,
-  Color color = AppColors.label,
-  Color knockout = AppColors.cardSurface,
+  Color color = kSchemaInk,
   double labelSize = 10,
   bool tight = false,
   double labelSide = 1,
+  bool ticks = true,
   Rect? bounds,
 }) {
   final paint = Paint()
@@ -190,12 +245,15 @@ bool drawHDimension(
   final width = (x2 - x1).abs();
 
   canvas.drawLine(Offset(x1, y), Offset(x2, y), paint);
-  for (final x in [x1, x2]) {
-    canvas.drawLine(Offset(x, y - kDimTick), Offset(x, y + kDimTick), paint);
+  if (ticks) {
+    for (final x in [x1, x2]) {
+      canvas.drawLine(Offset(x, y - kDimTick), Offset(x, y + kDimTick), paint);
+    }
   }
   final left = x1 < x2 ? x1 : x2;
   final right = x1 < x2 ? x2 : x1;
-  if (width > 2 * kArrowArm + 4) {
+  final inward = width > 2 * kArrowArm + 4;
+  if (inward) {
     drawSchemaArrow(canvas, Offset(left, y), const Offset(1, 0), paint);
     drawSchemaArrow(canvas, Offset(right, y), const Offset(-1, 0), paint);
   } else if (tight) {
@@ -208,19 +266,25 @@ bool drawHDimension(
 
   if (label == null) return false;
   final text = schemaText(label, size: labelSize, color: color);
-  if (text.width + 10 <= width) {
-    drawSchemaLabel(canvas, text, Offset((x1 + x2) / 2, y), knockout: knockout);
+
+  if (text.width + 2 * kLabelPadding <= width) {
+    drawDimensionLabel(canvas, text, (x1 + x2) / 2, y);
     return true;
   }
   if (!tight) return false;
 
-  final reach = _outsideArm + 3 + text.width / 2;
+  // Sorti, le chiffre se pose juste après ce qui borne la cote : le bras de
+  // prolongement quand elle était trop étroite pour ses flèches, le bout de la
+  // cote quand elles ont tenu dedans. Son détourage compte dans le retrait,
+  // sinon il efface ce qu'il vient de contourner.
+  final reach =
+      (inward ? 0.0 : _outsideArm) + kLabelPadding + 2 + text.width / 2;
   var cx = labelSide >= 0 ? right + reach : left - reach;
   if (bounds != null) {
     final margin = text.width / 2 + 2;
     cx = cx.clamp(bounds.left + margin, bounds.right - margin);
   }
-  drawSchemaLabel(canvas, text, Offset(cx, y), knockout: knockout);
+  drawDimensionLabel(canvas, text, cx, y);
   return true;
 }
 
@@ -229,6 +293,8 @@ bool drawHDimension(
 /// d'œil, et c'est un schéma d'atelier.
 ///
 /// [labelSide] vaut +1 pour poser le libellé à droite du trait, −1 à gauche.
+/// [ticks] se coupe là où une ligne d'attache arrive déjà au bout de la cote,
+/// comme dans [drawHDimension].
 void drawVDimension(
   Canvas canvas, {
   required double y1,
@@ -236,7 +302,8 @@ void drawVDimension(
   required double x,
   String? label,
   double labelSide = 1,
-  Color color = AppColors.label,
+  bool ticks = true,
+  Color color = kSchemaInk,
 }) {
   final paint = Paint()
     ..color = color
@@ -244,8 +311,10 @@ void drawVDimension(
   final height = (y2 - y1).abs();
 
   canvas.drawLine(Offset(x, y1), Offset(x, y2), paint);
-  for (final y in [y1, y2]) {
-    canvas.drawLine(Offset(x - kDimTick, y), Offset(x + kDimTick, y), paint);
+  if (ticks) {
+    for (final y in [y1, y2]) {
+      canvas.drawLine(Offset(x - kDimTick, y), Offset(x + kDimTick, y), paint);
+    }
   }
   if (height > 2 * kArrowArm + 4) {
     drawSchemaArrow(canvas, Offset(x, y1), const Offset(0, 1), paint);
@@ -300,7 +369,7 @@ void drawBreakLine(
   required double x,
   required double y1,
   required double y2,
-  Color color = AppColors.label,
+  Color color = kSchemaInk,
 }) {
   final points = schemaBreakPoints(x: x, y1: y1, y2: y2);
   final path = Path()..moveTo(points.first.dx, points.first.dy);
@@ -326,6 +395,17 @@ void drawBreakLine(
 /// est le début d'un élément. Une teinte fixe se superpose à elle-même sans
 /// rien changer.
 const Color kExtensionLine = Color(0xFFBCB8B5);
+
+/// Ce qu'une ligne d'attache laisse à la pièce, et ce qu'elle dépasse de la
+/// ligne de cote.
+///
+/// Elle ne part pas de la matière — un trait qui la touche se lit comme une
+/// arête — et elle **traverse** la ligne de cote au lieu de s'arrêter dessus.
+/// C'est ce dépassement qui marque le point coté, maintenant qu'aucun tiret ne
+/// borne la cote : une attache qui s'arrête au ras laisse un trou si elle
+/// tombe court, et rien du tout si elle tombe juste.
+const double kExtensionGap = 2;
+const double kExtensionOvershoot = 3;
 
 /// Ligne d'attache : le trait fin qui relie une pièce à sa ligne de cote.
 void drawExtensionLine(Canvas canvas, Offset from, Offset to, {Color? color}) {

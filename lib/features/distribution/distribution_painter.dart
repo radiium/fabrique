@@ -30,13 +30,6 @@ const double _paneInset = 12;
 const double _overviewBarThickness = 30;
 const double _detailBarThickness = 2 * _overviewBarThickness;
 
-/// Épaisseur d'un tiret d'extrémité.
-///
-/// Plus gras que le filet de la pièce, pour que le bout se distingue d'une
-/// arête, mais **sans débord** : un trait qui dépasse est un trait de rupture,
-/// c'est-à-dire le contraire de ce que celui-ci dit.
-const double _endTickStroke = 1.5;
-
 /// Débord d'un trait de rupture, de part et d'autre de la barre.
 const double _breakOverhang = 12;
 
@@ -45,7 +38,7 @@ const double _breakOverhang = 12;
 /// Des positions absolues et non des proportions : tout ce qui se lit ici est
 /// du texte de taille fixe, donc les interlignes ne peuvent pas suivre la
 /// hauteur du canvas sans finir par se toucher.
-const double _totalDimY = 8;
+const double _totalDimY = 16;
 const double _overviewBarTop = 24;
 const double _titleTop = 74;
 const double _detailBarTop = 94;
@@ -143,8 +136,8 @@ typedef _Dim = (double from, double to, int level);
 /// laisserait croire à un autre modèle là où il n'y en a qu'un, et ferait
 /// sauter le schéma sous le doigt à chaque passage par zéro.
 ///
-/// On voit directement ce que les bords changent : un élément collé au tiret
-/// d'extrémité, ou un jeu avant lui. Les marges sont hachurées — la zone
+/// On voit directement ce que les bords changent : un élément collé au bord de
+/// la pièce, ou un jeu avant lui. Les marges sont hachurées — la zone
 /// existe, mais rien n'y est réparti.
 ///
 /// Le painter peint, il ne calcule rien : il consomme [result] tel quel et ne
@@ -210,16 +203,22 @@ class DistributionPainter extends CustomPainter {
       canvas,
       r,
       overview,
-      clip: Path()..addRect(overview.rect.inflate(1)),
-      capStart: true,
-      capEnd: true,
+      clip: Path()..addRect(overview.rect.inflate(kOutlineStroke)),
     );
+    for (final x in [overview.x(0), overview.x(length)]) {
+      drawExtensionLine(
+        canvas,
+        Offset(x, overview.rect.top - kExtensionGap),
+        Offset(x, _totalDimY - kExtensionOvershoot),
+      );
+    }
     drawHDimension(
       canvas,
       x1: overview.x(0),
       x2: overview.x(length),
       y: _totalDimY,
-      label: '${formatNumber(length)} mm',
+      label: formatNumber(length),
+      ticks: false,
     );
 
     final starts = _startDimensions(r);
@@ -251,22 +250,8 @@ class DistributionPainter extends CustomPainter {
     _paintTitle(canvas, 'Début', start);
     _paintTitle(canvas, 'Fin', end);
 
-    _paintPiece(
-      canvas,
-      r,
-      start,
-      clip: _brokenPane(start, breakRight: true),
-      capStart: true,
-      capEnd: false,
-    );
-    _paintPiece(
-      canvas,
-      r,
-      end,
-      clip: _brokenPane(end, breakRight: false),
-      capStart: false,
-      capEnd: true,
-    );
+    _paintPiece(canvas, r, start, clip: _brokenPane(start, breakRight: true));
+    _paintPiece(canvas, r, end, clip: _brokenPane(end, breakRight: false));
     for (final x in [start.rect.right, end.rect.left]) {
       drawBreakLine(
         canvas,
@@ -295,7 +280,12 @@ class DistributionPainter extends CustomPainter {
       y1: top,
       y2: bottom,
     );
-    final far = breakRight ? view.rect.left : view.rect.right;
+    // Le bord opposé porte le filet de la pièce, centré sur l'arête. Découpé
+    // pile dessus, il n'en reste que la moitié intérieure, et le coin se lit
+    // comme deux rectangles décalés d'une demi-épaisseur.
+    final far = breakRight
+        ? view.rect.left - kOutlineStroke
+        : view.rect.right + kOutlineStroke;
 
     final path = Path()..moveTo(far, top);
     for (final point in points) {
@@ -344,16 +334,15 @@ class DistributionPainter extends CustomPainter {
   /// se distinguerait que par son filet, et les marges hachurées perdraient le
   /// fond sur lequel elles se lisent.
   ///
-  /// Un tiret d'extrémité ne se pose que du côté où la pièce s'arrête vraiment
-  /// ([capStart], [capEnd]) : l'autre bord d'un panneau est une coupe, et c'est
-  /// le trait de rupture qui le dit — [clip] porte sa ligne brisée.
+  /// Le contour dit à lui seul où la pièce s'arrête : il court sur toute la
+  /// pièce, et [clip] n'en laisse voir que la part du panneau. Là où le panneau
+  /// coupe, c'est la ligne brisée du clip qui ferme la matière, et le trait de
+  /// rupture qui se pose dessus.
   void _paintPiece(
     Canvas canvas,
     DistributionResult r,
     SchemaViewport view, {
     required Path clip,
-    required bool capStart,
-    required bool capEnd,
   }) {
     canvas
       ..save()
@@ -378,14 +367,11 @@ class DistributionPainter extends CustomPainter {
       ..drawRect(
         rect,
         Paint()
-          ..color = AppColors.border
+          ..color = kSchemaInk
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 1,
+          ..strokeWidth = kOutlineStroke,
       )
       ..restore();
-
-    if (capStart) _paintEndTick(canvas, view, view.x(0));
-    if (capEnd) _paintEndTick(canvas, view, view.x(length));
   }
 
   /// Les marges, hachurées : réservées, jamais garnies.
@@ -397,8 +383,8 @@ class DistributionPainter extends CustomPainter {
     if (zones.isEmpty) return;
 
     final paint = Paint()
-      ..color = AppColors.label.withValues(alpha: 0.35)
-      ..strokeWidth = 1;
+      ..color = kExtensionLine
+      ..strokeWidth = kDimStroke;
 
     for (final (from, to) in zones) {
       // Détouré à la fenêtre avant de hachurer : au zoom, une marge hors champ
@@ -437,7 +423,7 @@ class DistributionPainter extends CustomPainter {
     final stroke = Paint()
       ..color = AppColors.accentDeep
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
+      ..strokeWidth = kDimStroke;
 
     for (final position in r.positions) {
       final left = view.x(position);
@@ -462,18 +448,6 @@ class DistributionPainter extends CustomPainter {
         canvas.drawLine(Offset(x, rect.top), Offset(x, rect.bottom), stroke);
       }
     }
-  }
-
-  /// Les extrémités — un tiret, jamais un élément. C'est ce contraste qui
-  /// porte la règle « les extrémités ne sont pas des points ».
-  void _paintEndTick(Canvas canvas, SchemaViewport view, double x) {
-    canvas.drawLine(
-      Offset(x, view.rect.top),
-      Offset(x, view.rect.bottom),
-      Paint()
-        ..color = AppColors.label
-        ..strokeWidth = _endTickStroke,
-    );
   }
 
   /// Le titre d'un panneau, centré au-dessus de lui.
@@ -507,8 +481,8 @@ class DistributionPainter extends CustomPainter {
     reaches.forEach(
       (x, lineY) => drawExtensionLine(
         canvas,
-        Offset(x, view.rect.bottom + 2),
-        Offset(x, lineY - kDimTick),
+        Offset(x, view.rect.bottom + kExtensionGap),
+        Offset(x, lineY + kExtensionOvershoot),
       ),
     );
 
@@ -524,19 +498,21 @@ class DistributionPainter extends CustomPainter {
         label: formatNumber(to - from),
         tight: true,
         labelSide: labelSide,
+        ticks: false,
         bounds: const Rect.fromLTWH(0, 0, _designWidth, _designHeight),
       );
     }
   }
 
-  /// Le rapport d'agrandissement des panneaux, écrit sous le dessin.
+  /// L'unité du dessin et le rapport d'agrandissement des panneaux, écrits
+  /// sous le dessin.
   ///
-  /// Sans lui, rien ne dit qu'un élément y est plus gros que sur la vue
-  /// d'ensemble. Un rapport chiffré plutôt qu'un « hors échelle » : il rend le
-  /// détail mesurable au lieu de seulement avertir qu'il ne l'est pas.
+  /// Sans le rapport, rien ne dit qu'un élément est plus gros dans un panneau
+  /// que sur la vue d'ensemble. Chiffré plutôt qu'un « hors échelle » : il rend
+  /// le détail mesurable au lieu de seulement avertir qu'il ne l'est pas.
   void _paintLegend(Canvas canvas, double zoom) {
     final text = schemaText(
-      zoom == 1 ? 'Détails à l’échelle' : 'Détails ×${formatNumber(zoom)}',
+      '$kUnitNote — Détails ×${formatNumber(zoom)}',
       size: 9,
     );
     text.paint(canvas, Offset((_designWidth - text.width) / 2, _legendTop));

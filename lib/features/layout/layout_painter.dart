@@ -10,9 +10,11 @@ import '../../core/painting.dart';
 /// Marges autour de la surface : de la place pour les cotes, à gauche et en
 /// haut, et un filet ailleurs.
 const double _leftMargin = 46;
-const double _topMargin = 26;
+const double _topMargin = 32;
 const double _rightMargin = 14;
-const double _bottomMargin = 14;
+
+/// Le bas porte la note d'unité, sous le dessin.
+const double _bottomMargin = 28;
 
 /// Marge de la vignette, où il n'y a plus de cote à loger : juste de quoi ne
 /// pas coller le contour de la surface au bord de la feuille.
@@ -83,7 +85,10 @@ class LayoutPainter extends CustomPainter {
     _paintSurface(canvas, origin, drawnWidth, drawnHeight);
     _paintElements(canvas, r, origin, scale);
     _paintSurfaceOutline(canvas, origin, drawnWidth, drawnHeight);
-    if (!compact) _paintDimensions(canvas, origin, drawnWidth, drawnHeight);
+    if (!compact) {
+      _paintDimensions(canvas, origin, drawnWidth, drawnHeight);
+      _paintNote(canvas, size);
+    }
   }
 
   /// Le fond de la surface — ce qui reste visible là où aucun élément ne
@@ -121,9 +126,9 @@ class LayoutPainter extends CustomPainter {
     // joints disparaissait, et avec elle le décalage d'une rangée à l'autre.
     // C'est le remplissage qui dit « à couper », pas le trait.
     final seam = Paint()
-      ..color = AppColors.label.withValues(alpha: 0.55)
+      ..color = kExtensionLine
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
+      ..strokeWidth = kDimStroke;
 
     for (final element in r.elements) {
       final rect = Rect.fromLTWH(
@@ -148,9 +153,9 @@ class LayoutPainter extends CustomPainter {
     canvas.drawRect(
       origin & Size(width, height),
       Paint()
-        ..color = AppColors.label
+        ..color = kSchemaInk
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5,
+        ..strokeWidth = kOutlineStroke,
     );
   }
 
@@ -162,42 +167,47 @@ class LayoutPainter extends CustomPainter {
     double height,
   ) {
     final dimY = origin.dy - 14;
-    drawExtensionLine(
-      canvas,
-      Offset(origin.dx, origin.dy),
-      Offset(origin.dx, dimY),
-    );
-    drawExtensionLine(
-      canvas,
-      Offset(origin.dx + width, origin.dy),
-      Offset(origin.dx + width, dimY),
-    );
+    for (final x in [origin.dx, origin.dx + width]) {
+      drawExtensionLine(
+        canvas,
+        Offset(x, origin.dy - kExtensionGap),
+        Offset(x, dimY - kExtensionOvershoot),
+      );
+    }
     drawHDimension(
       canvas,
       x1: origin.dx,
       x2: origin.dx + width,
       y: dimY,
-      label: '${formatNumber(input.surfaceX)} mm',
+      label: formatNumber(input.surfaceX),
+      ticks: false,
     );
 
     final dimX = origin.dx - 12;
-    drawExtensionLine(
-      canvas,
-      Offset(origin.dx, origin.dy),
-      Offset(dimX, origin.dy),
-    );
-    drawExtensionLine(
-      canvas,
-      Offset(origin.dx, origin.dy + height),
-      Offset(dimX, origin.dy + height),
-    );
+    for (final y in [origin.dy, origin.dy + height]) {
+      drawExtensionLine(
+        canvas,
+        Offset(origin.dx - kExtensionGap, y),
+        Offset(dimX - kExtensionOvershoot, y),
+      );
+    }
     drawVDimension(
       canvas,
       y1: origin.dy,
       y2: origin.dy + height,
       x: dimX,
-      label: '${formatNumber(input.surfaceY)} mm',
+      label: formatNumber(input.surfaceY),
       labelSide: -1,
+      ticks: false,
+    );
+  }
+
+  /// L'unité du dessin, une fois, sous la surface.
+  void _paintNote(Canvas canvas, Size size) {
+    final text = schemaText(kUnitNote, size: 9);
+    text.paint(
+      canvas,
+      Offset((size.width - text.width) / 2, size.height - text.height - 4),
     );
   }
 

@@ -10,8 +10,10 @@ import '../../core/painting.dart';
 /// Marges. La droite est large : c'est là que s'empilent les cotes verticales.
 const double _leftMargin = 16;
 const double _rightMargin = 128;
-const double _topMargin = 58;
-const double _bottomMargin = 18;
+const double _topMargin = 64;
+
+/// Le bas porte la note d'unité, sous le dessin.
+const double _bottomMargin = 32;
 
 /// Marge de la vignette, où plus aucune cote n'est posée autour du dessin.
 const double _compactMargin = 12;
@@ -96,6 +98,16 @@ class FastenersPainter extends CustomPainter {
     if (compact) return;
     _paintDiameters(canvas, r, centerX, top, halfOf);
     _paintHeights(canvas, r, left + drawnWidth, top, joint, scale);
+    _paintNote(canvas, size);
+  }
+
+  /// L'unité du dessin, une fois, sous la coupe.
+  void _paintNote(Canvas canvas, Size size) {
+    final text = schemaText(kUnitNote, size: 9);
+    text.paint(
+      canvas,
+      Offset((size.width - text.width) / 2, size.height - text.height - 4),
+    );
   }
 
   /// Les deux pièces en coupe : celle à fixer au-dessus, le support en dessous.
@@ -111,9 +123,9 @@ class FastenersPainter extends CustomPainter {
     // une pièce blanche dessus ne se distinguerait que par son filet.
     final fill = Paint()..color = AppColors.field;
     final stroke = Paint()
-      ..color = AppColors.border
+      ..color = kSchemaInk
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
+      ..strokeWidth = kOutlineStroke;
 
     for (final rect in [
       Rect.fromLTRB(left, top, left + width, joint),
@@ -139,9 +151,9 @@ class FastenersPainter extends CustomPainter {
   ) {
     final void_ = Paint()..color = AppColors.cardSurface;
     final edge = Paint()
-      ..color = AppColors.label.withValues(alpha: 0.55)
+      ..color = kSchemaInk
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
+      ..strokeWidth = kDimStroke;
 
     final holes = [
       // Lamage : du dessus jusqu'à la profondeur de tête.
@@ -219,8 +231,8 @@ class FastenersPainter extends CustomPainter {
       Offset(left, joint),
       Offset(left + width, joint),
       Paint()
-        ..color = AppColors.label
-        ..strokeWidth = 1.5,
+        ..color = kSchemaInk
+        ..strokeWidth = kOutlineStroke,
     );
   }
 
@@ -240,7 +252,7 @@ class FastenersPainter extends CustomPainter {
     ];
 
     for (final (i, (diameter, label)) in rows.indexed) {
-      final y = top - 44 + i * 15;
+      final y = top - 50 + i * 18;
       final half = halfOf(diameter);
       final placed = drawHDimension(
         canvas,
@@ -252,7 +264,13 @@ class FastenersPainter extends CustomPainter {
       // Cote trop étroite pour son chiffre : on le pose à droite plutôt que de
       // le perdre — c'est la valeur que l'utilisateur vient chercher.
       if (!placed) {
-        schemaText(label).paint(canvas, Offset(centerX + half + 6, y - 6));
+        final text = schemaText(label, color: kSchemaInk);
+        drawDimensionLabel(
+          canvas,
+          text,
+          centerX + half + 6 + text.width / 2,
+          y,
+        );
       }
     }
   }
