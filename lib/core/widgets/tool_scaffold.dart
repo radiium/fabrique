@@ -22,6 +22,7 @@ class ToolScaffold extends StatelessWidget {
     required this.results,
     this.visualizationAspectRatio = 16 / 10,
     this.inputFooter,
+    this.resultsFooter,
     this.onReset,
     this.canReset = true,
     super.key,
@@ -51,6 +52,13 @@ class ToolScaffold extends StatelessWidget {
   /// carte qui intercale les séparateurs, donc c'est elle qui doit voir les
   /// éléments un par un.
   final List<Widget> results;
+
+  /// Pied de la carte de résultats — le symétrique d'[inputFooter], posé de la
+  /// même façon hors du rembourrage et portant lui-même son filet.
+  ///
+  /// C'est la place d'[AppCardAction] : ce qu'on fait des résultats se propose
+  /// sous les résultats, une fois qu'ils sont lus.
+  final Widget? resultsFooter;
 
   /// Rend la saisie de l'outil à ses valeurs par défaut.
   ///
@@ -101,19 +109,25 @@ class ToolScaffold extends StatelessWidget {
   ///
   /// Les filets vont de bord à bord (la carte détoure), et jamais avant le
   /// premier ni après le dernier : ils séparent, ils n'encadrent pas.
-  Widget get _resultsCard => AppCard(
-    clipBehavior: Clip.antiAlias,
-    padding: EdgeInsets.zero,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final (i, result) in results.indexed) ...[
-          if (i > 0) const Divider(),
-          result,
+  Widget get _resultsCard {
+    final footer = resultsFooter;
+    return AppCard(
+      clipBehavior: Clip.antiAlias,
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final (i, result) in results.indexed) ...[
+            if (i > 0) const Divider(),
+            result,
+          ],
+          // Sans `Divider` : le pied porte son propre filet, comme celui de la
+          // carte de saisie, et deux traits superposés se verraient.
+          ?footer,
         ],
-      ],
-    ),
-  );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -6,6 +6,8 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Pour enregistrer le plan de votre calcul dans vos photos.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Fabrique</string>
 	<key>CFBundleExecutable</key>

@@ -72,3 +72,34 @@ abstract class DistributionFormState with _$DistributionFormState {
     endOffset: endOffset,
   );
 }
+
+/// Un couple de bords et son nom — la disposition telle qu'elle se choisit et
+/// telle qu'elle s'écrit.
+///
+/// Ici et non dans l'écran : le cartouche du plan exporté doit nommer la
+/// disposition retenue, et il ne peut pas aller la chercher dans une grille de
+/// tuiles. Même logique que le libellé porté par [DistributionMode].
+class EdgeChoice {
+  const EdgeChoice(this.start, this.end, this.label);
+
+  final DistributionEdge start;
+  final DistributionEdge end;
+  final String label;
+}
+
+/// Les quatre dispositions, dans l'ordre où elles se présentent à l'écran :
+/// la plus courante en tête.
+const List<EdgeChoice> kEdgeChoices = [
+  EdgeChoice(
+    DistributionEdge.element,
+    DistributionEdge.element,
+    'Élément – Élément',
+  ),
+  EdgeChoice(DistributionEdge.gap, DistributionEdge.gap, 'Écart – Écart'),
+  EdgeChoice(DistributionEdge.element, DistributionEdge.gap, 'Élément – Écart'),
+  EdgeChoice(DistributionEdge.gap, DistributionEdge.element, 'Écart – Élément'),
+];
+
+/// Le nom de la disposition bornée par [start] et [end].
+String edgeChoiceLabel(DistributionEdge start, DistributionEdge end) =>
+    kEdgeChoices.firstWhere((c) => c.start == start && c.end == end).label;

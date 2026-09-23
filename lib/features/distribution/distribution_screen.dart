@@ -20,6 +20,7 @@ import 'distribution_controller.dart';
 import 'distribution_form.dart';
 import 'distribution_help.dart';
 import 'distribution_painter.dart';
+import 'distribution_plan.dart';
 import 'distribution_schema.dart';
 
 class DistributionScreen extends ConsumerWidget {
@@ -161,6 +162,7 @@ class DistributionScreen extends ConsumerWidget {
           ),
         _PositionsTable(result: result, hasWidth: input.elementWidth > 0),
       ],
+      resultsFooter: const DistributionExportAction(),
     );
   }
 
@@ -241,34 +243,6 @@ class _AdvancedSettings extends StatelessWidget {
   }
 }
 
-/// Un couple de bords, son dessin et son nom.
-class _EdgeChoice {
-  const _EdgeChoice(this.start, this.end, this.label);
-
-  final DistributionEdge start;
-  final DistributionEdge end;
-  final String label;
-}
-
-const List<_EdgeChoice> _edgeChoices = [
-  _EdgeChoice(
-    DistributionEdge.element,
-    DistributionEdge.element,
-    'Élément – Élément',
-  ),
-  _EdgeChoice(DistributionEdge.gap, DistributionEdge.gap, 'Écart – Écart'),
-  _EdgeChoice(
-    DistributionEdge.element,
-    DistributionEdge.gap,
-    'Élément – Écart',
-  ),
-  _EdgeChoice(
-    DistributionEdge.gap,
-    DistributionEdge.element,
-    'Écart – Élément',
-  ),
-];
-
 /// Les quatre dispositions, en grille 2 × 2.
 ///
 /// Quatre segments sur une ligne donneraient 90 px par libellé : « Élément –
@@ -297,10 +271,10 @@ class _EdgeGrid extends StatelessWidget {
                 if (col > 0) const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: _EdgeTile(
-                    choice: _edgeChoices[row * 2 + col],
+                    choice: kEdgeChoices[row * 2 + col],
                     selected:
-                        _edgeChoices[row * 2 + col].start == startEdge &&
-                        _edgeChoices[row * 2 + col].end == endEdge,
+                        kEdgeChoices[row * 2 + col].start == startEdge &&
+                        kEdgeChoices[row * 2 + col].end == endEdge,
                     onTap: onChanged,
                   ),
                 ),
@@ -320,7 +294,7 @@ class _EdgeTile extends StatelessWidget {
     required this.onTap,
   });
 
-  final _EdgeChoice choice;
+  final EdgeChoice choice;
   final bool selected;
   final void Function(DistributionEdge start, DistributionEdge end) onTap;
 

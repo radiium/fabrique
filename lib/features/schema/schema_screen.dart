@@ -5,7 +5,7 @@ import '../../app/theme.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/haptics.dart';
 import '../converter/converter_schema.dart';
-import '../distribution/distribution_schema.dart';
+import '../distribution/distribution_plan.dart';
 import '../fasteners/fasteners_schema.dart';
 import '../layout/layout_schema.dart';
 import '../level/level_schema.dart';
@@ -108,6 +108,9 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
             tooltip: 'Pivoter le schéma',
             onPressed: _rotate,
           ),
+          // L'export en dernier : « ajuster » et « pivoter » règlent la vue,
+          // celui-ci fait quelque chose de ce qu'on regarde.
+          ..._exportActionsFor(widget.tool),
         ],
       ),
       body: InteractiveViewer(
@@ -129,10 +132,23 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
 }
 
 /// Le schéma de chaque outil, en pleine densité — c'est la page qui a la place.
+///
+/// La Répartition y montre son **plan** et non son seul schéma : la feuille
+/// A4, le dessin et le cartouche, c'est-à-dire exactement l'image qu'exporte
+/// le bouton d'à côté. Un aperçu qui montrerait autre chose que le fichier
+/// n'en serait pas un.
 Widget _schemaFor(Tool tool) => switch (tool) {
   Tool.layout => const LayoutSchema(),
   Tool.fasteners => const FastenersSchema(),
-  Tool.distribution => const DistributionSchema(),
+  Tool.distribution => const DistributionPlanView(),
   Tool.level => const LevelSchema(),
   Tool.converter => const ConverterSchema(),
+};
+
+/// L'export, pour les outils qui ont un plan — la Répartition seule pour
+/// l'instant. Les autres n'ont pas encore de cartouche, et un schéma sans
+/// cartouche ne se lit pas une fois sorti de l'app.
+List<Widget> _exportActionsFor(Tool tool) => switch (tool) {
+  Tool.distribution => const [DistributionExportAction(compact: true)],
+  _ => const [],
 };

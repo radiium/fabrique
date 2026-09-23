@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Enregistrement du plan dans la galerie (gal). Inutile à partir
+         d'Android 10, qui passe par le stockage cloisonné. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="29" />
     <application
         android:label="fabrique"
         android:name="${applicationName}"

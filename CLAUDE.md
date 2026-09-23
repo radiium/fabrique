@@ -6,7 +6,7 @@ Ce fichier guide Claude Code (claude.ai/code) lorsqu'il travaille sur ce dépôt
 
 `fabrique` est l'app **« Menuiserie »** — une app portfolio de 5 outils de calcul pour l'atelier, sur iOS, Android et Web.
 
-Le cœur de calcul est **entièrement implémenté et couvert** (182 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
+Le cœur de calcul est **entièrement implémenté et couvert** (192 tests : `test/core/calc/` pour le cœur, `test/features/` pour ce qui ne se vérifie qu'au rendu). Les **six écrans sont câblés** — les 5 outils plus les Réglages — les **six painters sont écrits**, et l'app est utilisable de bout en bout.
 
 La référence, ce sont les deux documents de spec :
 - **`SPECS.md`** — architecture + couche `core/calc` : signatures exactes, algorithmes et cas de test attendus pour chaque fonction pure. À lire avant d'implémenter un calcul.
@@ -22,7 +22,7 @@ flutter run                          # appareil / simulateur
 flutter run -d chrome                # web
 flutter analyze                      # doit rester propre
 dart format lib
-flutter test                         # 182 tests — cœur de calcul et écrans, sans appareil
+flutter test                         # 192 tests — cœur de calcul et écrans, sans appareil
 
 # codegen — obligatoire après toute modif d'une déclaration @freezed / @riverpod
 dart run build_runner build
@@ -39,7 +39,7 @@ Toolchain : Flutter 3.47 stable / Dart 3.13.
 
 ## Dépendances
 
-Installées conformément à `SPECS.md` §« Librairies externes » : `flutter_riverpod` 3.4 + `riverpod_annotation`/`riverpod_generator` 4.x, `go_router` 18, `sensors_plus` 7, `shared_preferences` 2.5, `freezed` 4 + `json_serializable`, `flutter_localizations` + `intl`, `build_runner`.
+Installées conformément à `SPECS.md` §« Librairies externes » : `flutter_riverpod` 3.4 + `riverpod_annotation`/`riverpod_generator` 4.x, `go_router` 18, `sensors_plus` 7, `shared_preferences` 2.5, `share_plus` 13, `gal` 2.3, `freezed` 4 + `json_serializable`, `flutter_localizations` + `intl`, `build_runner`.
 
 - **`riverpod_lint` / `custom_lint` sont volontairement absents** — leurs versions actuelles ne résolvent pas avec Riverpod 3.4 + `freezed_annotation` 3.x. À retenter plus tard ; ne pas les rajouter à l'aveugle.
 - Écartés au MVP : toute base locale (Isar/Drift) et toute DI tierce.
@@ -61,7 +61,10 @@ lib/core/format.dart   formatNumber() + kNoValue — rendu des nombres, partagé
 lib/core/painting.dart primitives de cotation partagées : SchemaViewport, cotes, flèches,
                        traits de rupture — espace objet / espace papier
 lib/core/persistence/  PreferencesStore + SettingsController global
-lib/core/widgets/      AppCard, ToolScaffold, ResultTile, NumberField, LabeledField,
+lib/core/export/       plan.dart (la feuille A4 + son cartouche) · plan_export.dart
+                       (rendu PNG, remise au système)
+lib/core/widgets/      AppCard, AppCardActions, ToolScaffold, ResultTile, NumberField,
+                       LabeledField,
                        AppSegmentedButton, AppSwitchField, AppDropdown, SchemaCard,
                        SchemaSheet, AppDisclosure, FieldHelp, HapticsScope
 lib/features/    home, settings, converter, distribution, layout, fasteners, level,
@@ -101,8 +104,41 @@ Une vue d'ensemble ne peut pas coter ce qu'elle montre. Sur une pièce de 1800 m
 - **Cotes serrées** : `drawHDimension(tight: true)` retourne les flèches vers l'extérieur et sort le chiffre de l'espace mesuré, au lieu de taire la cote. C'est la convention du dessin technique pour les petites cotes, et le seul moyen de coter 40 et 18 côte à côte. Le chiffre sort **hors de la pièce** (`labelSide`), vers la marge de la feuille : vers l'intérieur il tomberait au-delà des traits d'attache de l'étage voisin, qui descendent plus bas que lui. `bounds` le recale s'il n'y a pas la place.
 - **Espace objet / espace papier**, comme sur un plan. `SchemaViewport` (`core/painting.dart`) est le seul point de passage entre les millimètres de la pièce et la feuille : une place (`rect`), un millimètre d'origine, une échelle. Le schéma en pose **trois** — la vue d'ensemble, et les deux panneaux à l'échelle agrandie. Ce qui se lit (chiffres, flèches, épaisseurs de trait) reste en unités de feuille et ne traverse jamais une fenêtre, donc un chiffre garde sa taille quelle que soit l'échelle de la vue qu'il cote. C'est ce qui rend possibles deux échelles dans un même dessin sans que l'une impose sa réduction à l'autre.
 - **Le dessin ne se recompose pas avec le canvas, il s'y pose en entier.** Tout est coté dans une boîte fixe de 336 × 237, qu'une seule mise à l'échelle **uniforme** amène à la taille disponible, centrée. Sans ça, la largeur suivait le canvas et la hauteur suivait ses chiffres : le schéma s'étirait à chaque redimensionnement — invisible sur un téléphone, flagrant sur le web. Le `visualizationAspectRatio` de 4/3 est choisi pour que ce facteur vaille 1 sur la vignette d'un téléphone, là où l'outil se lit d'abord.
-- **Identique en vignette et en plein écran.** Il n'y a plus d'annotation secondaire à faire tomber : la vue d'ensemble ne porte qu'un chiffre, les panneaux portent tout le reste, et un panneau sans ses cotes serait un zoom vide. La vignette prend en échange un `visualizationAspectRatio` de 4/3 — le seul outil à relever le 16/10 commun.
+- **Identique en vignette et en plein écran.** Il n'y a plus d'annotation secondaire à faire tomber : la vue d'ensemble ne porte qu'un chiffre, les panneaux portent tout le reste, et un panneau sans ses cotes serait un zoom vide. La vignette prend en échange un `visualizationAspectRatio` de 4/3 — le seul outil à relever le 16/10 commun. Le plein écran, lui, pose ce même dessin sur une feuille A4 : voir « Exporter un plan ».
 - **Pas de numérotation des éléments.** Elle reliait le schéma à la table des positions, mais elle se tassait exactement là où la table devient utile.
+
+### Exporter un plan
+
+Le schéma de la Répartition sort de l'app en **PNG**, sur une feuille A4 à l'italienne portant son **cartouche** : le dessin, les résultats et la table des positions. `lib/core/export/` tient la feuille (`plan.dart`) et sa sortie (`plan_export.dart`) ; `distribution_plan.dart` décrit ce que le cartouche de l'outil écrit. Les quatre autres outils n'en ont pas encore.
+
+- **Le dessin seul ne s'exporte pas.** Les cotes vivent dans les tuiles de résultat, pas sur le schéma : partie sans elles, l'image demanderait au destinataire de deviner. Le cartouche est la convention du dessin technique, donc il n'y a rien à expliquer à qui le reçoit.
+- **La page plein écran montre le plan, pas le schéma.** C'est l'aperçu de ce qui sortira, au pixel près — les deux traversent `buildDistributionPlan`, point de construction unique du `PlanPainter`, exactement comme `*_schema.dart` l'est du painter d'outil. Un aperçu qui montrerait autre chose ferait découvrir le cartouche dans le fichier, une fois parti. Saisie refusée : il n'y a pas de plan, la page retombe sur le schéma seul et l'export s'éteint.
+- **Un seul format.** Le PNG s'ouvre partout, s'affiche dans une conversation sans être téléchargé, et s'imprime. Le PDF n'aurait apporté que l'impression, et aurait coûté une seconde dépendance pour un dessin qui resterait rastérisé de toute façon — il n'existe pas de pont entre un `Canvas` de `dart:ui` et la toile du paquet `pdf`.
+- **Le painter se rejoue hors de l'arbre de widgets**, à 2339 px de large (A4 à 200 dpi). Capturer la `RepaintBoundary` de l'écran rendrait au contraire la vignette telle qu'affichée : densité réduite, cadrage et résolution dépendant du téléphone de celui qui exporte.
+- **Cartouche en colonne le long du bord droit**, et non en bandeau bas. Une liste veut de la hauteur, et la zone de tracé garde ainsi des proportions proches de celles des schémas — en bandeau, un dessin en 5/4 se retrouvait cerné de blanc sur ses deux flancs.
+- **Le cartouche est un tableau réglé, pas une liste de valeurs.** Encre noir franc (`#000000`), une case par champ, intitulé en petites capitales interlettrées dans le coin et valeur en gras dessous, cadre de feuille à `1` et refends à `0,5` : les deux épaisseurs du dessin technique. C'est la forme qu'a le cartouche de n'importe quel plan, donc elle se lit sans qu'on l'explique — un panneau typographique, lui, se lisait comme une capture d'app. La case de tête ne porte **que le nom de l'outil** : ni nom d'app, ni sous-titre.
+- **Il ne porte que ce que le dessin ne cote pas.** La largeur totale, la largeur d'élément et les marges sont sur le schéma, aux mêmes chiffres exacts : les réécrire serait une redite. Seule exception, l'**écart souhaité** en mode « Calcul nombre » — le dessin ne porte que l'écart obtenu, et sans la cible rien n'explique le nombre trouvé. Il va donc dans les cases, juste avant sa réponse.
+- **Les hauteurs de case se dérivent, elles ne se posent pas à l'œil** : `_lineHeight` est figé, donc une boîte de ligne vaut exactement `taille × ce facteur` et la hauteur d'une case se calcule. Posée à la main, elle laissait la valeur passer sous son intitulé — et ça ne se voit qu'au rendu.
+- **La table des positions, c'est tout ou rien.** Vingt-deux lignes tiennent dans le cartouche ; au-delà, la table entière cède la place à `N positions — à copier depuis l'app`. Une liste tronquée sur un plan d'atelier, c'est une pièce percée en moins, et rien sur la feuille ne dirait qu'il en manque.
+- ⚠️ **La colonne des numéros doit tenir le plus grand numéro possible** (`kMaxDistributionCount`, trois chiffres). Sous-dimensionnée, une cellule ne tronque pas : elle **n'écrit rien**, et la colonne se vide en silence à partir de 10.
+- **La note du cartouche est réservée avant tout le reste.** C'est elle qui borne la table, et c'est là que va l'avertissement d'un outil — la seule ligne qu'on n'ait pas le droit de perdre sous un débordement. La Répartition n'en a pas ; le Calepinage y mettra son `%` de perte pessimiste.
+- **Tout est coté dans une boîte de 594 × 420**, qu'une seule mise à l'échelle uniforme amène à la taille disponible : même règle que les schémas, et c'est elle qui fait que l'aperçu vaut pour le fichier quelle que soit la taille de l'écran.
+- **`kPlanWidth` / `kPlanHeight` fixent aussi les tailles de texte du cartouche.** Elles sont réglées à la mesure sur une vraie police : y toucher, c'est rouvrir la question du nombre de positions qui tiennent.
+
+**Deux gestes, et « Exporter » passe devant.** Le pied de la carte de résultats (`ToolScaffold.resultsFooter`) porte deux boutons : « Exporter », qui enregistre le PNG dans les photos de l'appareil, et « Partager », qui ouvre la feuille du système.
+
+- **Le sélecteur de partage d'Android ne liste que des applications.** Il n'y a aucune action « enregistrer » dedans, contrairement à celui d'iOS qui porte « Enregistrer l'image » et « Enregistrer dans Fichiers ». Sans le premier bouton, on ne pourrait pas simplement garder son plan — seulement l'envoyer quelque part.
+- **Dans les photos, en un tap** (`gal`), sans boîte de dialogue : c'est le seul endroit que tout le monde sait rouvrir, et d'où le téléphone sait déjà imprimer et envoyer. Qui veut ranger ailleurs passe par « Partager », qui ouvre Fichiers et Drive.
+- **Pas de dossier au choix, et surtout pas de dossier mémorisé.** *Décidé après essai.* Une boîte « enregistrer sous » coûte trois taps à chaque export ; un chemin retenu dans les Réglages demanderait à Android une autorisation d'arbre persistante (`ACTION_OPEN_DOCUMENT_TREE` + `takePersistableUriPermission`, écriture par `DocumentsContract` — un `content://` ne s'écrit pas avec `dart:io`), donc un paquet de plus, des signets à portée de sécurité sur iOS, et un chemin qui périme quand le dossier disparaît. Pour un réglage, dans une app qui n'en expose qu'un.
+- **Le SnackBar porte « Voir »** (`Gal.open`, déjà dans le paquet) : un enregistrement qu'on ne peut pas vérifier envoie chercher le plan hors de l'app. La galerie s'ouvre sur son dernier élément, qui vient d'être écrit — pas sur le fichier lui-même. Viser le fichier demanderait `saver_gallery` (le seul à rendre l'URI écrite) **plus** `open_filex`, et ne marcherait **que sur Android** : sur iOS l'URI rendue est un `ph://<identifiant>` de PHAsset, qu'aucune API publique n'ouvre depuis une app tierce.
+- ⚠️ **`SnackBar` pose `persist = persist ?? action != null`.** Un SnackBar qui porte une action **ne se referme jamais tout seul**. Celui-ci est un accusé de réception, pas une question : il force `persist: false` pour garder son bouton *et* s'effacer. Invisible à la lecture, vérifié à l'usage.
+- **Pas de chemin d'enregistrement réglable.** *Écarté après chiffrage.* Il faudrait `saf_util` et `android_intent_plus`, tous deux Android uniquement, plus un réglage, plus un cas d'erreur (dossier supprimé, autorisation révoquée), plus un parcours iOS distinct. Il n'existe pas en Flutter de « dossier parcourable » qui se comporte pareil des deux côtés : Android passe par SAF, iOS par des signets à portée de sécurité. Photos est la seule destination identique sur les deux avec un seul petit paquet — c'est la raison du choix.
+- **Sans album.** Un album demanderait l'accès complet à la photothèque sur iOS, là où l'ajout seul se contente de `NSPhotoLibraryAddUsageDescription`. Sur Android, `WRITE_EXTERNAL_STORAGE` est déclaré avec `maxSdkVersion="29"` : au-delà, le stockage cloisonné n'en veut plus, et rien n'est demandé à l'utilisateur.
+- **Sur le web, « Exporter » télécharge** (`plan_download_web.dart`, import conditionnel sur `dart.library.js_interop`, souche qui lève ailleurs pour que `dart:js_interop` ne parte jamais dans un build mobile). Le navigateur n'a pas de galerie, et passer par la feuille de partage serait un détour : l'API Web Share ne prend les fichiers que sur une poignée de navigateurs, et là où elle manque l'utilisateur ne voit rien se produire. `package:web` était déjà là en transitif, donc zéro paquet de plus. Deux pièges de navigateur dans ce fichier : le lien doit être **dans** le document avant le clic (Firefox ignore un lien détaché), et l'URL objet ne se libère pas dans la foulée (Safari abandonne le téléchargement si la source disparaît trop tôt).
+- **Le pied plutôt que l'`AppBar`** sur l'écran de l'outil : on exporte **après** avoir lu ses résultats, et c'est là qu'on arrive en fin de lecture. L'`AppBar` reste à « réinitialiser », l'action à rendre difficile.
+- **Une seule action sur la page plein écran**, l'enregistrement : « ajuster » et « pivoter » occupent déjà la barre, et partager reste à un écran de distance.
+
+Tout s'éteint sur une saisie refusée, rien ne disparaît.
 
 ### Flux de données d'un outil
 
@@ -152,6 +188,10 @@ Trois points à ne pas défaire :
 Contexte atelier : fort contraste, gros texte, cibles tactiles ≥ 48 px — champs, sélecteurs, dropdowns, lignes de switch et boutons − / + font tous `kFieldHeight` (48 px, soit exactement la cible tactile minimale) et écrivent en `kControlFontSize` (18 px), actions principales atteignables d'une main en bas d'écran. Thème clair uniquement, un seul accent chaud bois/ambre (`AppColors.accent`), orange (`AppColors.cut`) réservé aux pièces à couper dans les schémas, chiffres tabulaires pour les résultats, résultats copiables d'un tap. `ToolScaffold` porte la règle de layout : saisie / visualisation / résultats empilés sur mobile, deux colonnes au-delà de `kWideBreakpoint` (800 px). La visualisation est la vedette de chaque écran et ne doit jamais passer sous la ligne de flottaison sur mobile.
 
 `ToolScaffold.inputFooter` est le pied de la carte de saisie, posé **hors** de son rembourrage : la carte passe alors en `padding: zero` + `Clip.antiAlias`, le corps reprend les 16 px, et le pied touche les bords gauche, droit et bas. C'est la place d'`AppDisclosure`, qui porte lui-même la marge horizontale de la carte et le filet (`AppColors.cardBorder`) collé au-dessus de son en-tête — un panneau bordé *et* marginé ferait une carte dans la carte. Sous garde de test (`distribution_screen_test.dart`).
+
+`resultsFooter` est son symétrique en bas de pile, pour ce qu'on fait des résultats une fois lus. Même pose, même filet, et c'est la place d'`AppCardActions` : une rangée de boutons pleins à parts égales, hauts de `kFieldHeight` et écrits en `controlTextStyle`. Aucun `Divider` ne l'en sépare — le pied porte son propre filet, et deux traits superposés se verraient.
+
+Ces boutons sont **pleins, en `AppColors.accentDeep` sur texte blanc** : c'est la pastille du sélecteur segmenté, donc la seule couleur de l'app qui dise déjà « ceci est actif ». Une ligne de texte discrète, à cette place, se lirait comme une note de bas de carte. **L'icône ne s'affiche que si elle tient** — mesurée au rendu contre la largeur réelle du bouton, le libellé passant d'abord : c'est lui qui nomme l'action. Sous garde de test, comme tout libellé qui partage une largeur (`distribution_plan_test.dart`).
 
 ### « Réinitialiser » vit dans l'`AppBar`, pas dans une barre basse
 
@@ -271,6 +311,7 @@ Ces derniers ont le droit d'être longs : c'est ce qui empêche de refaire l'err
 ## Reste à faire
 
 ### 1. Câblages manquants
+- **Le plan des quatre autres outils.** `core/export/` est générique : il prend un painter et une description de cartouche. Il manque un `*_plan.dart` par outil, plus les deux points d'entrée (`resultsFooter` et l'action de l'`AppBar` du plein écran, toutes deux déjà branchées dans `schema_screen.dart` par un `switch` sur `Tool`). Le Niveau en est exclu : un flux capteur figé n'est pas un plan. Deux choses à vérifier au passage : le pied du cartouche doit porter l'avertissement de l'outil (le % de perte pessimiste du Calepinage, l'« indicatif » des coefficients d'avant-trou), et un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous de la zone de tracé.
 - **Densité de vignette pour le Convertisseur** : `RulerPainter` et `ComparisonPainter` sont les deux seuls à ne pas prendre de `compact`. Ils se régulent seuls (graduations secondaires au-dessus de 5 px, libellé qui chevauche sauté), donc rien ne presse, mais leur vignette et leur plein écran sont identiques à l'échelle près.
 
 ### 2. Calepinage : la carte de saisie déborde sur mobile
