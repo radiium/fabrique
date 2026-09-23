@@ -200,9 +200,12 @@ const int kMaxDistributionCount = 500;
 - `kMaxDistributionCount` borne les deux modes.
 
 ## 3. Layout (calepinage) — `layout.dart`
-**But :** poser des éléments rectangulaires identiques sur une surface rectangulaire (espacement optionnel, inversion d'orientation, décalage de joints). Produit la **géométrie complète**.
+**But :** poser des éléments rectangulaires identiques sur une surface rectangulaire (espacement optionnel, jeu périphérique, inversion d'orientation, décalage de joints, équilibrage des rangées de bord). Produit la **géométrie complète**.
 
 **Convention d'axes** — surface `sx`(X)/`sy`(Y). Les éléments s'alignent le long d'un **axe de pose**, les rangées s'empilent perpendiculairement, et le décalage décale le **départ de rangée le long de l'axe de pose**. Sans `flip`, l'axe de pose est **X** et les rangées montent selon **Y** ; avec `flip`, tout le motif pivote d'un quart de tour — décalage compris.
+
+**Surface et zone de pose** — `perimeterGap` se retire sur les **quatre bords** : la zone de pose fait `sx − 2p` par `sy − 2p` et démarre en `(p, p)`. `surfaceArea` reste l'aire de la surface entière : le jeu périphérique ne rétrécit pas la pièce, il recule la pose. Toutes les étapes ci-dessous travaillent dans la zone de pose, jamais sur la cote brute.
+
 ```dart
 @freezed
 class LayoutInput {
@@ -210,6 +213,8 @@ class LayoutInput {
     required double surfaceX, required double surfaceY,
     required double elementX, required double elementY,
     @Default(0) double gapX, @Default(0) double gapY,
+    @Default(0) double perimeterGap,         // retiré sur les 4 bords
+    @Default(false) bool balanceRows,        // ne pas finir sur un filet
     @Default(false) bool flip,               // pivote le motif d'un quart de tour
     @Default(JointOffset.half) JointOffset offset,
   }) = _LayoutInput;
@@ -229,22 +234,46 @@ class LayoutResult {
   const factory LayoutResult({
     required List<PlacedElement> elements,
     required int fullCount, required int cutCount,
-    required int totalCount,      // fullCount + cutCount (stock v1, sans réemploi)
+    required int totalCount,      // fullCount + cutCount (stock v2, sans réemploi)
     required double surfaceArea, required double coveredArea,
     required double wastePercent,
+    double? balancedRow,          // épaisseur commune des 2 rangées de bord, si équilibrage
+    double? balancedEnd,          // longueur commune des 2 pièces de bout, si équilibrage
   }) = _LayoutResult;
 }
 
+/// Borne de volume — sans elle, un élément de 1 mm sur 3 m × 2 m demande
+/// six millions de rectangles et fige l'app avant d'avoir dessiné.
+const int kMaxLayoutElements = 5000;
+
 LayoutResult computeLayout(LayoutInput input);
 ```
-**Algo (v1 — honnête simple, sans réemploi des chutes)**
+
+**Algo (v2 — sans réemploi des chutes)**
 1. Repère de pose : `u` = axe d'alignement des éléments (et du décalage), `v` = axe d'empilement des rangées. `su,sv = flip ? (sy,sx) : (sx,sy)` ; `eu,ev = elementX,elementY` ; `gapU,gapV = flip ? (gapY,gapX) : (gapX,gapY)` — les jeux restent définis à l'écran. Les étapes suivantes travaillent en `(u,v)` puis reviennent au repère surface.
-2. **Rangées (v)** : bandes d'épaisseur `ev` + `gapV`, de 0 à `sv`. Dernière possiblement rabotée (`ev'<ev`) → tous ses éléments `isCut`.
-3. **Départ de rangée** : `step = {straight:0, half:eu/2, third:eu/3}` ; `startU = -((rowIndex*step) % eu)`. Si `startU<0`, 1re pièce coupée.
-4. **Dans la rangée (u)** : éléments de longueur `eu` + `gapU` depuis `startU`, **clippés** à `[0,su]`. Pièce clippée → `isCut`.
-5. Dériver : `fullCount`/`cutCount`/`totalCount` ; `coveredArea = Σ(w*h)` ; `surfaceArea = sx*sy` ; `elementArea = eu*ev` ; `wastePercent = (totalCount*elementArea - coveredArea)/(totalCount*elementArea)*100`.
-- **v2** : réemploi de la chute de début de rangée → recalcule `totalCount`/`waste`.
-- Élément ≥ surface, dims ≤ 0 → exception.
+2. **Zone de pose** : `su,sv` diminués de `2·perimeterGap`, origine décalée de `perimeterGap` sur les deux axes.
+3. **Garde de volume** : estimer rangées × éléments par rangée ; au-delà de `kMaxLayoutElements`, exception.
+4. **Rangées (v)** : bandes d'épaisseur `ev` + `gapV`, de 0 à `sv`. Dernière possiblement rabotée (`ev'<ev`) → tous ses éléments `isCut`.
+5. **Équilibrage (v)** si `balanceRows` — voir ci-dessous. Il remplace le pavé de rangées de l'étape 4 par `n−1` rangées pleines encadrées de deux rangées de bord identiques.
+6. **Départ de rangée** : `step = {straight:0, half:eu/2, third:eu/3}` ; `startU = -((rowIndex*step) % eu)`. Si `startU<0`, 1re pièce coupée.
+7. **Équilibrage (u)** si `balanceRows` **et** `offset == straight` : même calcul sur l'axe de pose, exprimé comme un `startU = -(eu - balancedEnd)` commun à toutes les rangées.
+8. **Dans la rangée (u)** : éléments de longueur `eu` + `gapU` depuis `startU`, **clippés** à la zone de pose. Pièce clippée → `isCut`.
+9. Dériver : `fullCount`/`cutCount`/`totalCount` ; `coveredArea = Σ(w*h)` ; `surfaceArea = sx*sy` ; `elementArea = eu*ev` ; `wastePercent = (totalCount*elementArea - coveredArea)/(totalCount*elementArea)*100`.
+
+**Équilibrage des rangées de bord (`balanceRows`)** — ne jamais finir sur un filet. Sur un axe de portée `s` (zone de pose), de pas `e + g` :
+1. `n = ⌊(s − e)/(e + g)⌋ + 1` rangées pleines ; reliquat `r = s − n·(e + g)`, qui est l'épaisseur de la rangée rabotée.
+2. `r ≤ 0` (ça tombe juste), `r ≥ e/2` (une rangée de bord normale, pas un filet) ou `n < 2` (rien à sacrifier) → **on ne touche à rien**. C'est cette sortie qui en fait une règle et non un recentrage systématique.
+3. Sinon : on retire une rangée pleine et on partage `e + r` entre les deux rangées de bord, qui reçoivent `(e + r)/2` chacune.
+- **Invariant** : après équilibrage, `e/2 ≤ (e + r)/2 < 3e/4`. La règle garantit exactement ce que son seuil énonce, donc elle se vérifie à l'œil sur le schéma.
+- **L'axe d'empilement est toujours équilibré, l'axe de pose seulement en décalage droit.** Deux raisons, l'une métier et l'autre mécanique : avec un décalage, chaque rangée démarre ailleurs, donc il n'existe plus de pièce de bout commune à équilibrer et le faire rangée par rangée détruirait l'alignement des joints qu'on vient de construire ; et l'équilibrage de l'axe de pose s'exprime *par* `startU`, que le décalage possède déjà.
+- **L'équilibrage ne consomme pas un élément de plus.** Contre-intuitif, donc épinglé par un test : il remplace `n` bandes pleines + une rabotée par `n−1` pleines + deux de bord, soit le même nombre de bandes couvrant la même aire. `totalCount`, `coveredArea` et `wastePercent` sont **inchangés** ; seul `cutCount` monte, c'est-à-dire le travail de scie. Le coût matière n'apparaîtra qu'en v3 : deux petites chutes se réemploient moins bien qu'une grande.
+- **Ne pas confondre avec le recentrage.** Décaler le motif d'une demi-portion pour partager `r` entre les deux bords ne sacrifie aucune rangée, mais produit **deux** filets de `r/2` au lieu d'un de `r`. Le sacrifice d'une rangée est le cœur de la règle, pas un détail d'implémentation.
+
+**Presets** — le sélecteur de matériau de l'écran ne fait que **pré-remplir** un `LayoutInput` (format, jeux, jeu périphérique, décalage recommandé). Il n'entre pas dans `core/calc` et ne branche rien : le calcul reste identique quel que soit le matériau, ce qui est la raison d'être d'un outil unique. La table vit donc côté feature.
+
+- Élément ≥ zone de pose, dims ≤ 0, jeu ou jeu périphérique négatif, `2·perimeterGap` ≥ surface, volume > `kMaxLayoutElements` → exception.
+- **Les messages de refus nomment les cotes comme l'écran** (`la largeur de surface`, jamais `Surface X`) et portent les chiffres : l'élément et la zone à couvrir face à face, l'ordre de grandeur pour un dépassement de volume. Un refus est ici la sortie la plus utile de l'outil, pas un cas limite — sous test.
+- **v3** : réemploi de la chute de début de rangée et trait de scie → recalcule `totalCount`/`waste`, et produit une liste de débit. Reporté : sur une surface forcément rectangulaire et sans ouvertures, le `%` de perte est déjà approché en amont, et le réemploi ne se voit pas sur le dessin.
 
 **Cas de test**
 - Pile-poil : 1000×1000, élém 100×1000, straight → 10 pleines, 0 coupe, waste 0.
@@ -253,7 +282,13 @@ LayoutResult computeLayout(LayoutInput input);
 - Décalage ½ : rangées décalées → 2 coupes/rangée.
 - Flip : `flip:true` pivote le motif — les rangées s'empilent selon X, et le décalage joue le long de Y.
 - Espacement : `gapX:5` réduit les éléments/rangée ; `coveredArea` exclut les jeux.
-- Invalides : élément 0, surface négative → exception.
+- Jeu périphérique : 1020×1000, `perimeterGap:10`, élém 100×980 → 10 pleines, 0 coupe ; `surfaceArea` vaut toujours 1 020 000 mm², et le premier élément démarre en `(10,10)`.
+- Équilibrage non déclenché : 1000×950, élém 1000×200, `balanceRows` → reliquat 150 ≥ 100, rien ne bouge, `balancedRow` nul.
+- Équilibrage déclenché : 1000×1010, élém 1000×200, `balanceRows` → reliquat 10 < 100 → 4 pleines + 2 rangées de bord de 105 ; `balancedRow` vaut 105 et la somme redonne 1010.
+- Équilibrage impossible : 1000×250, élém 1000×200 → `n = 1`, on ne sacrifie pas la seule rangée pleine.
+- Équilibrage et décalage : avec `offset != straight`, `balancedEnd` reste nul même sous `balanceRows`.
+- Volume : élément de 1×1 sur 3000×2000 → exception `kMaxLayoutElements`.
+- Invalides : élément 0, surface négative, jeu périphérique qui mange toute la surface → exception.
 
 ## 4. Fasteners (avant-trous / vis) — `fasteners.dart`
 **But :** depuis matériau + Ø vis + épaisseur pièce à fixer, proposer avant-trous, lamage, longueur de vis.

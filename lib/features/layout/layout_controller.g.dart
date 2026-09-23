@@ -41,7 +41,7 @@ final class LayoutFormProvider
   }
 }
 
-String _$layoutFormHash() => r'6c79fefbee2d7642d220ca0bbdfacdae48d2940d';
+String _$layoutFormHash() => r'451b6f867fc5bb23d60232a027ad0a84c160e22a';
 
 abstract class _$LayoutForm extends $Notifier<LayoutInput> {
   LayoutInput build();
@@ -65,8 +65,8 @@ abstract class _$LayoutForm extends $Notifier<LayoutInput> {
 final layoutResultProvider = LayoutResultProvider._();
 
 final class LayoutResultProvider
-    extends $FunctionalProvider<LayoutResult?, LayoutResult?, LayoutResult?>
-    with $Provider<LayoutResult?> {
+    extends $FunctionalProvider<LayoutOutcome, LayoutOutcome, LayoutOutcome>
+    with $Provider<LayoutOutcome> {
   LayoutResultProvider._()
     : super(
         from: null,
@@ -83,21 +83,21 @@ final class LayoutResultProvider
 
   @$internal
   @override
-  $ProviderElement<LayoutResult?> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<LayoutOutcome> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  LayoutResult? create(Ref ref) {
+  LayoutOutcome create(Ref ref) {
     return layoutResult(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(LayoutResult? value) {
+  Override overrideWithValue(LayoutOutcome value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<LayoutResult?>(value),
+      providerOverride: $SyncValueProvider<LayoutOutcome>(value),
     );
   }
 }
 
-String _$layoutResultHash() => r'465861ca074301a909bdfd79a2272f5f957b7257';
+String _$layoutResultHash() => r'b23ebfcf73d63c3b078966cf15caaa34a6128976';

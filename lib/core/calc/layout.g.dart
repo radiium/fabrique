@@ -13,6 +13,8 @@ _LayoutInput _$LayoutInputFromJson(Map<String, dynamic> json) => _LayoutInput(
   elementY: (json['elementY'] as num).toDouble(),
   gapX: (json['gapX'] as num?)?.toDouble() ?? 0.0,
   gapY: (json['gapY'] as num?)?.toDouble() ?? 0.0,
+  perimeterGap: (json['perimeterGap'] as num?)?.toDouble() ?? 0.0,
+  balanceRows: json['balanceRows'] as bool? ?? false,
   flip: json['flip'] as bool? ?? false,
   offset:
       $enumDecodeNullable(_$JointOffsetEnumMap, json['offset']) ??
@@ -27,6 +29,8 @@ Map<String, dynamic> _$LayoutInputToJson(_LayoutInput instance) =>
       'elementY': instance.elementY,
       'gapX': instance.gapX,
       'gapY': instance.gapY,
+      'perimeterGap': instance.perimeterGap,
+      'balanceRows': instance.balanceRows,
       'flip': instance.flip,
       'offset': _$JointOffsetEnumMap[instance.offset]!,
     };

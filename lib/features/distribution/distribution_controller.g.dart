@@ -44,7 +44,7 @@ final class DistributionFormProvider
   }
 }
 
-String _$distributionFormHash() => r'7b97fc60fe7a8eb25ae9ecb915ac26210206b74b';
+String _$distributionFormHash() => r'a33686d603d8aec882cf04225c589e198f586423';
 
 /// Tient la saisie. Une méthode par champ, qui fait `copyWith`.
 

@@ -14,6 +14,12 @@ import 'haptics.dart';
 /// Sinon on cache à l'utilisateur la raison d'un résultat qui le surprend, et
 /// le repli devient un piège au lieu d'un rangement.
 ///
+/// [modified] est l'autre moitié de cette règle : une valeur repliée qui n'est
+/// plus à son défaut *agit*, et rien à l'écran ne le dirait. La pastille le
+/// dit — sans changer la largeur du titre, et sans forcer l'ouverture. Elle
+/// devient indispensable dès qu'autre chose que le doigt de l'utilisateur
+/// remplit un champ replié, un preset par exemple.
+///
 /// Se pose **en pied de carte** ([ToolScaffold.inputFooter]), de bord à bord :
 /// aucune marge à gauche, à droite ni en bas, et un filet collé au-dessus de
 /// l'en-tête. C'est ce qui le distingue d'un contrôle de plus dans la pile —
@@ -26,6 +32,7 @@ class AppDisclosure extends StatefulWidget {
     required this.child,
     this.icon = Icons.tune,
     this.initiallyExpanded = false,
+    this.modified = false,
     super.key,
   });
 
@@ -34,7 +41,14 @@ class AppDisclosure extends StatefulWidget {
   final IconData icon;
   final bool initiallyExpanded;
 
+  /// Au moins une valeur repliée n'est plus à son défaut.
+  final bool modified;
+
   static const Duration _duration = Duration(milliseconds: 180);
+
+  /// Assez pour se voir à bout de bras, assez peu pour ne pas concurrencer le
+  /// chevron qui, lui, est l'affordance du panneau.
+  static const double _dotSize = 8;
 
   /// Marge intérieure — celle de la carte qui le porte ([AppCard.padding]),
   /// puisqu'il en remplace le rembourrage sur toute sa hauteur.
@@ -91,6 +105,20 @@ class _AppDisclosureState extends State<AppDisclosure> {
                           ),
                         ),
                       ),
+                      if (widget.modified) ...[
+                        Semantics(
+                          label: 'réglages modifiés',
+                          child: Container(
+                            width: AppDisclosure._dotSize,
+                            height: AppDisclosure._dotSize,
+                            decoration: const BoxDecoration(
+                              color: AppColors.accent,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                      ],
                       AnimatedRotation(
                         turns: _expanded ? 0.5 : 0,
                         duration: AppDisclosure._duration,

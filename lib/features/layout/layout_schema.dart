@@ -19,7 +19,10 @@ class LayoutSchema extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomPaint(
       painter: LayoutPainter(
-        result: ref.watch(layoutResultProvider),
+        result: switch (ref.watch(layoutResultProvider)) {
+          LayoutReady(:final result) => result,
+          LayoutFailure() => null,
+        },
         input: ref.watch(layoutFormProvider),
         compact: compact,
       ),

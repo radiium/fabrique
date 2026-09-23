@@ -83,6 +83,7 @@ class LayoutPainter extends CustomPainter {
     );
 
     _paintSurface(canvas, origin, drawnWidth, drawnHeight);
+    _paintPerimeter(canvas, origin, drawnWidth, drawnHeight, scale);
     _paintElements(canvas, r, origin, scale);
     _paintSurfaceOutline(canvas, origin, drawnWidth, drawnHeight);
     if (!compact) {
@@ -104,6 +105,48 @@ class LayoutPainter extends CustomPainter {
       origin & Size(width, height),
       Paint()..color = AppColors.cardSurface,
     );
+  }
+
+  /// Le jeu périphérique, hachuré : réservé, jamais garni.
+  ///
+  /// Même hachure que les marges de la Répartition, et pour la même raison —
+  /// c'est de la surface qu'on a décidé de ne pas couvrir, pas de la matière.
+  void _paintPerimeter(
+    Canvas canvas,
+    Offset origin,
+    double width,
+    double height,
+    double scale,
+  ) {
+    final band = input.perimeterGap * scale;
+    if (band <= 0) return;
+
+    final outer = origin & Size(width, height);
+    final inner = outer.deflate(band);
+    if (inner.isEmpty) return;
+
+    final paint = Paint()
+      ..color = kExtensionLine
+      ..strokeWidth = kDimStroke;
+
+    canvas
+      ..save()
+      ..clipPath(
+        Path.combine(
+          PathOperation.difference,
+          Path()..addRect(outer),
+          Path()..addRect(inner),
+        ),
+      );
+    // Hachures à 45°, posées large puis détourées par le clip.
+    for (var x = outer.left - outer.height; x < outer.right; x += 6) {
+      canvas.drawLine(
+        Offset(x, outer.bottom),
+        Offset(x + outer.height, outer.top),
+        paint,
+      );
+    }
+    canvas.restore();
   }
 
   void _paintElements(

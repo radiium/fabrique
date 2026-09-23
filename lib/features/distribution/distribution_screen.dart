@@ -9,6 +9,7 @@ import '../../core/calc/distribution.dart';
 import '../../core/format.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/app_disclosure.dart';
+import '../../core/widgets/error_banner.dart';
 import '../../core/widgets/app_segmented_button.dart';
 import '../../core/widgets/haptics.dart';
 import '../../core/widgets/labeled_field.dart';
@@ -117,12 +118,13 @@ class DistributionScreen extends ConsumerWidget {
           // écrans plus bas que le champ fautif.
           if (outcome is DistributionFailure) ...[
             const SizedBox(height: AppSpacing.md),
-            _ErrorBanner(message: outcome.message),
+            ErrorBanner(message: outcome.message),
           ],
         ],
       ),
       inputFooter: AppDisclosure(
         title: 'Réglages avancés',
+        modified: _advancedModified(input),
         child: _AdvancedSettings(input: input, form: form),
       ),
       // Plus haute que le 16/10 commun : la vue d'ensemble et les deux
@@ -494,49 +496,6 @@ class _AdoptButton extends StatelessWidget {
   }
 }
 
-/// Le refus du cœur, affiché tel quel.
-///
-/// Dans la couleur d'erreur du thème — le même orange que la bordure d'un
-/// champ en faute, et non un rouge de plus dans une app qui n'a qu'un accent.
-class _ErrorBanner extends StatelessWidget {
-  const _ErrorBanner({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = theme.colorScheme.error;
-
-    return Semantics(
-      liveRegion: true,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadii.field),
-          border: Border.all(color: color.withValues(alpha: 0.4)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.sm),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.error_outline, size: 20, color: color),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  message,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: color),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// Les cotes de pose en table numérotée plutôt qu'en ruban `250 · 500 · 750`.
 ///
 /// Le geste réel, c'est lire une position, tracer, lire la suivante, tracer —
@@ -746,6 +705,17 @@ class _PositionsTable extends StatelessWidget {
     );
   }
 }
+
+/// Au moins un réglage replié n'est plus à son défaut.
+///
+/// Comparé champ par champ et non sur l'état entier : ce qui est resté visible
+/// dans la carte n'a rien à voir avec la pastille du panneau.
+bool _advancedModified(DistributionFormState input) =>
+    input.startEdge != kDistributionDefaults.startEdge ||
+    input.endEdge != kDistributionDefaults.endEdge ||
+    input.symmetricOffsets != kDistributionDefaults.symmetricOffsets ||
+    input.startOffset != kDistributionDefaults.startOffset ||
+    input.endOffset != kDistributionDefaults.endOffset;
 
 /// Deux champs de front. Aucun des deux ne porte de boutons − / + : à cette
 /// largeur ils tiennent, là où une paire de champs à pas serait illisible sur
