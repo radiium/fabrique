@@ -93,14 +93,17 @@ class ToolScaffold extends StatelessWidget {
     );
   }
 
-  /// Les [ResultTile] portent déjà leur marge horizontale : la carte ne pose
-  /// que le rythme vertical, sinon la valeur se décale du libellé de saisie.
+  /// Les [ResultTile] portent tout leur rembourrage : la carte n'en pose aucun.
+  ///
+  /// Sans ça, la première et la dernière tuile prenaient un blanc en plus que
+  /// les autres, et la zone tapable s'arrêtait avant le bord de la carte —
+  /// alors que le tap pour copier doit attraper toute la ligne.
   ///
   /// Les filets vont de bord à bord (la carte détoure), et jamais avant le
   /// premier ni après le dernier : ils séparent, ils n'encadrent pas.
   Widget get _resultsCard => AppCard(
     clipBehavior: Clip.antiAlias,
-    padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+    padding: EdgeInsets.zero,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

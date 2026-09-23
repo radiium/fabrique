@@ -33,7 +33,9 @@ class ResultTile extends StatelessWidget {
     final theme = Theme.of(context);
     return InkWell(
       onTap: () => _copy(context),
-      borderRadius: BorderRadius.circular(AppRadii.field),
+      // Pas de rayon : la tuile touche les bords de sa carte, donc une encre
+      // arrondie laisserait quatre coins de fond nu à chaque appui. Les coins
+      // du haut et du bas sont déjà détourés par la carte elle-même.
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
