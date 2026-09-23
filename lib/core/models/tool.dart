@@ -5,8 +5,8 @@
 /// que c'est un service qu'on ouvre en passant, pas une destination.
 enum Tool {
   layout('layout', 'Calepinage', 'Pose sur surface, % de perte'),
-  fasteners('fasteners', 'Avant-trous & vis', 'Perçage, lamage, longueur'),
   distribution('distribution', 'Répartition', 'Écart ou nombre d’éléments'),
+  fasteners('fasteners', 'Avant-trous & vis', 'Perçage, lamage, longueur'),
   level('level', 'Niveau', 'Bulle et inclinomètre'),
   converter('converter', 'Convertisseur', 'Cinq grandeurs, unités d’atelier');
 
