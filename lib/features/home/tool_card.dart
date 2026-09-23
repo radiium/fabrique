@@ -34,12 +34,22 @@ class ToolCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(tool.label, style: theme.textTheme.titleMedium),
+                Text(
+                  tool.label,
+                  // Le nom de l'outil est le texte qu'on vise depuis l'établi,
+                  // téléphone posé : il se lit en `titleLarge`, un cran
+                  // au-dessus des contrôles (18 px), pas en dessous.
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 Text(
                   tool.subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.label,
+                  ),
                 ),
               ],
             ),

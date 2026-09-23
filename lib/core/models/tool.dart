@@ -6,14 +6,21 @@
 enum Tool {
   layout('layout', 'Calepinage', 'Pose sur surface, % de perte'),
   fasteners('fasteners', 'Avant-trous & vis', 'Perçage, lamage, longueur'),
-  distribution('distribution', 'Répartition', 'Points équidistants'),
+  distribution('distribution', 'Répartition', 'Écart ou nombre d’éléments'),
   level('level', 'Niveau', 'Bulle et inclinomètre'),
-  converter('converter', 'Convertisseur', 'Longueur, volume, masse, pression');
+  converter('converter', 'Convertisseur', 'Cinq grandeurs, unités d’atelier');
 
   const Tool(this.id, this.label, this.subtitle);
 
   final String id;
   final String label;
+
+  /// Une ligne de gloss sous le nom, sur la carte d'accueil.
+  ///
+  /// Rendu sur une seule ligne, tronqué en silence : à 14 px il reste environ
+  /// 250 px sur un écran de 400, soit ~34 caractères. Une énumération de cinq
+  /// termes n'y tient pas — d'où le sous-titre du convertisseur, qui nomme le
+  /// tri des unités plutôt que les grandeurs une à une.
   final String subtitle;
 
   static Tool? fromId(String id) {
