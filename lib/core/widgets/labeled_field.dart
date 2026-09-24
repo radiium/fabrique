@@ -64,10 +64,10 @@ class LabeledField extends StatelessWidget {
           Text(label, style: labelStyle),
         const SizedBox(height: AppSpacing.sm),
         child,
-        if (help != null) ...[
+        if (help case final help?) ...[
           const SizedBox(height: AppSpacing.xs),
           Text(
-            help!,
+            help,
             style: theme.textTheme.bodySmall?.copyWith(color: AppColors.label),
           ),
         ],

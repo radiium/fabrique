@@ -30,7 +30,8 @@ enum Quantity {
   /// sur un téléphone, et c'est déjà la limite atteinte par les longueurs.
   ///
   /// Groupé une fois pour toutes : ce getter est lu à chaque `build` de
-  /// l'écran, il n'a pas à refiltrer les 24 unités à chaque fois.
+  /// l'écran, il n'a pas à refiltrer les 24 unités à chaque fois. Le `!` est
+  /// sûr : la table est bâtie à partir de `Quantity.values`.
   List<MeasureUnit> get units => _unitsByQuantity[this]!;
 
   /// L'unité proposée à l'ouverture, et celle sur laquelle on retombe quand on

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -66,7 +68,7 @@ class SchemaCard extends StatelessWidget {
           ? null
           : () {
               hapticSelection(context);
-              context.push('/tool/${tool.id}/schema');
+              unawaited(context.push('/tool/${tool.id}/schema'));
             },
       child: SchemaSheet(
         child: Stack(

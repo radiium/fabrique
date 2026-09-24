@@ -2,9 +2,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../core/calc/calc_exception.dart';
 import '../../core/calc/distribution.dart';
-import 'distribution_form.dart';
 import '../../core/models/tool.dart';
 import '../../core/persistence/persisted_form.dart';
+import 'distribution_form.dart';
 
 part 'distribution_controller.g.dart';
 

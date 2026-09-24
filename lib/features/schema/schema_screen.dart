@@ -151,5 +151,5 @@ Widget _schemaFor(Tool tool) => switch (tool) {
 List<Widget> _exportActionsFor(Tool tool) => switch (tool) {
   Tool.distribution => const [DistributionExportAction(compact: true)],
   Tool.layout => const [LayoutExportAction(compact: true)],
-  _ => const [],
+  Tool.fasteners || Tool.level || Tool.converter => const [],
 };

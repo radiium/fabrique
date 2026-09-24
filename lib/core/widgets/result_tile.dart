@@ -57,10 +57,10 @@ class ResultTile extends StatelessWidget {
                       Flexible(
                         child: Text(value, style: theme.textTheme.titleLarge),
                       ),
-                      if (unit != null) ...[
+                      if (unit case final unit?) ...[
                         const SizedBox(width: AppSpacing.xs),
                         Text(
-                          unit!,
+                          unit,
                           style: theme.textTheme.titleSmall?.copyWith(
                             color: AppColors.label,
                           ),
@@ -68,8 +68,8 @@ class ResultTile extends StatelessWidget {
                       ],
                     ],
                   ),
-                  if (note != null)
-                    Text(note!, style: theme.textTheme.bodySmall),
+                  if (note case final note?)
+                    Text(note, style: theme.textTheme.bodySmall),
                 ],
               ),
             ),

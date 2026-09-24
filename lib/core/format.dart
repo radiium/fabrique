@@ -47,3 +47,8 @@ String formatDegrees(double? value) {
   final text = value.toStringAsFixed(1);
   return text == '-0.0' ? '0.0' : text;
 }
+
+/// Marque du pluriel après un compte : `''` pour 0 et 1, `'s'` au-delà.
+///
+/// La règle française, où zéro reste au singulier (« 0 élément »).
+String pluralS(int count) => count > 1 ? 's' : '';

@@ -40,7 +40,7 @@ test/
 | `*_schema.dart` | point de construction **unique** du painter, branché sur les providers (vignette et plein écran le traversent tous deux) |
 | `*_painter.dart` | le dessin |
 
-S'y ajoutent, seulement si l'outil en a besoin : `*_help.dart` (contenus des ⓘ, groupés pour se relire comme un texte), `*_plan.dart` (le cartouche), `*_presets.dart` (table de pré-remplissage), `*_form.dart` (état d'écran plus large que la saisie de calcul).
+S'y ajoutent, seulement si l'outil en a besoin : un fichier par composant quand l'écran dépasse ~400 lignes (`distribution_positions_table.dart`), `*_help.dart` (contenus des ⓘ, groupés pour se relire comme un texte), `*_plan.dart` (le cartouche), `*_presets.dart` (table de pré-remplissage), `*_form.dart` (état d'écran plus large que la saisie de calcul).
 
 ## Flux de données
 

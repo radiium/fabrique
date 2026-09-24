@@ -10,8 +10,8 @@ import '../../core/widgets/app_dropdown.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
 import '../../core/widgets/result_tile.dart';
-import '../../core/widgets/tool_scaffold.dart';
 import '../../core/widgets/schema_card.dart';
+import '../../core/widgets/tool_scaffold.dart';
 import 'fasteners_controller.dart';
 import 'fasteners_schema.dart';
 
@@ -78,7 +78,7 @@ class FastenersScreen extends ConsumerWidget {
           // La justification cite le coefficient réellement appliqué : si la
           // table bouge, la note suit sans qu'on y pense.
           note:
-              '${formatNumber(pilotHoleFactor[input.material])} × Ø vis '
+              '${formatNumber(pilotHoleFactor(input.material))} × Ø vis '
               '(${input.material.label.toLowerCase()}) — règle de l’art '
               'indicative',
         ),

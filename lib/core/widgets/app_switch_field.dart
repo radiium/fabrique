@@ -69,10 +69,10 @@ class AppSwitchField extends StatelessWidget {
                           color: AppColors.label,
                         ),
                       ),
-                      if (help != null) ...[
+                      if (help case final help?) ...[
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          help!,
+                          help,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: AppColors.label,
                           ),

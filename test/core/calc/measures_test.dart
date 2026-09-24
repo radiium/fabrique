@@ -7,20 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('table des unités', () {
-    test('chaque unité a un facteur', () {
-      for (final unit in MeasureUnit.values) {
-        expect(
-          baseFactor[unit],
-          isNotNull,
-          reason: 'facteur manquant pour ${unit.name}',
-        );
-      }
-    });
-
-    test('aucun facteur orphelin', () {
-      expect(baseFactor.length, MeasureUnit.values.length);
-    });
-
     test('au plus 5 unités par grandeur', () {
       // Contrainte d'UI, pas de calcul : au-delà, l'AppSegmentedButton ne tient
       // plus sur un téléphone. Elle se vérifie ici parce que c'est ici qu'on
@@ -48,8 +34,8 @@ void main() {
     });
 
     test('facteurs strictement positifs', () {
-      for (final entry in baseFactor.entries) {
-        expect(entry.value, greaterThan(0), reason: entry.key.name);
+      for (final unit in MeasureUnit.values) {
+        expect(baseFactor(unit), greaterThan(0), reason: unit.name);
       }
     });
   });
@@ -67,7 +53,7 @@ void main() {
         LengthUnit.foot: MeasureUnit.foot,
       };
       pairs.forEach((length, measure) {
-        expect(baseFactor[measure], mmPerUnit[length], reason: length.name);
+        expect(baseFactor(measure), mmPerUnit(length), reason: length.name);
       });
     });
 

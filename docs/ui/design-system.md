@@ -40,7 +40,8 @@ Rien dans le code ne les relie : `test/features/control_metrics_test.dart` les m
 - **`AppSegmentedButton`** : écrit à la main (Material ne permet pas une pastille arrondie dans la piste). Tronque en silence : voir [writing.md](writing.md).
 - **`AppDropdown`** : `DropdownMenu` non éditable, pleine largeur. Pour une liste qui ne tient pas en segments.
 - **`AppSwitchField`** : **toute la ligne bascule**, libellé compris. ⚠️ Donc jamais de ⓘ dedans : une cible d'aide posée là changerait le réglage une fois sur deux. Ce qu'un switch a à expliquer tient dans sa ligne `help`.
-- **`NumberField`** : clavier numérique, notifie à chaque frappe. Avec `step`, boutons − / + (appui maintenu = défilement). Pas de boutons dans une paire de champs côte à côte : illisible sur téléphone.
+- **`NumberField`** : clavier numérique, notifie à chaque frappe. Avec `step`, boutons − / + (appui maintenu = défilement).
+- **`FieldPair`** : deux champs de même famille côte à côte (largeur × longueur). Jamais de boutons − / + dedans : illisible sur téléphone.
 
 ## Espacements et rayons
 

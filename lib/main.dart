@@ -27,8 +27,8 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
-        if (store != null)
-          preferencesStoreProvider.overrideWith((ref) => store!),
+        if (store case final opened?)
+          preferencesStoreProvider.overrideWith((ref) => opened),
       ],
       child: const FabriqueApp(),
     ),

@@ -81,8 +81,49 @@ class ToolScaffold extends StatelessWidget {
   /// signal « rien n'a été restauré, l'écran est neuf ».
   final bool canReset;
 
-  Widget get _inputCard {
-    final footer = inputFooter;
+  @override
+  Widget build(BuildContext context) {
+    final reset = onReset;
+    final inputCard = _InputCard(input: input, footer: inputFooter);
+    final resultsCard = _ResultsCard(results: results, footer: resultsFooter);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          if (reset != null) _ResetAction(onReset: reset, enabled: canReset),
+        ],
+      ),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) =>
+              constraints.maxWidth >= kWideBreakpoint
+              ? _WideBody(
+                  inputCard: inputCard,
+                  resultsCard: resultsCard,
+                  visualization: visualization,
+                )
+              : _NarrowBody(
+                  inputCard: inputCard,
+                  resultsCard: resultsCard,
+                  visualization: visualization,
+                  visualizationAspectRatio: visualizationAspectRatio,
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+/// La carte de saisie, et son pied éventuel.
+class _InputCard extends StatelessWidget {
+  const _InputCard({required this.input, required this.footer});
+
+  final Widget input;
+  final Widget? footer;
+
+  @override
+  Widget build(BuildContext context) {
+    final footer = this.footer;
     if (footer == null) return AppCard(child: input);
 
     // Rembourrage annulé au profit du corps : c'est la seule façon de laisser
@@ -100,17 +141,25 @@ class ToolScaffold extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Les [ResultTile] portent tout leur rembourrage : la carte n'en pose aucun.
-  ///
-  /// Sans ça, la première et la dernière tuile prenaient un blanc en plus que
-  /// les autres, et la zone tapable s'arrêtait avant le bord de la carte —
-  /// alors que le tap pour copier doit attraper toute la ligne.
-  ///
-  /// Les filets vont de bord à bord (la carte détoure), et jamais avant le
-  /// premier ni après le dernier : ils séparent, ils n'encadrent pas.
-  Widget get _resultsCard {
-    final footer = resultsFooter;
+/// Les [ResultTile] portent tout leur rembourrage : la carte n'en pose aucun.
+///
+/// Sans ça, la première et la dernière tuile prenaient un blanc en plus que
+/// les autres, et la zone tapable s'arrêtait avant le bord de la carte —
+/// alors que le tap pour copier doit attraper toute la ligne.
+///
+/// Les filets vont de bord à bord (la carte détoure), et jamais avant le
+/// premier ni après le dernier : ils séparent, ils n'encadrent pas.
+class _ResultsCard extends StatelessWidget {
+  const _ResultsCard({required this.results, required this.footer});
+
+  final List<Widget> results;
+  final Widget? footer;
+
+  @override
+  Widget build(BuildContext context) {
+    final footer = this.footer;
     return AppCard(
       clipBehavior: Clip.antiAlias,
       padding: EdgeInsets.zero,
@@ -128,29 +177,22 @@ class ToolScaffold extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Web large : saisie et résultats à gauche, schéma fixe à droite.
+class _WideBody extends StatelessWidget {
+  const _WideBody({
+    required this.inputCard,
+    required this.resultsCard,
+    required this.visualization,
+  });
+
+  final Widget inputCard;
+  final Widget resultsCard;
+  final Widget visualization;
 
   @override
   Widget build(BuildContext context) {
-    final reset = onReset;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          if (reset != null) _ResetAction(onReset: reset, enabled: canReset),
-        ],
-      ),
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isWide = constraints.maxWidth >= kWideBreakpoint;
-            return isWide ? _buildWide() : _buildNarrow();
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWide() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -160,9 +202,9 @@ class ToolScaffold extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _inputCard,
+                inputCard,
                 const SizedBox(height: AppSpacing.md),
-                _resultsCard,
+                resultsCard,
               ],
             ),
           ),
@@ -176,14 +218,30 @@ class ToolScaffold extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildNarrow() {
+/// Mobile : saisie, schéma, résultats, empilés.
+class _NarrowBody extends StatelessWidget {
+  const _NarrowBody({
+    required this.inputCard,
+    required this.resultsCard,
+    required this.visualization,
+    required this.visualizationAspectRatio,
+  });
+
+  final Widget inputCard;
+  final Widget resultsCard;
+  final Widget visualization;
+  final double visualizationAspectRatio;
+
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _inputCard,
+          inputCard,
           const SizedBox(height: AppSpacing.md),
           // Schéma compact, visible sans scroll, agrandi au tap.
           AspectRatio(
@@ -191,7 +249,7 @@ class ToolScaffold extends StatelessWidget {
             child: visualization,
           ),
           const SizedBox(height: AppSpacing.md),
-          _resultsCard,
+          resultsCard,
         ],
       ),
     );

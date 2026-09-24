@@ -8,14 +8,15 @@ import '../../core/models/enums.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/app_disclosure.dart';
 import '../../core/widgets/app_dropdown.dart';
-import '../../core/widgets/error_banner.dart';
 import '../../core/widgets/app_segmented_button.dart';
 import '../../core/widgets/app_switch_field.dart';
+import '../../core/widgets/error_banner.dart';
+import '../../core/widgets/field_pair.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
 import '../../core/widgets/result_tile.dart';
-import '../../core/widgets/tool_scaffold.dart';
 import '../../core/widgets/schema_card.dart';
+import '../../core/widgets/tool_scaffold.dart';
 import 'layout_controller.dart';
 import 'layout_help.dart';
 import 'layout_plan.dart';
@@ -49,7 +50,7 @@ class LayoutScreen extends ConsumerWidget {
         children: [
           // Les cotes vont par paires : six champs empilés repousseraient le
           // schéma — la vedette de l'écran — sous la ligne de flottaison.
-          _Pair(
+          FieldPair(
             first: NumberField(
               label: 'Surface — largeur',
               suffix: 'mm',
@@ -74,7 +75,7 @@ class LayoutScreen extends ConsumerWidget {
             child: _PresetDropdown(input: input, form: form),
           ),
           const SizedBox(height: AppSpacing.md),
-          _Pair(
+          FieldPair(
             first: NumberField(
               label: 'Élément — largeur',
               suffix: 'mm',
@@ -129,12 +130,12 @@ class LayoutScreen extends ConsumerWidget {
           value: result == null ? kNoValue : '${result.cutCount}',
           note: 'Surlignés en orange sur le schéma',
         ),
-        if (result?.balancedRow != null)
+        if (result case LayoutResult(:final balancedRow?, :final balancedEnd))
           ResultTile(
             label: 'Rangées de bord',
-            value: formatNumber(result!.balancedRow),
+            value: formatNumber(balancedRow),
             unit: 'mm',
-            note: _balancedNote(result),
+            note: _balancedNote(balancedEnd),
           ),
         ResultTile(
           label: 'Total à prévoir',
@@ -181,7 +182,7 @@ class _AdvancedSettings extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Pair(
+        FieldPair(
           first: NumberField(
             label: 'Jeu horizontal',
             suffix: 'mm',
@@ -240,9 +241,11 @@ bool _advancedModified(LayoutInput input) =>
 ///
 /// Il ne change aucun autre chiffre de la carte — même nombre d'éléments, même
 /// perte — donc sans cette tuile l'option semblerait sans effet.
-String _balancedNote(LayoutResult result) {
+///
+/// [end] est la longueur des pièces de bout, nulle quand l'axe de pose ne
+/// s'est pas équilibré (tout décalage autre que droit).
+String _balancedNote(double? end) {
   const base = 'Première et dernière, à la même épaisseur';
-  final end = result.balancedEnd;
   return end == null ? base : '$base. Pièces de bout : ${formatNumber(end)} mm';
 }
 
@@ -277,29 +280,6 @@ class _PresetDropdown extends StatelessWidget {
         if (current == null) null: 'Personnalisé',
         for (final preset in kLayoutPresets) preset: preset.label,
       },
-    );
-  }
-}
-
-/// Deux champs de même famille côte à côte (largeur × longueur, jeu X × jeu Y).
-///
-/// Aucun des deux ne porte de boutons − / + : à cette largeur ils tiennent, là
-/// où une paire de [NumberField] à pas serait illisible sur un téléphone.
-class _Pair extends StatelessWidget {
-  const _Pair({required this.first, required this.second});
-
-  final Widget first;
-  final Widget second;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: first),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(child: second),
-      ],
     );
   }
 }

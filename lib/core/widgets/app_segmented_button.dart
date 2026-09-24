@@ -90,9 +90,9 @@ class _AppSegmentedButtonState<T> extends State<AppSegmentedButton<T>> {
                 ),
               ),
             // Filet accent de 2 px, comme un champ qui prend le focus.
-            if (_focused != null)
+            if (_focused case final focused?)
               _overlay(
-                index: _focused!,
+                index: focused,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(

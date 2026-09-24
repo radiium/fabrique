@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/units/imperial.dart';
-import '../../core/models/measure_unit.dart';
 import '../../core/format.dart';
+import '../../core/models/measure_unit.dart';
 import '../../core/painting.dart';
 import 'converter_controller.dart';
 

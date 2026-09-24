@@ -5,7 +5,7 @@ Répartir des éléments identiques sur une largeur : barreaudage, lames, étag�
 | Couche | Fichiers |
 |---|---|
 | Calcul | `lib/core/calc/distribution.dart` · `test/core/calc/distribution_test.dart` |
-| Écran | `lib/features/distribution/` : `_screen`, `_controller`, `_form`, `_help` |
+| Écran | `lib/features/distribution/` : `_screen`, `_controller`, `_form`, `_help`, et ses composants `_edge_grid` (tuiles des bords), `_target_callout` (l'autre borne), `_positions_table` |
 | Schéma | `_schema`, `_painter` (dont `EdgePreviewPainter`, le pictogramme des bords) |
 | Plan | `_plan` · `test/features/distribution/distribution_plan_test.dart` |
 

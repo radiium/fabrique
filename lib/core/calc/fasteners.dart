@@ -12,11 +12,11 @@ part 'fasteners.g.dart';
 ///
 /// ⚠️ Règles de l'art indicatives, centralisées ici pour être ajustées et
 /// validées à part. Le calcul ne fait qu'appliquer la table.
-const Map<MaterialKind, double> pilotHoleFactor = {
-  MaterialKind.softwood: 0.55,
-  MaterialKind.hardwood: 0.70,
-  MaterialKind.chipboard: 0.60,
-  MaterialKind.plywood: 0.65,
+double pilotHoleFactor(MaterialKind material) => switch (material) {
+  MaterialKind.softwood => 0.55,
+  MaterialKind.hardwood => 0.70,
+  MaterialKind.chipboard => 0.60,
+  MaterialKind.plywood => 0.65,
 };
 
 /// Jeu ajouté au Ø nominal pour le trou de passage, en mm.
@@ -97,7 +97,7 @@ FastenerResult computeFastener(FastenerInput input) {
 
   return FastenerResult(
     clearanceHole: d + clearanceAllowance,
-    pilotHole: pilotHoleFactor[input.material]! * d,
+    pilotHole: pilotHoleFactor(input.material) * d,
     counterboreDia: counterboreDiaFactor * d,
     counterboreDepth: counterboreDepthFactor * d,
     screwLength: thickness + penetration,

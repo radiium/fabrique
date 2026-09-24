@@ -52,7 +52,7 @@ class ComparisonPainter extends CustomPainter {
 
     final r = result;
     final reference = r == null ? null : _reference[r.quantity];
-    final value = reference == null ? null : r!.perUnit[reference];
+    final value = r == null || reference == null ? null : r.perUnit[reference];
     if (r == null || reference == null || value == null || !value.isFinite) {
       drawSchemaPlaceholder(canvas, size);
       return;
@@ -64,7 +64,7 @@ class ComparisonPainter extends CustomPainter {
     final k = switch (r.quantity) {
       Quantity.area => math.sqrt(value),
       Quantity.volume => math.pow(value, 1 / 3).toDouble(),
-      _ => value,
+      Quantity.length || Quantity.mass || Quantity.pressure => value,
     };
 
     final box = Rect.fromLTWH(

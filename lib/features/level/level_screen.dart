@@ -6,8 +6,8 @@ import '../../core/calc/tilt.dart';
 import '../../core/format.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/result_tile.dart';
-import '../../core/widgets/tool_scaffold.dart';
 import '../../core/widgets/schema_card.dart';
+import '../../core/widgets/tool_scaffold.dart';
 import 'level_controller.dart';
 import 'level_schema.dart';
 

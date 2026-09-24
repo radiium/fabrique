@@ -117,8 +117,8 @@ Future<bool> savePlan(
     // si le plan est bien là, et à recommencer quand on ne le trouve pas.
     // La galerie s'ouvre sur son dernier élément, qui vient d'être écrit.
     messenger.showSnackBar(
-      SnackBar(
-        content: const Text('Plan enregistré dans vos photos'),
+      const SnackBar(
+        content: Text('Plan enregistré dans vos photos'),
         // `persist` vaut `action != null` par défaut : un SnackBar qui porte
         // une action reste à l'écran indéfiniment. Ici c'est un accusé de
         // réception, pas une question — il doit s'effacer tout seul.

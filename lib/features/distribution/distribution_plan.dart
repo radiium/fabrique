@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -198,7 +200,7 @@ class _DistributionExportActionState
         onPressed: idle
             ? () {
                 hapticSelection(context);
-                _run(_Running.save, savePlan);
+                unawaited(_run(_Running.save, savePlan));
               }
             : null,
       );

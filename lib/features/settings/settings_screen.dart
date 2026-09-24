@@ -29,7 +29,7 @@ class SettingsScreen extends ConsumerWidget {
         child: switch (settings) {
           AsyncLoading() => const Center(child: CircularProgressIndicator()),
           AsyncError(:final error) => _LoadFailure(message: '$error'),
-          _ => _SettingsForm(settings: settings.value!),
+          AsyncData(:final value) => _SettingsForm(settings: value),
         },
       ),
     );

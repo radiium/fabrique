@@ -274,10 +274,10 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
         child: const Text('Déclencher'),
       ),
     ),
-    WidgetShowcase(
+    const WidgetShowcase(
       name: 'CircularProgressIndicator.adaptive',
       usage: 'Chargement des réglages depuis shared_preferences.',
-      child: const SizedBox(
+      child: SizedBox(
         height: 32,
         width: 32,
         child: CircularProgressIndicator.adaptive(),
@@ -518,11 +518,11 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> {
           'copiables ligne à ligne.',
       child: DataTable(
         columnSpacing: AppSpacing.lg,
-        columns: [
+        columns: const [
           DataColumn(label: Text('Point')),
           DataColumn(label: Text('Position')),
         ],
-        rows: [
+        rows: const [
           DataRow(cells: [DataCell(Text('1')), DataCell(Text('250 mm'))]),
           DataRow(cells: [DataCell(Text('2')), DataCell(Text('500 mm'))]),
           DataRow(cells: [DataCell(Text('3')), DataCell(Text('750 mm'))]),

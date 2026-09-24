@@ -82,7 +82,7 @@ void main() {
 
     test('le roll compte autant que le pitch', () {
       const g = 9.81;
-      final rad = 5 * math.pi / 180;
+      const rad = 5 * math.pi / 180;
       final r = computeTilt(
         AccelReading(g * math.sin(rad), 0, g * math.cos(rad)),
       );

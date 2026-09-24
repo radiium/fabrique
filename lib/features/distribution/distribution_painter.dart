@@ -560,7 +560,7 @@ class EdgePreviewPainter extends CustomPainter {
         (endEdge == DistributionEdge.element ? 1 : 0);
     final gaps = _count + 1 - edges;
 
-    final left = 2.0;
+    const left = 2.0;
     final right = size.width - 2;
     final span = right - left;
     final spacing = (span - _count * _elementWidth) / gaps;

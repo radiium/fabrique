@@ -12,8 +12,8 @@ import '../../core/widgets/app_switch_field.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
 import '../../core/widgets/result_tile.dart';
-import '../../core/widgets/tool_scaffold.dart';
 import '../../core/widgets/schema_card.dart';
+import '../../core/widgets/tool_scaffold.dart';
 import 'converter_controller.dart';
 import 'converter_schema.dart';
 
@@ -102,9 +102,10 @@ class ConverterScreen extends ConsumerWidget {
         if (isLength && input.compoundImperial)
           ResultTile(
             label: 'Impérial',
-            value: result?.imperial == null
-                ? kNoValue
-                : formatImperial(result!.imperial!),
+            value: switch (result?.imperial) {
+              final parts? => formatImperial(parts),
+              null => kNoValue,
+            },
             note: 'Arrondi au 1/16 de pouce',
           ),
       ],
