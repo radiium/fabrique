@@ -1,4 +1,5 @@
 import 'package:fabrique/app/router.dart';
+import 'package:fabrique/app/routes.dart';
 import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/models/tool.dart';
 import 'package:fabrique/core/widgets/schema_card.dart';
@@ -17,7 +18,7 @@ void main() {
   Future<void> pumpTool(WidgetTester tester, Tool tool) async {
     final container = ProviderContainer();
     addTearDown(container.dispose);
-    final router = container.read(routerProvider)..go('/tool/${tool.id}');
+    final router = container.read(routerProvider)..go(AppRoutes.tool(tool));
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,

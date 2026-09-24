@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/routes.dart';
 import '../../app/theme.dart';
 import '../../core/models/tool.dart';
 import '../../l10n/app_localizations.dart';
@@ -24,12 +25,12 @@ class HomeScreen extends StatelessWidget {
           // Hors périmètre produit : n'apparaît qu'en debug.
           if (kDebugMode)
             IconButton(
-              onPressed: () => context.go('/playground'),
+              onPressed: () => context.go(AppRoutes.playground),
               icon: const Icon(Icons.widgets_outlined),
               tooltip: 'Playground Material',
             ),
           IconButton(
-            onPressed: () => context.go('/settings'),
+            onPressed: () => context.go(AppRoutes.settings),
             icon: const Icon(Icons.settings_outlined),
             tooltip: l10n.settings,
           ),

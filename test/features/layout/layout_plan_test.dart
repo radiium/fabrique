@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:fabrique/app/router.dart';
+import 'package:fabrique/app/routes.dart';
 import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/layout.dart';
 import 'package:fabrique/core/export/plan.dart';
@@ -194,7 +195,7 @@ void main() {
     tester,
   ) async {
     final c = container();
-    final router = c.read(routerProvider)..go('/tool/${Tool.layout.id}');
+    final router = c.read(routerProvider)..go(AppRoutes.tool(Tool.layout));
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: c,

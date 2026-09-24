@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/routes.dart';
 import '../../app/theme.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/app_card.dart';
@@ -25,7 +26,7 @@ class ToolCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return AppCard(
-      onTap: () => context.go('/tool/${tool.id}'),
+      onTap: () => context.go(AppRoutes.tool(tool)),
       child: Row(
         children: [
           Icon(iconFor(tool), size: 32, color: AppColors.accent),

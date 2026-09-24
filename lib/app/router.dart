@@ -12,15 +12,16 @@ import '../features/level/level_screen.dart';
 import '../features/playground/playground_screen.dart';
 import '../features/schema/schema_screen.dart';
 import '../features/settings/settings_screen.dart';
+import 'routes.dart';
 
 /// Navigation déclarative, deep-linking prêt pour le web : accueil, réglages,
 /// et une route paramétrée par outil.
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: AppRoutes.home,
     routes: [
       GoRoute(
-        path: '/',
+        path: AppRoutes.home,
         builder: (context, state) => const HomeScreen(),
         routes: [
           GoRoute(

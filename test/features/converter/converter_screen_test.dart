@@ -8,6 +8,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/phone.dart';
+
 /// Le seul écran dont la forme change avec la saisie : les unités, le schéma
 /// et les tuiles dépendent tous de la grandeur choisie. Un painter qui lève
 /// sur une grandeur ne se verrait nulle part ailleurs — ni `flutter analyze`
@@ -109,9 +111,7 @@ void main() {
     // Le segmented tronque en silence (`overflow: ellipsis`) : un symbole trop
     // large donnerait « mba… » sans que rien ne lève, et c'est la seule façon
     // de s'en apercevoir sans regarder.
-    tester.view.physicalSize = const Size(400, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
+    usePhone(tester);
 
     final container = await pumpConverter(tester);
     final form = container.read(converterFormProvider.notifier);

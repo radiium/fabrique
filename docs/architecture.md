@@ -7,7 +7,7 @@ App portfolio de cinq outils : ni sur-ingénierie, ni tout dans les widgets. La 
 ```
 lib/
 ├── main.dart            ouvre le stockage, puis runApp
-├── app/                 app.dart · router.dart · theme.dart (design system)
+├── app/                 app.dart · router.dart · routes.dart (les chemins) · theme.dart (design system)
 ├── core/
 │   ├── calc/            ★ Dart pur, aucun import Flutter
 │   │   ├── units/       longueurs, impérial composé, les cinq grandeurs
@@ -16,18 +16,20 @@ lib/
 │   ├── format.dart      rendu des nombres (formatNumber, formatDegrees, kNoValue)
 │   ├── painting.dart    primitives de cotation, SchemaViewport
 │   ├── persistence/     PreferencesStore, PersistedForm, réglages
-│   ├── export/          plan.dart (feuille + cartouche) · plan_export.dart (PNG, système)
+│   ├── export/          plan.dart (feuille + cartouche) · plan_export.dart (PNG, système) · plan_export_action.dart (boutons)
 │   └── widgets/         ToolScaffold, NumberField, ResultTile, FieldPair…
 ├── features/            home, settings, schema, playground, et un dossier par outil
 └── l10n/                app_fr.arb → AppLocalizations
 
 test/
 ├── core/                le cœur de calcul et les primitives de dessin, sans appareil
-└── features/            ce que ni analyze ni le cœur n'attrapent :
-                         un painter qui lève, un libellé tronqué en silence
+├── app/                 chaque route mène à son écran
+├── features/            ce que ni analyze ni le cœur n'attrapent :
+│                        un painter qui lève, un libellé tronqué en silence
+└── support/             le téléphone de référence (usePhone)
 ```
 
-**Routes** : `/` · `/settings` · `/tool/:id` · `/tool/:id/schema`. La page du schéma s'empile sur l'outil, pour que la saisie reste intacte derrière. `id` vient de l'enum `Tool`, dont l'ordre est celui de l'accueil : le Calepinage ouvre la liste (outil signature), le Convertisseur la ferme (un service, pas une destination).
+**Routes** : `/` · `/settings` · `/tool/:id` · `/tool/:id/schema`, construites par `AppRoutes` (`app/routes.dart`), jamais en dur. Ce fichier est à part de `router.dart`, qui importe tous les écrans, pour qu'un widget de `core/` puisse construire un chemin. La page du schéma s'empile sur l'outil, pour que la saisie reste intacte derrière. `id` vient de l'enum `Tool`, dont l'ordre est celui de l'accueil : le Calepinage ouvre la liste (outil signature), le Convertisseur la ferme (un service, pas une destination).
 
 **`/playground`** : inventaire des widgets Material, pour vérifier que le thème tient. Hors produit, visible en debug.
 

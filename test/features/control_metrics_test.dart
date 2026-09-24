@@ -6,6 +6,8 @@ import 'package:fabrique/core/widgets/number_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/phone.dart';
+
 /// Tout ce qui se saisit ou se choisit fait [kFieldHeight] de haut et
 /// [kControlFontSize] de police. Cette règle ne se lit dans aucun de ces
 /// widgets : chacun y arrive par un chemin différent —
@@ -15,9 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// lève.
 void main() {
   Future<void> pumpControls(WidgetTester tester) async {
-    tester.view.physicalSize = const Size(400, 900);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
+    usePhone(tester);
 
     await tester.pumpWidget(
       MaterialApp(

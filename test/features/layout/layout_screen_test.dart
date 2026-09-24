@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/phone.dart';
+
 /// Le Calepinage a huit contrôles pour cinq lignes visibles : c'est le seul
 /// écran où la place manque vraiment, et rien dans le code ne dit qu'elle
 /// manque. Un painter qui lève sur un jeu périphérique, une pastille muette,
@@ -28,13 +30,6 @@ void main() {
     return container;
   }
 
-  /// Le téléphone de référence.
-  void usePhone(WidgetTester tester) {
-    tester.view.physicalSize = const Size(400, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
-  }
-
   testWidgets('le schéma reste au-dessus de la ligne de flottaison', (
     tester,
   ) async {
@@ -46,8 +41,9 @@ void main() {
     final canvas = tester.getRect(find.byType(SchemaCard));
     expect(
       canvas.bottom,
-      lessThan(844),
-      reason: 'le schéma finit à ${canvas.bottom} px sur un écran de 844',
+      lessThan(kReferencePhone.height),
+      reason:
+          'le schéma finit à ${canvas.bottom} px sur un écran de ${kReferencePhone.height}',
     );
     // Le garde-fou : un contrôle de plus posé hors du panneau ferait tomber ce
     // test avant de faire tomber le précédent, et dirait pourquoi.
@@ -60,7 +56,8 @@ void main() {
     expect(
       canvas.top,
       lessThan(600),
-      reason: 'le schéma commence à ${canvas.top} px sur un écran de 844',
+      reason:
+          'le schéma commence à ${canvas.top} px sur un écran de ${kReferencePhone.height}',
     );
   });
 

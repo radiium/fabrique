@@ -9,6 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/phone.dart';
+
 /// L'écran change de forme avec la saisie — le champ piloté suit le mode, le
 /// schéma passe des disques aux rectangles, les colonnes de la table
 /// apparaissent avec l'épaisseur. Un painter qui lève sur une combinaison de
@@ -28,13 +30,6 @@ void main() {
       ),
     );
     return container;
-  }
-
-  /// Le téléphone de référence.
-  void usePhone(WidgetTester tester) {
-    tester.view.physicalSize = const Size(400, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
   }
 
   testWidgets('chaque combinaison de bords se rend sans lever', (tester) async {
@@ -157,8 +152,9 @@ void main() {
     // La règle, c'est que le schéma tienne entier sans scroll.
     expect(
       canvas.bottom,
-      lessThan(844),
-      reason: 'le schéma finit à ${canvas.bottom} px sur un écran de 844',
+      lessThan(kReferencePhone.height),
+      reason:
+          'le schéma finit à ${canvas.bottom} px sur un écran de ${kReferencePhone.height}',
     );
     // Et le garde-fou : mesuré à ~540 px avec les cinq contrôles de premier
     // plan. Un sixième ajouté hors du panneau repliable ferait tomber ce test
@@ -171,7 +167,8 @@ void main() {
     expect(
       canvas.top,
       lessThan(550),
-      reason: 'le schéma commence à ${canvas.top} px sur un écran de 844',
+      reason:
+          'le schéma commence à ${canvas.top} px sur un écran de ${kReferencePhone.height}',
     );
   });
 

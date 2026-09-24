@@ -68,12 +68,14 @@ Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/
 ### Architecture
 
 - **Une feature n'importe jamais une autre feature**, seulement `core/` et `app/`. Exception : `features/schema/`, qui aiguille vers le schéma de chaque outil.
+- **Un chemin se construit par `AppRoutes`** (`app/routes.dart`), jamais en dur : une faute de frappe dans une route ne casse qu'à l'exécution.
 - **Pas de nouvelle dépendance sans sa justification dans `docs/architecture.md`** : pourquoi elle, et pourquoi pas le SDK.
 
 ### Tests
 
 - **Un test reproduit le chemin du fichier testé** (`lib/core/calc/layout.dart` → `test/core/calc/layout_test.dart`). Les tests transversaux (reset, persistance, haptique) vivent à la racine de `test/features/`.
 - **Chaque painter a un test « se rend sans lever »** : trois tailles (vignette, plein écran, canvas dégénéré) et une saisie refusée. Un painter qui lève ne se voit qu'au rendu.
+- **Un test d'écran se monte sur le téléphone de référence** (`usePhone`, `test/support/phone.dart`) : c'est sur lui que se mesurent les libellés tronqués et la ligne de flottaison.
 - **Le nom d'un test décrit un comportement**, en français. C'est son commentaire.
 
 ### Commits

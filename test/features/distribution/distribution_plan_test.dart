@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:fabrique/app/router.dart';
+import 'package:fabrique/app/routes.dart';
 import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/distribution.dart';
 import 'package:fabrique/core/export/plan.dart';
@@ -19,6 +20,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../support/phone.dart';
 
 /// Le plan est la seule image qui sorte de l'app : une fois partie, personne
 /// ne peut plus la corriger. Ce qui se vérifie ici, c'est ce qu'aucune autre
@@ -192,9 +195,7 @@ void main() {
     // donne à chaque glyphe la largeur de la taille de police, soit environ le
     // double d'une vraie : un libellé qui passe ici passe partout, et une
     // troncature ne se verrait nulle part ailleurs.
-    tester.view.physicalSize = const Size(400, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
+    usePhone(tester);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -228,7 +229,8 @@ void main() {
     // schéma seul laisserait découvrir le cartouche dans le fichier, une fois
     // parti.
     final c = container();
-    final router = c.read(routerProvider)..go('/tool/${Tool.distribution.id}');
+    final router = c.read(routerProvider)
+      ..go(AppRoutes.tool(Tool.distribution));
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: c,

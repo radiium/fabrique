@@ -5,6 +5,8 @@ import 'package:fabrique/core/widgets/number_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/phone.dart';
+
 /// L'aide de champ ne se vérifie qu'au rendu : qu'elle s'ouvre, qu'elle se
 /// referme, et surtout qu'elle ne coûte rien au champ qui n'en a pas — c'est
 /// la seule raison pour laquelle elle tient dans une carte déjà pleine.
@@ -16,9 +18,7 @@ void main() {
   );
 
   Future<void> pump(WidgetTester tester, Widget child) async {
-    tester.view.physicalSize = const Size(400, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
+    usePhone(tester);
     await tester.pumpWidget(
       MaterialApp(
         theme: buildAppTheme(),
