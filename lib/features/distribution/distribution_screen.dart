@@ -177,8 +177,8 @@ class DistributionScreen extends ConsumerWidget {
   static String _s(int n) => n > 1 ? 's' : '';
 }
 
-/// Ce qu'on ne règle qu'une fois sur dix, et qui n'a aucun effet par défaut :
-/// bords aux écarts, marges nulles.
+/// Ce qu'on ne règle qu'une fois sur dix, laissé par défaut sur le cas le plus
+/// courant : bords aux éléments, marges nulles.
 class _AdvancedSettings extends StatelessWidget {
   const _AdvancedSettings({required this.input, required this.form});
 

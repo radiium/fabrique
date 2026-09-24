@@ -45,9 +45,11 @@ abstract class LayoutInput with _$LayoutInput {
     /// bande pleine et on partage son épaisseur avec le reliquat entre la
     /// première et la dernière, qui deviennent identiques.
     ///
-    /// ⚠️ Cela **coûte de la matière** : deux bandes de bord coupées au lieu
-    /// d'une, donc [LayoutResult.cutCount] et la perte montent. C'est un
-    /// arbitrage esthétique, pas une amélioration gratuite.
+    /// ⚠️ Cela ne consomme **pas** un élément de plus : même nombre de bandes,
+    /// même aire couverte, donc [LayoutResult.totalCount] et la perte sont
+    /// inchangés. Seul [LayoutResult.cutCount] monte — deux bandes de bord à
+    /// couper au lieu d'une. Le coût matière n'apparaîtrait qu'avec le
+    /// réemploi des chutes, où deux petites chutes valent moins qu'une grande.
     @Default(false) bool balanceRows,
 
     /// Pivote le motif d'un quart de tour : l'élément se pose le long de Y et
