@@ -50,6 +50,35 @@ Toolchain : Flutter 3.47 stable / Dart 3.13.
 - **Chaque feature-outil** : `*_screen` · `*_controller` · `*_schema` (point de construction unique du painter) · `*_painter`, plus `*_help`, `*_plan`, `*_presets` seulement si besoin.
 - **Contexte atelier** : cibles ≥ 48 px (`kFieldHeight`), le schéma ne passe jamais sous la ligne de flottaison sur mobile. Un libellé de contrôle ne doit jamais tronquer en silence : voir `docs/ui/writing.md`.
 
+## Règles de code
+
+`analysis_options.yaml` impose le mode strict et des lints en plus de `flutter_lints` : immuabilité (`final`, `const`), aucune `Future` oubliée, imports ordonnés et relatifs, types de retour déclarés. **`flutter analyze` doit rester propre**, et `dart fix --apply` corrige l'essentiel. Ce qui suit, l'analyseur ne sait pas le vérifier.
+
+### Dart
+
+- **Un `switch` sur un enum ou une classe scellée liste tous ses cas, sans joker `_`.** Ajouter un outil ou un cas doit casser la compilation, pas passer en silence. Le joker reste permis sur des plages de valeurs (`>= 100 =>`).
+- **Pas de `!` sans garantie.** Préférer `if (x case final v?)`, un motif (`AsyncData(:final value)`) ou un retour anticipé. Un `!` qui reste dit en commentaire pourquoi la valeur ne peut pas être nulle.
+- **Types explicites sur l'API publique, inférés en local.**
+- **Nommage** : un booléen se lit comme une question (`isCut`, `hasWidth`, `canReset`). Une constante de module prend le préfixe `k` (`kFieldHeight`), une constante privée `_camelCase`.
+- **`catch` toujours typé** (`on CalcException catch`). Un `catch` sans type n'est permis qu'à une frontière système (export, capteur), et il journalise avec `debugPrint`, jamais `print`.
+
+### Flutter
+
+- **Un morceau d'interface est une classe de widget, pas une méthode `_buildX()`** : c'est ce qui permet `const` et une reconstruction ciblée.
+- **Un écran se découpe au-delà d'environ 400 lignes**, un fichier par composant (`distribution_positions_table.dart`), ou dans `core/widgets` s'il sert ailleurs. `/playground` en est exempté.
+- **Un widget privé écrit deux fois monte dans `core/widgets`.**
+- **Uniquement des tokens de thème dans `features/`** : `AppColors`, `AppSpacing`, `AppRadii`, `kFieldHeight`. Pas de `Color(0x…)`, pas de marge chiffrée. Dans un painter, chaque nombre est une constante nommée.
+- **Riverpod : `ref.watch` dans `build`, `ref.read` dans les callbacks**, `select` quand un seul champ compte. Seule exception : `ref.read(….notifier)` dans `build`, pour brancher les méthodes de champ.
+- **Tout contrôleur créé est libéré** (`TextEditingController`, `TransformationController`, `Timer`…) dans `dispose`.
+- **Un `IconButton` a toujours un `tooltip`.**
+
+### Architecture et durabilité
+
+- **Une feature n'importe jamais une autre feature**, seulement `core/` et `app/`. Seule exception : `features/schema/`, l'aiguillage vers les schémas et plans de chaque outil.
+- **Un test qui porte sur un fichier en reproduit le chemin** (`lib/core/calc/layout.dart` → `test/core/calc/layout_test.dart`). Un test transversal (reset, persistance, haptique de tous les outils) vit à la racine de `test/features/`. **Chaque painter a son test « se rend sans lever »**, sur plusieurs tailles et avec une saisie refusée.
+- **Aucune nouvelle dépendance sans sa ligne dans `docs/architecture.md`** : pourquoi elle, et pourquoi pas le SDK.
+- **Messages de commit** en français, au format `Portée : description` (`Calepinage : …`, `Docs : …`).
+
 ## Commentaires
 
 En **français**. Ils documentent le *pourquoi* du code tel qu'il est, jamais son évolution (c'est le rôle de git).
