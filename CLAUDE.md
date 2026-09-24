@@ -1,115 +1,104 @@
 # CLAUDE.md
 
-`fabrique` est l'app **« Menuiserie »** : cinq outils de calcul pour l'atelier (Calepinage, Répartition, Avant-trous & vis, Niveau, Convertisseur), sur iOS, Android et Web. Les six écrans (cinq outils et Réglages) sont câblés, et le cœur de calcul est couvert par les tests.
+`fabrique` est l'app **« Menuiserie »** : cinq outils de calcul pour l'atelier (Calepinage, Répartition, Avant-trous & vis, Niveau, Convertisseur), sur iOS, Android et Web.
 
 ## Documentation
 
-**`docs/` est la référence.** Lire [`docs/README.md`](docs/README.md) pour savoir quoi lire avant de toucher à quoi. En bref :
+`docs/` est la référence : la suivre plutôt qu'inventer une structure, et la mettre à jour dans le même commit qu'une décision qui change. [`docs/README.md`](docs/README.md) dit quoi lire avant de toucher à quoi. En bref :
 
 - un outil → `docs/tools/<outil>.md` (même nom que `lib/features/<outil>/`)
 - un painter, une cote → `docs/drawing/conventions.md`
 - l'export PNG → `docs/drawing/export.md`
-- un contrôle, un écran, un texte → `docs/ui/`
+- un contrôle, un écran → `docs/ui/`
+- un texte lu dans l'app (libellé, aide, message d'erreur) → `docs/ui/writing.md`
 - la structure, la persistance → `docs/architecture.md`
-
-Suivre la doc plutôt qu'inventer une structure. Quand une décision change, mettre à jour la doc dans le même commit.
 
 ## Commandes
 
 ```bash
-flutter pub get
-flutter run                          # appareil / simulateur
-flutter run -d chrome                # web
-flutter analyze                      # doit rester propre
-dart format lib
-flutter test                         # cœur de calcul et écrans, sans appareil
-
-dart run build_runner build          # obligatoire après toute modif @freezed / @riverpod
-dart run build_runner watch
-flutter gen-l10n                     # après édition de lib/l10n/app_fr.arb
+flutter run                  # -d chrome pour le web
+flutter test
+dart run build_runner build  # après toute modif @freezed / @riverpod
+flutter gen-l10n             # après édition de lib/l10n/app_fr.arb
 ```
 
-Toolchain : Flutter 3.47 stable / Dart 3.13.
+Avant de rendre la main : `dart fix --apply`, `dart format lib test`, `flutter analyze` propre, `flutter test` vert.
 
-**Code généré** — `*.freezed.dart`, `*.g.dart`, `lib/l10n/app_localizations*.dart` : ne jamais les éditer à la main.
+Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/l10n/app_localizations*.dart`) ne s'édite jamais à la main.
 
 ## Pièges connus
 
-- **`riverpod_lint` / `custom_lint` sont volontairement absents** : leurs versions actuelles ne résolvent pas avec Riverpod 3.4 + `freezed_annotation` 3.x. Ne pas les rajouter à l'aveugle.
-- **Riverpod 3** : les providers-fonctions générés prennent un `Ref` simple. `AsyncValue` expose `.value` nullable (`valueOrNull` n'existe plus).
-- **Nommage** : l'enum matériau s'appelle `MaterialKind`, pour éviter la collision avec le widget `Material`.
+- `riverpod_lint` / `custom_lint` sont absents exprès : ils ne résolvent pas avec Riverpod 3.4 + `freezed_annotation` 3.x.
+- Riverpod 3 : un provider-fonction généré prend un `Ref` simple, et `AsyncValue` expose `.value` (plus de `valueOrNull`).
+- L'enum matériau est `MaterialKind`, pas `Material` (collision avec le widget).
 
 ## Conventions non négociables
 
-- **Le painter peint, le core calcule.** Aucune math dupliquée dans le rendu.
+- **Le painter peint, le core calcule.** Aucune math dans le rendu.
 - **`lib/core/calc` n'importe jamais Flutter** : c'est ce qui le rend testable sans appareil.
-- **L'unité interne est le millimètre** (`double`). Conversions aux frontières UI seulement.
-- **Une saisie invalide lève `CalcException`**, jamais une valeur fausse silencieuse.
-- **Modèles `@freezed` immuables** ; les saisies ont `fromJson` / `toJson` (persistance).
-- **Codegen `@riverpod` partout.** Le résultat d'un outil est un provider **dérivé** de la saisie : zéro `setState`, zéro bouton « calculer ». Seul `/playground` (page de référence hors produit) utilise `setState`.
-- **Chaque feature-outil** : `*_screen` · `*_controller` · `*_schema` (point de construction unique du painter) · `*_painter`, plus `*_help`, `*_plan`, `*_presets` seulement si besoin.
-- **Contexte atelier** : cibles ≥ 48 px (`kFieldHeight`), le schéma ne passe jamais sous la ligne de flottaison sur mobile. Un libellé de contrôle ne doit jamais tronquer en silence : voir `docs/ui/writing.md`.
+- **Tout est en millimètres** (`double`). Conversions aux frontières de l'UI seulement.
+- **Une saisie invalide lève `CalcException`**, jamais une valeur fausse. Son message s'affiche tel quel.
+- **Modèles `@freezed`, providers `@riverpod`.** Le résultat d'un outil est un provider dérivé de sa saisie : ni `setState` dans le calcul, ni bouton « calculer ». `setState` reste permis pour un état d'interface local (rotation, export en cours).
+- **Une feature-outil** : `*_screen`, `*_controller`, `*_schema` (seul point de construction du painter), `*_painter`. Le reste seulement si besoin.
+- **Atelier** : cibles ≥ 48 px (`kFieldHeight`), schéma toujours au-dessus de la ligne de flottaison sur mobile, aucun libellé tronqué en silence.
+- **Textes en français**, en dur dans les écrans-outils. Seuls l'accueil et les Réglages passent par `AppLocalizations`.
 
 ## Règles de code
 
-`analysis_options.yaml` impose le mode strict et des lints en plus de `flutter_lints` : immuabilité (`final`, `const`), aucune `Future` oubliée, imports ordonnés et relatifs, types de retour déclarés. **`flutter analyze` doit rester propre**, et `dart fix --apply` corrige l'essentiel. Ce qui suit, l'analyseur ne sait pas le vérifier.
+`analysis_options.yaml` impose le mode strict et des lints en plus de `flutter_lints`. Ce qui suit, l'analyseur ne le vérifie pas.
 
 ### Dart
 
-- **Un `switch` sur un enum ou une classe scellée liste tous ses cas, sans joker `_`.** Ajouter un outil ou un cas doit casser la compilation, pas passer en silence. Le joker reste permis sur des plages de valeurs (`>= 100 =>`).
-- **Pas de `!` sans garantie.** Préférer `if (x case final v?)`, un motif (`AsyncData(:final value)`) ou un retour anticipé. Un `!` qui reste dit en commentaire pourquoi la valeur ne peut pas être nulle.
-- **Types explicites sur l'API publique, inférés en local.**
-- **Nommage** : un booléen se lit comme une question (`isCut`, `hasWidth`, `canReset`). Une constante de module prend le préfixe `k` (`kFieldHeight`), une constante privée `_camelCase`.
-- **`catch` toujours typé** (`on CalcException catch`). Un `catch` sans type n'est permis qu'à une frontière système (export, capteur), et il journalise avec `debugPrint`, jamais `print`.
+- **Pas de joker `_` dans un `switch` sur un enum ou une classe scellée.** Un cas ajouté doit casser la compilation, pas passer en silence. Le joker reste permis sur des plages de valeurs (`>= 100 =>`).
+- **Une table qui doit couvrir tout un enum est un `switch`, pas une `Map`**, pour la même raison.
+- **Pas de `!` sans garantie.** Préférer un motif (`if (x case final v?)`, `AsyncData(:final value)`). Un `!` qui reste dit pourquoi il est sûr.
+- **`catch` typé.** Un `catch` large seulement à une frontière système (export, stockage), et l'échec ne se tait pas : `debugPrint` ou message à l'écran.
+- **Nommage** : un booléen se lit comme une question (`isCut`), une constante de module prend le préfixe `k`, une privée `_`.
 
 ### Flutter
 
-- **Un morceau d'interface est une classe de widget, pas une méthode `_buildX()`** : c'est ce qui permet `const` et une reconstruction ciblée.
-- **Un écran se découpe au-delà d'environ 400 lignes**, un fichier par composant (`distribution_positions_table.dart`), ou dans `core/widgets` s'il sert ailleurs. `/playground` en est exempté.
-- **Un widget privé écrit deux fois monte dans `core/widgets`.**
-- **Uniquement des tokens de thème dans `features/`** : `AppColors`, `AppSpacing`, `AppRadii`, `kFieldHeight`. Pas de `Color(0x…)`, pas de marge chiffrée. Dans un painter, chaque nombre est une constante nommée.
-- **Riverpod : `ref.watch` dans `build`, `ref.read` dans les callbacks**, `select` quand un seul champ compte. Seule exception : `ref.read(….notifier)` dans `build`, pour brancher les méthodes de champ.
-- **Tout contrôleur créé est libéré** (`TextEditingController`, `TransformationController`, `Timer`…) dans `dispose`.
-- **Un `IconButton` a toujours un `tooltip`.**
+- **Des classes de widget, pas de méthodes `_buildX()`** : c'est ce qui permet `const` et une reconstruction ciblée.
+- **Un écran de plus de ~400 lignes se découpe**, un fichier par composant (`distribution_positions_table.dart`). `/playground` en est exempté.
+- **Un widget dupliqué entre deux features monte dans `core/widgets`.**
+- **Tokens de thème uniquement** (`AppColors`, `AppSpacing`, `AppRadii`) : une couleur en dur finit par dériver du thème. Un nombre qui porte une décision (marge, seuil, taille) est une constante nommée. Un `2` évident reste en ligne.
+- **`ref.watch` dans `build`, `ref.read` dans les callbacks** : un `read` dans `build` rate les mises à jour, et Riverpod ne prend pas en charge un `watch` hors de `build`. Exception : `ref.read(….notifier)` dans `build`, pour brancher les méthodes de champ.
+- **Tout contrôleur ou `Timer` créé est libéré** (`dispose`, `ref.onDispose`).
+- **Tout `IconButton` a un `tooltip`** : c'est son libellé pour un lecteur d'écran, et son infobulle sur le web.
 
-### Architecture et durabilité
+### Architecture
 
-- **Une feature n'importe jamais une autre feature**, seulement `core/` et `app/`. Seule exception : `features/schema/`, l'aiguillage vers les schémas et plans de chaque outil.
-- **Un test qui porte sur un fichier en reproduit le chemin** (`lib/core/calc/layout.dart` → `test/core/calc/layout_test.dart`). Un test transversal (reset, persistance, haptique de tous les outils) vit à la racine de `test/features/`. **Chaque painter a son test « se rend sans lever »**, sur plusieurs tailles et avec une saisie refusée.
-- **Aucune nouvelle dépendance sans sa ligne dans `docs/architecture.md`** : pourquoi elle, et pourquoi pas le SDK.
-- **Messages de commit** en français, au format `Portée : description` (`Calepinage : …`, `Docs : …`).
+- **Une feature n'importe jamais une autre feature**, seulement `core/` et `app/`. Exception : `features/schema/`, qui aiguille vers le schéma de chaque outil.
+- **Pas de nouvelle dépendance sans sa justification dans `docs/architecture.md`** : pourquoi elle, et pourquoi pas le SDK.
+
+### Tests
+
+- **Un test reproduit le chemin du fichier testé** (`lib/core/calc/layout.dart` → `test/core/calc/layout_test.dart`). Les tests transversaux (reset, persistance, haptique) vivent à la racine de `test/features/`.
+- **Chaque painter a un test « se rend sans lever »** : trois tailles (vignette, plein écran, canvas dégénéré) et une saisie refusée. Un painter qui lève ne se voit qu'au rendu.
+- **Le nom d'un test décrit un comportement**, en français. C'est son commentaire.
+
+### Commits
+
+En français, au format `Portée : description` (`Calepinage : …`, `Docs : …`).
 
 ## Commentaires
 
-En **français**. Ils documentent le *pourquoi* du code tel qu'il est, jamais son évolution (c'est le rôle de git).
+En français. Ils disent **pourquoi** le code est ainsi, jamais comment il a évolué (c'est le rôle de git).
 
-### Forme
-
-- **`///` (dartdoc)** sur tout ce qui est déclaré : types, membres, constantes, champs `@freezed`. **`//`** uniquement pour une subtilité dans un corps.
-- Première ligne : une phrase courte qui se suffit, terminée par un point. Puis une ligne `///` vide, puis l'explication.
-- Commencer par un verbe (« Répartit… ») ou un groupe nominal (« Vue de dessus : … »). Jamais « Cette fonction… ».
-- Référencer les symboles entre crochets : `[computeDistribution]`.
+**Forme**
+- `///` sur les types, les API publiques et tout ce qui porte une décision. Pas sur un champ dont le nom dit tout (`final Widget child;`). `//` pour une subtilité dans un corps.
+- Première ligne : une phrase qui se suffit, commençant par un verbe (« Répartit… ») ou un nom (« Vue de dessus : … »). Puis une ligne vide, puis l'explication.
+- Symboles entre crochets : `[computeDistribution]`.
 - `// TODO(scope):` seulement pour ce qui figure dans `docs/roadmap.md`.
-- Tiret cadratin et point-virgule autorisés ici (la règle de ponctuation ne vise que les textes lus dans l'app).
+- Tiret cadratin et point-virgule sont permis ici : la règle de ponctuation vise les textes de l'app.
 
-### À supprimer
+**À garder** : une contrainte métier, une mesure (les 198 px de la police de test), une unité ou un invariant, un choix non trivial, une décision à ne pas défaire. Une décision a le droit d'être longue : on la resserre, on ne la tronque pas. Le reste tient en une ou deux lignes.
 
-- La paraphrase du code, le découpage narratif d'un `build()`.
-- Le code commenté, les TODO périmés, les commentaires devenus faux.
-- Toute référence à un document de travail (notes, plans, specs) : on énonce la contrainte, pas où elle est écrite.
-- Tout historique (« avant on faisait X »), les en-têtes décoratifs, les séparateurs `// ====`.
+**Par couche**
+- `core/calc` : l'unité, les bornes, ce qui lève `CalcException`. C'est ce dartdoc que lisent les écrans.
+- Painters : un ordre de tracé ou un seuil, jamais de géométrie (elle est dans `core`).
+- Widgets partagés : les hauteurs et les valeurs de thème, surtout les pièges vérifiés à la mesure.
+- Tests : un nombre magique ou la raison d'un garde-fou, rien d'autre.
 
-### À garder
+**À supprimer** : la paraphrase du code, le code commenté, l'historique (« avant on faisait… »), les commentaires devenus faux, les séparateurs décoratifs, et toute référence à un document, `docs/` compris : un document bouge, le commentaire reste et ment.
 
-Une **contrainte métier**, une **mesure** (les 198 px de la police de test), une **unité ou un invariant**, un **choix non trivial** (`ref.read` et pas `ref.watch`), une **décision à ne pas défaire**. Ces derniers ont le droit d'être longs. On les resserre, on ne les tronque pas. Le reste tient en une ou deux lignes.
-
-### Par couche
-
-- **`core/calc/`** : l'unité, les bornes, ce qui lève `CalcException`. Ce dartdoc est ce que lisent les écrans.
-- **Painters** : aucun commentaire de géométrie (la math est dans `core`). Un ordre de tracé ou un seuil de densité, rien d'autre.
-- **Widgets partagés** : justifier les valeurs de thème et les hauteurs, surtout les pièges vérifiés à la mesure.
-- **Tests** : le nom du `test()` est le commentaire. On ne commente qu'un nombre magique ou la raison d'un garde-fou.
-
-### Passe de commentaires
-
-Ne modifier que les commentaires, jamais la logique. Dans le doute, garder. `dart format lib` et `flutter analyze` doivent rester propres.
+Une passe de commentaires ne touche jamais la logique. Dans le doute, garder.

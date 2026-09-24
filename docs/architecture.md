@@ -97,7 +97,7 @@ S'y ajoutent, seulement si l'outil en a besoin : un fichier par composant quand 
 
 ## i18n
 
-Câblée via `lib/l10n/app_fr.arb`. En pratique, seul l'écran Réglages passe par `AppLocalizations` : les écrans-outils ont leurs libellés en dur.
+Câblée via `lib/l10n/app_fr.arb`. En pratique, seuls l'accueil et les Réglages passent par `AppLocalizations` : les écrans-outils ont leurs libellés en dur.
 
 ## Ce que démontrent les tests du cœur
 
