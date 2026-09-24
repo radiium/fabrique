@@ -2,7 +2,7 @@
 
 ## À faire
 
-- **Le plan du Convertisseur et des Avant-trous.** `core/export/` est générique : il manque un `*_plan.dart` par outil et ses deux points d'entrée (`resultsFooter`, et l'action de l'`AppBar` plein écran, déjà aiguillée par un `switch` sur `Tool` dans `schema_screen.dart`). La note du cartouche des Avant-trous devra porter l'« indicatif » des coefficients. Un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous.
+- **Le plan du Convertisseur et des Avant-trous.** `core/export/` est générique, boutons compris : il manque un `*_plan.dart` par outil (le cartouche, et une enveloppe de `PlanExportAction`), branché dans `resultsFooter` et dans le `switch` sur `Tool` de `schema_screen.dart`. La note du cartouche des Avant-trous devra porter l'« indicatif » des coefficients. Un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous.
 - **Vérifier sur appareil le libellé du sélecteur de matériau** du Calepinage. Un nom de produit et deux cotes ne peuvent pas passer la mesure pessimiste de la police de test, donc son test garde le rapport au lieu du seuil. À confirmer à l'œil, comme l'ont été « Symétriques » et « Calcul écart ».
 
 ## Si l'usage le demande

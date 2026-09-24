@@ -4,7 +4,8 @@ Le schéma d'un outil sort de l'app en **PNG**, sur une **A4 à l'italienne** po
 
 - `lib/core/export/plan.dart` : la feuille et le cartouche (`Plan`, `PlanTable`, `PlanPainter`). Générique, il reçoit des chaînes déjà formatées.
 - `lib/core/export/plan_export.dart` : rendu PNG, enregistrement, partage.
-- `lib/features/<outil>/<outil>_plan.dart` : ce que le cartouche de l'outil écrit, et ses deux points d'entrée.
+- `lib/core/export/plan_export_action.dart` : les boutons « Exporter » et « Partager » (`PlanExportAction`), communs à tous les outils et sans Riverpod.
+- `lib/features/<outil>/<outil>_plan.dart` : ce que le cartouche de l'outil écrit (`build<Outil>Plan`), la vue plein écran, et une enveloppe d'une quinzaine de lignes qui branche `PlanExportAction` sur les providers de l'outil.
 
 Câblé pour la Répartition et le Calepinage. Le Niveau en est exclu : un flux capteur figé n'est pas un plan.
 

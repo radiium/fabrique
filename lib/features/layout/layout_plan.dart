@@ -1,16 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/calc/layout.dart';
 import '../../core/export/plan.dart';
-import '../../core/export/plan_export.dart';
+import '../../core/export/plan_export_action.dart';
 import '../../core/format.dart';
 import '../../core/models/enums.dart';
 import '../../core/models/tool.dart';
-import '../../core/widgets/app_card_actions.dart';
-import '../../core/widgets/haptics.dart';
 import 'layout_controller.dart';
 import 'layout_painter.dart';
 import 'layout_schema.dart';
@@ -116,106 +112,24 @@ class LayoutPlanView extends ConsumerWidget {
   }
 }
 
-/// Les deux gestes du plan : l'enregistrer, ou l'envoyer.
-///
-/// En pied de la carte de résultats, et en icône dans l'`AppBar` de la page
-/// plein écran, qui n'a pas de carte de résultats. Là-bas une seule action,
-/// l'enregistrement : « ajuster » et « pivoter » occupent déjà la barre.
-///
-/// Les deux s'éteignent tant que la saisie est refusée, jamais ne
-/// disparaissent — même règle que « réinitialiser ».
-class LayoutExportAction extends ConsumerStatefulWidget {
+/// Les gestes d'export du plan du Calepinage, branchés sur ses providers.
+class LayoutExportAction extends ConsumerWidget {
   const LayoutExportAction({this.compact = false, super.key});
 
   /// `true` = l'icône de l'`AppBar`, `false` = la rangée en pied de carte.
   final bool compact;
 
   @override
-  ConsumerState<LayoutExportAction> createState() => _LayoutExportActionState();
-}
-
-/// Ce qui tourne, pour n'éteindre que le bouton concerné.
-enum _Running { none, save, share }
-
-class _LayoutExportActionState extends ConsumerState<LayoutExportAction> {
-  _Running _running = _Running.none;
-
-  /// Le plan à l'instant du tap.
-  ///
-  /// La saisie est relue, jamais observée : construire le plan à chaque frappe
-  /// grouperait la liste de débit — jusqu'à 5000 éléments parcourus — pour des
-  /// boutons qui n'ont besoin que de savoir s'il y a un résultat.
-  (PlanPainter, DateTime)? _snapshot() {
-    final date = DateTime.now();
-    final painter = buildLayoutPlan(
-      input: ref.read(layoutFormProvider),
-      outcome: ref.read(layoutResultProvider),
-      date: date,
-    );
-    return painter == null ? null : (painter, date);
-  }
-
-  Future<void> _run(
-    _Running which,
-    Future<bool> Function(
-      BuildContext context, {
-      required PlanPainter painter,
-      required Tool tool,
-      required DateTime date,
-    })
-    action,
-  ) async {
-    final snapshot = _snapshot();
-    if (snapshot == null) return;
-    final (painter, date) = snapshot;
-
-    setState(() => _running = which);
-    try {
-      await action(context, painter: painter, tool: Tool.layout, date: date);
-    } finally {
-      if (mounted) setState(() => _running = _Running.none);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final ready = ref.watch(layoutResultProvider) is LayoutReady;
-    final idle = ready && _running == _Running.none;
-
-    if (widget.compact) {
-      return IconButton(
-        icon: _running == _Running.save
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const Icon(Icons.download),
-        tooltip: 'Exporter le plan',
-        onPressed: idle
-            ? () {
-                hapticSelection(context);
-                unawaited(_run(_Running.save, savePlan));
-              }
-            : null,
-      );
-    }
-
-    return AppCardActions(
-      actions: [
-        CardAction(
-          icon: Icons.download,
-          label: 'Exporter',
-          busy: _running == _Running.save,
-          onTap: idle ? () => _run(_Running.save, savePlan) : null,
-        ),
-        CardAction(
-          icon: Icons.share,
-          label: 'Partager',
-          busy: _running == _Running.share,
-          onTap: idle ? () => _run(_Running.share, sharePlan) : null,
-        ),
-      ],
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PlanExportAction(
+      tool: Tool.layout,
+      compact: compact,
+      ready: ref.watch(layoutResultProvider) is LayoutReady,
+      buildPlan: (date) => buildLayoutPlan(
+        input: ref.read(layoutFormProvider),
+        outcome: ref.read(layoutResultProvider),
+        date: date,
+      ),
     );
   }
 }
