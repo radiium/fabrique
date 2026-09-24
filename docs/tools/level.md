@@ -17,27 +17,14 @@ Niveau à bulle et inclinomètre, par l'accéléromètre (`sensors_plus`). Aucun
 
 ## Calcul
 
-```dart
-@freezed
-class AccelReading { const factory AccelReading(double x, double y, double z) = _AccelReading; }
-
-@freezed
-class TiltResult {
-  const factory TiltResult({
-    required double pitchDeg, required double rollDeg,
-    required bool isLevel,
-  }) = _TiltResult;
-}
-
-TiltResult computeTilt(AccelReading r, {AccelReading? zero, double levelThresholdDeg = 0.5});
-```
+`computeTilt(AccelReading, {zero, levelThresholdDeg = 0.5})` → `TiltResult` (`pitchDeg`, `rollDeg`, `isLevel`).
 
 - `pitch = atan2(y, √(x² + z²))`, `roll = atan2(x, √(y² + z²))`, en degrés.
 - `zero` : ses propres angles sont soustraits.
 - `isLevel = |pitch| < seuil && |roll| < seuil`.
 - **Refus** : seuil invalide, lecture non finie, vecteur nul (`atan2(0, 0)` rendrait un « à plat » faux). Un capteur qui décroche peut produire les deux : le provider rend alors `null`.
 
-### Cas de test attendus
+### Exemples
 
 - À plat `(0, 0, 9,81)` → 0 / 0, à niveau.
 - Sur le côté `(9,81, 0, 0)` → roll ≈ 90°. Sur l'avant `(0, 9,81, 0)` → pitch ≈ 90°.
@@ -54,7 +41,7 @@ TiltResult computeTilt(AccelReading r, {AccelReading? zero, double levelThreshol
 - **Saisie** : `Mettre à zéro` (inerte tant que le capteur n'a rien livré) et `Annuler` une fois un zéro posé. Sans retour au zéro absolu, un mauvais calibrage ne se rattraperait qu'en redémarrant l'app. Le zéro n'est pas persisté.
 - **Capteur indisponible** (navigateur de bureau, émulateur, permission refusée) : on le dit, plutôt que de laisser une bulle figée au centre passer pour un niveau parfait.
 - **Résultats** : `Inclinaison latérale` · `Inclinaison longitudinale` (au dixième de degré, `formatDegrees`, `-0` ramené à `0`) · `État` (`À plat` / `Hors niveau`, relatif à l'horizontale ou au zéro posé).
-- **Pas de « réinitialiser »** : rien à persister.
+- **Pas de « réinitialiser »** : il n'y a aucune saisie.
 
 ## Schéma
 
@@ -64,7 +51,6 @@ La vedette de l'écran : une fiole circulaire, bulle mobile, angles en gros.
 - **La bulle monte du côté haut**, comme dans un vrai niveau, pas comme une bille qui roule. La lecture se transpose à l'outil qu'on a déjà en main.
 - **Le contour s'épaissit et prend l'accent à niveau** : le signal se voit du coin de l'œil.
 - **Carte non tapable** : pas de détail à aller chercher, et une page par-dessus couperait des yeux le flux du capteur.
-- Pas un plan : texte en gris des libellés.
 
 ## Décidé / écarté
 

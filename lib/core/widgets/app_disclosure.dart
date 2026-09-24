@@ -10,12 +10,13 @@ import 'haptics.dart';
 /// dans une carte de saisie suffisent à l'y envoyer — c'est le problème connu
 /// du calepinage.
 ///
-/// Règle d'emploi : **ce qui est replié doit être sans effet par défaut.**
-/// Sinon on cache à l'utilisateur la raison d'un résultat qui le surprend, et
-/// le repli devient un piège au lieu d'un rangement.
+/// Règle d'emploi : **ce qui est replié garde par défaut une valeur qui ne
+/// surprend pas** — neutre (un jeu nul) ou le cas le plus courant (des bords
+/// aux éléments). Sinon on cache à l'utilisateur la raison d'un résultat qui
+/// le surprend, et le repli devient un piège au lieu d'un rangement.
 ///
 /// [modified] est l'autre moitié de cette règle : une valeur repliée qui n'est
-/// plus à son défaut *agit*, et rien à l'écran ne le dirait. La pastille le
+/// plus à son défaut change le résultat, et rien à l'écran ne le dirait. La pastille le
 /// dit — sans changer la largeur du titre, et sans forcer l'ouverture. Elle
 /// devient indispensable dès qu'autre chose que le doigt de l'utilisateur
 /// remplit un champ replié, un preset par exemple.

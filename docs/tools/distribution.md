@@ -33,59 +33,13 @@ Répartir des éléments identiques sur une largeur : barreaudage, lames, étag�
 
 ## Calcul
 
-### Signatures
+### Points d'entrée
 
-```dart
-enum DistributionEdge { gap, element }
-
-@freezed
-class DistributionInput {                // nombre connu → écart
-  const factory DistributionInput({
-    required double length,              // largeur totale, mm
-    required int count,
-    @Default(0) double elementWidth,     // 0 = points purs
-    @Default(DistributionEdge.gap) DistributionEdge startEdge,
-    @Default(DistributionEdge.gap) DistributionEdge endEdge,
-    @Default(0) double startOffset,      // marge de début
-    @Default(0) double endOffset,        // marge de fin
-  }) = _DistributionInput;
-}
-
-@freezed
-class DistributionTargetInput {          // écart voulu → nombre
-  const factory DistributionTargetInput({
-    required double length,
-    required double targetSpacing,
-    // … mêmes champs optionnels
-  }) = _DistributionTargetInput;
-}
-
-@freezed
-class DistributionResult {
-  const factory DistributionResult({
-    required int count,
-    required int gapCount,
-    required double spacing,             // jeu libre
-    required double pitch,               // entraxe = spacing + elementWidth
-    required double span,                // largeur moins les marges
-    required List<double> positions,     // bord d'attaque de chaque élément
-    required List<double> centers,
-  }) = _DistributionResult;
-}
-
-@freezed
-class DistributionTargetResult {
-  const factory DistributionTargetResult({
-    required DistributionResult best,    // écart le plus proche de la cible
-    required DistributionResult? other,  // l'autre borne, si réalisable
-  }) = _DistributionTargetResult;
-}
-
-DistributionResult computeDistribution(DistributionInput input);
-DistributionTargetResult computeDistributionForSpacing(DistributionTargetInput input);
-int minDistributionCount(DistributionEdge start, DistributionEdge end);
-const int kMaxDistributionCount = 500;
-```
+- `computeDistribution(DistributionInput)` → `DistributionResult` : nombre connu, on cherche l'écart.
+- `computeDistributionForSpacing(DistributionTargetInput)` → `DistributionTargetResult` : écart voulu, on cherche le nombre. Rend `best` (l'écart le plus proche de la cible) et `other` (l'autre borne, si réalisable).
+- La saisie : largeur totale, nombre ou écart visé, `elementWidth` (0 = points purs), `startEdge` / `endEdge` (`DistributionEdge.gap` ou `.element`), `startOffset` / `endOffset` (les marges). Tout en mm.
+- `DistributionResult` : `spacing` (jeu libre), `pitch` (entraxe), `gapCount`, `span` (largeur moins les marges), `positions` (bord d'attaque de chaque élément), `centers`.
+- `minDistributionCount(start, end)` : le minimum d'une disposition, pour borner le champ.
 
 ### Algorithme
 
@@ -104,7 +58,7 @@ Messages affichés tels quels :
 - **nombre connu** : nombre négatif, sous le minimum de la disposition, au-dessus de 500, éléments trop larges (« Les 11 éléments occupent 110 mm pour 100 mm disponibles »)
 - **écart voulu** : écart négatif, largeur et écart nuls, écart trop petit pour rester sous 500 (dit franchement), aucune borne réalisable
 
-### Cas de test attendus
+### Exemples
 
 - **Points purs** : `(100, 1)` → `[50]` · `(100, 3)` → `[25, 50, 75]` · `(100, 0)` → `[]` · `(90, 2)` → `[30, 60]`.
 - **Largeur** : 2 éléments de 20 sur 100, bordés de jeux → écart 20, entraxe 40, `[20, 60]`.
@@ -183,16 +137,9 @@ Pas de note.
 
 ---
 
-## Gardes de test
+## Libellés vérifiés sur appareil
 
-- chaque combinaison de bords et chaque mode se rend sans lever, écran comme plan
-- une largeur nulle donne un trait et retire l'entraxe et la colonne des centres
-- le schéma reste au-dessus de la ligne de flottaison
-- le pied « Réglages avancés » touche les bords de la carte
-- aucun libellé de contrôle ni d'action n'est tronqué
-- le cartouche reprend toutes les positions ou aucune, et ne répète pas le dessin
-
-**Libellés retenus malgré la police de test**, vérifiés sur appareil (Pixel 5, 22/09/2026) : `Symétriques` / `Asymétriques`, `Calcul écart` / `Calcul nombre`. Épinglés dans `knownWiderThanTestFont`.
+`Symétriques` / `Asymétriques` et `Calcul écart` / `Calcul nombre` dépassent la mesure pessimiste de la police de test, et ont été retenus après vérification sur un Pixel 5 (22/09/2026). Ils sont épinglés dans `knownWiderThanTestFont` (voir [ui/writing.md](../ui/writing.md)).
 
 ---
 

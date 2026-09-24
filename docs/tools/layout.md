@@ -39,53 +39,12 @@ Sur un axe de portée `s`, élément `e`, jeu `g` :
 
 ## Calcul
 
-### Signatures
+### Points d'entrée
 
-```dart
-@freezed
-class LayoutInput {
-  const factory LayoutInput({
-    required double surfaceX, required double surfaceY,   // mm
-    required double elementX, required double elementY,   // mm
-    @Default(0) double gapX, @Default(0) double gapY,
-    @Default(0) double perimeterGap,        // retiré sur les 4 bords
-    @Default(false) bool balanceRows,
-    @Default(false) bool flip,
-    @Default(JointOffset.half) JointOffset offset,       // straight · half · third
-  }) = _LayoutInput;
-}
-
-@freezed
-class PlacedElement {                        // coordonnées surface, mm
-  const factory PlacedElement({
-    required double x, required double y,  // coin haut-gauche
-    required double w, required double h,  // dimensions réellement posées
-    required bool isCut,
-  }) = _PlacedElement;
-}
-
-@freezed
-class LayoutResult {
-  const factory LayoutResult({
-    required List<PlacedElement> elements,
-    required int fullCount, required int cutCount,
-    required int totalCount,                 // fullCount + cutCount
-    required double surfaceArea, required double coveredArea,
-    required double wastePercent,
-    double? balancedRow,                     // épaisseur des rangées de bord, si équilibrage
-    double? balancedEnd,                     // longueur des pièces de bout, si équilibrage de l'axe de pose
-  }) = _LayoutResult;
-}
-
-@freezed
-class CutPiece {
-  const factory CutPiece({required double w, required double h, required int count}) = _CutPiece;
-}
-
-LayoutResult computeLayout(LayoutInput input);
-List<CutPiece> summarizeCuts(LayoutResult result);   // la liste de débit
-const int kMaxLayoutElements = 5000;
-```
+- `computeLayout(LayoutInput)` → `LayoutResult`. La saisie : surface et élément (mm), `gapX` / `gapY`, `perimeterGap`, `balanceRows`, `flip`, `offset` (droit, ½ ou ⅓, défaut ½).
+- `LayoutResult` : les rectangles posés (`PlacedElement`, dont `isCut`), les comptes (`fullCount`, `cutCount`, `totalCount`), les aires, `wastePercent`, et `balancedRow` / `balancedEnd`, nuls quand l'équilibrage n'a pas joué.
+- `summarizeCuts(LayoutResult)` → la liste de débit (`CutPiece` : cote et nombre).
+- `kMaxLayoutElements` : la borne de volume.
 
 ### Algorithme
 
@@ -110,7 +69,7 @@ Les messages **nomment les cotes comme l'écran** et portent les chiffres :
 - élément plus grand que la **zone à couvrir**, les deux cotes face à face (avec un jeu périphérique, la zone n'est plus la surface saisie)
 - volume au-delà de `kMaxLayoutElements`, avec l'**ordre de grandeur** (sur une faute de frappe, il y a deux zéros d'écart, et c'est ça qui dit où chercher)
 
-### Cas de test attendus
+### Exemples
 
 - **Pile-poil** : 1000×1000, élément 100×1000, droit → 10 pleines, 0 coupe, perte 0.
 - **Coupe en X** : 1050×1000, élément 100×1000 → 10 pleines + 1 coupe de 50, perte ≈ 4,5 %.
@@ -120,7 +79,7 @@ Les messages **nomment les cotes comme l'écran** et portent les chiffres :
 - **Jeu périphérique** : 1020×1000, `perimeterGap: 10`, élément 100×980 → 10 pleines, 0 coupe, `surfaceArea` = 1 020 000 mm², premier élément en `(10, 10)`.
 - **Équilibrage** : 1000×950, élément 1000×200 → reliquat 150 ≥ 100, rien ne bouge. 1000×1010 → 4 pleines + 2 de bord de 105. 1000×250 → `n = 1`, rien à sacrifier. Sous décalage, `balancedEnd` reste nul. Même `totalCount` et même perte qu'en non équilibré.
 - **Liste de débit** : décalage ½ sur 1000×300, élément 200×100 → une seule cote (100×100) portée par 2 pièces. Rien à couper → liste vide.
-- **Refus** : chaque cas ci-dessus, et un élément exactement à la dimension de la surface est accepté.
+- **Limite** : un élément exactement à la dimension de la surface est accepté.
 
 ---
 
@@ -135,9 +94,8 @@ Les messages **nomment les cotes comme l'écran** et portent les chiffres :
 
 Repliés dans `Réglages avancés` : `Jeu horizontal` · `Jeu vertical` · `Jeu périphérique` · `Inverser l'orientation` · `Équilibrer les rangées`. Tous à 0 ou éteints par défaut.
 
-- **Les cotes vont par paires** : six champs empilés pousseraient le schéma sous la ligne de flottaison.
+- **Les cotes vont par paires** (`FieldPair`) : six champs empilés pousseraient le schéma sous la ligne de flottaison.
 - **`Inverser l'orientation` est replié faute de place** : la carte ne tient que quatre lignes visibles avant que le schéma passe sous la ligne de flottaison, et le sélecteur de matériau en prend une.
-- **Pas de ⓘ sur les deux interrupteurs** : leur explication tient dans leur ligne `help`.
 
 **Défauts** (`kLayoutDefaults`) : surface 3000 × 2000, élément 1200 × 200, décalage ½.
 
@@ -149,7 +107,6 @@ Un preset **pré-remplit** l'élément, les jeux, le jeu périphérique et le d�
 - **Sa valeur se dérive de la saisie** (`matchLayoutPreset`) : rien à persister, aucune désynchronisation possible. Aucun preset ne correspond → `Personnalisé`, proposé seulement quand c'est la valeur courante.
 - **Une seule affectation** (`applyPreset`), pas six appels de champ, sinon cinq reconstructions sur des états intermédiaires.
 - **Les jeux d'un preset s'expriment en termes de pose** (`en bout`, `entre lames`) et se traduisent en `gapX` / `gapY` selon l'inversion en cours.
-- **La pastille des réglages avancés** s'allume quand un preset y a rempli un champ.
 
 | Libellé | Jeu | Périphérique | Décalage |
 |---|---|---|---|
@@ -162,7 +119,7 @@ Un preset **pré-remplit** l'élément, les jeux, le jeu périphérique et le d�
 
 - **Un preset n'entre que s'il porte au moins une règle hors défaut.** Un format seul se tape en quatre secondes. Un format absent se tape par-dessus le preset le plus proche, qui garde ses règles.
 - **Le carrelage est doublé** parce qu'au-delà de ~60 cm, le décalage ½ fait tuiler le carreau et la règle passe au ⅓. C'est exactement le savoir qu'un preset doit transmettre.
-- **Le libellé porte le produit et le format, rien d'autre** : la valeur fermée du dropdown tronque en silence à ~256 px.
+- **Le libellé porte le produit et le format, rien d'autre** : la valeur fermée du dropdown tronque en silence à ~256 px. ⚠️ Son test garde le rapport et non le seuil, car un nom de produit et deux cotes ne tiennent pas dans les 14 caractères de la police de test. Reste à vérifier sur appareil.
 
 ### Refus affiché
 
@@ -189,7 +146,7 @@ Vue de dessus : les rectangles posés par le cœur, `isCut` compris. Le painter 
 - **Au-delà de 1500 éléments, on cesse de cerner** : les filets se touchent et forment un aplat.
 - **Jeu périphérique hachuré**, comme les marges de la Répartition.
 - **Contour de la surface tracé en dernier**, pour rester net là où une pièce affleure.
-- **Deux cotes de surface** (largeur au-dessus, longueur à gauche) et l'unité en bas. En vignette (`compact`), elles tombent : la surface récupère ~quart de la hauteur, et les cotes sont dans les champs juste au-dessus.
+- **Deux cotes de surface** (largeur au-dessus, longueur à gauche) et l'unité en bas. En vignette (`compact`), elles tombent : la surface récupère environ un quart de la hauteur, et les cotes sont dans les champs juste au-dessus.
 
 ---
 
@@ -205,18 +162,6 @@ Vue de dessus : les rectangles posés par le cœur, `isCut` compris. Le painter 
 **Table** `PIÈCES À COUPER` : `N°` · `LARG. (mm)` · `LONG. (mm)` · `NB`. Le compte va en dernière colonne, jamais dans la première (étroite). Repli : `Aucune coupe, tout tombe juste`, ou `N cotes de coupe — à lire dans l'app`.
 
 **Note** : « Perte estimée sans réemploi des chutes. Chaque coupe consomme un élément entier. »
-
----
-
-## Gardes de test
-
-- le schéma reste au-dessus de la ligne de flottaison
-- les réglages avancés sont repliés et sans effet, la pastille ne s'allume que sur un réglage replié modifié
-- la tuile des rangées de bord n'apparaît qu'équilibrée
-- le refus se lit dans la carte de saisie
-- les presets remplissent tout d'un coup, leurs jeux suivent le sens de pose, la valeur se dérive, « Personnalisé » ne s'offre pas quand un preset est pris
-- aucun libellé de preset ne déborde la valeur fermée : ⚠️ ce test garde **le rapport** et non le seuil, car un nom de produit et deux cotes ne peuvent pas tenir dans les 14 caractères de la police de test (voir [roadmap.md](../roadmap.md))
-- le cartouche porte l'avertissement, toutes les cotes de coupe ou aucune, et ne répète pas ce que le dessin cote
 
 ---
 

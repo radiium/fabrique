@@ -4,7 +4,7 @@ Une valeur, convertie dans toutes les unités de sa grandeur à la fois.
 
 | Couche | Fichiers |
 |---|---|
-| Calcul | `lib/core/calc/units/` (`units.dart`, `imperial.dart`, `measures.dart`) · `test/core/calc/units_test.dart`, `measures_test.dart` |
+| Calcul | `lib/core/calc/units/` (`measures.dart`, `imperial.dart`, `units.dart`) · `test/core/calc/units_test.dart`, `measures_test.dart` |
 | Modèles | `lib/core/models/measure_unit.dart`, `length_unit.dart` |
 | Écran | `lib/features/converter/` : `_screen`, `_controller` |
 | Schéma | `_schema`, `converter_painter.dart` (`RulerPainter`), `comparison_painter.dart` |
@@ -31,33 +31,17 @@ Les pivots de surface et de volume ne sont pas proposés à l'écran (personne n
 
 ## Calcul
 
-```dart
-double toBase(double value, MeasureUnit unit);
-double fromBase(double base, MeasureUnit unit);
-double convert(double value, MeasureUnit from, MeasureUnit to);     // lève entre grandeurs
-Map<MeasureUnit, double> convertAll(double value, MeasureUnit unit);
-
-double toMm(double value, LengthUnit unit);
-double fromMm(double mm, LengthUnit unit);
-
-@freezed
-class ImperialParts {
-  const factory ImperialParts({
-    required int feet, required int inches,
-    required int num,     // 0 si entier
-    required int den,     // 16, 32…
-  }) = _ImperialParts;
-}
-ImperialParts mmToImperial(double mm, {int denominator = 16});
-double imperialToMm(ImperialParts p);
-String formatImperial(ImperialParts p);   // 2' 6 3/8"
-```
+- `convertAll(value, unit)` : la valeur dans toutes les unités de sa grandeur. C'est ce que l'écran affiche.
+- `convert(value, from, to)` : une conversion, qui lève entre deux grandeurs.
+- `toBase` / `fromBase` et `baseFactor(unit)` : le passage par le pivot.
+- `toMm` / `fromMm` et `mmPerUnit(unit)` (`units.dart`, enum `LengthUnit`) : la même chose pour les seules longueurs. Aucun écran ne s'en sert aujourd'hui : il est gardé pour le réglage métrique / impérial (voir [roadmap.md](../roadmap.md)), et un test garde ses facteurs alignés sur `baseFactor`.
+- `mmToImperial`, `imperialToMm`, `formatImperial` : l'impérial composé (`ImperialParts` : pieds, pouces, fraction), écrit `2' 6 3/8"`.
 
 **Impérial composé** : arrondi au 1/`denominator` de pouce le plus proche, **retenues propagées** (16/16 → +1 po, 12 po → +1 pi), **fraction réduite** (6/16 → 3/8). Une valeur entière rend `num: 0, den: 1`.
 
 **Refus** : valeur non finie, longueur négative, dénominateur invalide, conversion entre grandeurs.
 
-### Cas de test attendus
+### Exemples
 
 - `toMm(1, inch)` → 25,4 · `toMm(1, foot)` → 304,8.
 - Aller-retour exact (1e-9) pour chaque unité.
@@ -71,7 +55,7 @@ String formatImperial(ImperialParts p);   // 2' 6 3/8"
   - `Grandeur` en **dropdown** : elle commande tout le reste, donc elle vient en premier. Pas en segments, « Pression » ne tient pas.
   - `Valeur`, dont le suffixe suit l'unité source.
   - `Unité source` en segments.
-  - `Impérial composé` (interrupteur), **longueurs seulement** : masqué ailleurs, pas grisé, puisqu'il n'y a aucun sens.
+  - `Impérial composé` (interrupteur), **longueurs seulement** : masqué ailleurs plutôt que grisé, puisqu'il n'y aurait aucun sens.
 - **Changer de grandeur garde la valeur** et retombe sur l'unité courante de la famille (mm, m², L, kg, bar) : on convertit souvent le même nombre d'une grandeur à l'autre.
 - **La grandeur se déduit de l'unité**, elle n'est pas stockée : deux champs pourraient se contredire.
 - **Défauts** : 100 mm, impérial composé actif.
@@ -83,11 +67,6 @@ String formatImperial(ImperialParts p);   // 2' 6 3/8"
 - **Autres grandeurs : comparaison à un repère rond** (`ComparisonPainter`) : 1 m², 1 L, 1 kg, 1 bar. Carrés pour une surface, cubes pour un volume (un facteur 1000 ne fait que 10 sur l'arête), barres pour ce qui n'a pas de forme. La valeur en accent, le repère en gris. Une forme trop petite est relevée à une taille minimale, et le dessin le signale.
 - **Pas de `compact`** : les deux painters se régulent seuls (graduations secondaires au-dessus de 5 px, libellé qui chevaucherait sauté). Vignette et plein écran sont identiques à l'échelle près.
 - Les règles détourent leurs chiffres (`drawSchemaLabel`) par-dessus les graduations.
-- Pas un plan : texte en gris des libellés.
-
-## Gardes de test
-
-`converter_screen_test.dart` vérifie qu'aucun symbole d'unité n'est tronqué dans ses segments.
 
 ## Décidé / écarté
 

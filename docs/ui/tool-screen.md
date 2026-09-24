@@ -20,8 +20,8 @@ Les écrans passent leur contenu nu, c'est `ToolScaffold` qui pose les cartes.
 
 Un panneau replié en pied de carte, pour ce qu'on règle une fois sur dix.
 
-- **Règle d'emploi : ce qui est replié est sans effet par défaut.** Sinon on cache la raison d'un résultat surprenant.
-- **Pastille d'accent** dès qu'une valeur repliée n'est plus à son défaut. C'est l'autre moitié de la règle : un preset peut remplir un champ replié à la place du doigt. Elle ne change pas la largeur du titre et ne force pas l'ouverture.
+- **Règle d'emploi : ce qui est replié garde par défaut une valeur qui ne surprend pas.** Neutre (jeu nul, marge nulle) ou le cas le plus courant (bords Élément – Élément de la Répartition). Sinon on cache la raison d'un résultat surprenant.
+- **Pastille d'accent** dès qu'une valeur repliée n'est plus à son défaut. C'est l'autre moitié de la règle, indispensable depuis qu'un preset peut remplir un champ replié à la place du doigt. Elle ne change pas la largeur du titre et ne force pas l'ouverture.
 
 ## Résultats
 

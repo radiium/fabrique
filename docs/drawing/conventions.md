@@ -2,7 +2,7 @@
 
 Les schémas suivent le dessin technique. Primitives partagées dans `lib/core/painting.dart` : sans elles, chaque painter recopierait sa version et les schémas cesseraient de se ressembler.
 
-Le Convertisseur et le Niveau ne sont pas des plans : leur texte reste en `AppColors.label` (défaut de `schemaText`), et ce qui suit vaut surtout pour la Répartition, le Calepinage et les Avant-trous.
+Ce qui suit vaut pour les schémas cotés : Répartition, Calepinage, Avant-trous. Le Convertisseur et le Niveau ne sont pas des plans, et leur texte reste dans le gris des libellés (défaut de `schemaText`).
 
 ## La feuille
 
@@ -18,7 +18,7 @@ Les schémas se dessinent sur une **feuille blanche** (`SchemaSheet`). Donc **la
 
 ## Cotes
 
-- **Le chiffre se pose au-dessus d'une ligne de cote continue** (`drawDimensionLabel`). Un pavé détouré qui perce la ligne est une habitude de diagramme, et sur un peigne de cotes il troue tous les étages. Il ne peut donc plus rogner une flèche : il ne se mesure que contre l'espace coté.
+- **Le chiffre se pose au-dessus d'une ligne de cote continue** (`drawDimensionLabel`). Un pavé détouré qui perce la ligne est une habitude de diagramme, et sur un peigne de cotes il troue tous les étages. Posé au-dessus, le chiffre ne peut pas rogner une flèche : il ne se mesure que contre l'espace coté.
 - ⚠️ Un chiffre au-dessus a besoin de **sa hauteur au-dessus de la ligne**. C'est ce qui fixe les marges hautes des schémas.
 - **Cote serrée** (`drawHDimension(tight: true)`) : flèches retournées vers l'extérieur, chiffre sorti de l'espace mesuré du côté `labelSide`, recalé dans `bounds`. Convention du dessin technique pour les petites cotes, au lieu de taire la cote.
 - **Un bout de cote porte un tiret ou une flèche, jamais les deux** (`ticks:`). Là où une attache arrive, le tiret n'ajoute rien. Les cotes sans attache (les Ø des Avant-trous) le gardent.
@@ -32,7 +32,7 @@ Les schémas se dessinent sur une **feuille blanche** (`SchemaSheet`). Donc **la
 
 ## Libellés détourés
 
-`drawSchemaLabel` pose un texte sur un pavé de la couleur de la feuille. Seules les deux règles du Convertisseur s'en servent encore, par-dessus leurs graduations. ⚠️ La couleur du détourage et celle de `SchemaSheet` doivent bouger ensemble.
+`drawSchemaLabel` pose un texte sur un pavé de la couleur de la feuille. Seules les deux règles du Convertisseur s'en servent, par-dessus leurs graduations. ⚠️ La couleur du détourage et celle de `SchemaSheet` doivent bouger ensemble.
 
 ## Espace objet / espace papier
 

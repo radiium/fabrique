@@ -3,7 +3,7 @@
 L'app se lit dans un atelier : debout, à bout de bras, en pleine lumière, parfois avec des gants, la scie qui tourne.
 
 - **Fort contraste, gros texte, cibles ≥ 48 px.** Tout ce qui se saisit ou se choisit fait `kFieldHeight`.
-- **Une main.** Actions principales en bas, dans le pouce. L'action à rendre difficile (« réinitialiser ») va dans le coin opposé.
+- **Une main.** Ce qu'on fait des résultats (exporter, partager) se pose au pied de la carte de résultats, là où la lecture se termine. L'action à rendre difficile (« réinitialiser ») va dans le coin haut, loin du pouce.
 - **Calcul en temps réel.** Pas de bouton « calculer » : résultats et schéma suivent la frappe.
 - **Clavier numérique par défaut**, résultats **copiables** d'un tap.
 - **Le schéma est la vedette** et ne passe jamais sous la ligne de flottaison sur mobile.

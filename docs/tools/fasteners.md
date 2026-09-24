@@ -12,33 +12,13 @@ Depuis un matériau, un Ø de vis et l'épaisseur de la pièce à fixer : trou d
 
 ## Règles métier
 
-- ⚠️ **Les coefficients sont des règles de l'art indicatives**, à valider à part. Ils vivent dans **une seule table** en tête de `fasteners.dart`, et le calcul ne fait que l'appliquer. L'écran le dit dans la note de l'avant-trou.
+- ⚠️ **Les coefficients sont des règles de l'art indicatives**, à valider à part. Ils vivent dans **une seule table**, en tête de `fasteners.dart`, et le calcul ne fait que l'appliquer. L'écran le dit dans la note de l'avant-trou.
 - **Invariant** : `pilotHole < clearanceHole < counterboreDia`, toujours. C'est lui qui rend le schéma cohérent. `minScrewDiameter` (1 mm) le protège : en dessous, `Ø + 0,5` rattraperait `2 × Ø`.
 
 ## Calcul
 
-```dart
-@freezed
-class FastenerInput {
-  const factory FastenerInput({
-    required MaterialKind material,     // softwood · hardwood · chipboard · plywood
-    required double screwDiameter,      // Ø nominal, mm
-    required double fixedThickness,     // épaisseur traversée, mm
-  }) = _FastenerInput;
-}
-
-@freezed
-class FastenerResult {
-  const factory FastenerResult({
-    required double clearanceHole,      // Ø passage
-    required double pilotHole,          // Ø guidage
-    required double counterboreDia, required double counterboreDepth,
-    required double screwLength, required double penetration,
-  }) = _FastenerResult;
-}
-
-FastenerResult computeFastener(FastenerInput input);
-```
+- `computeFastener(FastenerInput)` → `FastenerResult`. La saisie : matériau (`MaterialKind`), Ø nominal de la vis, épaisseur de la pièce traversée. Le résultat : Ø de passage, Ø de guidage, lamage (Ø et profondeur), pénétration et longueur de vis, tout en mm.
+- `pilotHoleFactor(MaterialKind)` et les constantes qui la suivent forment la table ci-dessous.
 
 ### La table
 
@@ -55,7 +35,7 @@ FastenerResult computeFastener(FastenerInput input);
 
 Cote non finie, Ø ≤ 0, Ø sous `minScrewDiameter`, épaisseur ≤ 0.
 
-### Cas de test attendus
+### Exemples
 
 - Résineux, Ø 4, épaisseur 18 → guidage 2,2, passage 4,5, pénétration 36, longueur 54.
 - Feuillu contre résineux → guidage plus grand.
