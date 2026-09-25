@@ -4,11 +4,12 @@ import '../../app/theme.dart';
 import 'labeled_field.dart';
 import 'number_field.dart';
 
-/// Deux champs de même famille côte à côte : largeur × longueur, jeu X × jeu Y,
+/// Deux cotes du même objet, lues ensemble : largeur × longueur, jeu X × jeu Y,
 /// marge de début × marge de fin.
 ///
-/// Aucun des deux ne porte de boutons − / + : à cette largeur ils tiennent, là
-/// où une paire de champs à pas serait illisible sur un téléphone.
+/// Jamais pour gagner de la place : deux champs sans lien vont chacun sur leur
+/// ligne. Jamais de `CountField` dedans : ses trois cibles ne tiennent pas dans
+/// une demi-largeur de téléphone.
 ///
 /// Si l'un des deux porte un ⓘ, sa ligne de libellé est plus haute : la paire
 /// le dit à l'autre ([PairedLabelScope]), sinon les deux champs démarreraient

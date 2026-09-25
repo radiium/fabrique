@@ -65,19 +65,18 @@ class DrawersOpeningGroup extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          FieldPair(
-            first: NumberField(
-              label: 'Profondeur intérieure',
-              suffix: 'mm',
-              value: input.openingDepth,
-              onChanged: form.setOpeningDepth,
-            ),
-            second: NumberField(
-              label: 'Épaisseur du caisson',
-              suffix: 'mm',
-              value: input.carcassThickness,
-              onChanged: form.setCarcassThickness,
-            ),
+          NumberField(
+            label: 'Profondeur intérieure',
+            suffix: 'mm',
+            value: input.openingDepth,
+            onChanged: form.setOpeningDepth,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          NumberField(
+            label: 'Épaisseur du caisson',
+            suffix: 'mm',
+            value: input.carcassThickness,
+            onChanged: form.setCarcassThickness,
           ),
         ],
       ),
@@ -144,19 +143,18 @@ class DrawersFrontsGroup extends StatelessWidget {
           // L'épaisseur de façade reste affichée dans les deux poses : le
           // calcul ne s'en sert qu'encastrée, mais le schéma dessine la façade
           // toujours.
-          FieldPair(
-            first: NumberField(
-              label: 'Épaisseur de façade',
-              suffix: 'mm',
-              value: input.frontThickness,
-              onChanged: form.setFrontThickness,
-            ),
-            second: NumberField(
-              label: 'Jeu entre façades',
-              suffix: 'mm',
-              value: input.frontGap,
-              onChanged: form.setFrontGap,
-            ),
+          NumberField(
+            label: 'Épaisseur de façade',
+            suffix: 'mm',
+            value: input.frontThickness,
+            onChanged: form.setFrontThickness,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          NumberField(
+            label: 'Jeu entre façades',
+            suffix: 'mm',
+            value: input.frontGap,
+            onChanged: form.setFrontGap,
           ),
         ],
       ),
@@ -193,19 +191,18 @@ class DrawersSlideGroup extends StatelessWidget {
           ),
           if (input.slide == SlideKind.custom) ...[
             const SizedBox(height: AppSpacing.md),
-            FieldPair(
-              first: NumberField(
-                label: 'Jeu par côté',
-                suffix: 'mm',
-                value: input.customSideClearance,
-                onChanged: form.setCustomSideClearance,
-              ),
-              second: NumberField(
-                label: 'Réduction de longueur',
-                suffix: 'mm',
-                value: input.customLengthReduction,
-                onChanged: form.setCustomLengthReduction,
-              ),
+            NumberField(
+              label: 'Jeu par côté',
+              suffix: 'mm',
+              value: input.customSideClearance,
+              onChanged: form.setCustomSideClearance,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            NumberField(
+              label: 'Réduction de longueur',
+              suffix: 'mm',
+              value: input.customLengthReduction,
+              onChanged: form.setCustomLengthReduction,
             ),
           ],
           if (spec.nominalLengths.isNotEmpty) ...[

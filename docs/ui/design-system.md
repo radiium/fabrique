@@ -42,7 +42,7 @@ Rien dans le code ne les relie : `test/core/widgets/control_metrics_test.dart` l
 - **`AppSwitchField`** : **toute la ligne bascule**, libellé compris. ⚠️ Donc jamais de ⓘ dedans : une cible d'aide posée là changerait le réglage une fois sur deux. Ce qu'un switch a à expliquer tient dans sa ligne `help`.
 - **`NumberField`** : une cote en mm. Clavier numérique, notifie à chaque frappe. **Jamais de boutons − / +** : une cote se mesure puis se tape.
 - **`CountField`** : un nombre d'éléments (entier, bornes obligatoires). **Toujours** des boutons − / + (appui maintenu = défilement) : un nombre s'essaie au pouce. Le choix se fait par le type, pas par un paramètre : un compteur ne peut pas oublier ses boutons, une cote ne peut pas en recevoir.
-- **`FieldPair`** : deux `NumberField` de même famille côte à côte (largeur × longueur). Jamais de `CountField` dedans : trois cibles de 48 px ne tiennent pas dans une demi-largeur de téléphone.
+- **`FieldPair`** : deux `NumberField` côte à côte, seulement s'ils sont **deux cotes du même objet qu'on lit ensemble** : largeur × longueur, jeu X × jeu Y, marge début × fin, épaisseur des côtés × du fond. Une paire ne sert jamais à gagner de la place : deux champs sans lien (une profondeur et une épaisseur de panneau, une épaisseur et un jeu) vont chacun sur leur ligne. Jamais de `CountField` dedans : trois cibles de 48 px ne tiennent pas dans une demi-largeur de téléphone.
 
 ## Espacements et rayons
 
