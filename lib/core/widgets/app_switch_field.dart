@@ -46,6 +46,9 @@ class AppSwitchField extends StatelessWidget {
     return MergeSemantics(
       child: InkWell(
         onTap: () => _toggle(context),
+        // Le focus clavier reste au seul `Switch` : sinon la ligne et lui
+        // feraient deux arrêts Tab pour un même réglage.
+        canRequestFocus: false,
         borderRadius: BorderRadius.circular(AppRadii.field),
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: kFieldHeight),

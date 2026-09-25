@@ -69,6 +69,7 @@ class CountField extends StatelessWidget {
               onChanged: (v) => onChanged(v.round()),
               decimal: false,
               textAlign: TextAlign.center,
+              semanticLabel: label,
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -87,6 +88,9 @@ class CountField extends StatelessWidget {
 ///
 /// Tous les gestes sont portés par un seul `GestureDetector` — imbriquer un
 /// `IconButton` mettrait deux détecteurs en concurrence dans l'arène.
+///
+/// Tabulable et activable au clavier (Espace / Entrée), comme les segments :
+/// sur le Web, un bouton seulement tactile serait inatteignable.
 class _StepButton extends StatefulWidget {
   const _StepButton({
     required this.icon,
@@ -102,6 +106,9 @@ class _StepButton extends StatefulWidget {
   /// `null` = borne atteinte, bouton désactivé.
   final VoidCallback? onStep;
 
+  /// L'opacité Material d'un contrôle éteint.
+  static const double _disabledOpacity = 0.38;
+
   @override
   State<_StepButton> createState() => _StepButtonState();
 }
@@ -111,6 +118,7 @@ class _StepButtonState extends State<_StepButton> {
   Timer? _repeat;
   bool _repeated = false;
   bool _pressed = false;
+  bool _focused = false;
 
   void _onTapDown(TapDownDetails _) {
     setState(() => _pressed = true);
@@ -147,35 +155,53 @@ class _StepButtonState extends State<_StepButton> {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final enabled = widget.onStep != null;
 
     return Tooltip(
       message: widget.tooltip,
-      child: GestureDetector(
-        onTapDown: enabled ? _onTapDown : null,
-        onTapUp: (_) => _stop(),
-        onTapCancel: _stop,
-        onTap: enabled ? _onTap : null,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 80),
-          // Aligné sur la hauteur du champ qu'il encadre.
-          height: kFieldHeight,
-          width: kFieldHeight,
-          decoration: BoxDecoration(
-            color: _pressed
-                ? scheme.primary.withValues(alpha: 0.18)
-                : scheme.primary.withValues(alpha: 0.06),
-            borderRadius: BorderRadius.circular(AppRadii.field),
-            border: Border.all(
-              color: enabled
-                  ? scheme.primary.withValues(alpha: 0.4)
-                  : scheme.outlineVariant,
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        child: FocusableActionDetector(
+          enabled: enabled,
+          mouseCursor: enabled ? SystemMouseCursors.click : MouseCursor.defer,
+          onShowFocusHighlight: (v) => setState(() => _focused = v),
+          actions: {
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                widget.onStep?.call();
+                return null;
+              },
             ),
-          ),
-          child: Icon(
-            widget.icon,
-            color: enabled ? scheme.primary : scheme.outlineVariant,
+          },
+          child: GestureDetector(
+            onTapDown: enabled ? _onTapDown : null,
+            onTapUp: (_) => _stop(),
+            onTapCancel: _stop,
+            onTap: enabled ? _onTap : null,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 80),
+              // Aligné sur la hauteur du champ qu'il encadre.
+              height: kFieldHeight,
+              width: kFieldHeight,
+              // Le fond et le filet d'un champ ; le focus, le filet accent de
+              // 2 px d'un champ qui prend la main.
+              decoration: BoxDecoration(
+                color: _pressed ? AppColors.accentWash : AppColors.field,
+                borderRadius: BorderRadius.circular(AppRadii.field),
+                border: _focused
+                    ? Border.all(color: AppColors.accent, width: 2)
+                    : Border.all(color: AppColors.border),
+              ),
+              child: Icon(
+                widget.icon,
+                color: enabled
+                    ? AppColors.accentDeep
+                    : AppColors.label.withValues(
+                        alpha: _StepButton._disabledOpacity,
+                      ),
+              ),
+            ),
           ),
         ),
       ),

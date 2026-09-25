@@ -187,12 +187,13 @@ class _Segment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = selected
-        ? Colors.white
+        ? AppColors.onAccent
         : (hovered ? AppColors.accentDeep : AppColors.label);
 
     return Semantics(
       button: true,
       selected: selected,
+      inMutuallyExclusiveGroup: true,
       child: FocusableActionDetector(
         mouseCursor: SystemMouseCursors.click,
         onShowFocusHighlight: onFocusChange,

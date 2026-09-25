@@ -15,6 +15,7 @@ class NumericInput extends StatefulWidget {
     this.suffix,
     this.decimal = true,
     this.textAlign = TextAlign.start,
+    this.semanticLabel,
     super.key,
   });
 
@@ -23,6 +24,11 @@ class NumericInput extends StatefulWidget {
   final String? suffix;
   final bool decimal;
   final TextAlign textAlign;
+
+  /// Le nom du champ pour un lecteur d'écran : le libellé visible au-dessus
+  /// est un nœud à part, et un champ atteint au Tab ou au doigt s'annoncerait
+  /// « champ de texte, 250 » sans dire lequel.
+  final String? semanticLabel;
 
   @override
   State<NumericInput> createState() => _NumericInputState();
@@ -57,28 +63,39 @@ class _NumericInputState extends State<NumericInput> {
     // le texte reste centré dedans.
     return SizedBox(
       height: kFieldHeight,
-      child: TextFormField(
-        controller: _controller,
-        keyboardType: TextInputType.numberWithOptions(decimal: widget.decimal),
-        textAlign: widget.textAlign,
-        textAlignVertical: TextAlignVertical.center,
-        expands: true,
-        maxLines: null,
-        minLines: null,
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(
-            widget.decimal ? RegExp(r'[0-9.,]') : RegExp(r'[0-9]'),
+      // Un `Semantics` simple, pas un `MergeSemantics` : l'annotation se fond
+      // d'elle-même dans le nœud du champ, alors qu'une fusion forcée fait
+      // lever le `RenderEditable`.
+      child: Semantics(
+        label: widget.semanticLabel,
+        child: TextField(
+          controller: _controller,
+          keyboardType: TextInputType.numberWithOptions(
+            decimal: widget.decimal,
           ),
-        ],
-        style: controlTextStyle(context),
-        decoration: InputDecoration(suffixText: widget.suffix),
-        onChanged: (raw) {
-          final parsed = _parse(raw);
-          if (parsed != null) widget.onChanged(parsed);
-        },
+          textAlign: widget.textAlign,
+          textAlignVertical: TextAlignVertical.center,
+          expands: true,
+          maxLines: null,
+          minLines: null,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(
+              widget.decimal ? _decimalChars : _digits,
+            ),
+          ],
+          style: controlTextStyle(context),
+          decoration: InputDecoration(suffixText: widget.suffix),
+          onChanged: (raw) {
+            final parsed = _parse(raw);
+            if (parsed != null) widget.onChanged(parsed);
+          },
+        ),
       ),
     );
   }
+
+  static final RegExp _decimalChars = RegExp('[0-9.,]');
+  static final RegExp _digits = RegExp('[0-9]');
 
   static double? _parse(String raw) =>
       double.tryParse(raw.replaceAll(',', '.'));

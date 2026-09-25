@@ -1,6 +1,7 @@
 import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/widgets/count_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/phone.dart';
@@ -53,5 +54,28 @@ void main() {
     await tester.enterText(find.byType(TextField), '7');
 
     expect(changes, [7]);
+  });
+
+  testWidgets('les boutons − / + se prennent au clavier', (tester) async {
+    final changes = await pumpCount(tester, value: 5);
+
+    Focus.of(tester.element(find.byIcon(Icons.add))).requestFocus();
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+
+    expect(changes, [6]);
+  });
+
+  testWidgets('le champ porte son libellé pour un lecteur d’écran', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pumpCount(tester, value: 5);
+
+    expect(
+      tester.getSemantics(find.byType(EditableText)),
+      isSemantics(label: 'Nombre', isTextField: true),
+    );
+    semantics.dispose();
   });
 }

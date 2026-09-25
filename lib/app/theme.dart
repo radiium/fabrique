@@ -11,6 +11,9 @@ abstract final class AppColors {
   /// toujours avec du texte blanc dessus.
   static const Color accentDeep = Color(0xFF734C27);
 
+  /// Texte, icône ou témoin posé sur [accentDeep].
+  static const Color onAccent = Colors.white;
+
   static const Color cut = Color(0xFFE2711D);
   static const Color background = Color(0xFFF7F5F2);
   static const Color surface = Colors.white;

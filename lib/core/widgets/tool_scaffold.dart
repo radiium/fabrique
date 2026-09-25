@@ -7,8 +7,9 @@ import 'haptics.dart';
 
 /// Squelette commun à tous les écrans-outils.
 ///
-/// Mobile : saisie / visualisation / résultats empilés. Web large (> [kWideBreakpoint]) : deux colonnes,
-/// saisie + résultats à gauche, visualisation fixe à droite.
+/// Mobile : saisie / visualisation / résultats empilés. Web large
+/// (≥ [kWideBreakpoint]) : deux colonnes, saisie + résultats à gauche,
+/// visualisation fixe à droite.
 ///
 /// C'est ici que les trois blocs reçoivent leur carte : claire pour la saisie
 /// et les résultats, teintée pour le schéma (via `SchemaCard`). Les écrans
@@ -58,7 +59,7 @@ class ToolScaffold extends StatelessWidget {
   /// Pied de la carte de résultats, posé hors de son rembourrage : il va de
   /// bord à bord et porte lui-même son filet.
   ///
-  /// C'est la place d'[AppCardAction] : ce qu'on fait des résultats se propose
+  /// C'est la place d'[AppCardActions] : ce qu'on fait des résultats se propose
   /// sous les résultats, une fois qu'ils sont lus.
   final Widget? resultsFooter;
 
@@ -143,8 +144,8 @@ class _InputCard extends StatelessWidget {
 
 /// Les [ResultTile] portent tout leur rembourrage : la carte n'en pose aucun.
 ///
-/// Sans ça, la première et la dernière tuile prenaient un blanc en plus que
-/// les autres, et la zone tapable s'arrêtait avant le bord de la carte —
+/// Un rembourrage de carte donnerait à la première et à la dernière tuile un
+/// blanc de plus qu'aux autres, et arrêterait la zone tapable avant le bord —
 /// alors que le tap pour copier doit attraper toute la ligne.
 ///
 /// Les filets vont de bord à bord (la carte détoure), et jamais avant le

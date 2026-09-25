@@ -134,7 +134,7 @@ class _AdoptButton extends StatelessWidget {
       child: Text(
         'Prendre',
         style: Theme.of(context).textTheme.bodyMedium
-            ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+            ?.copyWith(color: AppColors.onAccent, fontWeight: FontWeight.w600),
       ),
     );
   }

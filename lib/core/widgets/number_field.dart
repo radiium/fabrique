@@ -38,7 +38,12 @@ class NumberField extends StatelessWidget {
       label: label,
       help: help,
       about: about,
-      child: NumericInput(value: value, onChanged: onChanged, suffix: suffix),
+      child: NumericInput(
+        value: value,
+        onChanged: onChanged,
+        suffix: suffix,
+        semanticLabel: label,
+      ),
     );
   }
 }

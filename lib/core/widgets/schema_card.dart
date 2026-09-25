@@ -56,29 +56,45 @@ class SchemaCard extends StatelessWidget {
   /// L'outil dont la page plein écran s'ouvre au tap.
   final Tool? expandFor;
 
+  /// La teinte n'est plus qu'un encadrement, mais il lui faut la largeur d'un
+  /// rembourrage de carte pour se lire comme tel plutôt que comme un filet de
+  /// travers.
+  static const EdgeInsets _padding = EdgeInsets.all(AppSpacing.md);
+
   @override
   Widget build(BuildContext context) {
     final tool = expandFor;
+    if (tool == null) {
+      return AppCard(
+        tinted: true,
+        padding: _padding,
+        child: SchemaSheet(child: child),
+      );
+    }
     return AppCard(
       tinted: true,
-      // La teinte n'est plus qu'un encadrement, mais il lui faut la largeur
-      // d'un rembourrage de carte pour se lire comme tel plutôt que comme un
-      // filet de travers.
-      padding: const EdgeInsets.all(AppSpacing.md),
-      onTap: tool == null
-          ? null
-          : () {
-              hapticSelection(context);
-              unawaited(context.push(AppRoutes.schema(tool)));
-            },
-      child: SchemaSheet(
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            child,
-            if (tool != null)
-              const Positioned(right: 4, bottom: 4, child: _ExpandHint()),
-          ],
+      padding: _padding,
+      onTap: () {
+        hapticSelection(context);
+        unawaited(context.push(AppRoutes.schema(tool)));
+      },
+      // Le nom de la cible pour un lecteur d'écran : l'indice n'est qu'une
+      // icône, et le dessin n'a pas de texte à lire.
+      child: Semantics(
+        button: true,
+        label: 'Agrandir le schéma',
+        child: SchemaSheet(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              child,
+              const Positioned(
+                right: _ExpandHint.margin,
+                bottom: _ExpandHint.margin,
+                child: _ExpandHint(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -93,16 +109,31 @@ class SchemaCard extends StatelessWidget {
 class _ExpandHint extends StatelessWidget {
   const _ExpandHint();
 
+  /// Écart au coin de la feuille.
+  static const double margin = 4;
+
+  /// Petite : l'indice signale la cible, il ne l'est pas.
+  static const double _iconSize = 16;
+  static const double _padding = 3;
+
+  /// Presque opaque : un trait de cote qui passerait dessous ne brouille pas
+  /// l'icône, mais le dessin reste deviné.
+  static const double _backdropOpacity = 0.9;
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.cardSurface.withValues(alpha: 0.9),
+        color: AppColors.cardSurface.withValues(alpha: _backdropOpacity),
         borderRadius: BorderRadius.circular(AppRadii.schemaSheet),
       ),
       child: const Padding(
-        padding: EdgeInsets.all(3),
-        child: Icon(Icons.open_in_full, size: 16, color: AppColors.label),
+        padding: EdgeInsets.all(_padding),
+        child: Icon(
+          Icons.open_in_full,
+          size: _iconSize,
+          color: AppColors.label,
+        ),
       ),
     );
   }

@@ -61,9 +61,9 @@ Répartition et Calepinage affichent le **motif** d'un refus au lieu d'un tiret 
 
 ## Retour haptique
 
-`HapticsScope` (`core/widgets/haptics.dart`) descend le réglage depuis la racine. Les contrôles appellent `hapticSelection(context)` ou `hapticImpact(context)` (réservé au reset). `FabriqueApp` est le **seul** endroit qui lit `hapticsEnabledProvider`.
+`HapticsScope` (`core/widgets/haptics.dart`) descend le réglage depuis la racine. Les contrôles appellent `hapticSelection(context)` ou `hapticImpact(context)` (réservé au reset). **Tout contrôle partagé qui change une valeur ou déclenche une action vibre** (segment, tuile, dropdown, switch, − / +, copie, agrandissement, ⓘ), et seulement si la valeur change : reprendre l'option déjà choisie ne vibre pas. `FabriqueApp` est le **seul** endroit qui lit `hapticsEnabledProvider`.
 
-- **Une portée, pas un paramètre** : cinq widgets vibrent, appelés une trentaine de fois. Un paramètre oublié une fois ferait vibrer un contrôle contre le réglage.
+- **Une portée, pas un paramètre** : chaque contrôle partagé vibre à un seul endroit, mais il est appelé une trentaine de fois. Un paramètre oublié une fois ferait vibrer un contrôle contre le réglage.
 - **Pas Riverpod** : `core/widgets` reste du Flutter nu, montable dans un test sans `ProviderScope`.
 - **Hors portée, ça vibre** : un câblage oublié vibre de trop, jamais ne reste muet.
 - **Lecture sans dépendance** : l'appelant est un gestionnaire de geste, changer le réglage ne reconstruit rien.

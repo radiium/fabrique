@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import 'haptics.dart';
 
 /// `DropdownMenu` calé sur le design system : pleine largeur, et non éditable
 /// — la liste est fermée, ouvrir un clavier en atelier n'aurait aucun sens.
@@ -32,7 +33,9 @@ class AppDropdown<T> extends StatelessWidget {
       expandedInsets: EdgeInsets.zero,
       textStyle: controlTextStyle(context),
       onSelected: (next) {
-        if (next != null) onSelected(next);
+        if (next == null || next == value) return;
+        hapticSelection(context);
+        onSelected(next);
       },
       dropdownMenuEntries: [
         for (final entry in entries.entries)

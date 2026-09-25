@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import 'haptics.dart';
 
 /// Une option d'une grille de tuiles : sa valeur, son nom, son pictogramme.
 class ChoiceTile<T> {
@@ -29,7 +30,7 @@ class ChoiceTiles<T> extends StatelessWidget {
     required this.onChanged,
     this.columns = 2,
     super.key,
-  });
+  }) : assert(columns > 0, 'Il faut au moins une colonne.');
 
   final List<ChoiceTile<T>> tiles;
   final T value;
@@ -52,13 +53,16 @@ class ChoiceTiles<T> extends StatelessWidget {
                 for (var col = 0; col < columns; col++) ...[
                   if (col > 0) const SizedBox(width: AppSpacing.sm),
                   Expanded(
-                    child: row * columns + col < tiles.length
-                        ? _Tile(
-                            tile: tiles[row * columns + col],
-                            selected: tiles[row * columns + col].value == value,
-                            onTap: onChanged,
-                          )
-                        : const SizedBox.shrink(),
+                    child: switch (tiles.elementAtOrNull(row * columns + col)) {
+                      final tile? => _Tile(
+                        tile: tile,
+                        selected: tile.value == value,
+                        onTap: () => _select(context, tile.value),
+                      ),
+                      // La dernière rangée, incomplète : la case garde sa
+                      // largeur pour que les tuiles restent en colonnes.
+                      null => const SizedBox.shrink(),
+                    },
                   ),
                 ],
               ],
@@ -67,6 +71,12 @@ class ChoiceTiles<T> extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  void _select(BuildContext context, T next) {
+    if (next == value) return;
+    hapticSelection(context);
+    onChanged(next);
   }
 }
 
@@ -79,7 +89,7 @@ class _Tile<T> extends StatelessWidget {
 
   final ChoiceTile<T> tile;
   final bool selected;
-  final ValueChanged<T> onTap;
+  final VoidCallback onTap;
 
   static const double _previewHeight = 30;
 
@@ -90,8 +100,9 @@ class _Tile<T> extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
+      inMutuallyExclusiveGroup: true,
       child: InkWell(
-        onTap: () => onTap(tile.value),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadii.field),
         child: DecoratedBox(
           decoration: BoxDecoration(

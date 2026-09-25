@@ -80,31 +80,37 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final enabled = action.onTap != null && !action.busy;
+    final onTap = action.busy ? null : action.onTap;
+    // En cours, le bouton garde son fond plein : le témoin est blanc, et un
+    // fond éteint le rendrait invisible.
+    final isFilled = action.onTap != null;
     final style = controlTextStyle(context)
-        ?.copyWith(color: enabled ? Colors.white : AppColors.label);
+        ?.copyWith(color: isFilled ? AppColors.onAccent : AppColors.label);
 
     return SizedBox(
       height: kFieldHeight,
       child: Material(
-        color: enabled ? AppColors.accentDeep : AppColors.field,
+        color: isFilled ? AppColors.accentDeep : AppColors.field,
         borderRadius: BorderRadius.circular(AppRadii.field),
         child: InkWell(
-          onTap: enabled
-              ? () {
+          onTap: onTap == null
+              ? null
+              : () {
                   hapticSelection(context);
-                  action.onTap!();
-                }
-              : null,
+                  onTap();
+                },
           borderRadius: BorderRadius.circular(AppRadii.field),
           child: action.busy
-              ? const Center(
+              ? Center(
                   child: SizedBox(
                     width: _iconSize,
                     height: _iconSize,
+                    // Le témoin remplace le libellé à l'écran, pas pour un
+                    // lecteur d'écran : le bouton garde son nom.
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+                      color: AppColors.onAccent,
+                      semanticsLabel: action.label,
                     ),
                   ),
                 )
@@ -132,16 +138,19 @@ class _Content extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        // Mesuré à l'échelle du texte système : c'est elle qui fait déborder.
         final text = TextPainter(
           text: TextSpan(text: action.label, style: style),
-          textDirection: TextDirection.ltr,
+          textDirection: Directionality.of(context),
+          textScaler: MediaQuery.textScalerOf(context),
+          maxLines: 1,
         )..layout();
-
         final needed =
             text.width +
             _ActionButton._iconSize +
             AppSpacing.sm +
             2 * _ActionButton._inset;
+        text.dispose();
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,

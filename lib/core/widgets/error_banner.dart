@@ -18,6 +18,14 @@ class ErrorBanner extends StatelessWidget {
 
   final String message;
 
+  /// Un lavis de la couleur d'erreur : le message se détache de la carte sans
+  /// crier plus fort que le champ à corriger.
+  static const double _washOpacity = 0.08;
+  static const double _borderOpacity = 0.4;
+
+  /// La taille de l'icône d'une ligne de `bodyMedium`.
+  static const double _iconSize = 20;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -27,16 +35,16 @@ class ErrorBanner extends StatelessWidget {
       liveRegion: true,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
+          color: color.withValues(alpha: _washOpacity),
           borderRadius: BorderRadius.circular(AppRadii.field),
-          border: Border.all(color: color.withValues(alpha: 0.4)),
+          border: Border.all(color: color.withValues(alpha: _borderOpacity)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.sm),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.error_outline, size: 20, color: color),
+              Icon(Icons.error_outline, size: _iconSize, color: color),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
