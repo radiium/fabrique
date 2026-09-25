@@ -2,8 +2,8 @@ import 'package:fabrique/app/app.dart';
 import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/persistence/settings_controller.dart';
 import 'package:fabrique/core/widgets/app_switch_field.dart';
+import 'package:fabrique/core/widgets/count_field.dart';
 import 'package:fabrique/core/widgets/haptics.dart';
-import 'package:fabrique/core/widgets/number_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,7 +35,13 @@ void main() {
   Future<void> pumpControls(WidgetTester tester, {bool? enabled}) async {
     final controls = Column(
       children: [
-        NumberField(label: 'Cote', value: 12, step: 1, onChanged: (_) {}),
+        CountField(
+          label: 'Compteur',
+          value: 3,
+          min: 1,
+          max: 10,
+          onChanged: (_) {},
+        ),
         AppSwitchField(label: 'Option', value: true, onChanged: (_) {}),
       ],
     );

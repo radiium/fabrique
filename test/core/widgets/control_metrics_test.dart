@@ -2,6 +2,7 @@ import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/widgets/app_dropdown.dart';
 import 'package:fabrique/core/widgets/app_segmented_button.dart';
 import 'package:fabrique/core/widgets/app_switch_field.dart';
+import 'package:fabrique/core/widgets/count_field.dart';
 import 'package:fabrique/core/widgets/number_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,10 +27,11 @@ void main() {
           body: Column(
             children: [
               NumberField(label: 'Nu', value: 12, onChanged: (_) {}),
-              NumberField(
-                label: 'À pas',
-                value: 12,
-                step: 1,
+              CountField(
+                label: 'Compteur',
+                value: 3,
+                min: 1,
+                max: 10,
                 onChanged: (_) {},
               ),
               AppSegmentedButton<int>(
@@ -75,7 +77,7 @@ void main() {
       }
     }
 
-    // Les trois `TextField` : les deux champs numériques, plus celui que le
+    // Les trois `TextField` : le champ de cote, le compteur, plus celui que le
     // `DropdownMenu` porte en propre — il n'hérite pas de notre décoration,
     // sa hauteur vient du `contentPadding` du thème.
     expectFieldHeight('champ', find.byType(TextField));

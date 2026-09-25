@@ -5,6 +5,7 @@ import '../../core/calc/distribution.dart';
 import '../../core/format.dart';
 import '../../core/widgets/app_disclosure.dart';
 import '../../core/widgets/app_segmented_button.dart';
+import '../../core/widgets/count_field.dart';
 import '../../core/widgets/field_pair.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
@@ -53,8 +54,6 @@ class DistributionGeometryGroup extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          // Les deux cotes de la géométrie vont par paire, sans boutons − / + :
-          // à cette largeur, une paire de champs à pas serait illisible.
           FieldPair(
             first: NumberField(
               label: 'Largeur totale',
@@ -75,18 +74,13 @@ class DistributionGeometryGroup extends StatelessWidget {
           // Le champ qui reste est celui que l'on connaît : le mode ne change
           // pas seulement le résultat, il échange la saisie et la réponse.
           if (input.mode == DistributionMode.spacing)
-            NumberField(
+            CountField(
               label: 'Nombre d’éléments',
               about: kAboutCount,
-              value: input.count.toDouble(),
-              onChanged: (v) => form.setCount(v.round()),
-              decimal: false,
-              step: 1,
-              min: minDistributionCount(
-                input.startEdge,
-                input.endEdge,
-              ).toDouble(),
-              max: kMaxDistributionCount.toDouble(),
+              value: input.count,
+              onChanged: form.setCount,
+              min: minDistributionCount(input.startEdge, input.endEdge),
+              max: kMaxDistributionCount,
             )
           else ...[
             NumberField(
@@ -96,7 +90,6 @@ class DistributionGeometryGroup extends StatelessWidget {
               about: kAboutTargetSpacing,
               value: input.targetSpacing,
               onChanged: form.setTargetSpacing,
-              step: 5,
             ),
             // L'arbitrage se pose là où la question est posée. En tuile de
             // résultat, il se lirait sous le schéma sur mobile — deux écrans
@@ -186,7 +179,6 @@ class DistributionEdgesGroup extends StatelessWidget {
               about: kAboutOffset,
               value: input.startOffset,
               onChanged: form.setStartOffset,
-              step: 1,
             )
           else
             FieldPair(

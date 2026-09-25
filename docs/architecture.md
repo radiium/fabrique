@@ -17,7 +17,7 @@ lib/
 │   ├── painting.dart    primitives de cotation, SchemaViewport
 │   ├── persistence/     PreferencesStore, PersistedForm, réglages
 │   ├── export/          plan.dart (feuille + cartouche) · plan_export.dart (PNG, système) · plan_export_action.dart (boutons)
-│   └── widgets/         ToolScaffold, NumberField, ResultTile, FieldPair…
+│   └── widgets/         ToolScaffold, NumberField, CountField, ResultTile, FieldPair…
 ├── features/            home, settings, schema, et un dossier par outil
 └── l10n/                app_fr.arb → AppLocalizations
 

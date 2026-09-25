@@ -7,6 +7,7 @@ import '../../core/widgets/app_disclosure.dart';
 import '../../core/widgets/app_dropdown.dart';
 import '../../core/widgets/app_segmented_button.dart';
 import '../../core/widgets/choice_tiles.dart';
+import '../../core/widgets/count_field.dart';
 import '../../core/widgets/field_pair.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
@@ -112,20 +113,18 @@ class DrawersFrontsGroup extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          FieldPair(
-            first: NumberField(
-              label: 'Nombre de tiroirs',
-              value: count.toDouble(),
-              onChanged: (v) => form.setDrawerCount(v.round()),
-              decimal: false,
-              min: 1,
-              max: kMaxDrawerCount.toDouble(),
-            ),
-            second: const LabeledField(
-              label: 'Hauteurs',
-              about: kAboutFrontHeights,
-              child: FrontHeightsButton(),
-            ),
+          CountField(
+            label: 'Nombre de tiroirs',
+            value: count,
+            onChanged: form.setDrawerCount,
+            min: 1,
+            max: kMaxDrawerCount,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          const LabeledField(
+            label: 'Hauteurs',
+            about: kAboutFrontHeights,
+            child: FrontHeightsButton(),
           ),
           const FrontHeightsSummary(),
           const SizedBox(height: AppSpacing.md),

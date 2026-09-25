@@ -189,7 +189,6 @@ class LayoutGapsGroup extends StatelessWidget {
             about: kAboutPerimeterGap,
             value: input.perimeterGap,
             onChanged: form.setPerimeterGap,
-            step: 1,
           ),
         ],
       ),
