@@ -22,11 +22,12 @@ lib/
 └── l10n/                app_fr.arb → AppLocalizations
 
 test/
-├── core/                le cœur de calcul et les primitives de dessin, sans appareil
+├── core/                le cœur de calcul et les primitives de dessin, sans appareil ;
+│                        les widgets partagés et l'export PNG, une fois pour tous
 ├── app/                 chaque route mène à son écran
 ├── features/            ce que ni analyze ni le cœur n'attrapent :
 │                        un painter qui lève, un libellé tronqué en silence
-└── support/             le téléphone de référence (usePhone)
+└── support/             le téléphone de référence (usePhone), l'app sur une route (pumpApp)
 ```
 
 **Routes** : `/` · `/settings` · `/tool/:id` · `/tool/:id/schema`, construites par `AppRoutes` (`app/routes.dart`), jamais en dur. Ce fichier est à part de `router.dart`, qui importe tous les écrans, pour qu'un widget de `core/` puisse construire un chemin. La page du schéma s'empile sur l'outil, pour que la saisie reste intacte derrière. `id` vient de l'enum `Tool`, dont l'ordre est celui de l'accueil : le Calepinage ouvre la liste (outil signature), le Convertisseur la ferme (un service, pas une destination).

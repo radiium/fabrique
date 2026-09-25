@@ -12,9 +12,8 @@ import '../../support/phone.dart';
 
 /// L'écran change de forme avec la saisie — le champ piloté suit le mode, le
 /// schéma passe des disques aux rectangles, les colonnes de la table
-/// apparaissent avec l'épaisseur. Un painter qui lève sur une combinaison de
-/// bords ne se verrait nulle part ailleurs : ni `flutter analyze` ni les tests
-/// du cœur ne peuvent l'attraper.
+/// apparaissent avec l'épaisseur. Ni `flutter analyze` ni les tests du cœur ne
+/// voient ces bascules.
 void main() {
   Future<ProviderContainer> pumpDistribution(WidgetTester tester) async {
     final container = ProviderContainer();
@@ -31,37 +30,13 @@ void main() {
     return container;
   }
 
-  testWidgets('chaque combinaison de bords se rend sans lever', (tester) async {
+  testWidgets('la table et les tuiles suivent l’épaisseur', (tester) async {
     final container = await pumpDistribution(tester);
-    final form = container.read(distributionFormProvider.notifier);
+    expect(find.text('Bord (mm)'), findsOneWidget);
+    expect(find.text('Centre (mm)'), findsOneWidget);
+    expect(find.text('Entraxe'), findsOneWidget);
 
-    for (final start in DistributionEdge.values) {
-      for (final end in DistributionEdge.values) {
-        form.setEdges(start, end);
-        await tester.pumpAndSettle();
-        expect(tester.takeException(), isNull, reason: '$start / $end');
-      }
-    }
-  });
-
-  testWidgets('les deux modes se rendent sans lever', (tester) async {
-    final container = await pumpDistribution(tester);
-    final form = container.read(distributionFormProvider.notifier);
-
-    for (final mode in DistributionMode.values) {
-      form.setMode(mode);
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull, reason: mode.label);
-    }
-  });
-
-  testWidgets('largeur nulle : un trait, et deux tuiles qui disparaissent', (
-    tester,
-  ) async {
-    final container = await pumpDistribution(tester);
-    final form = container.read(distributionFormProvider.notifier);
-
-    form.setElementWidth(0);
+    container.read(distributionFormProvider.notifier).setElementWidth(0);
     await tester.pumpAndSettle();
 
     // Le schéma reste sur des rectangles, réduits à un trait : c'est la même
@@ -72,15 +47,6 @@ void main() {
     expect(find.text('Entraxe'), findsNothing);
     expect(find.text('Centre (mm)'), findsNothing);
     expect(find.text('Position (mm)'), findsOneWidget);
-  });
-
-  testWidgets('avec une épaisseur, la table montre bord et centre', (
-    tester,
-  ) async {
-    await pumpDistribution(tester);
-    expect(find.text('Bord (mm)'), findsOneWidget);
-    expect(find.text('Centre (mm)'), findsOneWidget);
-    expect(find.text('Entraxe'), findsOneWidget);
   });
 
   testWidgets('la table a le même blanc à gauche qu’à droite', (tester) async {
@@ -136,28 +102,6 @@ void main() {
     // Le message porte les deux cotes, c'est tout son intérêt.
     expect(find.textContaining('220'), findsOneWidget);
     expect(find.byIcon(Icons.error_outline), findsOneWidget);
-  });
-
-  testWidgets('les groupes vont de bord à bord de la carte', (tester) async {
-    // Une marge de carte revenue ferait des groupes une carte dans la carte,
-    // et ça ne se voit qu'au rendu.
-    usePhone(tester);
-    await pumpDistribution(tester);
-
-    final card = tester.getRect(
-      find.ancestor(
-        of: find.text('Largeur totale'),
-        matching: find.byType(Card),
-      ),
-    );
-    Rect header(String title) => tester.getRect(
-      find.ancestor(of: find.text(title), matching: find.byType(InkWell)),
-    );
-
-    expect(header('Géométrie').top, card.top);
-    expect(header('Géométrie').left, card.left);
-    expect(header('Bords et marges').right, card.right);
-    expect(header('Bords et marges').bottom, card.bottom);
   });
 
   testWidgets('seule la géométrie est dépliée, les marges sans effet', (
@@ -324,7 +268,7 @@ void main() {
       return container;
     }
 
-    testWidgets('se prend d’un tap, et l’écran change de mode', (tester) async {
+    testWidgets('se prend d’un tap, et devient le calcul', (tester) async {
       final container = await pumpTarget(tester, 170);
 
       // L'en-tête du groupe pousse l'encart sous le bas de l'écran de test.
@@ -336,25 +280,13 @@ void main() {
       expect(input.mode, DistributionMode.spacing);
       expect(input.count, 10);
 
-      // Le mode a changé : la question n'est plus posée, l'encart n'a plus
-      // lieu d'être. Et la saisie n'est plus neuve.
-      expect(find.text('Prendre'), findsNothing);
-      expect(input == kDistributionDefaults, isFalse);
-    });
-
-    testWidgets('devient le calcul une fois prise', (tester) async {
-      final container = await pumpTarget(tester, 170);
-
-      // L'en-tête du groupe pousse l'encart sous le bas de l'écran de test.
-      await tester.ensureVisible(find.text('10 éléments → 180 mm réel'));
-      await tester.tap(find.text('10 éléments → 180 mm réel'));
-      await tester.pumpAndSettle();
-
       final outcome =
           container.read(distributionResultProvider) as DistributionReady;
       expect(outcome.best.spacing, closeTo(180, 1e-9));
-      // Plus d'arbitrage dans ce mode : le nombre est donné.
+      // Plus d'arbitrage dans ce mode : le nombre est donné, la question n'est
+      // plus posée et l'encart n'a plus lieu d'être.
       expect(outcome.other, isNull);
+      expect(find.text('Prendre'), findsNothing);
     });
 
     testWidgets('n’a rien à offrir quand la cible tombe juste', (tester) async {

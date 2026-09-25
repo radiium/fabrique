@@ -1,7 +1,3 @@
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-
-import 'package:fabrique/app/router.dart';
 import 'package:fabrique/app/routes.dart';
 import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/distribution.dart';
@@ -14,20 +10,19 @@ import 'package:fabrique/features/distribution/distribution_controller.dart';
 import 'package:fabrique/features/distribution/distribution_form.dart';
 import 'package:fabrique/features/distribution/distribution_plan.dart';
 import 'package:fabrique/features/distribution/distribution_screen.dart';
-import 'package:fabrique/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
 import '../../support/phone.dart';
 
 /// Le plan est la seule image qui sorte de l'app : une fois partie, personne
 /// ne peut plus la corriger. Ce qui se vérifie ici, c'est ce qu'aucune autre
-/// couche ne voit — un cartouche qui lève sur une combinaison de saisie, un
-/// encodage PNG qui rend autre chose qu'une A4, et le bouton qui resterait
-/// actif sur une saisie refusée.
+/// couche ne voit — un cartouche qui lève sur une combinaison de saisie, une
+/// liste de positions tronquée en silence, et le bouton qui resterait actif
+/// sur une saisie refusée.
 void main() {
   ProviderContainer container() {
     final c = ProviderContainer();
@@ -35,12 +30,11 @@ void main() {
     return c;
   }
 
-  PlanPainter? planOf(ProviderContainer c, {DateTime? date}) =>
-      buildDistributionPlan(
-        input: c.read(distributionFormProvider),
-        outcome: c.read(distributionResultProvider),
-        date: date ?? DateTime(2026, 9, 23),
-      );
+  PlanPainter? planOf(ProviderContainer c) => buildDistributionPlan(
+    input: c.read(distributionFormProvider),
+    outcome: c.read(distributionResultProvider),
+    date: DateTime(2026, 9, 23),
+  );
 
   group('le contenu du cartouche', () {
     test('reprend toutes les positions, jamais une partie', () {
@@ -128,23 +122,6 @@ void main() {
     }
   });
 
-  testWidgets('le PNG sort aux proportions d’une A4', (tester) async {
-    // Le painter se rejoue hors de l'arbre de widgets : c'est ce qui rend
-    // l'export indépendant de l'appareil, et c'est aussi le seul endroit où un
-    // encodage qui échoue se verrait.
-    await tester.runAsync(() async {
-      final bytes = await renderPlanPng(planOf(container())!, width: 600);
-      final image = await decodeImageFromList(bytes);
-      addTearDown(image.dispose);
-
-      expect(image.width, 600);
-      expect(image.height, (600 / kPlanAspectRatio).round());
-      // Signature PNG — l'encodeur peut rendre un buffer non vide dans un autre
-      // format si `ImageByteFormat` change sous nos pieds.
-      expect(bytes.take(4), [0x89, 0x50, 0x4E, 0x47]);
-    });
-  });
-
   testWidgets('une table hors gabarit ne fait pas lever le rendu', (
     tester,
   ) async {
@@ -228,27 +205,7 @@ void main() {
     // L'aperçu et le fichier sont le même dessin. Une page qui montrerait le
     // schéma seul laisserait découvrir le cartouche dans le fichier, une fois
     // parti.
-    final c = container();
-    final router = c.read(routerProvider)
-      ..go(AppRoutes.tool(Tool.distribution));
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: c,
-        child: MaterialApp.router(
-          theme: buildAppTheme(),
-          routerConfig: router,
-          locale: const Locale('fr'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
+    await pumpApp(tester, AppRoutes.tool(Tool.distribution));
 
     await tester.tap(find.byType(SchemaCard));
     await tester.pumpAndSettle();
@@ -257,12 +214,4 @@ void main() {
     expect(find.byTooltip('Exporter le plan'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-}
-
-/// Décode un PNG, pour en lire les dimensions.
-Future<ui.Image> decodeImageFromList(List<int> bytes) async {
-  final codec = await ui.instantiateImageCodec(Uint8List.fromList(bytes));
-  final frame = await codec.getNextFrame();
-  codec.dispose();
-  return frame.image;
 }

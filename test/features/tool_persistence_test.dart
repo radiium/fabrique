@@ -47,23 +47,9 @@ void main() {
     await pumpEventQueue();
   }
 
-  test('le store surchargé est lisible en synchrone', () {
-    // Sans ça, `restore()` ne verrait jamais le disque : le notifier construit
-    // son état bien avant qu'un `Future` ne se résolve.
-    expect(open().read(preferencesStoreProvider).value, isNotNull);
-  });
-
-  test('la saisie survit à la fermeture de l’écran', () async {
-    final container = open();
-    await visit(
-      () => container.listen(layoutFormProvider, (_, _) {}),
-      () => container.read(layoutFormProvider.notifier).setSurfaceX(1234),
-    );
-
-    expect(open().read(layoutFormProvider).surfaceX, 1234);
-  });
-
-  test('chaque outil a sa clé — l’un n’écrase pas l’autre', () async {
+  test('chaque outil retrouve sa saisie, sans écraser celle d’un autre', () async {
+    // Le store doit être lisible en synchrone : le notifier construit son état
+    // bien avant qu'un `Future` ne se résolve, et ne verrait jamais le disque.
     final container = open();
     await visit(
       () => container.listen(layoutFormProvider, (_, _) {}),

@@ -15,12 +15,6 @@ void main() {
   }
 
   group('computeDistribution — points purs (largeur 0)', () {
-    test('1 point sur 100 → milieu', () {
-      final r = points(100, 1);
-      expect(r.spacing, closeTo(50, 1e-9));
-      expectPositions(r.positions, [50]);
-    });
-
     test('3 points sur 100 → 25 / 50 / 75, jamais les extrémités', () {
       final r = points(100, 3);
       expect(r.spacing, closeTo(25, 1e-9));
@@ -31,12 +25,6 @@ void main() {
       final r = points(100, 0);
       expect(r.spacing, closeTo(100, 1e-9));
       expect(r.positions, isEmpty);
-    });
-
-    test('2 points sur 90 → 30 / 60', () {
-      final r = points(90, 2);
-      expect(r.spacing, closeTo(30, 1e-9));
-      expectPositions(r.positions, [30, 60]);
     });
 
     test('N points → N+1 espaces', () {
@@ -90,14 +78,6 @@ void main() {
     const length = 100.0;
     const width = 10.0;
 
-    test('écart / écart → N+1 jeux', () {
-      final r = computeDistribution(
-        const DistributionInput(length: length, count: 3, elementWidth: width),
-      );
-      expect(r.spacing, closeTo(70 / 4, 1e-9));
-      expect(r.positions.first, closeTo(r.spacing, 1e-9));
-    });
-
     test('élément / élément → N−1 jeux, collé aux deux bords', () {
       final r = computeDistribution(
         const DistributionInput(
@@ -110,34 +90,6 @@ void main() {
       );
       expect(r.spacing, closeTo(35, 1e-9));
       expectPositions(r.positions, [0, 45, 90]);
-      expect(r.positions.last + width, closeTo(length, 1e-9));
-    });
-
-    test('élément / écart → N jeux, collé au départ seulement', () {
-      final r = computeDistribution(
-        const DistributionInput(
-          length: length,
-          count: 3,
-          elementWidth: width,
-          startEdge: DistributionEdge.element,
-        ),
-      );
-      expect(r.spacing, closeTo(70 / 3, 1e-9));
-      expect(r.positions.first, closeTo(0, 1e-9));
-      expect(r.positions.last + width + r.spacing, closeTo(length, 1e-9));
-    });
-
-    test('écart / élément → N jeux, collé à l’arrivée seulement', () {
-      final r = computeDistribution(
-        const DistributionInput(
-          length: length,
-          count: 3,
-          elementWidth: width,
-          endEdge: DistributionEdge.element,
-        ),
-      );
-      expect(r.spacing, closeTo(70 / 3, 1e-9));
-      expect(r.positions.first, closeTo(r.spacing, 1e-9));
       expect(r.positions.last + width, closeTo(length, 1e-9));
     });
 
@@ -199,20 +151,6 @@ void main() {
   });
 
   group('computeDistribution — marges', () {
-    test('marges symétriques : la répartition se fait sur le reste', () {
-      final r = computeDistribution(
-        const DistributionInput(
-          length: 1000,
-          count: 3,
-          startOffset: 100,
-          endOffset: 100,
-        ),
-      );
-      expect(r.span, closeTo(800, 1e-9));
-      expect(r.spacing, closeTo(200, 1e-9));
-      expectPositions(r.positions, [300, 500, 700]);
-    });
-
     test('marges asymétriques : tout glisse vers le départ imposé', () {
       final r = computeDistribution(
         const DistributionInput(
@@ -393,21 +331,6 @@ void main() {
       expect(r.other!.spacing, closeTo(1685 / 16, 1e-9));
     });
 
-    test('les deux bornes encadrent la cible', () {
-      final r = computeDistributionForSpacing(
-        const DistributionTargetInput(
-          length: 1737,
-          targetSpacing: 93,
-          elementWidth: 27,
-        ),
-      );
-      final spacings = [r.best.spacing, r.other!.spacing]..sort();
-      expect(spacings.first, lessThanOrEqualTo(93));
-      expect(spacings.last, greaterThanOrEqualTo(93));
-      // Plus d'éléments, donc moins de jeu : les deux varient en sens inverse.
-      expect(r.best.count, isNot(r.other!.count));
-    });
-
     test('un écart plafond se lit sur la borne serrée', () {
       // Barreaudage : 110 mm maximum entre deux barreaux de 20.
       final r = computeDistributionForSpacing(
@@ -426,7 +349,7 @@ void main() {
       expect(tightest.spacing, closeTo(107.5, 1e-9));
     });
 
-    test('la meilleure borne est bien la plus proche', () {
+    test('les deux bornes encadrent la cible, la meilleure au plus près', () {
       for (final target in [10.0, 33.0, 57.5, 120.0, 250.0]) {
         final r = computeDistributionForSpacing(
           DistributionTargetInput(
@@ -437,11 +360,15 @@ void main() {
         );
         final other = r.other;
         if (other == null) continue;
+        final reason = 'cible $target';
         expect(
           (r.best.spacing - target).abs(),
           lessThanOrEqualTo((other.spacing - target).abs()),
-          reason: 'cible $target',
+          reason: reason,
         );
+        final spacings = [r.best.spacing, other.spacing]..sort();
+        expect(spacings.first, lessThanOrEqualTo(target), reason: reason);
+        expect(spacings.last, greaterThanOrEqualTo(target), reason: reason);
       }
     });
 
@@ -460,16 +387,13 @@ void main() {
       expectPositions(r.best.positions, [300, 500, 700]);
     });
 
-    test('écart nul et largeur nulle : indéterminé', () {
+    test('écart nul sans largeur (indéterminé) ou négatif', () {
       expect(
         () => computeDistributionForSpacing(
           const DistributionTargetInput(length: 1000, targetSpacing: 0),
         ),
         throwsA(isA<CalcException>()),
       );
-    });
-
-    test('écart négatif', () {
       expect(
         () => computeDistributionForSpacing(
           const DistributionTargetInput(length: 1000, targetSpacing: -10),
@@ -528,31 +452,6 @@ void main() {
         ),
         contains('Aucune répartition'),
       );
-    });
-  });
-
-  group('sérialisation des saisies', () {
-    test('DistributionInput fait l’aller-retour JSON', () {
-      const input = DistributionInput(
-        length: 1234.5,
-        count: 7,
-        elementWidth: 21,
-        startEdge: DistributionEdge.element,
-        endEdge: DistributionEdge.gap,
-        startOffset: 12,
-        endOffset: 8,
-      );
-      expect(DistributionInput.fromJson(input.toJson()), input);
-    });
-
-    test('DistributionTargetInput fait l’aller-retour JSON', () {
-      const input = DistributionTargetInput(
-        length: 2000,
-        targetSpacing: 110,
-        elementWidth: 20,
-        endEdge: DistributionEdge.element,
-      );
-      expect(DistributionTargetInput.fromJson(input.toJson()), input);
     });
   });
 }

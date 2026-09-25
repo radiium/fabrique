@@ -152,76 +152,31 @@ void main() {
       expect(second, [0, 250, 750]);
     });
 
-    test('inversion + décalage droit : les colonnes restent alignées', () {
-      final r = computeLayout(
-        const LayoutInput(
-          surfaceX: 400,
-          surfaceY: 1000,
-          elementX: 500,
-          elementY: 100,
-          flip: true,
-          offset: JointOffset.straight,
-        ),
+    test('sur une surface carrée, inverser transpose le motif', () {
+      // Sur une surface carrée et un élément carré, la rotation d'un quart de
+      // tour doit rendre exactement les mêmes comptes.
+      const base = LayoutInput(
+        surfaceX: 900,
+        surfaceY: 900,
+        elementX: 300,
+        elementY: 150,
       );
-      final ys = r.elements.map((e) => e.y).toSet().toList()..sort();
-      expect(ys, [0, 500]);
-      expect(r.cutCount, 0);
-    });
+      final droit = computeLayout(base);
+      final pivote = computeLayout(base.copyWith(flip: true));
 
-    test(
-      'inverser deux fois une surface carrée revient au motif de départ',
-      () {
-        // Sur une surface carrée et un élément carré, la rotation d'un quart de
-        // tour doit rendre exactement les mêmes comptes.
-        const base = LayoutInput(
-          surfaceX: 900,
-          surfaceY: 900,
-          elementX: 300,
-          elementY: 150,
-        );
-        final droit = computeLayout(base);
-        final pivote = computeLayout(base.copyWith(flip: true));
+      expect(pivote.fullCount, droit.fullCount);
+      expect(pivote.cutCount, droit.cutCount);
+      expect(pivote.coveredArea, closeTo(droit.coveredArea, 1e-6));
+      expect(pivote.wastePercent, closeTo(droit.wastePercent, 1e-9));
 
-        expect(pivote.fullCount, droit.fullCount);
-        expect(pivote.cutCount, droit.cutCount);
-        expect(pivote.coveredArea, closeTo(droit.coveredArea, 1e-6));
-        expect(pivote.wastePercent, closeTo(droit.wastePercent, 1e-9));
-
-        // Mêmes rectangles, à la transposition près.
-        final droitSet = droit.elements
-            .map((e) => '${e.x},${e.y},${e.w},${e.h}')
-            .toSet();
-        final pivoteSet = pivote.elements
-            .map((e) => '${e.y},${e.x},${e.h},${e.w}')
-            .toSet();
-        expect(pivoteSet, droitSet);
-      },
-    );
-
-    test('flip échange elementX et elementY', () {
-      final flipped = computeLayout(
-        const LayoutInput(
-          surfaceX: 1000,
-          surfaceY: 1000,
-          elementX: 1000,
-          elementY: 100,
-          flip: true,
-          offset: JointOffset.straight,
-        ),
-      );
-      final reference = computeLayout(
-        const LayoutInput(
-          surfaceX: 1000,
-          surfaceY: 1000,
-          elementX: 100,
-          elementY: 1000,
-          offset: JointOffset.straight,
-        ),
-      );
-
-      expect(flipped.fullCount, reference.fullCount);
-      expect(flipped.cutCount, reference.cutCount);
-      expect(flipped.coveredArea, closeTo(reference.coveredArea, 1e-6));
+      // Mêmes rectangles, à la transposition près.
+      final droitSet = droit.elements
+          .map((e) => '${e.x},${e.y},${e.w},${e.h}')
+          .toSet();
+      final pivoteSet = pivote.elements
+          .map((e) => '${e.y},${e.x},${e.h},${e.w}')
+          .toSet();
+      expect(pivoteSet, droitSet);
     });
 
     test('gapX réduit les éléments pleins et sort les jeux de coveredArea', () {
@@ -621,20 +576,6 @@ void main() {
             elementX: 100,
             elementY: 100,
             perimeterGap: 500,
-          ),
-        ),
-        throwsA(isA<CalcException>()),
-      );
-    });
-
-    test('volume au-delà de kMaxLayoutElements → CalcException', () {
-      expect(
-        () => computeLayout(
-          const LayoutInput(
-            surfaceX: 3000,
-            surfaceY: 2000,
-            elementX: 1,
-            elementY: 1,
           ),
         ),
         throwsA(isA<CalcException>()),

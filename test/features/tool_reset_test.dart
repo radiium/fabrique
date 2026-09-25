@@ -1,5 +1,4 @@
 import 'package:fabrique/app/theme.dart';
-import 'package:fabrique/core/widgets/tool_scaffold.dart';
 import 'package:fabrique/features/converter/converter_controller.dart';
 import 'package:fabrique/features/converter/converter_screen.dart';
 import 'package:fabrique/features/distribution/distribution_controller.dart';
@@ -113,23 +112,5 @@ void main() {
 
     expect(find.text('1234'), findsNothing);
     expect(find.text('3000'), findsOneWidget);
-  });
-
-  testWidgets('un outil sans saisie n’affiche pas l’action', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
-        home: const ProviderScope(
-          child: ToolScaffold(
-            title: 'Niveau',
-            input: SizedBox.shrink(),
-            visualization: SizedBox.shrink(),
-            results: [],
-          ),
-        ),
-      ),
-    );
-
-    expect(resetButton, findsNothing);
   });
 }

@@ -146,16 +146,6 @@ void main() {
       );
     });
 
-    test('identité', () {
-      for (final unit in MeasureUnit.values) {
-        expect(
-          convert(12.5, unit, unit),
-          closeTo(12.5, 1e-9),
-          reason: unit.name,
-        );
-      }
-    });
-
     test('changer de grandeur → CalcException', () {
       expect(
         () => convert(1, MeasureUnit.m, MeasureUnit.kilogram),

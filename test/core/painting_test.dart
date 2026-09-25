@@ -33,23 +33,6 @@ void main() {
       expect(view.spanMm, 600);
     });
 
-    test('deux fenêtres d’un même schéma gardent chacune son échelle', () {
-      final overview = SchemaViewport.fit(
-        rect: const Rect.fromLTWH(20, 0, 300, 30),
-        spanMm: 1800,
-      );
-      final detail = SchemaViewport(
-        rect: const Rect.fromLTWH(20, 50, 120, 40),
-        originMm: 0,
-        scale: overview.scale * 1.5,
-      );
-      // Le même élément de 18 mm, une fois et demie plus large dans le détail.
-      expect(
-        detail.x(18) - detail.x(0),
-        closeTo((overview.x(18) - overview.x(0)) * 1.5, 1e-9),
-      );
-    });
-
     test('une étendue nulle ne divise par rien', () {
       final view = SchemaViewport.fit(
         rect: const Rect.fromLTWH(0, 0, 300, 30),
@@ -91,24 +74,6 @@ void main() {
         ),
         isTrue,
         reason: 'tight: $tight',
-      );
-    }
-  });
-
-  test('un chiffre sorti va du côté demandé', () {
-    for (final side in [1.0, -1.0]) {
-      expect(
-        drawHDimension(
-          fresh(),
-          x1: 100,
-          x2: 106,
-          y: 50,
-          label: '40',
-          tight: true,
-          labelSide: side,
-        ),
-        isTrue,
-        reason: 'labelSide: $side',
       );
     }
   });

@@ -28,7 +28,7 @@ Tout vit dans `lib/app/theme.dart`. Composants Material 3, peu customisés.
 | `AppDropdown` | `contentPadding` dérivé de `_controlLineHeight` |
 | `AppSwitchField` | cible dégonflée (`shrinkWrap`) plus 4 px de marge |
 
-Rien dans le code ne les relie : `test/features/control_metrics_test.dart` les mesure au rendu.
+Rien dans le code ne les relie : `test/core/widgets/control_metrics_test.dart` les mesure au rendu.
 
 ⚠️ Deux pièges vérifiés à la mesure :
 

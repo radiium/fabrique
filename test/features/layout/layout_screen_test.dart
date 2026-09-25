@@ -14,9 +14,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/phone.dart';
 
-/// Le Calepinage a huit contrôles, en trois groupes repliables. Un painter qui lève sur
-/// un jeu périphérique, un contrôle sorti de son groupe : ni `flutter analyze` ni
-/// les tests du cœur ne peuvent l'attraper.
+/// Le Calepinage a huit contrôles, en trois groupes repliables. Un contrôle
+/// sorti de son groupe, un résumé qui ment, un refus qui se lit loin du champ :
+/// ni `flutter analyze` ni les tests du cœur ne peuvent l'attraper.
 void main() {
   Future<ProviderContainer> pumpLayout(WidgetTester tester) async {
     final container = ProviderContainer();
@@ -101,49 +101,6 @@ void main() {
       ),
       findsOneWidget,
     );
-  });
-
-  testWidgets('les groupes vont de bord à bord de la carte', (tester) async {
-    // Une marge de carte revenue ferait des groupes une carte dans la carte,
-    // et ça ne se voit qu'au rendu.
-    usePhone(tester);
-    await pumpLayout(tester);
-
-    final card = tester.getRect(
-      find.ancestor(
-        of: find.text('Surface — largeur'),
-        matching: find.byType(Card),
-      ),
-    );
-    // `.first` : « Surface » est aussi une tuile de résultat, plus bas.
-    Rect header(String title) => tester.getRect(
-      find
-          .ancestor(of: find.text(title).first, matching: find.byType(InkWell))
-          .first,
-    );
-
-    expect(header('Surface').top, card.top);
-    expect(header('Surface').left, card.left);
-    expect(header('Jeux').right, card.right);
-    expect(header('Jeux').bottom, card.bottom);
-  });
-
-  testWidgets('les options du v2 se rendent sans lever', (tester) async {
-    usePhone(tester);
-    final container = await pumpLayout(tester);
-    final form = container.read(layoutFormProvider.notifier);
-
-    for (final offset in JointOffset.values) {
-      for (final flip in [false, true]) {
-        form
-          ..setOffset(offset)
-          ..setFlip(flip)
-          ..setPerimeterGap(15)
-          ..setBalanceRows(true);
-        await tester.pumpAndSettle();
-        expect(tester.takeException(), isNull, reason: '$offset / flip $flip');
-      }
-    }
   });
 
   testWidgets('la tuile des rangées de bord n’apparaît qu’équilibrée', (
@@ -294,18 +251,6 @@ void main() {
       // la liste.
       expect(find.text('Personnalisé'), findsNothing);
       expect(find.text('Carrelage 600×600'), findsWidgets);
-    });
-
-    testWidgets('chaque preset se rend sans lever', (tester) async {
-      usePhone(tester);
-      final container = await pumpLayout(tester);
-      final form = container.read(layoutFormProvider.notifier);
-
-      for (final preset in kLayoutPresets) {
-        form.applyPreset(preset);
-        await tester.pumpAndSettle();
-        expect(tester.takeException(), isNull, reason: preset.label);
-      }
     });
 
     testWidgets('aucun libellé ne déborde la valeur fermée', (tester) async {

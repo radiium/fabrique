@@ -1,75 +1,32 @@
-import 'package:fabrique/app/router.dart';
 import 'package:fabrique/app/routes.dart';
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/models/tool.dart';
 import 'package:fabrique/core/widgets/schema_card.dart';
 import 'package:fabrique/features/schema/schema_screen.dart';
-import 'package:fabrique/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/app.dart';
 
 /// Le schéma d'un outil se regarde en plein écran, et c'est la vignette qui y
 /// mène. Deux choses que ni `flutter analyze` ni les tests du cœur ne voient :
 /// un painter qui lève une fois sorti de sa vignette (il n'y dessine pas les
 /// mêmes annotations), et une route qui ne mène nulle part.
 void main() {
-  Future<void> pumpTool(WidgetTester tester, Tool tool) async {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
-    final router = container.read(routerProvider)..go(AppRoutes.tool(tool));
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: MaterialApp.router(
-          theme: buildAppTheme(),
-          routerConfig: router,
-          locale: const Locale('fr'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-  }
-
   // TODO(drawers): réintégrer les Tiroirs une fois le calcul branché.
   for (final tool in Tool.values.where(
     (t) => t != Tool.level && t != Tool.drawers,
   )) {
-    testWidgets('${tool.label} — la vignette ouvre le schéma en plein écran', (
-      tester,
-    ) async {
-      await pumpTool(tester, tool);
-
-      await tester.tap(find.byType(SchemaCard));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(SchemaScreen), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
-  }
-
-  // TODO(drawers): réintégrer les Tiroirs une fois le calcul branché.
-  for (final tool in Tool.values.where(
-    (t) => t != Tool.level && t != Tool.drawers,
-  )) {
-    testWidgets('${tool.label} — les quatre quarts de tour se rendent', (
+    testWidgets('${tool.label} — la vignette ouvre le schéma, qui pivote', (
       tester,
     ) async {
       // Pivoter donne au painter une boîte à l'autre proportion : c'est le
       // seul endroit où un schéma large se dessine dans un cadre haut, et
       // une division par une largeur devenue minuscule ne se verrait pas
       // ailleurs.
-      await pumpTool(tester, tool);
+      await pumpApp(tester, AppRoutes.tool(tool));
       await tester.tap(find.byType(SchemaCard));
       await tester.pumpAndSettle();
+      expect(find.byType(SchemaScreen), findsOneWidget);
 
       for (var turn = 1; turn <= 4; turn++) {
         await tester.tap(find.byTooltip('Pivoter le schéma'));
@@ -88,7 +45,7 @@ void main() {
     // `InteractiveViewer` plafonne la réduction à `viewport / cadre` : sans
     // débord de cadrage, ce plancher vaut 1 et `minScale` ne sert à rien. Rien
     // dans le code ne le dit, seul un vrai pincement le montre.
-    await pumpTool(tester, Tool.layout);
+    await pumpApp(tester, AppRoutes.tool(Tool.layout));
     await tester.tap(find.byType(SchemaCard));
     await tester.pumpAndSettle();
 
@@ -123,7 +80,7 @@ void main() {
   testWidgets('le Niveau n’a rien à agrandir', (tester) async {
     // Une bulle n'a pas de détail à aller chercher, et une page par-dessus
     // couperait des yeux le flux du capteur.
-    await pumpTool(tester, Tool.level);
+    await pumpApp(tester, AppRoutes.tool(Tool.level));
 
     await tester.tap(find.byType(SchemaCard));
     await tester.pumpAndSettle();

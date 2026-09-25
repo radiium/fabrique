@@ -64,11 +64,8 @@ void main() {
   });
 
   group('computeTilt — seuil de niveau', () {
-    test('0.4° sous le seuil par défaut → niveau', () {
+    test('seuil par défaut : 0.4° de niveau, 0.6° hors niveau', () {
       expect(computeTilt(pitchedBy(0.4)).isLevel, isTrue);
-    });
-
-    test('0.6° au-dessus du seuil par défaut → hors niveau', () {
       expect(computeTilt(pitchedBy(0.6)).isLevel, isFalse);
     });
 

@@ -55,24 +55,6 @@ void main() {
     }
   });
 
-  testWidgets('les groupes vont de bord à bord de la carte', (tester) async {
-    // Une marge de carte revenue ferait des groupes une carte dans la carte,
-    // et ça ne se voit qu'au rendu.
-    await pumpDrawers(tester);
-
-    final card = tester.getRect(
-      find.ancestor(of: find.text('Ouverture'), matching: find.byType(Card)),
-    );
-    Rect header(String title) => tester.getRect(
-      find.ancestor(of: find.text(title), matching: find.byType(InkWell)),
-    );
-
-    expect(header('Ouverture').top, card.top);
-    expect(header('Ouverture').left, card.left);
-    expect(header('Caisse').right, card.right);
-    expect(header('Caisse').bottom, card.bottom);
-  });
-
   testWidgets('le résumé suit la saisie, groupe fermé', (tester) async {
     final container = await pumpDrawers(tester);
 

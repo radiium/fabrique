@@ -1,7 +1,3 @@
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-
-import 'package:fabrique/app/router.dart';
 import 'package:fabrique/app/routes.dart';
 import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/layout.dart';
@@ -15,11 +11,11 @@ import 'package:fabrique/features/layout/layout_controller.dart';
 import 'package:fabrique/features/layout/layout_plan.dart';
 import 'package:fabrique/features/layout/layout_presets.dart';
 import 'package:fabrique/features/layout/layout_screen.dart';
-import 'package:fabrique/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../support/app.dart';
 
 /// Le plan est la seule image qui sorte de l'app : une fois partie, personne
 /// ne peut plus la corriger. Ce qui se vérifie ici, c'est ce qu'aucune autre
@@ -135,18 +131,6 @@ void main() {
     },
   );
 
-  testWidgets('le PNG sort aux proportions d’une A4', (tester) async {
-    await tester.runAsync(() async {
-      final bytes = await renderPlanPng(planOf(container())!, width: 600);
-      final image = await decodeImageFromList(bytes);
-      addTearDown(image.dispose);
-
-      expect(image.width, 600);
-      expect(image.height, (600 / kPlanAspectRatio).round());
-      expect(bytes.take(4), [0x89, 0x50, 0x4E, 0x47]);
-    });
-  });
-
   testWidgets('une liste de débit hors gabarit ne fait pas lever le rendu', (
     tester,
   ) async {
@@ -194,26 +178,7 @@ void main() {
   testWidgets('la page plein écran montre le plan, cartouche compris', (
     tester,
   ) async {
-    final c = container();
-    final router = c.read(routerProvider)..go(AppRoutes.tool(Tool.layout));
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: c,
-        child: MaterialApp.router(
-          theme: buildAppTheme(),
-          routerConfig: router,
-          locale: const Locale('fr'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
+    await pumpApp(tester, AppRoutes.tool(Tool.layout));
 
     await tester.tap(find.byType(SchemaCard));
     await tester.pumpAndSettle();
@@ -222,12 +187,4 @@ void main() {
     expect(find.byTooltip('Exporter le plan'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-}
-
-/// Décode un PNG, pour en lire les dimensions.
-Future<ui.Image> decodeImageFromList(List<int> bytes) async {
-  final codec = await ui.instantiateImageCodec(Uint8List.fromList(bytes));
-  final frame = await codec.getNextFrame();
-  codec.dispose();
-  return frame.image;
 }

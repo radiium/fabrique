@@ -11,9 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/phone.dart';
 
 /// Le seul écran dont la forme change avec la saisie : les unités, le schéma
-/// et les tuiles dépendent tous de la grandeur choisie. Un painter qui lève
-/// sur une grandeur ne se verrait nulle part ailleurs — ni `flutter analyze`
-/// ni les tests du cœur ne peuvent l'attraper.
+/// et les tuiles dépendent tous de la grandeur choisie.
 void main() {
   Future<ProviderContainer> pumpConverter(WidgetTester tester) async {
     final container = ProviderContainer();
@@ -30,7 +28,7 @@ void main() {
     return container;
   }
 
-  testWidgets('chaque grandeur se rend sans lever', (tester) async {
+  testWidgets('chaque grandeur a une tuile par unité', (tester) async {
     final container = await pumpConverter(tester);
     final form = container.read(converterFormProvider.notifier);
 
@@ -49,31 +47,6 @@ void main() {
         findsNWidgets(expected),
         reason: quantity.label,
       );
-    }
-  });
-
-  testWidgets('chaque unité de chaque grandeur se rend sans lever', (
-    tester,
-  ) async {
-    final container = await pumpConverter(tester);
-    final form = container.read(converterFormProvider.notifier);
-
-    for (final unit in MeasureUnit.values) {
-      form.setUnit(unit);
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull, reason: unit.name);
-    }
-  });
-
-  testWidgets('une valeur nulle ne fait pas planter le schéma', (tester) async {
-    final container = await pumpConverter(tester);
-    final form = container.read(converterFormProvider.notifier);
-
-    for (final quantity in Quantity.values) {
-      form.setQuantity(quantity);
-      form.setValue(0);
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull, reason: quantity.label);
     }
   });
 

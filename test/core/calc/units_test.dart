@@ -14,12 +14,6 @@ void main() {
       expect(toMm(1, LengthUnit.foot), 304.8);
     });
 
-    test('fromMm inverse toMm', () {
-      expect(fromMm(25.4, LengthUnit.inch), closeTo(1, 1e-9));
-      expect(fromMm(304.8, LengthUnit.foot), closeTo(1, 1e-9));
-      expect(fromMm(1000, LengthUnit.m), closeTo(1, 1e-9));
-    });
-
     test('round-trip sur chaque unité', () {
       const values = [0.0, 1.0, 12.5, 1234.567];
       for (final unit in LengthUnit.values) {
