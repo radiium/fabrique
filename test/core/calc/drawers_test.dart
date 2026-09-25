@@ -200,6 +200,75 @@ void main() {
     });
   });
 
+  group('computeDrawers — coupes', () {
+    test('les façades se centrent sur l’ouverture', () {
+      expect(computeDrawers(base).frontLeft, near(-17.5));
+      expect(
+        computeDrawers(base.copyWith(frontMount: FrontMount.inset)).frontLeft,
+        near(3),
+      );
+    });
+
+    test('une glissière latérale se centre sur son axe, dans le jeu', () {
+      final r = computeDrawers(base);
+      final slide = r.faceSections.first.slides.first;
+
+      expect((slide.y0 + slide.y1) / 2, near(r.slideAxes.first));
+      expect(slide.x0, 0);
+      expect(slide.x1, near(r.sideClearance));
+    });
+
+    test(
+      'sous tiroir : glissières dans le retrait, cachées vues de dessus',
+      () {
+        final r = computeDrawers(base.copyWith(slide: SlideKind.undermount));
+        final face = r.faceSections.first;
+
+        expect(face.slides.first.y0, near(r.boxBottoms.first));
+        expect(face.slides.first.y1, near(face.bottom.y0));
+        expect(r.topSection.slides, isEmpty);
+      },
+    );
+
+    test('bois sur bois : aucune glissière à dessiner', () {
+      final r = computeDrawers(base.copyWith(slide: SlideKind.woodOnWood));
+
+      expect(r.faceSections.expand((s) => s.slides), isEmpty);
+      expect(r.topSection.slides, isEmpty);
+    });
+
+    test('la coupe de dessus suit l’assemblage', () {
+      double longestWall(BoxJoint joint) {
+        final walls = computeDrawers(base.copyWith(boxJoint: joint))
+            .topSection
+            .walls;
+        return walls.first.y1 - walls.first.y0;
+      }
+
+      // Le premier mur est un côté : pleine longueur, ou entre devant et dos.
+      expect(longestWall(BoxJoint.sidesOverlap), 500);
+      expect(longestWall(BoxJoint.frontBackOverlap), 470);
+    });
+
+    test('la façade en applique est devant le chant, encastrée derrière', () {
+      final overlay = computeDrawers(base).topSection.front;
+      final inset = computeDrawers(base.copyWith(frontMount: FrontMount.inset))
+          .topSection
+          .front;
+
+      expect(overlay.y1, 0);
+      expect(inset.y0, 0);
+    });
+
+    test('le fond de la coupe de face suit sa pose', () {
+      final r = computeDrawers(base);
+      final face = r.faceSections.last;
+      // En rainure : il entre de 6 dans chaque côté, à 10 du bas.
+      expect(face.sides.first.x1 - face.bottom.x0, near(6));
+      expect(face.bottom.y0, near(r.boxBottoms.last + kGrooveLift));
+    });
+  });
+
   group('computeDrawers — invariants', () {
     final inputs = [
       for (final mount in FrontMount.values)

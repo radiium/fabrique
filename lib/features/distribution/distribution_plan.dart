@@ -52,24 +52,26 @@ PlanPainter? buildDistributionPlan({
         if (hasWidth) ('ENTRAXE', '${formatNumber(result.pitch)} mm'),
         ('ÉCARTS', '${result.gapCount}'),
       ],
-      table: PlanTable(
-        title: 'POSITIONS DEPUIS L’ORIGINE',
-        headers: [
-          'N°',
-          hasWidth ? 'BORD (mm)' : 'POSITION (mm)',
-          if (hasWidth) 'CENTRE (mm)',
-        ],
-        rows: [
-          for (final (i, position) in result.positions.indexed)
-            [
-              '${i + 1}',
-              formatNumber(position),
-              if (hasWidth) formatNumber(result.centers[i]),
-            ],
-        ],
-        fallback:
-            '${result.positions.length} positions — à copier depuis l’app',
-      ),
+      tables: [
+        PlanTable(
+          title: 'POSITIONS DEPUIS L’ORIGINE',
+          headers: [
+            'N°',
+            hasWidth ? 'BORD (mm)' : 'POSITION (mm)',
+            if (hasWidth) 'CENTRE (mm)',
+          ],
+          rows: [
+            for (final (i, position) in result.positions.indexed)
+              [
+                '${i + 1}',
+                formatNumber(position),
+                if (hasWidth) formatNumber(result.centers[i]),
+              ],
+          ],
+          fallback:
+              '${result.positions.length} positions — à copier depuis l’app',
+        ),
+      ],
     ),
     drawing: DistributionPainter(
       result: result,

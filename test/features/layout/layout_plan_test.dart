@@ -68,7 +68,7 @@ void main() {
       // entière, et c'est le painter qui choisit entre la poser ou la remplacer
       // par son repli.
       final c = container();
-      final table = planOf(c)!.plan.table!;
+      final table = planOf(c)!.plan.tables.single;
       final cuts = summarizeCuts(
         (c.read(layoutResultProvider) as LayoutReady).result,
       );

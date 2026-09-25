@@ -2,7 +2,7 @@
 
 Les schémas suivent le dessin technique. Primitives partagées dans `lib/core/painting.dart` : sans elles, chaque painter recopierait sa version et les schémas cesseraient de se ressembler.
 
-Ce qui suit vaut pour les schémas cotés : Répartition, Calepinage, Avant-trous. Le Convertisseur et le Niveau ne sont pas des plans, et leur texte reste dans le gris des libellés (défaut de `schemaText`).
+Ce qui suit vaut pour les schémas cotés : Répartition, Calepinage, Tiroirs, Avant-trous. Le Convertisseur et le Niveau ne sont pas des plans, et leur texte reste dans le gris des libellés (défaut de `schemaText`).
 
 ## La feuille
 

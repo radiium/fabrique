@@ -7,6 +7,7 @@
 | Calcul | `lib/core/calc/drawers.dart` · `test/core/calc/drawers_test.dart` |
 | Écran | `lib/features/drawers/` : `_screen`, `_controller`, `_help`, et ses composants `_front_heights` (bouton et feuille des hauteurs), `_cut_list` (fiche de débit) · `test/features/drawers/drawers_screen_test.dart`, `drawers_input_groups_test.dart` |
 | Schéma | `_schema`, `_painter` (dont les pictogrammes d'assemblage et de fond) · `test/features/drawers/drawers_painter_test.dart` |
+| Plan | `_plan` · `test/features/drawers/drawers_plan_test.dart` |
 
 ---
 
@@ -97,15 +98,22 @@ Un refus s'affiche en `ErrorBanner` sous le dernier groupe (`DrawersOutcome`, co
 **Coupe de face** de la colonne et **coupe de dessus** d'un tiroir, côte à côte, **à la même échelle** : une profondeur tracée plus grande qu'une hauteur mentirait.
 
 - Coupe de face : un plan vertical au milieu de la profondeur, vu vers l'avant. En coupe, le caisson, les côtés et le fond de chaque caisse (en rainure, entre les côtés ou dessous, tel que monté), et les glissières en gris : latérales dans le jeu, sous tiroir dans le retrait du fond. Derrière le plan, les façades en contour fin. Largeur de façade au-dessus, chaque hauteur de façade à droite.
-- La hauteur de profil d'une glissière latérale (35 mm) et la largeur d'une glissière sous tiroir (30 mm) sont des ordres de grandeur pour la reconnaître, pas des cotes.
-- Le résultat porte ce que la coupe demande : le bas de chaque caisse (`boxBottoms`) et la hauteur du fond au-dessus de ce bas (`bottomLift`).
-- Coupe de dessus : flancs du caisson, glissières en gris dans le jeu, caisse et ses parois, façade devant. Largeur de caisse au-dessus, longueur à droite.
+- La hauteur de profil d'une glissière latérale (35 mm, `kSideSlideProfile`) et ce qu'une glissière sous tiroir avance sous le fond (30 mm, `kUndermountSlideReach`) sont des ordres de grandeur pour la reconnaître, pas des cotes.
+- Coupe de dessus : un plan horizontal à mi-hauteur de la caisse. Flancs du caisson, glissières latérales en gris dans le jeu, côtés, devant et dos tels que l'assemblage les coupe, façade devant. Une glissière sous tiroir est cachée sous le fond : elle n'y figure pas. Largeur de caisse au-dessus, longueur à droite.
+- **Le cœur rend les coupes toutes faites** (`faceSections`, `topSection`, des `SectionRect` en mm, et `frontLeft`) : le painter ne fait que les poser à l'échelle.
 
 ---
 
 ## Plan exporté
 
-À faire : les deux vues dans la zone de dessin (côte à côte, elles tombent à peu près dans le 4/3), la fiche de débit dans la table du cartouche, et l'« indicatif » des glissières sous tiroir en note.
+Les deux vues dans la zone de dessin. Le cartouche porte ce que le dessin ne cote pas : ouverture, profondeur, pose et jeu des façades, épaisseurs, glissière et sa longueur (absente en bois sur bois).
+
+Deux tables, la plus importante d'abord, chacune en tout ou rien :
+
+- **Fiche de débit** : `N°`, `PIÈCE`, `NB`, `L`, `l`. L'épaisseur est dans les cases : une cinquième colonne ne laisserait plus la place d'écrire `203.67`.
+- **Axes de glissière**, tiroir 1 en haut, depuis le bas de l'ouverture. Avec beaucoup de tiroirs de hauteurs différentes, la fiche remplit le cartouche et les axes passent à leur repli.
+
+Note « indicatif » en glissière sous tiroir.
 
 ---
 

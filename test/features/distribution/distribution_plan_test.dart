@@ -49,7 +49,7 @@ void main() {
 
       final result =
           (c.read(distributionResultProvider) as DistributionReady).best;
-      final table = planOf(c)!.plan.table!;
+      final table = planOf(c)!.plan.tables.single;
 
       expect(table.rows, hasLength(result.positions.length));
       expect(table.fallback, contains('120'));

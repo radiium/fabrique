@@ -12,6 +12,7 @@ import '../../core/widgets/tool_scaffold.dart';
 import 'drawers_controller.dart';
 import 'drawers_cut_list.dart';
 import 'drawers_input_groups.dart';
+import 'drawers_plan.dart';
 import 'drawers_schema.dart';
 
 class DrawersScreen extends ConsumerWidget {
@@ -85,6 +86,7 @@ class DrawersScreen extends ConsumerWidget {
         ),
         CutListTable(pieces: result?.cutList),
       ],
+      resultsFooter: const DrawersExportAction(),
     );
   }
 

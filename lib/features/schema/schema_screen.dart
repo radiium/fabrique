@@ -6,7 +6,7 @@ import '../../core/models/tool.dart';
 import '../../core/widgets/haptics.dart';
 import '../converter/converter_schema.dart';
 import '../distribution/distribution_plan.dart';
-import '../drawers/drawers_schema.dart';
+import '../drawers/drawers_plan.dart';
 import '../fasteners/fasteners_schema.dart';
 import '../layout/layout_plan.dart';
 import '../level/level_schema.dart';
@@ -134,15 +134,15 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
 
 /// Le schéma de chaque outil, en pleine densité — c'est la page qui a la place.
 ///
-/// La Répartition et le Calepinage y montrent leur **plan** et non leur seul
-/// schéma : la feuille A4, le dessin et le cartouche, c'est-à-dire exactement
-/// l'image qu'exporte le bouton d'à côté. Un aperçu qui montrerait autre chose
+/// La Répartition, le Calepinage et les Tiroirs y montrent leur **plan** et
+/// non leur seul schéma : la feuille A4, le dessin et le cartouche,
+/// c'est-à-dire exactement l'image qu'exporte le bouton d'à côté. Un aperçu qui montrerait autre chose
 /// que le fichier n'en serait pas un.
 Widget _schemaFor(Tool tool) => switch (tool) {
   Tool.layout => const LayoutPlanView(),
   Tool.fasteners => const FastenersSchema(),
   Tool.distribution => const DistributionPlanView(),
-  Tool.drawers => const DrawersSchema(),
+  Tool.drawers => const DrawersPlanView(),
   Tool.level => const LevelSchema(),
   Tool.converter => const ConverterSchema(),
 };
@@ -153,5 +153,6 @@ Widget _schemaFor(Tool tool) => switch (tool) {
 List<Widget> _exportActionsFor(Tool tool) => switch (tool) {
   Tool.distribution => const [DistributionExportAction(compact: true)],
   Tool.layout => const [LayoutExportAction(compact: true)],
-  Tool.drawers || Tool.fasteners || Tool.level || Tool.converter => const [],
+  Tool.drawers => const [DrawersExportAction(compact: true)],
+  Tool.fasteners || Tool.level || Tool.converter => const [],
 };

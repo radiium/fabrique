@@ -20,20 +20,13 @@ const double _viewGap = 20;
 /// Recul de la cote de largeur au-dessus de ce qu'elle cote.
 const double _hDimOffset = 10;
 
-/// Hauteur de profil dessinée d'une glissière latérale, en mm : un ordre de
-/// grandeur pour la reconnaître, pas une cote.
-const double _slideProfileMm = 35;
-
-/// Largeur dessinée d'une glissière sous tiroir, depuis le flanc, en mm.
-const double _undermountReachMm = 30;
-
 /// Coupe de face de la colonne, et coupe de dessus d'un tiroir, côte à côte.
 ///
 /// Une seule échelle pour les deux vues : la coupe se lit à côté de la face,
 /// et une profondeur tracée plus grande qu'une hauteur mentirait.
 ///
-/// Ordre de tracé : l'ouverture en gris d'abord (la référence), les pièces
-/// par-dessus, les cotes en dernier.
+/// Ordre de tracé : ce qui est derrière le plan de coupe d'abord, puis les
+/// glissières, les pièces coupées par-dessus, les cotes en dernier.
 class DrawersPainter extends CustomPainter {
   const DrawersPainter({required this.result, required this.input});
 
@@ -50,26 +43,8 @@ class DrawersPainter extends CustomPainter {
       return;
     }
 
-    final carcass = input.carcassThickness;
-    final faceLow = math.min(
-      -carcass,
-      r.fronts.map((f) => f.bottom).reduce(math.min),
-    );
-    final faceHigh = math.max(
-      input.openingHeight + carcass,
-      r.fronts.map((f) => f.bottom + f.height).reduce(math.max),
-    );
-    final faceWidthMm = math.max(
-      input.openingWidth + 2 * carcass,
-      r.frontWidth,
-    );
-    final faceHeightMm = faceHigh - faceLow;
-
-    final frontDepth = input.frontMount == FrontMount.overlay
-        ? input.frontThickness
-        : 0.0;
-    final topWidthMm = input.openingWidth + 2 * input.carcassThickness;
-    final topHeightMm = input.openingDepth + frontDepth;
+    final face = _faceBounds(r);
+    final top = _topBounds(r);
 
     final availableWidth =
         size.width - 2 * _sideMargin - 2 * _vDimSpace - _viewGap;
@@ -77,35 +52,64 @@ class DrawersPainter extends CustomPainter {
     if (availableWidth <= 0 || availableHeight <= 0) return;
 
     final scale = math.min(
-      availableWidth / (faceWidthMm + topWidthMm),
-      availableHeight / math.max(faceHeightMm, topHeightMm),
+      availableWidth / (face.width + top.width),
+      availableHeight / math.max(face.height, top.height),
     );
     if (!scale.isFinite || scale <= 0) return;
 
     final drawnWidth =
-        (faceWidthMm + topWidthMm) * scale + 2 * _vDimSpace + _viewGap;
+        (face.width + top.width) * scale + 2 * _vDimSpace + _viewGap;
     final left = (size.width - drawnWidth) / 2;
-    const top = _topMargin;
     final sheet = Offset.zero & size;
 
     _paintFace(
       canvas,
       r,
-      origin: Offset(left, top + (faceHigh - faceLow) * scale),
-      faceLow: faceLow,
-      faceWidthMm: faceWidthMm,
+      bounds: face,
+      topLeft: Offset(left, _topMargin),
       scale: scale,
       sheet: sheet,
     );
     _paintTop(
       canvas,
       r,
-      origin: Offset(left + faceWidthMm * scale + _vDimSpace + _viewGap, top),
-      frontDepth: frontDepth,
+      bounds: top,
+      topLeft: Offset(
+        left + face.width * scale + _vDimSpace + _viewGap,
+        _topMargin,
+      ),
       scale: scale,
       sheet: sheet,
     );
     _paintNote(canvas, size);
+  }
+
+  /// L'étendue de la coupe de face en mm, y vers le haut : le caisson et la
+  /// colonne de façades.
+  Rect _faceBounds(DrawersResult r) {
+    final carcass = input.carcassThickness;
+    return Rect.fromLTRB(
+      math.min(-carcass, r.frontLeft),
+      math.min(-carcass, r.fronts.last.bottom),
+      math.max(input.openingWidth + carcass, r.frontLeft + r.frontWidth),
+      math.max(
+        input.openingHeight + carcass,
+        r.fronts.first.bottom + r.fronts.first.height,
+      ),
+    );
+  }
+
+  /// L'étendue de la coupe de dessus en mm, y vers le fond : les flancs et la
+  /// façade.
+  Rect _topBounds(DrawersResult r) {
+    final t = r.topSection;
+    final pieces = [...t.flanks, t.front];
+    return Rect.fromLTRB(
+      pieces.map((p) => p.x0).reduce(math.min),
+      pieces.map((p) => p.y0).reduce(math.min),
+      pieces.map((p) => p.x1).reduce(math.max),
+      pieces.map((p) => p.y1).reduce(math.max),
+    );
   }
 
   /// Coupe de face : un plan vertical au milieu de la profondeur, vu vers
@@ -114,59 +118,47 @@ class DrawersPainter extends CustomPainter {
   /// En coupe, le caisson, les côtés, les fonds et les glissières. Derrière le
   /// plan, les façades, en contour seul : elles se tracent d'abord, et la coupe
   /// les recouvre là où elle passe devant.
-  ///
-  /// [origin] est le coin bas gauche de la vue, au plus bas du dessin.
   void _paintFace(
     Canvas canvas,
     DrawersResult r, {
-    required Offset origin,
-    required double faceLow,
-    required double faceWidthMm,
+    required Rect bounds,
+    required Offset topLeft,
     required double scale,
     required Rect sheet,
   }) {
-    // L'origine des millimètres est le coin bas gauche de l'ouverture.
-    final openingLeft = (faceWidthMm - input.openingWidth) / 2;
-    double x(double mm) => origin.dx + (openingLeft + mm) * scale;
-    double y(double mm) => origin.dy - (mm - faceLow) * scale;
-    Rect rect(double left, double bottom, double right, double top) =>
-        Rect.fromLTRB(x(left), y(top), x(right), y(bottom));
+    double x(double mm) => topLeft.dx + (mm - bounds.left) * scale;
+    double y(double mm) => topLeft.dy + (bounds.bottom - mm) * scale;
+    Rect rect(double x0, double y0, double x1, double y1) =>
+        Rect.fromLTRB(x(x0), y(y1), x(x1), y(y0));
+    Rect section(SectionRect p) => rect(p.x0, p.y0, p.x1, p.y1);
 
-    final carcass = input.carcassThickness;
-    final width = input.openingWidth;
-    final frontLeft = (width - r.frontWidth) / 2;
-
-    final fill = Paint()..color = AppColors.field;
-    final outline = Paint()
-      ..color = kSchemaInk
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = kOutlineStroke;
+    final paints = _Paints();
     final beyond = Paint()
       ..color = kSchemaInk
       ..style = PaintingStyle.stroke
       ..strokeWidth = kDimStroke;
-    void cut(Rect piece) => canvas
-      ..drawRect(piece, fill)
-      ..drawRect(piece, outline);
 
     for (final front in r.fronts) {
       canvas.drawRect(
         rect(
-          frontLeft,
+          r.frontLeft,
           front.bottom,
-          frontLeft + r.frontWidth,
+          r.frontLeft + r.frontWidth,
           front.bottom + front.height,
         ),
         beyond,
       );
     }
 
-    final opening = rect(0, 0, width, input.openingHeight);
+    final carcass = input.carcassThickness;
+    final width = input.openingWidth;
+    final height = input.openingHeight;
+    final opening = rect(0, 0, width, height);
     final carcassRect = rect(
       -carcass,
       -carcass,
       width + carcass,
-      input.openingHeight + carcass,
+      height + carcass,
     );
     canvas
       ..drawPath(
@@ -174,82 +166,35 @@ class DrawersPainter extends CustomPainter {
           ..fillType = PathFillType.evenOdd
           ..addRect(carcassRect)
           ..addRect(opening),
-        fill,
+        paints.fill,
       )
-      ..drawRect(carcassRect, outline)
-      ..drawRect(opening, outline);
+      ..drawRect(carcassRect, paints.outline)
+      ..drawRect(opening, paints.outline);
 
-    final side = input.sideThickness;
-    final bottom = input.bottomThickness;
-    final boxLeft = r.sideClearance;
-    final boxRight = boxLeft + r.boxWidth;
-    final recess = slideSpecFor(input).bottomRecess;
-    final mount = recess == null ? input.bottomMount : BottomMount.between;
-    final slidePaint = Paint()..color = kExtensionLine;
-
-    for (var i = 0; i < r.boxBottoms.length; i++) {
-      final low = r.boxBottoms[i];
-      final high = low + r.boxHeights[i];
-      final floor = low + r.bottomLift;
-
+    for (final drawer in r.faceSections) {
       // Les glissières d'abord : la caisse passe devant celles qui la
       // débordent.
-      if (r.slideLength != null && i < r.slideAxes.length) {
-        final axis = r.slideAxes[i];
-        for (final (from, to)
-            in recess == null
-                ? [(0.0, boxLeft), (boxRight, width)]
-                : [
-                    (0.0, boxLeft + side + _undermountReachMm),
-                    (boxRight - side - _undermountReachMm, width),
-                  ]) {
-          canvas.drawRect(
-            recess == null
-                ? rect(
-                    from,
-                    axis - _slideProfileMm / 2,
-                    to,
-                    axis + _slideProfileMm / 2,
-                  )
-                : rect(from, low, to, floor),
-            slidePaint,
-          );
-        }
+      for (final slide in drawer.slides) {
+        canvas.drawRect(section(slide), paints.slide);
       }
-
-      final sidesFrom = mount == BottomMount.underneath ? low + bottom : low;
-      cut(rect(boxLeft, sidesFrom, boxLeft + side, high));
-      cut(rect(boxRight - side, sidesFrom, boxRight, high));
-
+      for (final side in drawer.sides) {
+        paints.cut(canvas, section(side));
+      }
       // Le fond après les côtés : en rainure, il passe par-dessus eux.
-      cut(switch (mount) {
-        BottomMount.groove => rect(
-          boxLeft + side - input.grooveDepth,
-          floor,
-          boxRight - side + input.grooveDepth,
-          floor + bottom,
-        ),
-        BottomMount.between => rect(
-          boxLeft + side,
-          floor,
-          boxRight - side,
-          floor + bottom,
-        ),
-        BottomMount.underneath => rect(boxLeft, low, boxRight, low + bottom),
-      });
+      paints.cut(canvas, section(drawer.bottom));
     }
 
-    final top = math.min(carcassRect.top, y(_frontsTop(r)));
+    final frontsTop = r.fronts.first.bottom + r.fronts.first.height;
     drawHDimension(
       canvas,
-      x1: x(frontLeft),
-      x2: x(frontLeft + r.frontWidth),
-      y: top - _hDimOffset,
+      x1: x(r.frontLeft),
+      x2: x(r.frontLeft + r.frontWidth),
+      y: math.min(carcassRect.top, y(frontsTop)) - _hDimOffset,
       label: formatNumber(r.frontWidth),
       bounds: sheet,
     );
 
-    final dimX = origin.dx + faceWidthMm * scale + _hDimOffset;
+    final dimX = x(bounds.right) + _hDimOffset;
     for (final front in r.fronts) {
       drawVDimension(
         canvas,
@@ -261,103 +206,46 @@ class DrawersPainter extends CustomPainter {
     }
   }
 
-  static double _frontsTop(DrawersResult r) =>
-      r.fronts.map((f) => f.bottom + f.height).reduce(math.max);
-
   /// Coupe de dessus d'un tiroir dans le caisson : flancs, glissières, caisse,
-  /// façade.
-  ///
-  /// [origin] est le coin haut gauche de la vue, au fond du caisson ; la
-  /// façade est en bas, côté utilisateur.
+  /// façade. Le fond du caisson est en haut, la façade en bas, côté
+  /// utilisateur.
   void _paintTop(
     Canvas canvas,
     DrawersResult r, {
-    required Offset origin,
-    required double frontDepth,
+    required Rect bounds,
+    required Offset topLeft,
     required double scale,
     required Rect sheet,
   }) {
-    final carcass = input.carcassThickness;
-    final depth = input.openingDepth;
-    double x(double mm) => origin.dx + mm * scale;
-    double y(double mm) => origin.dy + mm * scale;
+    double x(double mm) => topLeft.dx + (mm - bounds.left) * scale;
+    double y(double mm) => topLeft.dy + (bounds.bottom - mm) * scale;
+    Rect section(SectionRect p) =>
+        Rect.fromLTRB(x(p.x0), y(p.y1), x(p.x1), y(p.y0));
 
-    final outline = Paint()
-      ..color = kSchemaInk
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = kOutlineStroke;
-    final fill = Paint()..color = AppColors.field;
-
-    // Les flancs du caisson, coupés.
-    for (final flankLeft in [0.0, carcass + input.openingWidth]) {
-      final rect = Rect.fromLTRB(
-        x(flankLeft),
-        y(0),
-        x(flankLeft + carcass),
-        y(depth),
-      );
-      canvas
-        ..drawRect(rect, fill)
-        ..drawRect(rect, outline);
+    final paints = _Paints();
+    final t = r.topSection;
+    for (final slide in t.slides) {
+      canvas.drawRect(section(slide), paints.slide);
+    }
+    for (final piece in [...t.flanks, ...t.walls, t.front]) {
+      paints.cut(canvas, section(piece));
     }
 
-    // La caisse, parois comprises, posée depuis le chant.
-    final boxLeft = carcass + r.sideClearance;
-    final boxFront = depth - r.boxSetback;
-    final boxRect = Rect.fromLTRB(
-      x(boxLeft),
-      y(boxFront - r.boxLength),
-      x(boxLeft + r.boxWidth),
-      y(boxFront),
-    );
-    final wall = input.sideThickness * scale;
-    canvas
-      ..drawRect(boxRect, fill)
-      ..drawRect(boxRect.deflate(wall), Paint()..color = AppColors.cardSurface)
-      ..drawRect(boxRect, outline)
-      ..drawRect(boxRect.deflate(wall), outline);
-
-    // Les glissières, dans le jeu entre flanc et caisse.
-    if (r.slideLength case final slide?) {
-      final slidePaint = Paint()..color = kExtensionLine;
-      for (final slideLeft in [carcass, boxLeft + r.boxWidth]) {
-        canvas.drawRect(
-          Rect.fromLTRB(
-            x(slideLeft),
-            y(boxFront - slide),
-            x(slideLeft + r.sideClearance),
-            y(boxFront),
-          ),
-          slidePaint,
-        );
-      }
-    }
-
-    // La façade, devant la caisse.
-    final frontLeft = carcass + (input.openingWidth - r.frontWidth) / 2;
-    final frontRect = Rect.fromLTRB(
-      x(frontLeft),
-      y(boxFront),
-      x(frontLeft + r.frontWidth),
-      y(boxFront + (frontDepth > 0 ? frontDepth : r.boxSetback)),
-    );
-    canvas
-      ..drawRect(frontRect, fill)
-      ..drawRect(frontRect, outline);
-
+    final boxLeft = r.sideClearance;
+    final near = r.boxSetback;
     drawHDimension(
       canvas,
       x1: x(boxLeft),
       x2: x(boxLeft + r.boxWidth),
-      y: y(0) - _hDimOffset,
+      y: y(bounds.bottom) - _hDimOffset,
       label: formatNumber(r.boxWidth),
       bounds: sheet,
     );
     drawVDimension(
       canvas,
-      y1: y(boxFront - r.boxLength),
-      y2: y(boxFront),
-      x: x(2 * carcass + input.openingWidth) + _hDimOffset,
+      y1: y(near + r.boxLength),
+      y2: y(near),
+      x: x(bounds.right) + _hDimOffset,
       label: formatNumber(r.boxLength),
     );
   }
@@ -374,6 +262,21 @@ class DrawersPainter extends CustomPainter {
   @override
   bool shouldRepaint(DrawersPainter oldDelegate) =>
       oldDelegate.result != result || oldDelegate.input != input;
+}
+
+/// Les trois encres d'une coupe : matière coupée, contour, glissière.
+class _Paints {
+  final fill = Paint()..color = AppColors.field;
+  final outline = Paint()
+    ..color = kSchemaInk
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = kOutlineStroke;
+  final slide = Paint()..color = kExtensionLine;
+
+  /// Une pièce coupée : matière, puis contour.
+  void cut(Canvas canvas, Rect piece) => canvas
+    ..drawRect(piece, fill)
+    ..drawRect(piece, outline);
 }
 
 /// Le remplissage et le contour d'une pièce de pictogramme.

@@ -58,7 +58,7 @@ class Plan {
   const Plan({
     required this.title,
     required this.fields,
-    this.table,
+    this.tables = const [],
     this.note,
   });
 
@@ -69,7 +69,10 @@ class Plan {
   /// fin de liste prend toute la largeur.
   final List<PlanField> fields;
 
-  final PlanTable? table;
+  /// Les tables, l'une sous l'autre, la plus importante d'abord : chacune
+  /// cède sa place à son repli si elle ne tient plus, sans toucher aux
+  /// précédentes.
+  final List<PlanTable> tables;
 
   /// L'avertissement de l'outil, en pleine largeur au bas du cartouche — le
   /// `%` de perte pessimiste du Calepinage, l'« indicatif » des avant-trous.
@@ -278,8 +281,9 @@ class PlanPainter extends CustomPainter {
 
     y = _paintFields(canvas, column, y);
 
-    final table = plan.table;
-    if (table != null) y = _paintTable(canvas, column, y, limit, table);
+    for (final table in plan.tables) {
+      y = _paintTable(canvas, column, y, limit, table);
+    }
 
     if (noteText != null) {
       _rect(

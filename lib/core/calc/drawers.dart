@@ -212,6 +212,52 @@ abstract class CutPiece with _$CutPiece {
   }) = _CutPiece;
 }
 
+/// Un rectangle d'une vue en coupe, en mm : [x0] < [x1], [y0] < [y1].
+///
+/// En x, depuis le flanc gauche de l'ouverture, dans les deux vues. En y,
+/// depuis le bas de l'ouverture vers le haut dans la coupe de face, depuis le
+/// chant du caisson vers le fond dans la coupe de dessus.
+@freezed
+abstract class SectionRect with _$SectionRect {
+  const factory SectionRect({
+    required double x0,
+    required double y0,
+    required double x1,
+    required double y1,
+  }) = _SectionRect;
+}
+
+/// Un tiroir dans la coupe de face : ce que coupe le plan vertical au milieu
+/// de la profondeur.
+@freezed
+abstract class DrawerFaceSection with _$DrawerFaceSection {
+  const factory DrawerFaceSection({
+    required List<SectionRect> sides,
+    required SectionRect bottom,
+
+    /// Vides en bois sur bois.
+    required List<SectionRect> slides,
+  }) = _DrawerFaceSection;
+}
+
+/// Un tiroir dans la coupe de dessus : ce que coupe le plan horizontal à
+/// mi-hauteur de la caisse.
+@freezed
+abstract class DrawerTopSection with _$DrawerTopSection {
+  const factory DrawerTopSection({
+    /// Les flancs du caisson, de part et d'autre de l'ouverture.
+    required List<SectionRect> flanks,
+
+    /// Côtés, devant et dos, chacun tel que l'assemblage le coupe.
+    required List<SectionRect> walls,
+
+    /// Vides sans glissière latérale : une glissière sous tiroir est cachée
+    /// sous le fond.
+    required List<SectionRect> slides,
+    required SectionRect front,
+  }) = _DrawerTopSection;
+}
+
 /// Tout ce que l'outil rend, prêt à afficher et à tracer.
 @freezed
 abstract class DrawersResult with _$DrawersResult {
@@ -219,6 +265,10 @@ abstract class DrawersResult with _$DrawersResult {
     /// Façades de haut en bas, toutes de largeur [frontWidth].
     required List<DrawerFrontSlot> fronts,
     required double frontWidth,
+
+    /// Bord gauche des façades, depuis le flanc gauche de l'ouverture.
+    /// Négatif en applique.
+    required double frontLeft,
 
     /// Jeu effectivement laissé entre flanc et côté, de chaque côté.
     required double sideClearance,
@@ -253,6 +303,13 @@ abstract class DrawersResult with _$DrawersResult {
 
     /// Fiche de débit, pièces identiques regroupées.
     required List<CutPiece> cutList,
+
+    /// Chaque tiroir dans la coupe de face, de haut en bas.
+    required List<DrawerFaceSection> faceSections,
+
+    /// Un tiroir dans la coupe de dessus : ils sont tous pareils vus d'en
+    /// haut.
+    required DrawerTopSection topSection,
   }) = _DrawersResult;
 }
 
@@ -303,6 +360,14 @@ SlideSpec slideSpecFor(DrawersInput input) => switch (input.slide) {
 /// Hauteur du dessous du fond au-dessus du bas de la caisse, en rainure :
 /// l'emplacement de la rainure sur les côtés, le devant et le dos.
 const double kGrooveLift = 10;
+
+/// Hauteur de profil d'une glissière latérale dans la coupe, en mm : un
+/// ordre de grandeur pour la reconnaître, pas une cote.
+const double kSideSlideProfile = 35;
+
+/// Ce qu'une glissière sous tiroir avance sous le fond depuis le côté, dans la
+/// coupe, en mm. Un ordre de grandeur, comme [kSideSlideProfile].
+const double kUndermountSlideReach = 30;
 
 /// Hauteur de caisse en dessous de laquelle le tiroir n'en est plus un.
 const double kMinBoxHeight = 40;
@@ -413,9 +478,12 @@ DrawersResult computeDrawers(DrawersInput input) {
       },
   ];
 
+  final frontLeft = (input.openingWidth - frontWidth) / 2;
+
   return DrawersResult(
     fronts: fronts,
     frontWidth: frontWidth,
+    frontLeft: frontLeft,
     sideClearance: spec.sideClearance,
     boxWidth: boxWidth,
     boxLength: boxLength,
@@ -435,6 +503,194 @@ DrawersResult computeDrawers(DrawersInput input) {
       boxLength: boxLength,
       boxHeights: boxHeights,
     ),
+    faceSections: [
+      for (var i = 0; i < boxBottoms.length; i++)
+        _faceSection(
+          input,
+          spec,
+          boxWidth: boxWidth,
+          boxBottom: boxBottoms[i],
+          boxHeight: boxHeights[i],
+          bottomLift: bottomLift,
+          slideAxis: slideLength == null ? null : slideAxes[i],
+        ),
+    ],
+    topSection: _topSection(
+      input,
+      spec,
+      frontLeft: frontLeft,
+      frontWidth: frontWidth,
+      boxWidth: boxWidth,
+      boxLength: boxLength,
+      boxSetback: boxSetback,
+      slideLength: slideLength,
+    ),
+  );
+}
+
+/// Un tiroir dans la coupe de face.
+///
+/// [slideAxis] est `null` sans glissière (bois sur bois).
+DrawerFaceSection _faceSection(
+  DrawersInput input,
+  SlideSpec spec, {
+  required double boxWidth,
+  required double boxBottom,
+  required double boxHeight,
+  required double bottomLift,
+  required double? slideAxis,
+}) {
+  final side = input.sideThickness;
+  final bottom = input.bottomThickness;
+  final left = spec.sideClearance;
+  final right = left + boxWidth;
+  final top = boxBottom + boxHeight;
+  final floor = boxBottom + bottomLift;
+  final width = input.openingWidth;
+
+  final isUnderneath =
+      spec.bottomRecess == null && input.bottomMount == BottomMount.underneath;
+  final sidesFrom = isUnderneath ? boxBottom + bottom : boxBottom;
+
+  final bottomRect = switch (spec.bottomRecess) {
+    _? => SectionRect(
+      x0: left + side,
+      y0: floor,
+      x1: right - side,
+      y1: floor + bottom,
+    ),
+    null => switch (input.bottomMount) {
+      BottomMount.groove => SectionRect(
+        x0: left + side - input.grooveDepth,
+        y0: floor,
+        x1: right - side + input.grooveDepth,
+        y1: floor + bottom,
+      ),
+      BottomMount.between => SectionRect(
+        x0: left + side,
+        y0: floor,
+        x1: right - side,
+        y1: floor + bottom,
+      ),
+      BottomMount.underneath => SectionRect(
+        x0: left,
+        y0: boxBottom,
+        x1: right,
+        y1: boxBottom + bottom,
+      ),
+    },
+  };
+
+  final slides = switch ((slideAxis, spec.bottomRecess)) {
+    (null, _) => const <SectionRect>[],
+    // Sous tiroir : du flanc jusque sous le fond, dans le retrait.
+    (_?, _?) => [
+      SectionRect(
+        x0: 0,
+        y0: boxBottom,
+        x1: left + side + kUndermountSlideReach,
+        y1: floor,
+      ),
+      SectionRect(
+        x0: right - side - kUndermountSlideReach,
+        y0: boxBottom,
+        x1: width,
+        y1: floor,
+      ),
+    ],
+    // Latérale : dans le jeu, centrée sur son axe.
+    (final axis?, null) => [
+      SectionRect(
+        x0: 0,
+        y0: axis - kSideSlideProfile / 2,
+        x1: left,
+        y1: axis + kSideSlideProfile / 2,
+      ),
+      SectionRect(
+        x0: right,
+        y0: axis - kSideSlideProfile / 2,
+        x1: width,
+        y1: axis + kSideSlideProfile / 2,
+      ),
+    ],
+  };
+
+  return DrawerFaceSection(
+    sides: [
+      SectionRect(x0: left, y0: sidesFrom, x1: left + side, y1: top),
+      SectionRect(x0: right - side, y0: sidesFrom, x1: right, y1: top),
+    ],
+    bottom: bottomRect,
+    slides: slides,
+  );
+}
+
+/// Un tiroir dans la coupe de dessus.
+DrawerTopSection _topSection(
+  DrawersInput input,
+  SlideSpec spec, {
+  required double frontLeft,
+  required double frontWidth,
+  required double boxWidth,
+  required double boxLength,
+  required double boxSetback,
+  required double? slideLength,
+}) {
+  final carcass = input.carcassThickness;
+  final width = input.openingWidth;
+  final depth = input.openingDepth;
+  final side = input.sideThickness;
+  final left = spec.sideClearance;
+  final right = left + boxWidth;
+  final near = boxSetback;
+  final far = near + boxLength;
+
+  final walls = switch (input.boxJoint) {
+    BoxJoint.sidesOverlap => [
+      SectionRect(x0: left, y0: near, x1: left + side, y1: far),
+      SectionRect(x0: right - side, y0: near, x1: right, y1: far),
+      SectionRect(x0: left + side, y0: near, x1: right - side, y1: near + side),
+      SectionRect(x0: left + side, y0: far - side, x1: right - side, y1: far),
+    ],
+    BoxJoint.frontBackOverlap => [
+      SectionRect(x0: left, y0: near + side, x1: left + side, y1: far - side),
+      SectionRect(x0: right - side, y0: near + side, x1: right, y1: far - side),
+      SectionRect(x0: left, y0: near, x1: right, y1: near + side),
+      SectionRect(x0: left, y0: far - side, x1: right, y1: far),
+    ],
+  };
+
+  final slides = switch ((slideLength, spec.bottomRecess)) {
+    (final length?, null) => [
+      SectionRect(x0: 0, y0: near, x1: left, y1: near + length),
+      SectionRect(x0: right, y0: near, x1: width, y1: near + length),
+    ],
+    (null, _) || (_?, _?) => const <SectionRect>[],
+  };
+
+  final front = switch (input.frontMount) {
+    FrontMount.overlay => SectionRect(
+      x0: frontLeft,
+      y0: -input.frontThickness,
+      x1: frontLeft + frontWidth,
+      y1: 0,
+    ),
+    FrontMount.inset => SectionRect(
+      x0: frontLeft,
+      y0: 0,
+      x1: frontLeft + frontWidth,
+      y1: input.frontThickness,
+    ),
+  };
+
+  return DrawerTopSection(
+    flanks: [
+      SectionRect(x0: -carcass, y0: 0, x1: 0, y1: depth),
+      SectionRect(x0: width, y0: 0, x1: width + carcass, y1: depth),
+    ],
+    walls: walls,
+    slides: slides,
+    front: front,
   );
 }
 

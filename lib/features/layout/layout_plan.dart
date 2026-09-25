@@ -61,24 +61,26 @@ PlanPainter? buildLayoutPlan({
       // La liste de débit : ce qu'on emporte à la scie. Elle remplace la table
       // des positions de la Répartition, et elle rend inutile une case pour
       // les rangées de bord équilibrées — leur cote est déjà une ligne ici.
-      table: PlanTable(
-        title: 'PIÈCES À COUPER',
-        // La première colonne est celle des numéros, étroite et fixe : les
-        // nombres vont donc dans les colonnes larges qui suivent.
-        headers: const ['N°', 'LARG. (mm)', 'LONG. (mm)', 'NB'],
-        rows: [
-          for (final (i, cut) in cuts.indexed)
-            [
-              '${i + 1}',
-              formatNumber(cut.w),
-              formatNumber(cut.h),
-              '${cut.count}',
-            ],
-        ],
-        fallback: cuts.isEmpty
-            ? 'Aucune coupe, tout tombe juste'
-            : '${cuts.length} cotes de coupe — à lire dans l’app',
-      ),
+      tables: [
+        PlanTable(
+          title: 'PIÈCES À COUPER',
+          // La première colonne est celle des numéros, étroite et fixe : les
+          // nombres vont donc dans les colonnes larges qui suivent.
+          headers: const ['N°', 'LARG. (mm)', 'LONG. (mm)', 'NB'],
+          rows: [
+            for (final (i, cut) in cuts.indexed)
+              [
+                '${i + 1}',
+                formatNumber(cut.w),
+                formatNumber(cut.h),
+                '${cut.count}',
+              ],
+          ],
+          fallback: cuts.isEmpty
+              ? 'Aucune coupe, tout tombe juste'
+              : '${cuts.length} cotes de coupe — à lire dans l’app',
+        ),
+      ],
       // L'avertissement de l'outil, réservé avant tout le reste : c'est la
       // ligne qu'on n'a pas le droit de perdre sous un débordement.
       note:

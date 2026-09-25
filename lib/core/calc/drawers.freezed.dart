@@ -1223,10 +1223,909 @@ as double,
 }
 
 /// @nodoc
+mixin _$SectionRect {
+
+ double get x0; double get y0; double get x1; double get y1;
+/// Create a copy of SectionRect
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SectionRectCopyWith<SectionRect> get copyWith => _$SectionRectCopyWithImpl<SectionRect>(this as SectionRect, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as SectionRect;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionRect&&(identical(other.x0, _this.x0) || other.x0 == _this.x0)&&(identical(other.y0, _this.y0) || other.y0 == _this.y0)&&(identical(other.x1, _this.x1) || other.x1 == _this.x1)&&(identical(other.y1, _this.y1) || other.y1 == _this.y1));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as SectionRect;
+  return Object.hash(runtimeType,_this.x0,_this.y0,_this.x1,_this.y1);
+}
+
+@override
+String toString() {
+  final _this = this as SectionRect;
+  return 'SectionRect(x0: ${_this.x0}, y0: ${_this.y0}, x1: ${_this.x1}, y1: ${_this.y1})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SectionRectCopyWith<$Res>  {
+  factory $SectionRectCopyWith(SectionRect value, $Res Function(SectionRect) _then) = _$SectionRectCopyWithImpl;
+@useResult
+$Res call({
+ double x0, double y0, double x1, double y1
+});
+
+
+
+
+}
+/// @nodoc
+class _$SectionRectCopyWithImpl<$Res>
+    implements $SectionRectCopyWith<$Res> {
+  _$SectionRectCopyWithImpl(this._self, this._then);
+
+  final SectionRect _self;
+  final $Res Function(SectionRect) _then;
+
+/// Create a copy of SectionRect
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? x0 = null,Object? y0 = null,Object? x1 = null,Object? y1 = null,}) {
+  return _then(SectionRect(
+x0: null == x0 ? _self.x0 : x0 // ignore: cast_nullable_to_non_nullable
+as double,y0: null == y0 ? _self.y0 : y0 // ignore: cast_nullable_to_non_nullable
+as double,x1: null == x1 ? _self.x1 : x1 // ignore: cast_nullable_to_non_nullable
+as double,y1: null == y1 ? _self.y1 : y1 // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SectionRect].
+extension SectionRectPatterns on SectionRect {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SectionRect value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SectionRect() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SectionRect value)  $default,){
+final _that = this;
+switch (_that) {
+case _SectionRect():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SectionRect value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SectionRect() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double x0,  double y0,  double x1,  double y1)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SectionRect() when $default != null:
+return $default(_that.x0,_that.y0,_that.x1,_that.y1);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double x0,  double y0,  double x1,  double y1)  $default,) {final _that = this;
+switch (_that) {
+case _SectionRect():
+return $default(_that.x0,_that.y0,_that.x1,_that.y1);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double x0,  double y0,  double x1,  double y1)?  $default,) {final _that = this;
+switch (_that) {
+case _SectionRect() when $default != null:
+return $default(_that.x0,_that.y0,_that.x1,_that.y1);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _SectionRect implements SectionRect {
+  const _SectionRect({required this.x0, required this.y0, required this.x1, required this.y1});
+  
+
+@override final  double x0;
+@override final  double y0;
+@override final  double x1;
+@override final  double y1;
+
+/// Create a copy of SectionRect
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SectionRectCopyWith<_SectionRect> get copyWith => __$SectionRectCopyWithImpl<_SectionRect>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SectionRect&&(identical(other.x0, x0) || other.x0 == x0)&&(identical(other.y0, y0) || other.y0 == y0)&&(identical(other.x1, x1) || other.x1 == x1)&&(identical(other.y1, y1) || other.y1 == y1));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,x0,y0,x1,y1);
+}
+
+@override
+String toString() {
+    return 'SectionRect(x0: $x0, y0: $y0, x1: $x1, y1: $y1)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SectionRectCopyWith<$Res> implements $SectionRectCopyWith<$Res> {
+  factory _$SectionRectCopyWith(_SectionRect value, $Res Function(_SectionRect) _then) = __$SectionRectCopyWithImpl;
+@override @useResult
+$Res call({
+ double x0, double y0, double x1, double y1
+});
+
+
+
+
+}
+/// @nodoc
+class __$SectionRectCopyWithImpl<$Res>
+    implements _$SectionRectCopyWith<$Res> {
+  __$SectionRectCopyWithImpl(this._self, this._then);
+
+  final _SectionRect _self;
+  final $Res Function(_SectionRect) _then;
+
+/// Create a copy of SectionRect
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? x0 = null,Object? y0 = null,Object? x1 = null,Object? y1 = null,}) {
+  return _then(_SectionRect(
+x0: null == x0 ? _self.x0 : x0 // ignore: cast_nullable_to_non_nullable
+as double,y0: null == y0 ? _self.y0 : y0 // ignore: cast_nullable_to_non_nullable
+as double,x1: null == x1 ? _self.x1 : x1 // ignore: cast_nullable_to_non_nullable
+as double,y1: null == y1 ? _self.y1 : y1 // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$DrawerFaceSection {
+
+ List<SectionRect> get sides; SectionRect get bottom;/// Vides en bois sur bois.
+ List<SectionRect> get slides;
+/// Create a copy of DrawerFaceSection
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DrawerFaceSectionCopyWith<DrawerFaceSection> get copyWith => _$DrawerFaceSectionCopyWithImpl<DrawerFaceSection>(this as DrawerFaceSection, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as DrawerFaceSection;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DrawerFaceSection&&const DeepCollectionEquality().equals(other.sides, _this.sides)&&(identical(other.bottom, _this.bottom) || other.bottom == _this.bottom)&&const DeepCollectionEquality().equals(other.slides, _this.slides));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as DrawerFaceSection;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.sides),_this.bottom,const DeepCollectionEquality().hash(_this.slides));
+}
+
+@override
+String toString() {
+  final _this = this as DrawerFaceSection;
+  return 'DrawerFaceSection(sides: ${_this.sides}, bottom: ${_this.bottom}, slides: ${_this.slides})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DrawerFaceSectionCopyWith<$Res>  {
+  factory $DrawerFaceSectionCopyWith(DrawerFaceSection value, $Res Function(DrawerFaceSection) _then) = _$DrawerFaceSectionCopyWithImpl;
+@useResult
+$Res call({
+ List<SectionRect> sides, SectionRect bottom, List<SectionRect> slides
+});
+
+
+$SectionRectCopyWith<$Res> get bottom;
+
+}
+/// @nodoc
+class _$DrawerFaceSectionCopyWithImpl<$Res>
+    implements $DrawerFaceSectionCopyWith<$Res> {
+  _$DrawerFaceSectionCopyWithImpl(this._self, this._then);
+
+  final DrawerFaceSection _self;
+  final $Res Function(DrawerFaceSection) _then;
+
+/// Create a copy of DrawerFaceSection
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? sides = null,Object? bottom = null,Object? slides = null,}) {
+  return _then(DrawerFaceSection(
+sides: null == sides ? _self.sides : sides // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,bottom: null == bottom ? _self.bottom : bottom // ignore: cast_nullable_to_non_nullable
+as SectionRect,slides: null == slides ? _self.slides : slides // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,
+  ));
+}
+/// Create a copy of DrawerFaceSection
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SectionRectCopyWith<$Res> get bottom {
+  
+  return $SectionRectCopyWith<$Res>(_self.bottom, (value) {
+    return _then(_self.copyWith(bottom: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [DrawerFaceSection].
+extension DrawerFaceSectionPatterns on DrawerFaceSection {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DrawerFaceSection value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DrawerFaceSection() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DrawerFaceSection value)  $default,){
+final _that = this;
+switch (_that) {
+case _DrawerFaceSection():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DrawerFaceSection value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DrawerFaceSection() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SectionRect> sides,  SectionRect bottom,  List<SectionRect> slides)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DrawerFaceSection() when $default != null:
+return $default(_that.sides,_that.bottom,_that.slides);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SectionRect> sides,  SectionRect bottom,  List<SectionRect> slides)  $default,) {final _that = this;
+switch (_that) {
+case _DrawerFaceSection():
+return $default(_that.sides,_that.bottom,_that.slides);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SectionRect> sides,  SectionRect bottom,  List<SectionRect> slides)?  $default,) {final _that = this;
+switch (_that) {
+case _DrawerFaceSection() when $default != null:
+return $default(_that.sides,_that.bottom,_that.slides);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _DrawerFaceSection implements DrawerFaceSection {
+  const _DrawerFaceSection({required  List<SectionRect> sides, required this.bottom, required  List<SectionRect> slides}): _sides = sides,_slides = slides;
+  
+
+ final  List<SectionRect> _sides;
+@override List<SectionRect> get sides {
+  if (_sides is EqualUnmodifiableListView) return _sides;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_sides);
+}
+
+@override final  SectionRect bottom;
+/// Vides en bois sur bois.
+ final  List<SectionRect> _slides;
+/// Vides en bois sur bois.
+@override List<SectionRect> get slides {
+  if (_slides is EqualUnmodifiableListView) return _slides;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_slides);
+}
+
+
+/// Create a copy of DrawerFaceSection
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DrawerFaceSectionCopyWith<_DrawerFaceSection> get copyWith => __$DrawerFaceSectionCopyWithImpl<_DrawerFaceSection>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DrawerFaceSection&&const DeepCollectionEquality().equals(other.sides, _sides)&&(identical(other.bottom, bottom) || other.bottom == bottom)&&const DeepCollectionEquality().equals(other.slides, _slides));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_sides),bottom,const DeepCollectionEquality().hash(_slides));
+}
+
+@override
+String toString() {
+    return 'DrawerFaceSection(sides: $sides, bottom: $bottom, slides: $slides)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DrawerFaceSectionCopyWith<$Res> implements $DrawerFaceSectionCopyWith<$Res> {
+  factory _$DrawerFaceSectionCopyWith(_DrawerFaceSection value, $Res Function(_DrawerFaceSection) _then) = __$DrawerFaceSectionCopyWithImpl;
+@override @useResult
+$Res call({
+ List<SectionRect> sides, SectionRect bottom, List<SectionRect> slides
+});
+
+
+@override $SectionRectCopyWith<$Res> get bottom;
+
+}
+/// @nodoc
+class __$DrawerFaceSectionCopyWithImpl<$Res>
+    implements _$DrawerFaceSectionCopyWith<$Res> {
+  __$DrawerFaceSectionCopyWithImpl(this._self, this._then);
+
+  final _DrawerFaceSection _self;
+  final $Res Function(_DrawerFaceSection) _then;
+
+/// Create a copy of DrawerFaceSection
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? sides = null,Object? bottom = null,Object? slides = null,}) {
+  return _then(_DrawerFaceSection(
+sides: null == sides ? _self._sides : sides // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,bottom: null == bottom ? _self.bottom : bottom // ignore: cast_nullable_to_non_nullable
+as SectionRect,slides: null == slides ? _self._slides : slides // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,
+  ));
+}
+
+/// Create a copy of DrawerFaceSection
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SectionRectCopyWith<$Res> get bottom {
+  
+  return $SectionRectCopyWith<$Res>(_self.bottom, (value) {
+    return _then(_self.copyWith(bottom: value));
+  });
+}
+}
+
+/// @nodoc
+mixin _$DrawerTopSection {
+
+/// Les flancs du caisson, de part et d'autre de l'ouverture.
+ List<SectionRect> get flanks;/// Côtés, devant et dos, chacun tel que l'assemblage le coupe.
+ List<SectionRect> get walls;/// Vides sans glissière latérale : une glissière sous tiroir est cachée
+/// sous le fond.
+ List<SectionRect> get slides; SectionRect get front;
+/// Create a copy of DrawerTopSection
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DrawerTopSectionCopyWith<DrawerTopSection> get copyWith => _$DrawerTopSectionCopyWithImpl<DrawerTopSection>(this as DrawerTopSection, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as DrawerTopSection;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DrawerTopSection&&const DeepCollectionEquality().equals(other.flanks, _this.flanks)&&const DeepCollectionEquality().equals(other.walls, _this.walls)&&const DeepCollectionEquality().equals(other.slides, _this.slides)&&(identical(other.front, _this.front) || other.front == _this.front));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as DrawerTopSection;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.flanks),const DeepCollectionEquality().hash(_this.walls),const DeepCollectionEquality().hash(_this.slides),_this.front);
+}
+
+@override
+String toString() {
+  final _this = this as DrawerTopSection;
+  return 'DrawerTopSection(flanks: ${_this.flanks}, walls: ${_this.walls}, slides: ${_this.slides}, front: ${_this.front})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DrawerTopSectionCopyWith<$Res>  {
+  factory $DrawerTopSectionCopyWith(DrawerTopSection value, $Res Function(DrawerTopSection) _then) = _$DrawerTopSectionCopyWithImpl;
+@useResult
+$Res call({
+ List<SectionRect> flanks, List<SectionRect> walls, List<SectionRect> slides, SectionRect front
+});
+
+
+$SectionRectCopyWith<$Res> get front;
+
+}
+/// @nodoc
+class _$DrawerTopSectionCopyWithImpl<$Res>
+    implements $DrawerTopSectionCopyWith<$Res> {
+  _$DrawerTopSectionCopyWithImpl(this._self, this._then);
+
+  final DrawerTopSection _self;
+  final $Res Function(DrawerTopSection) _then;
+
+/// Create a copy of DrawerTopSection
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? flanks = null,Object? walls = null,Object? slides = null,Object? front = null,}) {
+  return _then(DrawerTopSection(
+flanks: null == flanks ? _self.flanks : flanks // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,walls: null == walls ? _self.walls : walls // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,slides: null == slides ? _self.slides : slides // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,front: null == front ? _self.front : front // ignore: cast_nullable_to_non_nullable
+as SectionRect,
+  ));
+}
+/// Create a copy of DrawerTopSection
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SectionRectCopyWith<$Res> get front {
+  
+  return $SectionRectCopyWith<$Res>(_self.front, (value) {
+    return _then(_self.copyWith(front: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [DrawerTopSection].
+extension DrawerTopSectionPatterns on DrawerTopSection {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DrawerTopSection value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DrawerTopSection() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DrawerTopSection value)  $default,){
+final _that = this;
+switch (_that) {
+case _DrawerTopSection():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DrawerTopSection value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DrawerTopSection() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SectionRect> flanks,  List<SectionRect> walls,  List<SectionRect> slides,  SectionRect front)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DrawerTopSection() when $default != null:
+return $default(_that.flanks,_that.walls,_that.slides,_that.front);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SectionRect> flanks,  List<SectionRect> walls,  List<SectionRect> slides,  SectionRect front)  $default,) {final _that = this;
+switch (_that) {
+case _DrawerTopSection():
+return $default(_that.flanks,_that.walls,_that.slides,_that.front);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SectionRect> flanks,  List<SectionRect> walls,  List<SectionRect> slides,  SectionRect front)?  $default,) {final _that = this;
+switch (_that) {
+case _DrawerTopSection() when $default != null:
+return $default(_that.flanks,_that.walls,_that.slides,_that.front);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _DrawerTopSection implements DrawerTopSection {
+  const _DrawerTopSection({required  List<SectionRect> flanks, required  List<SectionRect> walls, required  List<SectionRect> slides, required this.front}): _flanks = flanks,_walls = walls,_slides = slides;
+  
+
+/// Les flancs du caisson, de part et d'autre de l'ouverture.
+ final  List<SectionRect> _flanks;
+/// Les flancs du caisson, de part et d'autre de l'ouverture.
+@override List<SectionRect> get flanks {
+  if (_flanks is EqualUnmodifiableListView) return _flanks;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_flanks);
+}
+
+/// Côtés, devant et dos, chacun tel que l'assemblage le coupe.
+ final  List<SectionRect> _walls;
+/// Côtés, devant et dos, chacun tel que l'assemblage le coupe.
+@override List<SectionRect> get walls {
+  if (_walls is EqualUnmodifiableListView) return _walls;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_walls);
+}
+
+/// Vides sans glissière latérale : une glissière sous tiroir est cachée
+/// sous le fond.
+ final  List<SectionRect> _slides;
+/// Vides sans glissière latérale : une glissière sous tiroir est cachée
+/// sous le fond.
+@override List<SectionRect> get slides {
+  if (_slides is EqualUnmodifiableListView) return _slides;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_slides);
+}
+
+@override final  SectionRect front;
+
+/// Create a copy of DrawerTopSection
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DrawerTopSectionCopyWith<_DrawerTopSection> get copyWith => __$DrawerTopSectionCopyWithImpl<_DrawerTopSection>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DrawerTopSection&&const DeepCollectionEquality().equals(other.flanks, _flanks)&&const DeepCollectionEquality().equals(other.walls, _walls)&&const DeepCollectionEquality().equals(other.slides, _slides)&&(identical(other.front, front) || other.front == front));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_flanks),const DeepCollectionEquality().hash(_walls),const DeepCollectionEquality().hash(_slides),front);
+}
+
+@override
+String toString() {
+    return 'DrawerTopSection(flanks: $flanks, walls: $walls, slides: $slides, front: $front)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DrawerTopSectionCopyWith<$Res> implements $DrawerTopSectionCopyWith<$Res> {
+  factory _$DrawerTopSectionCopyWith(_DrawerTopSection value, $Res Function(_DrawerTopSection) _then) = __$DrawerTopSectionCopyWithImpl;
+@override @useResult
+$Res call({
+ List<SectionRect> flanks, List<SectionRect> walls, List<SectionRect> slides, SectionRect front
+});
+
+
+@override $SectionRectCopyWith<$Res> get front;
+
+}
+/// @nodoc
+class __$DrawerTopSectionCopyWithImpl<$Res>
+    implements _$DrawerTopSectionCopyWith<$Res> {
+  __$DrawerTopSectionCopyWithImpl(this._self, this._then);
+
+  final _DrawerTopSection _self;
+  final $Res Function(_DrawerTopSection) _then;
+
+/// Create a copy of DrawerTopSection
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? flanks = null,Object? walls = null,Object? slides = null,Object? front = null,}) {
+  return _then(_DrawerTopSection(
+flanks: null == flanks ? _self._flanks : flanks // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,walls: null == walls ? _self._walls : walls // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,slides: null == slides ? _self._slides : slides // ignore: cast_nullable_to_non_nullable
+as List<SectionRect>,front: null == front ? _self.front : front // ignore: cast_nullable_to_non_nullable
+as SectionRect,
+  ));
+}
+
+/// Create a copy of DrawerTopSection
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SectionRectCopyWith<$Res> get front {
+  
+  return $SectionRectCopyWith<$Res>(_self.front, (value) {
+    return _then(_self.copyWith(front: value));
+  });
+}
+}
+
+/// @nodoc
 mixin _$DrawersResult {
 
 /// Façades de haut en bas, toutes de largeur [frontWidth].
- List<DrawerFrontSlot> get fronts; double get frontWidth;/// Jeu effectivement laissé entre flanc et côté, de chaque côté.
+ List<DrawerFrontSlot> get fronts; double get frontWidth;/// Bord gauche des façades, depuis le flanc gauche de l'ouverture.
+/// Négatif en applique.
+ double get frontLeft;/// Jeu effectivement laissé entre flanc et côté, de chaque côté.
  double get sideClearance;/// Caisse hors tout.
  double get boxWidth; double get boxLength;/// Retrait de la caisse derrière le chant du caisson : l'épaisseur de la
 /// façade en pose encastrée, zéro en applique.
@@ -1239,7 +2138,10 @@ mixin _$DrawersResult {
  double? get slideLength;/// La longueur a-t-elle été choisie par l'outil ?
  bool get isSlideLengthAuto;/// Axe de chaque glissière, depuis le bas de l'ouverture, de haut en bas.
  List<double> get slideAxes;/// Fiche de débit, pièces identiques regroupées.
- List<CutPiece> get cutList;
+ List<CutPiece> get cutList;/// Chaque tiroir dans la coupe de face, de haut en bas.
+ List<DrawerFaceSection> get faceSections;/// Un tiroir dans la coupe de dessus : ils sont tous pareils vus d'en
+/// haut.
+ DrawerTopSection get topSection;
 /// Create a copy of DrawersResult
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1251,20 +2153,20 @@ $DrawersResultCopyWith<DrawersResult> get copyWith => _$DrawersResultCopyWithImp
 @override
 bool operator ==(Object other) {
   final _this = this as DrawersResult;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DrawersResult&&const DeepCollectionEquality().equals(other.fronts, _this.fronts)&&(identical(other.frontWidth, _this.frontWidth) || other.frontWidth == _this.frontWidth)&&(identical(other.sideClearance, _this.sideClearance) || other.sideClearance == _this.sideClearance)&&(identical(other.boxWidth, _this.boxWidth) || other.boxWidth == _this.boxWidth)&&(identical(other.boxLength, _this.boxLength) || other.boxLength == _this.boxLength)&&(identical(other.boxSetback, _this.boxSetback) || other.boxSetback == _this.boxSetback)&&const DeepCollectionEquality().equals(other.boxHeights, _this.boxHeights)&&const DeepCollectionEquality().equals(other.boxBottoms, _this.boxBottoms)&&(identical(other.bottomLift, _this.bottomLift) || other.bottomLift == _this.bottomLift)&&(identical(other.slideLength, _this.slideLength) || other.slideLength == _this.slideLength)&&(identical(other.isSlideLengthAuto, _this.isSlideLengthAuto) || other.isSlideLengthAuto == _this.isSlideLengthAuto)&&const DeepCollectionEquality().equals(other.slideAxes, _this.slideAxes)&&const DeepCollectionEquality().equals(other.cutList, _this.cutList));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DrawersResult&&const DeepCollectionEquality().equals(other.fronts, _this.fronts)&&(identical(other.frontWidth, _this.frontWidth) || other.frontWidth == _this.frontWidth)&&(identical(other.frontLeft, _this.frontLeft) || other.frontLeft == _this.frontLeft)&&(identical(other.sideClearance, _this.sideClearance) || other.sideClearance == _this.sideClearance)&&(identical(other.boxWidth, _this.boxWidth) || other.boxWidth == _this.boxWidth)&&(identical(other.boxLength, _this.boxLength) || other.boxLength == _this.boxLength)&&(identical(other.boxSetback, _this.boxSetback) || other.boxSetback == _this.boxSetback)&&const DeepCollectionEquality().equals(other.boxHeights, _this.boxHeights)&&const DeepCollectionEquality().equals(other.boxBottoms, _this.boxBottoms)&&(identical(other.bottomLift, _this.bottomLift) || other.bottomLift == _this.bottomLift)&&(identical(other.slideLength, _this.slideLength) || other.slideLength == _this.slideLength)&&(identical(other.isSlideLengthAuto, _this.isSlideLengthAuto) || other.isSlideLengthAuto == _this.isSlideLengthAuto)&&const DeepCollectionEquality().equals(other.slideAxes, _this.slideAxes)&&const DeepCollectionEquality().equals(other.cutList, _this.cutList)&&const DeepCollectionEquality().equals(other.faceSections, _this.faceSections)&&(identical(other.topSection, _this.topSection) || other.topSection == _this.topSection));
 }
 
 
 @override
 int get hashCode {
   final _this = this as DrawersResult;
-  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.fronts),_this.frontWidth,_this.sideClearance,_this.boxWidth,_this.boxLength,_this.boxSetback,const DeepCollectionEquality().hash(_this.boxHeights),const DeepCollectionEquality().hash(_this.boxBottoms),_this.bottomLift,_this.slideLength,_this.isSlideLengthAuto,const DeepCollectionEquality().hash(_this.slideAxes),const DeepCollectionEquality().hash(_this.cutList));
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.fronts),_this.frontWidth,_this.frontLeft,_this.sideClearance,_this.boxWidth,_this.boxLength,_this.boxSetback,const DeepCollectionEquality().hash(_this.boxHeights),const DeepCollectionEquality().hash(_this.boxBottoms),_this.bottomLift,_this.slideLength,_this.isSlideLengthAuto,const DeepCollectionEquality().hash(_this.slideAxes),const DeepCollectionEquality().hash(_this.cutList),const DeepCollectionEquality().hash(_this.faceSections),_this.topSection);
 }
 
 @override
 String toString() {
   final _this = this as DrawersResult;
-  return 'DrawersResult(fronts: ${_this.fronts}, frontWidth: ${_this.frontWidth}, sideClearance: ${_this.sideClearance}, boxWidth: ${_this.boxWidth}, boxLength: ${_this.boxLength}, boxSetback: ${_this.boxSetback}, boxHeights: ${_this.boxHeights}, boxBottoms: ${_this.boxBottoms}, bottomLift: ${_this.bottomLift}, slideLength: ${_this.slideLength}, isSlideLengthAuto: ${_this.isSlideLengthAuto}, slideAxes: ${_this.slideAxes}, cutList: ${_this.cutList})';
+  return 'DrawersResult(fronts: ${_this.fronts}, frontWidth: ${_this.frontWidth}, frontLeft: ${_this.frontLeft}, sideClearance: ${_this.sideClearance}, boxWidth: ${_this.boxWidth}, boxLength: ${_this.boxLength}, boxSetback: ${_this.boxSetback}, boxHeights: ${_this.boxHeights}, boxBottoms: ${_this.boxBottoms}, bottomLift: ${_this.bottomLift}, slideLength: ${_this.slideLength}, isSlideLengthAuto: ${_this.isSlideLengthAuto}, slideAxes: ${_this.slideAxes}, cutList: ${_this.cutList}, faceSections: ${_this.faceSections}, topSection: ${_this.topSection})';
 }
 
 
@@ -1275,11 +2177,11 @@ abstract mixin class $DrawersResultCopyWith<$Res>  {
   factory $DrawersResultCopyWith(DrawersResult value, $Res Function(DrawersResult) _then) = _$DrawersResultCopyWithImpl;
 @useResult
 $Res call({
- List<DrawerFrontSlot> fronts, double frontWidth, double sideClearance, double boxWidth, double boxLength, double boxSetback, List<double> boxHeights, List<double> boxBottoms, double bottomLift, double? slideLength, bool isSlideLengthAuto, List<double> slideAxes, List<CutPiece> cutList
+ List<DrawerFrontSlot> fronts, double frontWidth, double frontLeft, double sideClearance, double boxWidth, double boxLength, double boxSetback, List<double> boxHeights, List<double> boxBottoms, double bottomLift, double? slideLength, bool isSlideLengthAuto, List<double> slideAxes, List<CutPiece> cutList, List<DrawerFaceSection> faceSections, DrawerTopSection topSection
 });
 
 
-
+$DrawerTopSectionCopyWith<$Res> get topSection;
 
 }
 /// @nodoc
@@ -1292,10 +2194,11 @@ class _$DrawersResultCopyWithImpl<$Res>
 
 /// Create a copy of DrawersResult
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? fronts = null,Object? frontWidth = null,Object? sideClearance = null,Object? boxWidth = null,Object? boxLength = null,Object? boxSetback = null,Object? boxHeights = null,Object? boxBottoms = null,Object? bottomLift = null,Object? slideLength = freezed,Object? isSlideLengthAuto = null,Object? slideAxes = null,Object? cutList = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? fronts = null,Object? frontWidth = null,Object? frontLeft = null,Object? sideClearance = null,Object? boxWidth = null,Object? boxLength = null,Object? boxSetback = null,Object? boxHeights = null,Object? boxBottoms = null,Object? bottomLift = null,Object? slideLength = freezed,Object? isSlideLengthAuto = null,Object? slideAxes = null,Object? cutList = null,Object? faceSections = null,Object? topSection = null,}) {
   return _then(DrawersResult(
 fronts: null == fronts ? _self.fronts : fronts // ignore: cast_nullable_to_non_nullable
 as List<DrawerFrontSlot>,frontWidth: null == frontWidth ? _self.frontWidth : frontWidth // ignore: cast_nullable_to_non_nullable
+as double,frontLeft: null == frontLeft ? _self.frontLeft : frontLeft // ignore: cast_nullable_to_non_nullable
 as double,sideClearance: null == sideClearance ? _self.sideClearance : sideClearance // ignore: cast_nullable_to_non_nullable
 as double,boxWidth: null == boxWidth ? _self.boxWidth : boxWidth // ignore: cast_nullable_to_non_nullable
 as double,boxLength: null == boxLength ? _self.boxLength : boxLength // ignore: cast_nullable_to_non_nullable
@@ -1307,10 +2210,21 @@ as double,slideLength: freezed == slideLength ? _self.slideLength : slideLength 
 as double?,isSlideLengthAuto: null == isSlideLengthAuto ? _self.isSlideLengthAuto : isSlideLengthAuto // ignore: cast_nullable_to_non_nullable
 as bool,slideAxes: null == slideAxes ? _self.slideAxes : slideAxes // ignore: cast_nullable_to_non_nullable
 as List<double>,cutList: null == cutList ? _self.cutList : cutList // ignore: cast_nullable_to_non_nullable
-as List<CutPiece>,
+as List<CutPiece>,faceSections: null == faceSections ? _self.faceSections : faceSections // ignore: cast_nullable_to_non_nullable
+as List<DrawerFaceSection>,topSection: null == topSection ? _self.topSection : topSection // ignore: cast_nullable_to_non_nullable
+as DrawerTopSection,
   ));
 }
-
+/// Create a copy of DrawersResult
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DrawerTopSectionCopyWith<$Res> get topSection {
+  
+  return $DrawerTopSectionCopyWith<$Res>(_self.topSection, (value) {
+    return _then(_self.copyWith(topSection: value));
+  });
+}
 }
 
 
@@ -1392,10 +2306,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<DrawerFrontSlot> fronts,  double frontWidth,  double sideClearance,  double boxWidth,  double boxLength,  double boxSetback,  List<double> boxHeights,  List<double> boxBottoms,  double bottomLift,  double? slideLength,  bool isSlideLengthAuto,  List<double> slideAxes,  List<CutPiece> cutList)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<DrawerFrontSlot> fronts,  double frontWidth,  double frontLeft,  double sideClearance,  double boxWidth,  double boxLength,  double boxSetback,  List<double> boxHeights,  List<double> boxBottoms,  double bottomLift,  double? slideLength,  bool isSlideLengthAuto,  List<double> slideAxes,  List<CutPiece> cutList,  List<DrawerFaceSection> faceSections,  DrawerTopSection topSection)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DrawersResult() when $default != null:
-return $default(_that.fronts,_that.frontWidth,_that.sideClearance,_that.boxWidth,_that.boxLength,_that.boxSetback,_that.boxHeights,_that.boxBottoms,_that.bottomLift,_that.slideLength,_that.isSlideLengthAuto,_that.slideAxes,_that.cutList);case _:
+return $default(_that.fronts,_that.frontWidth,_that.frontLeft,_that.sideClearance,_that.boxWidth,_that.boxLength,_that.boxSetback,_that.boxHeights,_that.boxBottoms,_that.bottomLift,_that.slideLength,_that.isSlideLengthAuto,_that.slideAxes,_that.cutList,_that.faceSections,_that.topSection);case _:
   return orElse();
 
 }
@@ -1413,10 +2327,10 @@ return $default(_that.fronts,_that.frontWidth,_that.sideClearance,_that.boxWidth
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<DrawerFrontSlot> fronts,  double frontWidth,  double sideClearance,  double boxWidth,  double boxLength,  double boxSetback,  List<double> boxHeights,  List<double> boxBottoms,  double bottomLift,  double? slideLength,  bool isSlideLengthAuto,  List<double> slideAxes,  List<CutPiece> cutList)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<DrawerFrontSlot> fronts,  double frontWidth,  double frontLeft,  double sideClearance,  double boxWidth,  double boxLength,  double boxSetback,  List<double> boxHeights,  List<double> boxBottoms,  double bottomLift,  double? slideLength,  bool isSlideLengthAuto,  List<double> slideAxes,  List<CutPiece> cutList,  List<DrawerFaceSection> faceSections,  DrawerTopSection topSection)  $default,) {final _that = this;
 switch (_that) {
 case _DrawersResult():
-return $default(_that.fronts,_that.frontWidth,_that.sideClearance,_that.boxWidth,_that.boxLength,_that.boxSetback,_that.boxHeights,_that.boxBottoms,_that.bottomLift,_that.slideLength,_that.isSlideLengthAuto,_that.slideAxes,_that.cutList);case _:
+return $default(_that.fronts,_that.frontWidth,_that.frontLeft,_that.sideClearance,_that.boxWidth,_that.boxLength,_that.boxSetback,_that.boxHeights,_that.boxBottoms,_that.bottomLift,_that.slideLength,_that.isSlideLengthAuto,_that.slideAxes,_that.cutList,_that.faceSections,_that.topSection);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1433,10 +2347,10 @@ return $default(_that.fronts,_that.frontWidth,_that.sideClearance,_that.boxWidth
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<DrawerFrontSlot> fronts,  double frontWidth,  double sideClearance,  double boxWidth,  double boxLength,  double boxSetback,  List<double> boxHeights,  List<double> boxBottoms,  double bottomLift,  double? slideLength,  bool isSlideLengthAuto,  List<double> slideAxes,  List<CutPiece> cutList)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<DrawerFrontSlot> fronts,  double frontWidth,  double frontLeft,  double sideClearance,  double boxWidth,  double boxLength,  double boxSetback,  List<double> boxHeights,  List<double> boxBottoms,  double bottomLift,  double? slideLength,  bool isSlideLengthAuto,  List<double> slideAxes,  List<CutPiece> cutList,  List<DrawerFaceSection> faceSections,  DrawerTopSection topSection)?  $default,) {final _that = this;
 switch (_that) {
 case _DrawersResult() when $default != null:
-return $default(_that.fronts,_that.frontWidth,_that.sideClearance,_that.boxWidth,_that.boxLength,_that.boxSetback,_that.boxHeights,_that.boxBottoms,_that.bottomLift,_that.slideLength,_that.isSlideLengthAuto,_that.slideAxes,_that.cutList);case _:
+return $default(_that.fronts,_that.frontWidth,_that.frontLeft,_that.sideClearance,_that.boxWidth,_that.boxLength,_that.boxSetback,_that.boxHeights,_that.boxBottoms,_that.bottomLift,_that.slideLength,_that.isSlideLengthAuto,_that.slideAxes,_that.cutList,_that.faceSections,_that.topSection);case _:
   return null;
 
 }
@@ -1448,7 +2362,7 @@ return $default(_that.fronts,_that.frontWidth,_that.sideClearance,_that.boxWidth
 
 
 class _DrawersResult implements DrawersResult {
-  const _DrawersResult({required  List<DrawerFrontSlot> fronts, required this.frontWidth, required this.sideClearance, required this.boxWidth, required this.boxLength, this.boxSetback = 0, required  List<double> boxHeights, required  List<double> boxBottoms, this.bottomLift = 0, this.slideLength, this.isSlideLengthAuto = true, required  List<double> slideAxes, required  List<CutPiece> cutList}): _fronts = fronts,_boxHeights = boxHeights,_boxBottoms = boxBottoms,_slideAxes = slideAxes,_cutList = cutList;
+  const _DrawersResult({required  List<DrawerFrontSlot> fronts, required this.frontWidth, required this.frontLeft, required this.sideClearance, required this.boxWidth, required this.boxLength, this.boxSetback = 0, required  List<double> boxHeights, required  List<double> boxBottoms, this.bottomLift = 0, this.slideLength, this.isSlideLengthAuto = true, required  List<double> slideAxes, required  List<CutPiece> cutList, required  List<DrawerFaceSection> faceSections, required this.topSection}): _fronts = fronts,_boxHeights = boxHeights,_boxBottoms = boxBottoms,_slideAxes = slideAxes,_cutList = cutList,_faceSections = faceSections;
   
 
 /// Façades de haut en bas, toutes de largeur [frontWidth].
@@ -1461,6 +2375,9 @@ class _DrawersResult implements DrawersResult {
 }
 
 @override final  double frontWidth;
+/// Bord gauche des façades, depuis le flanc gauche de l'ouverture.
+/// Négatif en applique.
+@override final  double frontLeft;
 /// Jeu effectivement laissé entre flanc et côté, de chaque côté.
 @override final  double sideClearance;
 /// Caisse hors tout.
@@ -1513,6 +2430,18 @@ class _DrawersResult implements DrawersResult {
   return EqualUnmodifiableListView(_cutList);
 }
 
+/// Chaque tiroir dans la coupe de face, de haut en bas.
+ final  List<DrawerFaceSection> _faceSections;
+/// Chaque tiroir dans la coupe de face, de haut en bas.
+@override List<DrawerFaceSection> get faceSections {
+  if (_faceSections is EqualUnmodifiableListView) return _faceSections;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_faceSections);
+}
+
+/// Un tiroir dans la coupe de dessus : ils sont tous pareils vus d'en
+/// haut.
+@override final  DrawerTopSection topSection;
 
 /// Create a copy of DrawersResult
 /// with the given fields replaced by the non-null parameter values.
@@ -1524,18 +2453,18 @@ _$DrawersResultCopyWith<_DrawersResult> get copyWith => __$DrawersResultCopyWith
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DrawersResult&&const DeepCollectionEquality().equals(other.fronts, _fronts)&&(identical(other.frontWidth, frontWidth) || other.frontWidth == frontWidth)&&(identical(other.sideClearance, sideClearance) || other.sideClearance == sideClearance)&&(identical(other.boxWidth, boxWidth) || other.boxWidth == boxWidth)&&(identical(other.boxLength, boxLength) || other.boxLength == boxLength)&&(identical(other.boxSetback, boxSetback) || other.boxSetback == boxSetback)&&const DeepCollectionEquality().equals(other.boxHeights, _boxHeights)&&const DeepCollectionEquality().equals(other.boxBottoms, _boxBottoms)&&(identical(other.bottomLift, bottomLift) || other.bottomLift == bottomLift)&&(identical(other.slideLength, slideLength) || other.slideLength == slideLength)&&(identical(other.isSlideLengthAuto, isSlideLengthAuto) || other.isSlideLengthAuto == isSlideLengthAuto)&&const DeepCollectionEquality().equals(other.slideAxes, _slideAxes)&&const DeepCollectionEquality().equals(other.cutList, _cutList));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DrawersResult&&const DeepCollectionEquality().equals(other.fronts, _fronts)&&(identical(other.frontWidth, frontWidth) || other.frontWidth == frontWidth)&&(identical(other.frontLeft, frontLeft) || other.frontLeft == frontLeft)&&(identical(other.sideClearance, sideClearance) || other.sideClearance == sideClearance)&&(identical(other.boxWidth, boxWidth) || other.boxWidth == boxWidth)&&(identical(other.boxLength, boxLength) || other.boxLength == boxLength)&&(identical(other.boxSetback, boxSetback) || other.boxSetback == boxSetback)&&const DeepCollectionEquality().equals(other.boxHeights, _boxHeights)&&const DeepCollectionEquality().equals(other.boxBottoms, _boxBottoms)&&(identical(other.bottomLift, bottomLift) || other.bottomLift == bottomLift)&&(identical(other.slideLength, slideLength) || other.slideLength == slideLength)&&(identical(other.isSlideLengthAuto, isSlideLengthAuto) || other.isSlideLengthAuto == isSlideLengthAuto)&&const DeepCollectionEquality().equals(other.slideAxes, _slideAxes)&&const DeepCollectionEquality().equals(other.cutList, _cutList)&&const DeepCollectionEquality().equals(other.faceSections, _faceSections)&&(identical(other.topSection, topSection) || other.topSection == topSection));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_fronts),frontWidth,sideClearance,boxWidth,boxLength,boxSetback,const DeepCollectionEquality().hash(_boxHeights),const DeepCollectionEquality().hash(_boxBottoms),bottomLift,slideLength,isSlideLengthAuto,const DeepCollectionEquality().hash(_slideAxes),const DeepCollectionEquality().hash(_cutList));
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_fronts),frontWidth,frontLeft,sideClearance,boxWidth,boxLength,boxSetback,const DeepCollectionEquality().hash(_boxHeights),const DeepCollectionEquality().hash(_boxBottoms),bottomLift,slideLength,isSlideLengthAuto,const DeepCollectionEquality().hash(_slideAxes),const DeepCollectionEquality().hash(_cutList),const DeepCollectionEquality().hash(_faceSections),topSection);
 }
 
 @override
 String toString() {
-    return 'DrawersResult(fronts: $fronts, frontWidth: $frontWidth, sideClearance: $sideClearance, boxWidth: $boxWidth, boxLength: $boxLength, boxSetback: $boxSetback, boxHeights: $boxHeights, boxBottoms: $boxBottoms, bottomLift: $bottomLift, slideLength: $slideLength, isSlideLengthAuto: $isSlideLengthAuto, slideAxes: $slideAxes, cutList: $cutList)';
+    return 'DrawersResult(fronts: $fronts, frontWidth: $frontWidth, frontLeft: $frontLeft, sideClearance: $sideClearance, boxWidth: $boxWidth, boxLength: $boxLength, boxSetback: $boxSetback, boxHeights: $boxHeights, boxBottoms: $boxBottoms, bottomLift: $bottomLift, slideLength: $slideLength, isSlideLengthAuto: $isSlideLengthAuto, slideAxes: $slideAxes, cutList: $cutList, faceSections: $faceSections, topSection: $topSection)';
 }
 
 
@@ -1546,11 +2475,11 @@ abstract mixin class _$DrawersResultCopyWith<$Res> implements $DrawersResultCopy
   factory _$DrawersResultCopyWith(_DrawersResult value, $Res Function(_DrawersResult) _then) = __$DrawersResultCopyWithImpl;
 @override @useResult
 $Res call({
- List<DrawerFrontSlot> fronts, double frontWidth, double sideClearance, double boxWidth, double boxLength, double boxSetback, List<double> boxHeights, List<double> boxBottoms, double bottomLift, double? slideLength, bool isSlideLengthAuto, List<double> slideAxes, List<CutPiece> cutList
+ List<DrawerFrontSlot> fronts, double frontWidth, double frontLeft, double sideClearance, double boxWidth, double boxLength, double boxSetback, List<double> boxHeights, List<double> boxBottoms, double bottomLift, double? slideLength, bool isSlideLengthAuto, List<double> slideAxes, List<CutPiece> cutList, List<DrawerFaceSection> faceSections, DrawerTopSection topSection
 });
 
 
-
+@override $DrawerTopSectionCopyWith<$Res> get topSection;
 
 }
 /// @nodoc
@@ -1563,10 +2492,11 @@ class __$DrawersResultCopyWithImpl<$Res>
 
 /// Create a copy of DrawersResult
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? fronts = null,Object? frontWidth = null,Object? sideClearance = null,Object? boxWidth = null,Object? boxLength = null,Object? boxSetback = null,Object? boxHeights = null,Object? boxBottoms = null,Object? bottomLift = null,Object? slideLength = freezed,Object? isSlideLengthAuto = null,Object? slideAxes = null,Object? cutList = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? fronts = null,Object? frontWidth = null,Object? frontLeft = null,Object? sideClearance = null,Object? boxWidth = null,Object? boxLength = null,Object? boxSetback = null,Object? boxHeights = null,Object? boxBottoms = null,Object? bottomLift = null,Object? slideLength = freezed,Object? isSlideLengthAuto = null,Object? slideAxes = null,Object? cutList = null,Object? faceSections = null,Object? topSection = null,}) {
   return _then(_DrawersResult(
 fronts: null == fronts ? _self._fronts : fronts // ignore: cast_nullable_to_non_nullable
 as List<DrawerFrontSlot>,frontWidth: null == frontWidth ? _self.frontWidth : frontWidth // ignore: cast_nullable_to_non_nullable
+as double,frontLeft: null == frontLeft ? _self.frontLeft : frontLeft // ignore: cast_nullable_to_non_nullable
 as double,sideClearance: null == sideClearance ? _self.sideClearance : sideClearance // ignore: cast_nullable_to_non_nullable
 as double,boxWidth: null == boxWidth ? _self.boxWidth : boxWidth // ignore: cast_nullable_to_non_nullable
 as double,boxLength: null == boxLength ? _self.boxLength : boxLength // ignore: cast_nullable_to_non_nullable
@@ -1578,11 +2508,22 @@ as double,slideLength: freezed == slideLength ? _self.slideLength : slideLength 
 as double?,isSlideLengthAuto: null == isSlideLengthAuto ? _self.isSlideLengthAuto : isSlideLengthAuto // ignore: cast_nullable_to_non_nullable
 as bool,slideAxes: null == slideAxes ? _self._slideAxes : slideAxes // ignore: cast_nullable_to_non_nullable
 as List<double>,cutList: null == cutList ? _self._cutList : cutList // ignore: cast_nullable_to_non_nullable
-as List<CutPiece>,
+as List<CutPiece>,faceSections: null == faceSections ? _self._faceSections : faceSections // ignore: cast_nullable_to_non_nullable
+as List<DrawerFaceSection>,topSection: null == topSection ? _self.topSection : topSection // ignore: cast_nullable_to_non_nullable
+as DrawerTopSection,
   ));
 }
 
-
+/// Create a copy of DrawersResult
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DrawerTopSectionCopyWith<$Res> get topSection {
+  
+  return $DrawerTopSectionCopyWith<$Res>(_self.topSection, (value) {
+    return _then(_self.copyWith(topSection: value));
+  });
+}
 }
 
 // dart format on

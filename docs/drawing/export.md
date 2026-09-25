@@ -7,7 +7,7 @@ Le schéma d'un outil sort de l'app en **PNG**, sur une **A4 à l'italienne** po
 - `lib/core/export/plan_export_action.dart` : les boutons « Exporter » et « Partager » (`PlanExportAction`), communs à tous les outils et sans Riverpod.
 - `lib/features/<outil>/<outil>_plan.dart` : ce que le cartouche de l'outil écrit (`build<Outil>Plan`), la vue plein écran, et une enveloppe d'une quinzaine de lignes qui branche `PlanExportAction` sur les providers de l'outil.
 
-Câblé pour la Répartition et le Calepinage. Le Niveau en est exclu : un flux capteur figé n'est pas un plan.
+Câblé pour la Répartition, le Calepinage et les Tiroirs. Le Niveau en est exclu : un flux capteur figé n'est pas un plan.
 
 ## La feuille
 
@@ -28,7 +28,8 @@ Câblé pour la Répartition et le Calepinage. Le Niveau en est exclu : un flux 
 
 ## La table
 
-- **Elle change avec l'outil** : positions pour la Répartition, liste de débit pour le Calepinage. C'est elle qui rend le plan utile hors de l'app.
+- **Elle change avec l'outil** : positions pour la Répartition, liste de débit pour le Calepinage, fiche de débit puis axes de glissière pour les Tiroirs. C'est elle qui rend le plan utile hors de l'app.
+- **Plusieurs tables s'empilent**, la plus importante d'abord (`Plan.tables`). Chacune est en tout ou rien pour son compte : celle du dessous cède la première.
 - **Tout ou rien.** Si elle ne tient pas, elle cède entièrement la place à une ligne de repli (`fallback`). Une liste tronquée sur un plan d'atelier, c'est une pièce en moins, et rien sur la feuille ne le dirait.
 - ⚠️ **La première colonne est celle des numéros, étroite et fixe** (26 unités). Une cellule trop étroite ne tronque pas : elle **n'écrit rien**. Les comptes et les cotes vont donc dans les colonnes suivantes.
 - L'unité va dans l'en-tête de colonne.
