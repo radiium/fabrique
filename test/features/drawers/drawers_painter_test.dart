@@ -20,7 +20,7 @@ void main() {
           );
           for (final size in sizes) {
             DrawersPainter(
-              result: kDrawersPreview,
+              result: computeDrawers(input),
               input: input,
             ).paint(Canvas(PictureRecorder()), size);
           }

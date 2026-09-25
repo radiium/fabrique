@@ -12,10 +12,7 @@ import '../support/app.dart';
 /// un painter qui lève une fois sorti de sa vignette (il n'y dessine pas les
 /// mêmes annotations), et une route qui ne mène nulle part.
 void main() {
-  // TODO(drawers): réintégrer les Tiroirs une fois le calcul branché.
-  for (final tool in Tool.values.where(
-    (t) => t != Tool.level && t != Tool.drawers,
-  )) {
+  for (final tool in Tool.values.where((t) => t != Tool.level)) {
     testWidgets('${tool.label} — la vignette ouvre le schéma, qui pivote', (
       tester,
     ) async {

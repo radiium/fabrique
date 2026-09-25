@@ -2,7 +2,7 @@
 
 ## À faire
 
-- **Brancher les Tiroirs** (`TODO(drawers)`). L'écran et le schéma sont une maquette sur un résultat écrit à la main. Reste : écrire `computeDrawers` et ses tests, dériver le résultat de la saisie, persister la saisie, puis le plan. Réintégrer l'outil dans `routes_test.dart` et `schema_view_test.dart`, et ajouter son test d'écran. Voir [tools/drawers.md](tools/drawers.md).
+- **Le plan des Tiroirs.** Le calcul est branché, la saisie persistée. Reste le plan exporté (voir [tools/drawers.md](tools/drawers.md)), et sortir du painter la géométrie qu'il calcule encore (centrage de la façade, étendue des glissières, place du fond) pour la faire porter par `DrawersResult`.
 - **Le plan du Convertisseur et des Avant-trous.** `core/export/` est générique, boutons compris : il manque un `*_plan.dart` par outil (le cartouche, et une enveloppe de `PlanExportAction`), branché dans `resultsFooter` et dans le `switch` sur `Tool` de `schema_screen.dart`. La note du cartouche des Avant-trous devra porter l'« indicatif » des coefficients. Un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous.
 - **Vérifier sur appareil le libellé du sélecteur de matériau** du Calepinage. Un nom de produit et deux cotes ne peuvent pas passer la mesure pessimiste de la police de test, donc son test garde le rapport au lieu du seuil. À confirmer à l'œil, comme l'ont été « Symétriques » et « Calcul écart ».
 

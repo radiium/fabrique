@@ -1,6 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../core/calc/calc_exception.dart';
 import '../../core/calc/drawers.dart';
+import '../../core/models/tool.dart';
+import '../../core/persistence/persisted_form.dart';
 
 part 'drawers_controller.g.dart';
 
@@ -18,12 +21,22 @@ const DrawersInput kDrawersDefaults = DrawersInput(
 const int kMaxDrawerCount = 10;
 
 /// Tient la saisie. Une méthode par champ, qui fait `copyWith`.
-///
-/// Pas encore persistée : la saisie ne se garde qu'une fois le calcul branché.
 @riverpod
-class DrawersForm extends _$DrawersForm {
+class DrawersForm extends _$DrawersForm with PersistedForm<DrawersInput> {
   @override
-  DrawersInput build() => kDrawersDefaults;
+  Tool get tool => Tool.drawers;
+
+  @override
+  DrawersInput get defaults => kDrawersDefaults;
+
+  @override
+  DrawersInput decode(Map<String, dynamic> json) => DrawersInput.fromJson(json);
+
+  @override
+  Map<String, dynamic> encode(DrawersInput input) => input.toJson();
+
+  @override
+  DrawersInput build() => restore();
 
   void reset() => state = kDrawersDefaults;
 
@@ -83,67 +96,46 @@ class DrawersForm extends _$DrawersForm {
   void setGrooveDepth(double mm) => state = state.copyWith(grooveDepth: mm);
 }
 
-/// Résultat de la maquette : les cotes des défauts, écrites à la main.
+/// Ce que l'écran a à afficher : un résultat, ou la raison de son absence.
 ///
-/// L'écran et le schéma se jugent sur des chiffres plausibles avant que le
-/// calcul existe. Il ne suit pas la saisie.
-const DrawersResult kDrawersPreview = DrawersResult(
-  fronts: [
-    DrawerFrontSlot(bottom: 487.83, height: 249.67),
-    DrawerFrontSlot(bottom: 235.17, height: 249.67),
-    DrawerFrontSlot(bottom: -17.5, height: 249.67),
-  ],
-  frontWidth: 597,
-  sideClearance: 12.7,
-  boxWidth: 536.6,
-  boxLength: 500,
-  boxHeights: [180, 180, 180],
-  boxBottoms: [507.83, 255.17, 10],
-  bottomLift: 10,
-  slideLength: 500,
-  slideAxes: [542.83, 290.17, 45],
-  cutList: [
-    CutPiece(
-      part: DrawerPart.side,
-      quantity: 6,
-      length: 500,
-      width: 180,
-      thickness: 15,
-    ),
-    CutPiece(
-      part: DrawerPart.front,
-      quantity: 3,
-      length: 506.6,
-      width: 180,
-      thickness: 15,
-    ),
-    CutPiece(
-      part: DrawerPart.back,
-      quantity: 3,
-      length: 506.6,
-      width: 180,
-      thickness: 15,
-    ),
-    CutPiece(
-      part: DrawerPart.bottom,
-      quantity: 3,
-      length: 517.6,
-      width: 481,
-      thickness: 8,
-    ),
-    CutPiece(
-      part: DrawerPart.drawerFront,
-      quantity: 3,
-      length: 597,
-      width: 249.67,
-      thickness: 19,
-    ),
-  ],
-);
+/// **Écart assumé à la convention `CalcException` → `null`**, le même que le
+/// Calepinage. L'outil a quatre groupes de contrôles, dont trois repliés : un
+/// tiret muet sur « ouverture trop étroite » laisserait chercher le champ
+/// fautif dans un groupe fermé.
+sealed class DrawersOutcome {
+  const DrawersOutcome();
+}
+
+final class DrawersReady extends DrawersOutcome {
+  const DrawersReady(this.result);
+
+  final DrawersResult result;
+}
+
+/// Saisie refusée par le cœur. [message] est rédigé pour être affiché tel
+/// quel.
+final class DrawersFailure extends DrawersOutcome {
+  const DrawersFailure(this.message);
+
+  final String message;
+}
+
+/// Le résultat, ou `null` sur un refus : ce que lisent le schéma et les
+/// tuiles.
+extension DrawersOutcomeResult on DrawersOutcome {
+  DrawersResult? get result => switch (this) {
+    DrawersReady(:final result) => result,
+    DrawersFailure() => null,
+  };
+}
 
 /// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
 @riverpod
-DrawersResult? drawersResult(Ref ref) {
-  // TODO(drawers): brancher le calcul du cœur à la place de la maquette.
-  return kDrawersPreview;
+DrawersOutcome drawersResult(Ref ref) {
+  final input = ref.watch(drawersFormProvider);
+  try {
+    return DrawersReady(computeDrawers(input));
+  } on CalcException catch (error) {
+    return DrawersFailure(error.message);
+  }
 }

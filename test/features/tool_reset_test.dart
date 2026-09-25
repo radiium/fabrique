@@ -3,6 +3,8 @@ import 'package:fabrique/features/converter/converter_controller.dart';
 import 'package:fabrique/features/converter/converter_screen.dart';
 import 'package:fabrique/features/distribution/distribution_controller.dart';
 import 'package:fabrique/features/distribution/distribution_screen.dart';
+import 'package:fabrique/features/drawers/drawers_controller.dart';
+import 'package:fabrique/features/drawers/drawers_screen.dart';
 import 'package:fabrique/features/fasteners/fasteners_controller.dart';
 import 'package:fabrique/features/fasteners/fasteners_screen.dart';
 import 'package:fabrique/features/layout/layout_controller.dart';
@@ -59,6 +61,12 @@ void main() {
           dirty: (c) => c.read(distributionFormProvider.notifier).setCount(9),
           isPristine: (c) =>
               c.read(distributionFormProvider) == kDistributionDefaults,
+        ),
+        (
+          name: 'Tiroirs',
+          screen: const DrawersScreen(),
+          dirty: (c) => c.read(drawersFormProvider.notifier).setDrawerCount(4),
+          isPristine: (c) => c.read(drawersFormProvider) == kDrawersDefaults,
         ),
         (
           name: 'Avant-trous',

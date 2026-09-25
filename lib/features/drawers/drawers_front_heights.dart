@@ -65,7 +65,7 @@ class FrontHeightsSummary extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final input = ref.watch(drawersFormProvider);
-    final result = ref.watch(drawersResultProvider);
+    final result = ref.watch(drawersResultProvider).result;
     if (result == null || !input.fixedFrontHeights.any((h) => h != null)) {
       return const SizedBox.shrink();
     }
@@ -102,7 +102,7 @@ class _FrontHeightsSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final input = ref.watch(drawersFormProvider);
-    final result = ref.watch(drawersResultProvider);
+    final result = ref.watch(drawersResultProvider).result;
     final form = ref.read(drawersFormProvider.notifier);
     final theme = Theme.of(context);
 

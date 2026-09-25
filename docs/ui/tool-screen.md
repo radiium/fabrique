@@ -40,7 +40,7 @@ Le panneau :
 
 ## Refus affiché (`ErrorBanner`)
 
-Répartition et Calepinage affichent le **motif** d'un refus au lieu d'un tiret : leurs refus sont métier (« les 11 éléments occupent 110 mm pour 100 disponibles ») et, sur huit contrôles, un tiret muet laisserait chercher. Le bandeau se pose **dans la carte de saisie** : sur mobile les résultats sont sous le schéma, deux écrans plus bas que le champ fautif.
+Répartition, Calepinage et Tiroirs affichent le **motif** d'un refus au lieu d'un tiret : leurs refus sont métier (« les 11 éléments occupent 110 mm pour 100 disponibles ») et, sur tant de contrôles, un tiret muet laisserait chercher. Le bandeau se pose **dans la carte de saisie** : sur mobile les résultats sont sous le schéma, deux écrans plus bas que le champ fautif.
 
 ## Réinitialiser
 

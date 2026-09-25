@@ -21,7 +21,10 @@ mixin _$SlideSpec {
 /// choisir (bois sur bois) : la caisse prend la profondeur utile.
  List<double> get nominalLengths;/// Retrait du fond sous la caisse, quand la glissière l'impose. `null` =
 /// montage du fond libre ([BottomMount]).
- double? get bottomRecess;
+ double? get bottomRecess;/// Place laissée sous la caisse, dans son compartiment.
+ double get clearanceBelow;/// Place laissée au-dessus de la caisse : de quoi l'engager dans la
+/// glissière, ou le coulisseau du tiroir du dessus en bois sur bois.
+ double get clearanceAbove;
 /// Create a copy of SlideSpec
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -33,20 +36,20 @@ $SlideSpecCopyWith<SlideSpec> get copyWith => _$SlideSpecCopyWithImpl<SlideSpec>
 @override
 bool operator ==(Object other) {
   final _this = this as SlideSpec;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideSpec&&(identical(other.sideClearance, _this.sideClearance) || other.sideClearance == _this.sideClearance)&&(identical(other.lengthReduction, _this.lengthReduction) || other.lengthReduction == _this.lengthReduction)&&const DeepCollectionEquality().equals(other.nominalLengths, _this.nominalLengths)&&(identical(other.bottomRecess, _this.bottomRecess) || other.bottomRecess == _this.bottomRecess));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideSpec&&(identical(other.sideClearance, _this.sideClearance) || other.sideClearance == _this.sideClearance)&&(identical(other.lengthReduction, _this.lengthReduction) || other.lengthReduction == _this.lengthReduction)&&const DeepCollectionEquality().equals(other.nominalLengths, _this.nominalLengths)&&(identical(other.bottomRecess, _this.bottomRecess) || other.bottomRecess == _this.bottomRecess)&&(identical(other.clearanceBelow, _this.clearanceBelow) || other.clearanceBelow == _this.clearanceBelow)&&(identical(other.clearanceAbove, _this.clearanceAbove) || other.clearanceAbove == _this.clearanceAbove));
 }
 
 
 @override
 int get hashCode {
   final _this = this as SlideSpec;
-  return Object.hash(runtimeType,_this.sideClearance,_this.lengthReduction,const DeepCollectionEquality().hash(_this.nominalLengths),_this.bottomRecess);
+  return Object.hash(runtimeType,_this.sideClearance,_this.lengthReduction,const DeepCollectionEquality().hash(_this.nominalLengths),_this.bottomRecess,_this.clearanceBelow,_this.clearanceAbove);
 }
 
 @override
 String toString() {
   final _this = this as SlideSpec;
-  return 'SlideSpec(sideClearance: ${_this.sideClearance}, lengthReduction: ${_this.lengthReduction}, nominalLengths: ${_this.nominalLengths}, bottomRecess: ${_this.bottomRecess})';
+  return 'SlideSpec(sideClearance: ${_this.sideClearance}, lengthReduction: ${_this.lengthReduction}, nominalLengths: ${_this.nominalLengths}, bottomRecess: ${_this.bottomRecess}, clearanceBelow: ${_this.clearanceBelow}, clearanceAbove: ${_this.clearanceAbove})';
 }
 
 
@@ -57,7 +60,7 @@ abstract mixin class $SlideSpecCopyWith<$Res>  {
   factory $SlideSpecCopyWith(SlideSpec value, $Res Function(SlideSpec) _then) = _$SlideSpecCopyWithImpl;
 @useResult
 $Res call({
- double sideClearance, double lengthReduction, List<double> nominalLengths, double? bottomRecess
+ double sideClearance, double lengthReduction, List<double> nominalLengths, double? bottomRecess, double clearanceBelow, double clearanceAbove
 });
 
 
@@ -74,13 +77,15 @@ class _$SlideSpecCopyWithImpl<$Res>
 
 /// Create a copy of SlideSpec
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? sideClearance = null,Object? lengthReduction = null,Object? nominalLengths = null,Object? bottomRecess = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? sideClearance = null,Object? lengthReduction = null,Object? nominalLengths = null,Object? bottomRecess = freezed,Object? clearanceBelow = null,Object? clearanceAbove = null,}) {
   return _then(SlideSpec(
 sideClearance: null == sideClearance ? _self.sideClearance : sideClearance // ignore: cast_nullable_to_non_nullable
 as double,lengthReduction: null == lengthReduction ? _self.lengthReduction : lengthReduction // ignore: cast_nullable_to_non_nullable
 as double,nominalLengths: null == nominalLengths ? _self.nominalLengths : nominalLengths // ignore: cast_nullable_to_non_nullable
 as List<double>,bottomRecess: freezed == bottomRecess ? _self.bottomRecess : bottomRecess // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,clearanceBelow: null == clearanceBelow ? _self.clearanceBelow : clearanceBelow // ignore: cast_nullable_to_non_nullable
+as double,clearanceAbove: null == clearanceAbove ? _self.clearanceAbove : clearanceAbove // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 
@@ -165,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double sideClearance,  double lengthReduction,  List<double> nominalLengths,  double? bottomRecess)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double sideClearance,  double lengthReduction,  List<double> nominalLengths,  double? bottomRecess,  double clearanceBelow,  double clearanceAbove)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SlideSpec() when $default != null:
-return $default(_that.sideClearance,_that.lengthReduction,_that.nominalLengths,_that.bottomRecess);case _:
+return $default(_that.sideClearance,_that.lengthReduction,_that.nominalLengths,_that.bottomRecess,_that.clearanceBelow,_that.clearanceAbove);case _:
   return orElse();
 
 }
@@ -186,10 +191,10 @@ return $default(_that.sideClearance,_that.lengthReduction,_that.nominalLengths,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double sideClearance,  double lengthReduction,  List<double> nominalLengths,  double? bottomRecess)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double sideClearance,  double lengthReduction,  List<double> nominalLengths,  double? bottomRecess,  double clearanceBelow,  double clearanceAbove)  $default,) {final _that = this;
 switch (_that) {
 case _SlideSpec():
-return $default(_that.sideClearance,_that.lengthReduction,_that.nominalLengths,_that.bottomRecess);case _:
+return $default(_that.sideClearance,_that.lengthReduction,_that.nominalLengths,_that.bottomRecess,_that.clearanceBelow,_that.clearanceAbove);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +211,10 @@ return $default(_that.sideClearance,_that.lengthReduction,_that.nominalLengths,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double sideClearance,  double lengthReduction,  List<double> nominalLengths,  double? bottomRecess)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double sideClearance,  double lengthReduction,  List<double> nominalLengths,  double? bottomRecess,  double clearanceBelow,  double clearanceAbove)?  $default,) {final _that = this;
 switch (_that) {
 case _SlideSpec() when $default != null:
-return $default(_that.sideClearance,_that.lengthReduction,_that.nominalLengths,_that.bottomRecess);case _:
+return $default(_that.sideClearance,_that.lengthReduction,_that.nominalLengths,_that.bottomRecess,_that.clearanceBelow,_that.clearanceAbove);case _:
   return null;
 
 }
@@ -221,7 +226,7 @@ return $default(_that.sideClearance,_that.lengthReduction,_that.nominalLengths,_
 
 
 class _SlideSpec implements SlideSpec {
-  const _SlideSpec({required this.sideClearance, this.lengthReduction = 0,  List<double> nominalLengths = const <double>[], this.bottomRecess}): _nominalLengths = nominalLengths;
+  const _SlideSpec({required this.sideClearance, this.lengthReduction = 0,  List<double> nominalLengths = const <double>[], this.bottomRecess, required this.clearanceBelow, required this.clearanceAbove}): _nominalLengths = nominalLengths;
   
 
 /// Jeu entre le flanc du caisson et le côté du tiroir, de chaque côté.
@@ -242,6 +247,11 @@ class _SlideSpec implements SlideSpec {
 /// Retrait du fond sous la caisse, quand la glissière l'impose. `null` =
 /// montage du fond libre ([BottomMount]).
 @override final  double? bottomRecess;
+/// Place laissée sous la caisse, dans son compartiment.
+@override final  double clearanceBelow;
+/// Place laissée au-dessus de la caisse : de quoi l'engager dans la
+/// glissière, ou le coulisseau du tiroir du dessus en bois sur bois.
+@override final  double clearanceAbove;
 
 /// Create a copy of SlideSpec
 /// with the given fields replaced by the non-null parameter values.
@@ -253,18 +263,18 @@ _$SlideSpecCopyWith<_SlideSpec> get copyWith => __$SlideSpecCopyWithImpl<_SlideS
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SlideSpec&&(identical(other.sideClearance, sideClearance) || other.sideClearance == sideClearance)&&(identical(other.lengthReduction, lengthReduction) || other.lengthReduction == lengthReduction)&&const DeepCollectionEquality().equals(other.nominalLengths, _nominalLengths)&&(identical(other.bottomRecess, bottomRecess) || other.bottomRecess == bottomRecess));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SlideSpec&&(identical(other.sideClearance, sideClearance) || other.sideClearance == sideClearance)&&(identical(other.lengthReduction, lengthReduction) || other.lengthReduction == lengthReduction)&&const DeepCollectionEquality().equals(other.nominalLengths, _nominalLengths)&&(identical(other.bottomRecess, bottomRecess) || other.bottomRecess == bottomRecess)&&(identical(other.clearanceBelow, clearanceBelow) || other.clearanceBelow == clearanceBelow)&&(identical(other.clearanceAbove, clearanceAbove) || other.clearanceAbove == clearanceAbove));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,sideClearance,lengthReduction,const DeepCollectionEquality().hash(_nominalLengths),bottomRecess);
+    return Object.hash(runtimeType,sideClearance,lengthReduction,const DeepCollectionEquality().hash(_nominalLengths),bottomRecess,clearanceBelow,clearanceAbove);
 }
 
 @override
 String toString() {
-    return 'SlideSpec(sideClearance: $sideClearance, lengthReduction: $lengthReduction, nominalLengths: $nominalLengths, bottomRecess: $bottomRecess)';
+    return 'SlideSpec(sideClearance: $sideClearance, lengthReduction: $lengthReduction, nominalLengths: $nominalLengths, bottomRecess: $bottomRecess, clearanceBelow: $clearanceBelow, clearanceAbove: $clearanceAbove)';
 }
 
 
@@ -275,7 +285,7 @@ abstract mixin class _$SlideSpecCopyWith<$Res> implements $SlideSpecCopyWith<$Re
   factory _$SlideSpecCopyWith(_SlideSpec value, $Res Function(_SlideSpec) _then) = __$SlideSpecCopyWithImpl;
 @override @useResult
 $Res call({
- double sideClearance, double lengthReduction, List<double> nominalLengths, double? bottomRecess
+ double sideClearance, double lengthReduction, List<double> nominalLengths, double? bottomRecess, double clearanceBelow, double clearanceAbove
 });
 
 
@@ -292,13 +302,15 @@ class __$SlideSpecCopyWithImpl<$Res>
 
 /// Create a copy of SlideSpec
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? sideClearance = null,Object? lengthReduction = null,Object? nominalLengths = null,Object? bottomRecess = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? sideClearance = null,Object? lengthReduction = null,Object? nominalLengths = null,Object? bottomRecess = freezed,Object? clearanceBelow = null,Object? clearanceAbove = null,}) {
   return _then(_SlideSpec(
 sideClearance: null == sideClearance ? _self.sideClearance : sideClearance // ignore: cast_nullable_to_non_nullable
 as double,lengthReduction: null == lengthReduction ? _self.lengthReduction : lengthReduction // ignore: cast_nullable_to_non_nullable
 as double,nominalLengths: null == nominalLengths ? _self._nominalLengths : nominalLengths // ignore: cast_nullable_to_non_nullable
 as List<double>,bottomRecess: freezed == bottomRecess ? _self.bottomRecess : bottomRecess // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,clearanceBelow: null == clearanceBelow ? _self.clearanceBelow : clearanceBelow // ignore: cast_nullable_to_non_nullable
+as double,clearanceAbove: null == clearanceAbove ? _self.clearanceAbove : clearanceAbove // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 

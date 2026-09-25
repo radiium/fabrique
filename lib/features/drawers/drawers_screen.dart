@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/theme.dart';
 import '../../core/calc/drawers.dart';
 import '../../core/format.dart';
 import '../../core/models/tool.dart';
+import '../../core/widgets/error_banner.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
@@ -18,7 +20,8 @@ class DrawersScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final input = ref.watch(drawersFormProvider);
-    final result = ref.watch(drawersResultProvider);
+    final outcome = ref.watch(drawersResultProvider);
+    final result = outcome.result;
     final form = ref.read(drawersFormProvider.notifier);
 
     return ToolScaffold(
@@ -30,6 +33,13 @@ class DrawersScreen extends ConsumerWidget {
         DrawersFrontsGroup(input: input, form: form),
         DrawersSlideGroup(input: input, form: form),
         DrawersBoxGroup(input: input, form: form),
+        // Dans la carte de saisie, pas près des résultats : sur mobile, ils
+        // sont sous le schéma.
+        if (outcome case DrawersFailure(:final message))
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: ErrorBanner(message: message),
+          ),
       ],
       visualization: const SchemaCard(
         expandFor: Tool.drawers,

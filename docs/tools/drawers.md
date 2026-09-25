@@ -1,13 +1,11 @@
 # Tiroirs
 
-> **Maquette.** L'écran et le schéma existent, le calcul non : les résultats sont un exemple écrit à la main (`kDrawersPreview`), sans bandeau pour le dire. L'outil est exclu des tests transversaux jusqu'au branchement (voir [roadmap.md](../roadmap.md)).
-
 « J'ai une ouverture de caisson. Qu'est-ce que je débite pour mes tiroirs et leurs façades, et où je visse les glissières ? »
 
 | Couche | Fichiers |
 |---|---|
-| Calcul | `lib/core/calc/drawers.dart` (types et préréglages de glissière, pas encore de calcul) |
-| Écran | `lib/features/drawers/` : `_screen`, `_controller`, `_help`, et ses composants `_front_heights` (bouton et feuille des hauteurs), `_cut_list` (fiche de débit) |
+| Calcul | `lib/core/calc/drawers.dart` · `test/core/calc/drawers_test.dart` |
+| Écran | `lib/features/drawers/` : `_screen`, `_controller`, `_help`, et ses composants `_front_heights` (bouton et feuille des hauteurs), `_cut_list` (fiche de débit) · `test/features/drawers/drawers_screen_test.dart`, `drawers_input_groups_test.dart` |
 | Schéma | `_schema`, `_painter` (dont les pictogrammes d'assemblage et de fond) · `test/features/drawers/drawers_painter_test.dart` |
 
 ---
@@ -38,11 +36,25 @@
 
 ## Calcul
 
-À écrire. Points d'entrée prévus : `computeDrawers(DrawersInput)` → `DrawersResult` (façades, caisse, longueur de glissière, axes, fiche de débit). `slideSpecFor` existe déjà.
+`computeDrawers(DrawersInput)` → `DrawersResult`. `slideSpecFor` donne ce que la glissière impose.
 
-### Refus prévus
+- **Façades.** En applique, la colonne va du bas au haut du caisson, chant compris, moins un demi-jeu à chaque bout (le jeu avec le voisin) : largeur = ouverture + 2 × caisson − jeu. Encastrée, un jeu tout autour : largeur = ouverture − 2 × jeu. Les hauteurs fixées sont retirées, le reste se partage. Toutes fixées, elles doivent faire la hauteur exacte.
+- **Compartiment.** Chaque tiroir a la part de l'ouverture derrière sa façade, coupée au milieu du jeu entre deux façades. En applique, le tiroir du milieu a donc un compartiment plus haut que ceux des bouts, qui perdent le recouvrement du caisson.
+- **Caisse.** La plus haute qui tient dans le compartiment, moins les **dégagements** de la glissière (dessous / dessus) :
 
-Ouverture trop étroite pour la glissière et les côtés · profondeur plus courte que la plus petite glissière · caisse trop basse · hauteurs fixées qui dépassent la hauteur · rainure plus profonde que l'épaisseur du côté.
+  | Glissière | Dessous | Dessus | Axe tracé sur le flanc |
+  |---|---|---|---|
+  | À billes, Personnalisée | 10 | 20 | milieu de la caisse |
+  | Sous tiroir | 3 | 20 | dessous de la glissière = bas de la caisse |
+  | Bois sur bois | 0 | 20 (le coulisseau du tiroir du dessus) | dessus du coulisseau = bas de la caisse |
+
+  Largeur hors tout = ouverture − 2 × jeu par côté. Longueur = longueur de glissière − réduction, ou la profondeur utile en bois sur bois.
+- **Fond.** En rainure, 10 mm au-dessus du bas de la caisse (`kGrooveLift`), cotes intérieures + 2 × profondeur de rainure. Entre les côtés, cotes intérieures. Dessous, cotes hors tout, et les parois perdent son épaisseur. Sous tiroir, 13 mm de retrait, entre les côtés et sous le dos, qui perd retrait + fond.
+- **Fiche de débit** : côtés, devants, dos, fonds, façades. Les pièces identiques sont regroupées, et les tiroirs de hauteurs différentes donnent plusieurs lignes. Le fil du fond court d'un côté à l'autre.
+
+### Refus
+
+Cote nulle ou négative, jeu négatif · jeux de façade qui prennent toute l'ouverture · ouverture trop étroite pour la glissière et les côtés · profondeur plus courte que la plus petite glissière, ou glissière imposée trop longue · caisse sous 40 mm (`kMinBoxHeight`) · hauteurs fixées qui ne tiennent pas · rainure aussi profonde que le côté.
 
 ---
 
@@ -68,6 +80,9 @@ En **quatre groupes repliables**, chacun résumé sous son titre (voir [ui/tool-
 **Défauts** (`kDrawersDefaults`) : un caisson de cuisine de 600 (562 × 720 × 540), trois tiroirs à billes, façades en applique, côtés de 15, fond de 8 en rainure de 6, caisson et façade de 19, jeu de 3.
 
 ### Résultats
+
+Un refus s'affiche en `ErrorBanner` sous le dernier groupe (`DrawersOutcome`, comme le Calepinage) : trois groupes sur quatre sont repliés, un tiret muet laisserait chercher le champ fautif. La saisie est persistée.
+
 
 - `Façades — largeur × hauteur`
 - `Caisse — largeur × longueur`, hors tout, avec le jeu par côté

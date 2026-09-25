@@ -9,20 +9,14 @@ part of 'drawers_controller.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// Tient la saisie. Une méthode par champ, qui fait `copyWith`.
-///
-/// Pas encore persistée : la saisie ne se garde qu'une fois le calcul branché.
 
 @ProviderFor(DrawersForm)
 final drawersFormProvider = DrawersFormProvider._();
 
 /// Tient la saisie. Une méthode par champ, qui fait `copyWith`.
-///
-/// Pas encore persistée : la saisie ne se garde qu'une fois le calcul branché.
 final class DrawersFormProvider
     extends $NotifierProvider<DrawersForm, DrawersInput> {
   /// Tient la saisie. Une méthode par champ, qui fait `copyWith`.
-  ///
-  /// Pas encore persistée : la saisie ne se garde qu'une fois le calcul branché.
   DrawersFormProvider._()
     : super(
         from: null,
@@ -50,11 +44,9 @@ final class DrawersFormProvider
   }
 }
 
-String _$drawersFormHash() => r'94b4144ae4c77cf9de5514b013e404155bae535f';
+String _$drawersFormHash() => r'78e129c264d5a85d3bd225de4a7d9770a02e3f39';
 
 /// Tient la saisie. Une méthode par champ, qui fait `copyWith`.
-///
-/// Pas encore persistée : la saisie ne se garde qu'une fois le calcul branché.
 
 abstract class _$DrawersForm extends $Notifier<DrawersInput> {
   DrawersInput build();
@@ -82,8 +74,8 @@ final drawersResultProvider = DrawersResultProvider._();
 /// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
 
 final class DrawersResultProvider
-    extends $FunctionalProvider<DrawersResult?, DrawersResult?, DrawersResult?>
-    with $Provider<DrawersResult?> {
+    extends $FunctionalProvider<DrawersOutcome, DrawersOutcome, DrawersOutcome>
+    with $Provider<DrawersOutcome> {
   /// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
   DrawersResultProvider._()
     : super(
@@ -101,21 +93,21 @@ final class DrawersResultProvider
 
   @$internal
   @override
-  $ProviderElement<DrawersResult?> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<DrawersOutcome> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  DrawersResult? create(Ref ref) {
+  DrawersOutcome create(Ref ref) {
     return drawersResult(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(DrawersResult? value) {
+  Override overrideWithValue(DrawersOutcome value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<DrawersResult?>(value),
+      providerOverride: $SyncValueProvider<DrawersOutcome>(value),
     );
   }
 }
 
-String _$drawersResultHash() => r'd251f106e326ef16063d7d395513161cb192db13';
+String _$drawersResultHash() => r'435c9f9f6eadde058dde60af9c3ee5599d00521d';

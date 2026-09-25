@@ -15,7 +15,7 @@ class DrawersSchema extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomPaint(
       painter: DrawersPainter(
-        result: ref.watch(drawersResultProvider),
+        result: ref.watch(drawersResultProvider).result,
         input: ref.watch(drawersFormProvider),
       ),
       size: Size.infinite,

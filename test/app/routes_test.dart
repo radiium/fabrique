@@ -28,8 +28,7 @@ void main() {
     expect(find.byType(SettingsScreen), findsOneWidget);
   });
 
-  // TODO(drawers): réintégrer les Tiroirs une fois le calcul branché.
-  for (final tool in Tool.values.where((t) => t != Tool.drawers)) {
+  for (final tool in Tool.values) {
     testWidgets('${tool.label} a son écran et sa page de schéma', (
       tester,
     ) async {
