@@ -7,8 +7,7 @@ import 'haptics.dart';
 
 /// Squelette commun à tous les écrans-outils.
 ///
-/// Mobile : saisie / visualisation / résultats empilés, la visualisation reste
-/// visible sans scroll. Web large (> [kWideBreakpoint]) : deux colonnes,
+/// Mobile : saisie / visualisation / résultats empilés. Web large (> [kWideBreakpoint]) : deux colonnes,
 /// saisie + résultats à gauche, visualisation fixe à droite.
 ///
 /// C'est ici que les trois blocs reçoivent leur carte : claire pour la saisie
@@ -17,35 +16,38 @@ import 'haptics.dart';
 class ToolScaffold extends StatelessWidget {
   const ToolScaffold({
     required this.title,
-    required this.input,
     required this.visualization,
     required this.results,
+    this.input,
+    this.inputGroups,
     this.visualizationAspectRatio = 16 / 10,
-    this.inputFooter,
     this.resultsFooter,
     this.onReset,
     this.canReset = true,
     super.key,
-  });
+  }) : assert(
+         (input == null) != (inputGroups == null),
+         'Une saisie d’un seul bloc, ou en groupes : l’un ou l’autre.',
+       );
 
   final String title;
-  final Widget input;
 
-  /// Pied de la carte de saisie, posé **hors** de son rembourrage : il va de
-  /// bord à bord et porte lui-même ses marges (cf. [AppDisclosure]).
+  /// La saisie d'un seul bloc, dans le rembourrage de la carte.
+  final Widget? input;
+
+  /// La saisie découpée en groupes repliables ([AppDisclosure]), empilés de
+  /// bord à bord à la place d'[input].
   ///
-  /// C'est la place du panneau « réglages avancés » : replié, il ne coûte
-  /// qu'une ligne en bas de carte ; déplié, il pousse le schéma sans jamais
-  /// s'intercaler entre deux champs.
-  final Widget? inputFooter;
+  /// Pour un outil dont la saisie ne tient pas sur un écran : chaque groupe
+  /// fermé résume ses valeurs, et le schéma remonte d'autant.
+  final List<Widget>? inputGroups;
 
   final Widget visualization;
 
   /// Le format de la vignette sur mobile.
   ///
   /// Un outil ne le relève que s'il a vraiment de quoi remplir la hauteur : ce
-  /// qu'il prend, il le prend à la ligne de flottaison, qui est la ressource
-  /// la plus disputée de l'écran.
+  /// qu'il prend éloigne d'autant les résultats.
   final double visualizationAspectRatio;
 
   /// Les résultats arrivent en liste, pas en `Column` toute faite : c'est la
@@ -53,8 +55,8 @@ class ToolScaffold extends StatelessWidget {
   /// éléments un par un.
   final List<Widget> results;
 
-  /// Pied de la carte de résultats — le symétrique d'[inputFooter], posé de la
-  /// même façon hors du rembourrage et portant lui-même son filet.
+  /// Pied de la carte de résultats, posé hors de son rembourrage : il va de
+  /// bord à bord et porte lui-même son filet.
   ///
   /// C'est la place d'[AppCardAction] : ce qu'on fait des résultats se propose
   /// sous les résultats, une fois qu'ils sont lus.
@@ -84,7 +86,7 @@ class ToolScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reset = onReset;
-    final inputCard = _InputCard(input: input, footer: inputFooter);
+    final inputCard = _InputCard(input: input, groups: inputGroups);
     final resultsCard = _ResultsCard(results: results, footer: resultsFooter);
     return Scaffold(
       appBar: AppBar(
@@ -114,30 +116,26 @@ class ToolScaffold extends StatelessWidget {
   }
 }
 
-/// La carte de saisie, et son pied éventuel.
+/// La carte de saisie : un bloc dans son rembourrage, ou des groupes.
 class _InputCard extends StatelessWidget {
-  const _InputCard({required this.input, required this.footer});
+  const _InputCard({required this.input, required this.groups});
 
-  final Widget input;
-  final Widget? footer;
+  final Widget? input;
+  final List<Widget>? groups;
 
   @override
   Widget build(BuildContext context) {
-    final footer = this.footer;
-    if (footer == null) return AppCard(child: input);
+    if (input case final input?) return AppCard(child: input);
 
-    // Rembourrage annulé au profit du corps : c'est la seule façon de laisser
-    // le pied toucher les trois bords. La carte détoure alors ses coins, sinon
-    // l'encre du pied déborderait des arrondis du bas.
+    // Les groupes portent leurs marges et leurs filets : la carte n'a rien à
+    // leur prêter. Elle détoure ses coins, sinon l'encre d'un en-tête
+    // déborderait des arrondis. Le filet du premier se confond avec son bord.
     return AppCard(
       padding: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(padding: const EdgeInsets.all(AppSpacing.md), child: input),
-          footer,
-        ],
+        children: [...?groups],
       ),
     );
   }
@@ -243,7 +241,7 @@ class _NarrowBody extends StatelessWidget {
         children: [
           inputCard,
           const SizedBox(height: AppSpacing.md),
-          // Schéma compact, visible sans scroll, agrandi au tap.
+          // Schéma compact, agrandi au tap.
           AspectRatio(
             aspectRatio: visualizationAspectRatio,
             child: visualization,

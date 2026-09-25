@@ -1,4 +1,5 @@
 import 'package:fabrique/app/theme.dart';
+import 'package:fabrique/core/format.dart';
 import 'package:fabrique/core/models/enums.dart';
 import 'package:fabrique/core/widgets/app_dropdown.dart';
 import 'package:fabrique/core/widgets/error_banner.dart';
@@ -7,16 +8,15 @@ import 'package:fabrique/features/layout/layout_controller.dart';
 import 'package:fabrique/features/layout/layout_presets.dart';
 import 'package:fabrique/features/layout/layout_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/phone.dart';
 
-/// Le Calepinage a huit contrôles pour cinq lignes visibles : c'est le seul
-/// écran où la place manque vraiment, et rien dans le code ne dit qu'elle
-/// manque. Un painter qui lève sur un jeu périphérique, une pastille muette,
-/// un contrôle sorti du panneau : ni `flutter analyze` ni les tests du cœur ne
-/// peuvent l'attraper.
+/// Le Calepinage a huit contrôles, en trois groupes repliables. Un painter qui lève sur
+/// un jeu périphérique, un contrôle sorti de son groupe : ni `flutter analyze` ni
+/// les tests du cœur ne peuvent l'attraper.
 void main() {
   Future<ProviderContainer> pumpLayout(WidgetTester tester) async {
     final container = ProviderContainer();
@@ -30,71 +30,82 @@ void main() {
     return container;
   }
 
-  testWidgets('le schéma reste au-dessus de la ligne de flottaison', (
-    tester,
-  ) async {
-    // C'est le problème que le panneau repliable est venu régler : à huit
-    // contrôles dépliés le schéma partait à ~700 px, donc hors de vue.
+  Future<void> open(WidgetTester tester, String group) async {
+    await tester.tap(find.text(group));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('seule la surface est dépliée à l’arrivée', (tester) async {
     usePhone(tester);
     await pumpLayout(tester);
 
-    final canvas = tester.getRect(find.byType(SchemaCard));
-    expect(
-      canvas.bottom,
-      lessThan(kReferencePhone.height),
-      reason:
-          'le schéma finit à ${canvas.bottom} px sur un écran de ${kReferencePhone.height}',
-    );
-    // Le garde-fou : un contrôle de plus posé hors du panneau ferait tomber ce
-    // test avant de faire tomber le précédent, et dirait pourquoi.
-    //
-    // Le seuil vient de l'arithmétique de l'écran : au 16/10 par défaut, la
-    // carte fait 230 px sur ce téléphone, donc au-delà de 614 le schéma passe
-    // sous la ligne de flottaison. Mesuré à 580 avec les quatre contrôles de
-    // premier plan, il ne reste qu'une ligne de marge — c'est le budget le
-    // plus serré de l'app, et c'est l'outil qui a le plus de saisie.
-    expect(
-      canvas.top,
-      lessThan(600),
-      reason:
-          'le schéma commence à ${canvas.top} px sur un écran de ${kReferencePhone.height}',
-    );
-  });
-
-  testWidgets('les réglages avancés sont repliés et sans effet', (
-    tester,
-  ) async {
-    usePhone(tester);
-    await pumpLayout(tester);
-
-    expect(find.text('Réglages avancés'), findsOneWidget);
+    expect(find.text('Surface — largeur'), findsOneWidget);
     for (final label in const [
-      'Jeu horizontal',
-      'Jeu vertical',
-      'Jeu périphérique',
+      'Matériau',
+      'Élément — largeur',
       'Inverser l’orientation',
-      'Équilibrer les rangées',
+      'Jeu horizontal',
+      'Jeu périphérique',
     ]) {
       expect(find.text(label), findsNothing, reason: label);
     }
+  });
 
-    await tester.tap(find.text('Réglages avancés'));
-    await tester.pumpAndSettle();
+  testWidgets('chaque groupe résume ses valeurs, sans rien tronquer', (
+    tester,
+  ) async {
+    usePhone(tester);
+    await pumpLayout(tester);
 
-    for (final label in const [
-      'Jeu horizontal',
-      'Jeu vertical',
-      'Jeu périphérique',
-      'Inverser l’orientation',
-      'Équilibrer les rangées',
+    for (final summary in const [
+      '3000 × 2000 mm',
+      '1200 × 200 mm · décalage ½',
+      'Aucun jeu',
     ]) {
-      expect(find.text(label), findsOneWidget, reason: label);
+      final finder = find.text(summary);
+      expect(finder, findsOneWidget, reason: summary);
+      expect(
+        tester.renderObject<RenderParagraph>(finder).didExceedMaxLines,
+        isFalse,
+        reason: summary,
+      );
     }
   });
 
-  testWidgets('le pied « réglages avancés » touche les bords de la carte', (
+  testWidgets('le résumé nomme le matériau, et les options allumées', (
     tester,
   ) async {
+    usePhone(tester);
+    final container = await pumpLayout(tester);
+    container.read(layoutFormProvider.notifier)
+      // Inversé d'abord : le preset traduit ses jeux selon le sens de pose.
+      ..setFlip(true)
+      ..applyPreset(kLayoutPresets.firstWhere((p) => p.label.startsWith('Ter')))
+      ..setBalanceRows(true);
+    await tester.pump();
+
+    // Le preset remplit aussi les jeux, repliés : c'est leur résumé qui le
+    // dit sans déplier.
+    final input = container.read(layoutFormProvider);
+    expect(
+      find.text(
+        'Terrasse 4000×145 · décalage droit · orientation inversée · '
+        'rangées équilibrées',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'entre éléments ${formatNumber(input.gapX)} × '
+        '${formatNumber(input.gapY)} · périphérique 10 mm',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('les groupes vont de bord à bord de la carte', (tester) async {
+    // Une marge de carte revenue ferait des groupes une carte dans la carte,
+    // et ça ne se voit qu'au rendu.
     usePhone(tester);
     await pumpLayout(tester);
 
@@ -104,54 +115,17 @@ void main() {
         matching: find.byType(Card),
       ),
     );
-    final header = tester.getRect(
-      find.ancestor(
-        of: find.text('Réglages avancés'),
-        matching: find.byType(InkWell),
-      ),
+    // `.first` : « Surface » est aussi une tuile de résultat, plus bas.
+    Rect header(String title) => tester.getRect(
+      find
+          .ancestor(of: find.text(title).first, matching: find.byType(InkWell))
+          .first,
     );
 
-    expect(header.left, card.left);
-    expect(header.right, card.right);
-    expect(header.bottom, card.bottom);
-  });
-
-  testWidgets('la pastille ne s’allume que sur un réglage replié modifié', (
-    tester,
-  ) async {
-    usePhone(tester);
-    final container = await pumpLayout(tester);
-    final form = container.read(layoutFormProvider.notifier);
-
-    Iterable<Container> dots() => tester
-        .widgetList<Container>(
-          find.descendant(
-            of: find.byType(InkWell),
-            matching: find.byType(Container),
-          ),
-        )
-        .where(
-          (c) => (c.decoration as BoxDecoration?)?.shape == BoxShape.circle,
-        );
-
-    expect(dots(), isEmpty);
-
-    // Un contrôle resté visible ne concerne pas le panneau.
-    form.setElementX(1201);
-    await tester.pumpAndSettle();
-    expect(dots(), isEmpty);
-
-    // L'inversion, elle, est repliée : c'est ce qui rattrape sa perte de
-    // visibilité, puisque le panneau annonce désormais qu'elle est active.
-    form.setFlip(true);
-    await tester.pumpAndSettle();
-    expect(dots(), hasLength(1));
-
-    form
-      ..setFlip(false)
-      ..setPerimeterGap(10);
-    await tester.pumpAndSettle();
-    expect(dots(), hasLength(1));
+    expect(header('Surface').top, card.top);
+    expect(header('Surface').left, card.left);
+    expect(header('Jeux').right, card.right);
+    expect(header('Jeux').bottom, card.bottom);
   });
 
   testWidgets('les options du v2 se rendent sans lever', (tester) async {
@@ -242,6 +216,7 @@ void main() {
     ) async {
       usePhone(tester);
       final container = await pumpLayout(tester);
+      await open(tester, 'Élément et pose');
 
       await tester.tap(find.byType(AppDropdown<LayoutPreset?>));
       await tester.pumpAndSettle();
@@ -266,7 +241,7 @@ void main() {
       usePhone(tester);
       final container = await pumpLayout(tester);
       container.read(layoutFormProvider.notifier).setFlip(true);
-      await tester.pumpAndSettle();
+      await open(tester, 'Élément et pose');
 
       await tester.tap(find.byType(AppDropdown<LayoutPreset?>));
       await tester.pumpAndSettle();
@@ -285,6 +260,7 @@ void main() {
       usePhone(tester);
       final container = await pumpLayout(tester);
       final form = container.read(layoutFormProvider.notifier);
+      await open(tester, 'Élément et pose');
 
       expect(find.text('Personnalisé'), findsOneWidget);
 
@@ -309,7 +285,7 @@ void main() {
       container
           .read(layoutFormProvider.notifier)
           .applyPreset(kLayoutPresets.first);
-      await tester.pumpAndSettle();
+      await open(tester, 'Élément et pose');
 
       await tester.tap(find.byType(AppDropdown<LayoutPreset?>));
       await tester.pumpAndSettle();
@@ -335,6 +311,7 @@ void main() {
     testWidgets('aucun libellé ne déborde la valeur fermée', (tester) async {
       usePhone(tester);
       await pumpLayout(tester);
+      await open(tester, 'Élément et pose');
 
       final field = find.byType(AppDropdown<LayoutPreset?>);
       final closed = tester.getRect(find.text('Personnalisé'));

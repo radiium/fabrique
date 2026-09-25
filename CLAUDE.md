@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-`fabrique` est l'app **« Menuiserie »** : cinq outils de calcul pour l'atelier (Calepinage, Répartition, Avant-trous & vis, Niveau, Convertisseur), sur iOS, Android et Web.
+`fabrique` est l'app **« Menuiserie »** : six outils de calcul pour l'atelier (Calepinage, Répartition, Tiroirs, Avant-trous & vis, Niveau, Convertisseur), sur iOS, Android et Web.
 
 ## Documentation
 
@@ -40,7 +40,7 @@ Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/
 - **Une saisie invalide lève `CalcException`**, jamais une valeur fausse. Son message s'affiche tel quel.
 - **Modèles `@freezed`, providers `@riverpod`.** Le résultat d'un outil est un provider dérivé de sa saisie : ni `setState` dans le calcul, ni bouton « calculer ». `setState` reste permis pour un état d'interface local (rotation, export en cours).
 - **Une feature-outil** : `*_screen`, `*_controller`, `*_schema` (seul point de construction du painter), `*_painter`. Le reste seulement si besoin.
-- **Atelier** : cibles ≥ 48 px (`kFieldHeight`), schéma toujours au-dessus de la ligne de flottaison sur mobile, aucun libellé tronqué en silence.
+- **Atelier** : cibles ≥ 48 px (`kFieldHeight`), aucun libellé tronqué en silence. Le schéma peut passer sous la ligne de flottaison : un outil riche ne tient pas dans un écran.
 - **Textes en français**, en dur dans les écrans-outils. Seuls l'accueil et les Réglages passent par `AppLocalizations`.
 
 ## Règles de code
@@ -58,7 +58,7 @@ Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/
 ### Flutter
 
 - **Des classes de widget, pas de méthodes `_buildX()`** : c'est ce qui permet `const` et une reconstruction ciblée.
-- **Un écran de plus de ~400 lignes se découpe**, un fichier par composant (`distribution_positions_table.dart`). `/playground` en est exempté.
+- **Un écran de plus de ~400 lignes se découpe**, un fichier par composant (`distribution_positions_table.dart`).
 - **Un widget dupliqué entre deux features monte dans `core/widgets`.**
 - **Tokens de thème uniquement** (`AppColors`, `AppSpacing`, `AppRadii`) : une couleur en dur finit par dériver du thème. Un nombre qui porte une décision (marge, seuil, taille) est une constante nommée. Un `2` évident reste en ligne.
 - **`ref.watch` dans `build`, `ref.read` dans les callbacks** : un `read` dans `build` rate les mises à jour, et Riverpod ne prend pas en charge un `watch` hors de `build`. Exception : `ref.read(….notifier)` dans `build`, pour brancher les méthodes de champ.
@@ -75,7 +75,7 @@ Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/
 
 - **Un test reproduit le chemin du fichier testé** (`lib/core/calc/layout.dart` → `test/core/calc/layout_test.dart`). Les tests transversaux (reset, persistance, haptique) vivent à la racine de `test/features/`.
 - **Chaque painter a un test « se rend sans lever »** : trois tailles (vignette, plein écran, canvas dégénéré) et une saisie refusée. Un painter qui lève ne se voit qu'au rendu.
-- **Un test d'écran se monte sur le téléphone de référence** (`usePhone`, `test/support/phone.dart`) : c'est sur lui que se mesurent les libellés tronqués et la ligne de flottaison.
+- **Un test d'écran se monte sur le téléphone de référence** (`usePhone`, `test/support/phone.dart`) : c'est sur lui que se mesurent les libellés tronqués.
 - **Le nom d'un test décrit un comportement**, en français. C'est son commentaire.
 
 ### Commits

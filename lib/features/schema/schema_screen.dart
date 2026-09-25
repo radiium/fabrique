@@ -6,6 +6,7 @@ import '../../core/models/tool.dart';
 import '../../core/widgets/haptics.dart';
 import '../converter/converter_schema.dart';
 import '../distribution/distribution_plan.dart';
+import '../drawers/drawers_schema.dart';
 import '../fasteners/fasteners_schema.dart';
 import '../layout/layout_plan.dart';
 import '../level/level_schema.dart';
@@ -141,6 +142,7 @@ Widget _schemaFor(Tool tool) => switch (tool) {
   Tool.layout => const LayoutPlanView(),
   Tool.fasteners => const FastenersSchema(),
   Tool.distribution => const DistributionPlanView(),
+  Tool.drawers => const DrawersSchema(),
   Tool.level => const LevelSchema(),
   Tool.converter => const ConverterSchema(),
 };
@@ -151,5 +153,5 @@ Widget _schemaFor(Tool tool) => switch (tool) {
 List<Widget> _exportActionsFor(Tool tool) => switch (tool) {
   Tool.distribution => const [DistributionExportAction(compact: true)],
   Tool.layout => const [LayoutExportAction(compact: true)],
-  Tool.fasteners || Tool.level || Tool.converter => const [],
+  Tool.drawers || Tool.fasteners || Tool.level || Tool.converter => const [],
 };

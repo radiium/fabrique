@@ -9,9 +9,6 @@ abstract final class AppRoutes {
   static const String home = '/';
   static const String settings = '/settings';
 
-  /// Page de référence hors produit, visible en debug.
-  static const String playground = '/playground';
-
   static String tool(Tool tool) => '/tool/${tool.id}';
 
   /// Le schéma d'un outil, empilé sur son écran.

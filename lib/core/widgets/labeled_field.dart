@@ -60,6 +60,15 @@ class LabeledField extends StatelessWidget {
       children: [
         if (about case final about?)
           _AboutRow(label: label, style: labelStyle, about: about)
+        else if (PairedLabelScope.isTall(context))
+          // Aligné sur le libellé à ⓘ de son voisin de paire.
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: _labelRowHeight),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(label, style: labelStyle),
+            ),
+          )
         else
           Text(label, style: labelStyle),
         const SizedBox(height: AppSpacing.sm),
@@ -120,4 +129,29 @@ class _AboutRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Dit aux libellés d'une paire de champs qu'un voisin porte un ⓘ, et qu'ils
+/// doivent prendre la hauteur de sa ligne.
+///
+/// Une portée et non un paramètre : la paire reçoit des champs déjà construits,
+/// et ne peut pas leur ajouter d'argument.
+class PairedLabelScope extends InheritedWidget {
+  const PairedLabelScope({
+    required this.tallLabelRow,
+    required super.child,
+    super.key,
+  });
+
+  final bool tallLabelRow;
+
+  static bool isTall(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<PairedLabelScope>()
+          ?.tallLabelRow ??
+      false;
+
+  @override
+  bool updateShouldNotify(PairedLabelScope oldWidget) =>
+      tallLabelRow != oldWidget.tallLabelRow;
 }

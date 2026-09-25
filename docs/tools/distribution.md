@@ -5,7 +5,7 @@ Répartir des éléments identiques sur une largeur : barreaudage, lames, étag�
 | Couche | Fichiers |
 |---|---|
 | Calcul | `lib/core/calc/distribution.dart` · `test/core/calc/distribution_test.dart` |
-| Écran | `lib/features/distribution/` : `_screen`, `_controller`, `_form`, `_help`, et ses composants `_edge_grid` (tuiles des bords), `_target_callout` (l'autre borne), `_positions_table` |
+| Écran | `lib/features/distribution/` : `_screen`, `_controller`, `_form`, `_help`, et ses composants `_edge_grid` (tuiles des bords, sur `ChoiceTiles`), `_target_callout` (l'autre borne), `_positions_table` |
 | Schéma | `_schema`, `_painter` (dont `EdgePreviewPainter`, le pictogramme des bords) |
 | Plan | `_plan` · `test/features/distribution/distribution_plan_test.dart` |
 
@@ -73,14 +73,20 @@ Messages affichés tels quels :
 
 ### Saisie
 
+En **deux groupes repliables**, chacun résumé sous son titre (voir [ui/tool-screen.md](../ui/tool-screen.md)). Seule la géométrie est dépliée à l'arrivée.
+
+| Groupe | Contenu | Résumé par défaut |
+|---|---|---|
+| `Géométrie` | `Mode de calcul`, `Largeur totale` · `Largeur d'un élément`, puis `Nombre d'éléments` ou `Écart souhaité` | `5 éléments de 18 sur 1800 mm` |
+| `Bords et marges` | `Type de répartition`, `Marges` | `Élément – Élément · marges 0 mm` |
+
 - `Mode de calcul` : `Calcul écart` · `Calcul nombre`. Nommé par **ce qu'on cherche**.
-- `Largeur totale` · `Largeur d'un élément` (0 = repères)
-- selon le mode, `Nombre d'éléments` (borné par le minimum et par 500) ou `Écart souhaité`
-
-Repliés dans `Réglages avancés` :
-
+- `Largeur d'un élément` : 0 = repères.
+- Selon le mode, `Nombre d'éléments` (borné par le minimum et par 500) ou `Écart souhaité`.
 - `Type de répartition` : les quatre dispositions en **grille 2 × 2 de tuiles pictogramme + texte**. En segments, « Élément – Élément » serait tronqué, et le dessin distingue « Écart – Élément » de « Élément – Écart » mieux que la phrase.
 - `Marges` : `Symétriques` (un champ) ou `Asymétriques` (début et fin). Repasser en symétrique réaligne la fin sur le début, sinon le schéma mentirait.
+
+**Résumés.** Celui de la géométrie dit ce qu'on connaît : le nombre en `Calcul écart`, l'écart visé en `Calcul nombre` (`Éléments de 18 sur 1800 mm · écart visé 150 mm`), et des `repères` sans largeur. Celui des bords écrit les marges comme on les saisit : `marges 10 / 25 mm` en asymétrique. La disposition change le nombre de jeux, donc l'écart : repliée sans résumé, elle cacherait la raison d'un écart inattendu.
 
 **Défauts** (`kDistributionDefaults`) : largeur 1800, élément 18, 5 éléments, écart souhaité 150, Élément – Élément, marges nulles. Ne pas confondre avec les défauts du modèle de calcul (bords aux écarts, largeur nulle).
 

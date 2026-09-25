@@ -11,6 +11,7 @@ IconData iconFor(Tool tool) => switch (tool) {
   Tool.converter => Icons.straighten_outlined,
   Tool.fasteners => Icons.hardware_outlined,
   Tool.distribution => Icons.more_horiz_outlined,
+  Tool.drawers => Icons.inbox_outlined,
   Tool.layout => Icons.grid_on_outlined,
   Tool.level => Icons.architecture_outlined,
 };

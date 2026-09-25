@@ -29,5 +29,5 @@ Cette règle vaut pour les textes lus dans l'app, pas pour les commentaires de c
 
 - La police des widget tests donne à chaque glyphe la largeur de la taille de police : 11 caractères en `controlTextStyle` font 198 px, pour 164 disponibles dans un segment sur deux, sur un écran de 400 px. D'où un plafond de **9 caractères** dans un sélecteur à deux segments.
 - C'est un **premier filtre**, pessimiste (environ le double d'une vraie police). Un libellé refusé peut être retenu après vérification **sur appareil**. Il est alors nommé dans `knownWiderThanTestFont` (`distribution_screen_test.dart`), qui l'épingle à l'envers : s'il se met à tenir, le test le signale. **Cette liste se vide, elle ne s'allonge pas.**
-- Un libellé trop long sort du sélecteur : tuiles avec pictogramme (bords de la Répartition), ou dropdown (grandeurs du Convertisseur).
+- Un libellé trop long sort du sélecteur : tuiles avec pictogramme (`ChoiceTiles`, dans `core/widgets`), ou dropdown (grandeurs du Convertisseur).
 - Convertisseur, Répartition et Calepinage ont chacun un test qui vérifie qu'aucun libellé de sélecteur n'est tronqué sur un téléphone.

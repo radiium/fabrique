@@ -1,4 +1,4 @@
-/// Les 5 outils du MVP. L'`id` sert de segment de route (`/tool/:id`).
+/// Les outils de l'app. L'`id` sert de segment de route (`/tool/:id`).
 ///
 /// L'ordre est celui de l'accueil, et il pitche l'app : le calepinage ouvre la
 /// liste parce que c'est l'outil signature, le convertisseur la ferme parce
@@ -6,6 +6,7 @@
 enum Tool {
   layout('layout', 'Calepinage', 'Pose sur surface, % de perte'),
   distribution('distribution', 'Répartition', 'Écart ou nombre d’éléments'),
+  drawers('drawers', 'Tiroirs', 'Débit, façades, glissières'),
   fasteners('fasteners', 'Avant-trous & vis', 'Perçage, lamage, longueur'),
   level('level', 'Niveau', 'Bulle et inclinomètre'),
   converter('converter', 'Convertisseur', 'Cinq grandeurs, unités d’atelier');

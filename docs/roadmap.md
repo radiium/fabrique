@@ -2,6 +2,7 @@
 
 ## À faire
 
+- **Brancher les Tiroirs** (`TODO(drawers)`). L'écran et le schéma sont une maquette sur un résultat écrit à la main. Reste : écrire `computeDrawers` et ses tests, dériver le résultat de la saisie, persister la saisie, puis le plan. Réintégrer l'outil dans `routes_test.dart` et `schema_view_test.dart`, et ajouter son test d'écran. Voir [tools/drawers.md](tools/drawers.md).
 - **Le plan du Convertisseur et des Avant-trous.** `core/export/` est générique, boutons compris : il manque un `*_plan.dart` par outil (le cartouche, et une enveloppe de `PlanExportAction`), branché dans `resultsFooter` et dans le `switch` sur `Tool` de `schema_screen.dart`. La note du cartouche des Avant-trous devra porter l'« indicatif » des coefficients. Un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous.
 - **Vérifier sur appareil le libellé du sélecteur de matériau** du Calepinage. Un nom de produit et deux cotes ne peuvent pas passer la mesure pessimiste de la police de test, donc son test garde le rapport au lieu du seuil. À confirmer à l'œil, comme l'ont été « Symétriques » et « Calcul écart ».
 
@@ -21,5 +22,5 @@
 - **Répartition avec trait de scie** : débiter une planche en N morceaux égaux, où les traits mangent la longueur. C'est le dernier cas manquant, et celui où un menuisier se fait avoir.
 - **Projets** (sauvegarder plusieurs saisies) : il faudrait une vraie base locale (Drift ou Isar), isolée derrière un repository.
 - **`riverpod_lint` / `custom_lint`** : retenter quand leurs versions s'aligneront sur Riverpod 3.4 + freezed 3.x.
-- **Équerrage de caisson** : en réserve, candidat naturel pour un sixième outil.
+- **Équerrage de caisson** : en réserve, candidat naturel pour un septième outil.
 - **`README.md` racine** : encore le texte par défaut de Flutter.

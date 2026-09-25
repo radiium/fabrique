@@ -5,11 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../core/models/tool.dart';
 import '../features/converter/converter_screen.dart';
 import '../features/distribution/distribution_screen.dart';
+import '../features/drawers/drawers_screen.dart';
 import '../features/fasteners/fasteners_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/layout/layout_screen.dart';
 import '../features/level/level_screen.dart';
-import '../features/playground/playground_screen.dart';
 import '../features/schema/schema_screen.dart';
 import '../features/settings/settings_screen.dart';
 import 'routes.dart';
@@ -28,11 +28,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'settings',
             builder: (context, state) => const SettingsScreen(),
           ),
-          // Page de référence, hors périmètre produit — cf. PlaygroundScreen.
-          GoRoute(
-            path: 'playground',
-            builder: (context, state) => const PlaygroundScreen(),
-          ),
           GoRoute(
             path: 'tool/:id',
             builder: (context, state) {
@@ -41,6 +36,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 Tool.converter => const ConverterScreen(),
                 Tool.fasteners => const FastenersScreen(),
                 Tool.distribution => const DistributionScreen(),
+                Tool.drawers => const DrawersScreen(),
                 Tool.layout => const LayoutScreen(),
                 Tool.level => const LevelScreen(),
                 null => const _UnknownToolScreen(),

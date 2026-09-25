@@ -85,17 +85,20 @@ Les messages **nomment les cotes comme l'écran** et portent les chiffres :
 
 ## Écran
 
-### Saisie, dans cet ordre
+### Saisie
 
-1. `Surface — largeur` · `Surface — longueur` (paire)
-2. `Matériau` : dropdown de presets, qui pré-remplit ce qui suit
-3. `Élément — largeur` · `Élément — longueur` (paire)
-4. `Décalage des joints` : `Droit` · `½` · `⅓` (défaut ½)
+En **trois groupes repliables**, chacun résumé sous son titre (voir [ui/tool-screen.md](../ui/tool-screen.md)). Seule la surface est dépliée à l'arrivée : elle vient de la pièce, c'est ce qu'on vient de mesurer.
 
-Repliés dans `Réglages avancés` : `Jeu horizontal` · `Jeu vertical` · `Jeu périphérique` · `Inverser l'orientation` · `Équilibrer les rangées`. Tous à 0 ou éteints par défaut.
+| Groupe | Contenu | Résumé par défaut |
+|---|---|---|
+| `Surface` | `Surface — largeur` · `Surface — longueur` | `3000 × 2000 mm` |
+| `Élément et pose` | `Matériau` (presets), `Élément — largeur` · `Élément — longueur`, `Décalage des joints` (`Droit` · `½` · `⅓`), `Inverser l'orientation`, `Équilibrer les rangées` | `1200 × 200 mm · décalage ½` |
+| `Jeux` | `Jeu horizontal` · `Jeu vertical`, `Jeu périphérique` | `Aucun jeu` |
 
-- **Les cotes vont par paires** (`FieldPair`) : six champs empilés pousseraient le schéma sous la ligne de flottaison.
-- **`Inverser l'orientation` est replié faute de place** : la carte ne tient que quatre lignes visibles avant que le schéma passe sous la ligne de flottaison, et le sélecteur de matériau en prend une.
+- Le résumé d'`Élément et pose` donne **le nom du matériau** s'il correspond à un preset (il porte déjà ses cotes), le format sinon. Les interrupteurs ne s'y lisent qu'**allumés** (`orientation inversée`, `rangées équilibrées`) : éteints, ils ne changent rien.
+- Le résumé de `Jeux` dit `Aucun jeu` tant que les trois valent 0, `entre éléments 3 × 5 · périphérique 10 mm` sinon. Un preset remplit ces jeux sans déplier le groupe : c'est son résumé qui le montre.
+- Le refus s'affiche sous les groupes, dans la carte de saisie.
+- **Les cotes vont par paires** (`FieldPair`) : une largeur et une longueur se lisent ensemble.
 
 **Défauts** (`kLayoutDefaults`) : surface 3000 × 2000, élément 1200 × 200, décalage ½.
 
@@ -103,7 +106,7 @@ Repliés dans `Réglages avancés` : `Jeu horizontal` · `Jeu vertical` · `Jeu 
 
 Un preset **pré-remplit** l'élément, les jeux, le jeu périphérique et le décalage. Il ne branche aucun calcul, donc la table vit côté feature (`layout_presets.dart`).
 
-- **Il se pose entre ce qu'il ne touche pas et ce qu'il remplit.** La surface vient de la pièce, donc elle passe avant. Un contrôle qui réécrirait des champs situés au-dessus de lui se lirait comme un bug.
+- **Il se pose entre ce qu'il ne touche pas et ce qu'il remplit.** La surface vient de la pièce, donc elle a son groupe, avant. Un contrôle qui réécrirait des champs situés au-dessus de lui se lirait comme un bug.
 - **Sa valeur se dérive de la saisie** (`matchLayoutPreset`) : rien à persister, aucune désynchronisation possible. Aucun preset ne correspond → `Personnalisé`, proposé seulement quand c'est la valeur courante.
 - **Une seule affectation** (`applyPreset`), pas six appels de champ, sinon cinq reconstructions sur des états intermédiaires.
 - **Les jeux d'un preset s'expriment en termes de pose** (`en bout`, `entre lames`) et se traduisent en `gapX` / `gapY` selon l'inversion en cours.

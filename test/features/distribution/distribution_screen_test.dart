@@ -1,6 +1,5 @@
 import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/distribution.dart';
-import 'package:fabrique/core/widgets/schema_card.dart';
 import 'package:fabrique/features/distribution/distribution_controller.dart';
 import 'package:fabrique/features/distribution/distribution_form.dart';
 import 'package:fabrique/features/distribution/distribution_screen.dart';
@@ -139,45 +138,9 @@ void main() {
     expect(find.byIcon(Icons.error_outline), findsOneWidget);
   });
 
-  testWidgets('le schéma reste au-dessus de la ligne de flottaison', (
-    tester,
-  ) async {
-    // La visualisation est la vedette de chaque écran. C'est
-    // précisément ce que huit contrôles dépliés feraient sauter — d'où le
-    // panneau replié par défaut.
-    usePhone(tester);
-    await pumpDistribution(tester);
-
-    final canvas = tester.getRect(find.byType(SchemaCard));
-    // La règle, c'est que le schéma tienne entier sans scroll.
-    expect(
-      canvas.bottom,
-      lessThan(kReferencePhone.height),
-      reason:
-          'le schéma finit à ${canvas.bottom} px sur un écran de ${kReferencePhone.height}',
-    );
-    // Et le garde-fou : mesuré à ~540 px avec les cinq contrôles de premier
-    // plan. Un sixième ajouté hors du panneau repliable ferait tomber ce test
-    // avant de faire tomber le précédent.
-    //
-    // Le seuil suit la hauteur de la carte : au 5/4 de la Répartition elle
-    // fait 294 px sur cet écran, donc au-delà de 550 le schéma passerait sous
-    // la ligne de flottaison et c'est l'assertion précédente qui parlerait —
-    // en disant beaucoup moins.
-    expect(
-      canvas.top,
-      lessThan(550),
-      reason:
-          'le schéma commence à ${canvas.top} px sur un écran de ${kReferencePhone.height}',
-    );
-  });
-
-  testWidgets('le pied « réglages avancés » touche les bords de la carte', (
-    tester,
-  ) async {
-    // Une marge qui reviendrait — un rembourrage de carte rétabli, un panneau
-    // remis dans la pile de contrôles — ferait une carte dans la carte, et ça
-    // ne se voit qu'au rendu.
+  testWidgets('les groupes vont de bord à bord de la carte', (tester) async {
+    // Une marge de carte revenue ferait des groupes une carte dans la carte,
+    // et ça ne se voit qu'au rendu.
     usePhone(tester);
     await pumpDistribution(tester);
 
@@ -187,39 +150,86 @@ void main() {
         matching: find.byType(Card),
       ),
     );
-    final header = tester.getRect(
-      find.ancestor(
-        of: find.text('Réglages avancés'),
-        matching: find.byType(InkWell),
-      ),
+    Rect header(String title) => tester.getRect(
+      find.ancestor(of: find.text(title), matching: find.byType(InkWell)),
     );
 
-    expect(header.left, card.left);
-    expect(header.right, card.right);
-    expect(header.bottom, card.bottom);
+    expect(header('Géométrie').top, card.top);
+    expect(header('Géométrie').left, card.left);
+    expect(header('Bords et marges').right, card.right);
+    expect(header('Bords et marges').bottom, card.bottom);
   });
 
-  testWidgets('les réglages avancés sont repliés, les marges sans effet', (
+  testWidgets('seule la géométrie est dépliée, les marges sans effet', (
     tester,
   ) async {
     usePhone(tester);
     final container = await pumpDistribution(tester);
 
-    expect(find.text('Réglages avancés'), findsOneWidget);
+    expect(find.text('Largeur totale'), findsOneWidget);
     expect(find.text('Marges'), findsNothing);
 
-    // Les marges, elles, sont bien sans effet au départ. La disposition des
-    // bords l'est moins : élément – élément est le cas courant, et c'est le
-    // schéma, juste dessous, qui le montre sans avoir à déplier.
+    // Les marges sont sans effet au départ. La disposition des bords l'est
+    // moins : élément – élément est le cas courant, et le résumé du groupe
+    // le dit sans avoir à déplier.
     final input = container.read(distributionFormProvider);
     expect(input.startOffset, 0);
     expect(input.endOffset, 0);
     expect(input.startEdge, DistributionEdge.element);
     expect(input.endEdge, DistributionEdge.element);
 
-    await tester.tap(find.text('Réglages avancés'));
+    await tester.tap(find.text('Bords et marges'));
     await tester.pumpAndSettle();
     expect(find.text('Marges'), findsOneWidget);
+  });
+
+  testWidgets('le résumé de la géométrie dit ce qu’on connaît', (tester) async {
+    usePhone(tester);
+    final container = await pumpDistribution(tester);
+
+    expect(find.text('5 éléments de 18 sur 1800 mm'), findsOneWidget);
+
+    final form = container.read(distributionFormProvider.notifier)
+      ..setMode(DistributionMode.count);
+    await tester.pump();
+    expect(
+      find.text('Éléments de 18 sur 1800 mm · écart visé 150 mm'),
+      findsOneWidget,
+    );
+
+    // Sans largeur, ce sont des repères : des axes de perçage, pas des lames.
+    form
+      ..setMode(DistributionMode.spacing)
+      ..setElementWidth(0)
+      ..setCount(1);
+    await tester.pump();
+    expect(find.text('1 repère sur 1800 mm'), findsOneWidget);
+  });
+
+  testWidgets('le résumé des bords suit la disposition et les marges', (
+    tester,
+  ) async {
+    usePhone(tester);
+    final container = await pumpDistribution(tester);
+
+    expect(find.text('Élément – Élément · marges 0 mm'), findsOneWidget);
+
+    final form = container.read(distributionFormProvider.notifier)
+      ..setEdges(DistributionEdge.gap, DistributionEdge.element)
+      ..setStartOffset(12.5);
+    await tester.pump();
+    expect(find.text('Écart – Élément · marges 12.5 mm'), findsOneWidget);
+
+    form
+      ..setSymmetricOffsets(false)
+      ..setEndOffset(1250);
+    await tester.pump();
+    final summary = find.text('Écart – Élément · marges 12.5 / 1250 mm');
+    expect(summary, findsOneWidget);
+    expect(
+      tester.renderObject<RenderParagraph>(summary).didExceedMaxLines,
+      isFalse,
+    );
   });
 
   testWidgets('aucun libellé de contrôle n’est tronqué sur un téléphone', (
@@ -231,7 +241,7 @@ void main() {
     usePhone(tester);
     await pumpDistribution(tester);
 
-    await tester.tap(find.text('Réglages avancés'));
+    await tester.tap(find.text('Bords et marges'));
     await tester.pumpAndSettle();
 
     const labels = [
@@ -317,6 +327,8 @@ void main() {
     testWidgets('se prend d’un tap, et l’écran change de mode', (tester) async {
       final container = await pumpTarget(tester, 170);
 
+      // L'en-tête du groupe pousse l'encart sous le bas de l'écran de test.
+      await tester.ensureVisible(find.text('10 éléments → 180 mm réel'));
       await tester.tap(find.text('10 éléments → 180 mm réel'));
       await tester.pumpAndSettle();
 
@@ -333,6 +345,8 @@ void main() {
     testWidgets('devient le calcul une fois prise', (tester) async {
       final container = await pumpTarget(tester, 170);
 
+      // L'en-tête du groupe pousse l'encart sous le bas de l'écran de test.
+      await tester.ensureVisible(find.text('10 éléments → 180 mm réel'));
       await tester.tap(find.text('10 éléments → 180 mm réel'));
       await tester.pumpAndSettle();
 

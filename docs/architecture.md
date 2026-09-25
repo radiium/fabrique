@@ -1,6 +1,6 @@
 # Architecture
 
-App portfolio de cinq outils : ni sur-ingénierie, ni tout dans les widgets. La vitrine technique est un **cœur de calcul en Dart pur, sans Flutter, couvert par des tests unitaires**. Les conventions de code sont dans `CLAUDE.md`, à la racine.
+App portfolio de six outils : ni sur-ingénierie, ni tout dans les widgets. La vitrine technique est un **cœur de calcul en Dart pur, sans Flutter, couvert par des tests unitaires**. Les conventions de code sont dans `CLAUDE.md`, à la racine.
 
 ## Couches
 
@@ -18,7 +18,7 @@ lib/
 │   ├── persistence/     PreferencesStore, PersistedForm, réglages
 │   ├── export/          plan.dart (feuille + cartouche) · plan_export.dart (PNG, système) · plan_export_action.dart (boutons)
 │   └── widgets/         ToolScaffold, NumberField, ResultTile, FieldPair…
-├── features/            home, settings, schema, playground, et un dossier par outil
+├── features/            home, settings, schema, et un dossier par outil
 └── l10n/                app_fr.arb → AppLocalizations
 
 test/
@@ -30,8 +30,6 @@ test/
 ```
 
 **Routes** : `/` · `/settings` · `/tool/:id` · `/tool/:id/schema`, construites par `AppRoutes` (`app/routes.dart`), jamais en dur. Ce fichier est à part de `router.dart`, qui importe tous les écrans, pour qu'un widget de `core/` puisse construire un chemin. La page du schéma s'empile sur l'outil, pour que la saisie reste intacte derrière. `id` vient de l'enum `Tool`, dont l'ordre est celui de l'accueil : le Calepinage ouvre la liste (outil signature), le Convertisseur la ferme (un service, pas une destination).
-
-**`/playground`** : inventaire des widgets Material, pour vérifier que le thème tient. Hors produit, visible en debug.
 
 ## Une feature-outil
 

@@ -9,7 +9,7 @@ Tout vit dans `lib/app/theme.dart`. Composants Material 3, peu customisés.
 - **Orange (`cut`) réservé aux pièces à couper** dans les schémas.
 - **Deux cartes** : claire pour la saisie et les résultats, teintée (`cardTinted`) pour le schéma.
 - `field` : fond beige des champs, et couleur de la **matière** sur la feuille des schémas.
-- `accentWash` : fond d'une option retenue qui porte un dessin (tuiles de bords de la Répartition), où la pastille brune noierait le pictogramme.
+- `accentWash` : fond d'une option retenue qui porte un dessin (`ChoiceTiles` : bords de la Répartition, assemblage et fond des Tiroirs), où la pastille brune noierait le pictogramme.
 - `callout` : encart posé *sur* une carte blanche (l'autre borne de la Répartition). Seul filet de l'app qui ne soit pas `border`.
 
 ## Typographie

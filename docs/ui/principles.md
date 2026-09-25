@@ -6,7 +6,7 @@ L'app se lit dans un atelier : debout, à bout de bras, en pleine lumière, parf
 - **Une main.** Ce qu'on fait des résultats (exporter, partager) se pose au pied de la carte de résultats, là où la lecture se termine. L'action à rendre difficile (« réinitialiser ») va dans le coin haut, loin du pouce.
 - **Calcul en temps réel.** Pas de bouton « calculer » : résultats et schéma suivent la frappe.
 - **Clavier numérique par défaut**, résultats **copiables** d'un tap.
-- **Le schéma est la vedette** et ne passe jamais sous la ligne de flottaison sur mobile.
+- **Le schéma est la vedette**, sans place réservée au-dessus de la ligne de flottaison : un outil riche ne tient pas dans un écran. On le rapproche en repliant la saisie, pas en la limitant.
 - **Viser, c'est rater.** Préférer une grande cible (une ligne entière, une carte entière) à un petit bouton. Préférer un geste qui se fait n'importe où (glisser pour fermer) à un geste qui se vise (une croix).
 - **Rien ne disparaît.** Un contrôle sans effet s'éteint (grisé) au lieu de se masquer : une chrome qui s'efface se cherche. Exception : un contrôle qui n'a *aucun sens* dans le contexte (l'impérial composé pour une masse) est masqué.
 - **Un refus se dit.** Quand une saisie est refusée pour une raison métier, l'écran affiche le motif, là où on peut le corriger.
