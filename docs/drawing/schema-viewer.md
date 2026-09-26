@@ -14,6 +14,7 @@
 ## La page plein écran
 
 - **Une page, pas une boîte de dialogue.** Le geste de retour la ferme, la rotation en paysage donne sa largeur au Calepinage, et le web y gagne une URL.
+- **Elle monte du bas**, sur toutes les plateformes, et redescend au retour : c'est une vue posée sur l'outil, pas une étape de plus. `MaterialPage(fullscreenDialog: true)` ne le fait que sur iOS.
 - **La feuille est l'écran entier** : ni rembourrage ni coin arrondi autour de la zone déplaçable.
 - **Répartition et Calepinage y montrent leur plan** (feuille A4 et cartouche), c'est-à-dire exactement ce qu'exporte le bouton voisin. Voir [export.md](export.md).
 - **Le schéma reste vivant** : mêmes providers que l'écran de l'outil.

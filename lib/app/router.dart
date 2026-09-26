@@ -50,8 +50,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: 'schema',
                 pageBuilder: (context, state) {
                   final tool = Tool.fromId(state.pathParameters['id'] ?? '');
-                  return MaterialPage(
-                    fullscreenDialog: true,
+                  return _RisingPage(
+                    key: state.pageKey,
                     child: tool == null
                         ? const _UnknownToolScreen()
                         : SchemaScreen(tool: tool),
@@ -65,6 +65,34 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+
+/// Durée de la montée d'une page, et de sa descente au retour.
+const Duration _riseDuration = Duration(milliseconds: 300);
+
+/// Une page qui monte du bas de l'écran, sur toutes les plateformes.
+///
+/// Le schéma s'ouvre depuis sa vignette et se referme pour y revenir : un
+/// glissement latéral le lirait comme une étape de plus dans l'outil, pas
+/// comme une vue posée par-dessus. `MaterialPage(fullscreenDialog: true)` ne
+/// monte que sur iOS : Android garde la transition du thème.
+class _RisingPage extends CustomTransitionPage<void> {
+  _RisingPage({required super.child, super.key})
+    : super(
+        fullscreenDialog: true,
+        transitionDuration: _riseDuration,
+        reverseTransitionDuration: _riseDuration,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            SlideTransition(
+              position: animation.drive(
+                Tween(
+                  begin: const Offset(0, 1),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeOutCubic)),
+              ),
+              child: child,
+            ),
+      );
+}
 
 class _UnknownToolScreen extends StatelessWidget {
   const _UnknownToolScreen();
