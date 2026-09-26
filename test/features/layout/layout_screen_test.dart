@@ -56,6 +56,9 @@ void main() {
   ) async {
     usePhone(tester);
     await pumpLayout(tester);
+    // Ouvert, un groupe tait son résumé : on replie celui de l'arrivée.
+    await tester.tap(find.text('Surface').first);
+    await tester.pumpAndSettle();
 
     for (final summary in const [
       '3000 × 2000 mm',

@@ -43,6 +43,9 @@ void main() {
     tester,
   ) async {
     await pumpDrawers(tester);
+    // Ouvert, un groupe tait son résumé : on replie celui de l'arrivée.
+    await tester.tap(find.text('Ouverture'));
+    await tester.pumpAndSettle();
 
     for (final summary in defaultSummaries) {
       final finder = find.text(summary);

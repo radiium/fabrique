@@ -130,6 +130,9 @@ void main() {
   testWidgets('le résumé de la géométrie dit ce qu’on connaît', (tester) async {
     usePhone(tester);
     final container = await pumpDistribution(tester);
+    // Ouvert, un groupe tait son résumé : on replie celui de l'arrivée.
+    await tester.tap(find.text('Géométrie'));
+    await tester.pumpAndSettle();
 
     expect(find.text('5 éléments de 18 sur 1800 mm'), findsOneWidget);
 

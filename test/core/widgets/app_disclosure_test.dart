@@ -77,6 +77,15 @@ void main() {
         greaterThanOrEqualTo(kFieldHeight),
         reason: 'résumé : $summary',
       );
+
+      // Ouvert, l'en-tête replie son résumé mais garde la cible.
+      await toggle(tester);
+      expect(
+        tester.getSize(header).height,
+        greaterThanOrEqualTo(kFieldHeight),
+        reason: 'ouvert, résumé : $summary',
+      );
+      await toggle(tester);
     }
   });
 

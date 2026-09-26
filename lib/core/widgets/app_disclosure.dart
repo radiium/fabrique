@@ -47,8 +47,9 @@ class AppDisclosure extends StatefulWidget {
 
   /// Les valeurs du contenu, lues d'un coup d'œil sous le titre.
   ///
-  /// Dans les deux états, grisé une fois le panneau ouvert. Passe à la ligne
-  /// plutôt que de tronquer, une valeur coupée ment.
+  /// Panneau fermé seulement : ouvert, les champs disent déjà ces valeurs, et
+  /// les répéter au-dessus d'eux alourdit la carte. Passe à la ligne plutôt
+  /// que de tronquer, une valeur coupée ment.
   final String? summary;
 
   /// Marge du contenu, sur les quatre côtés.
@@ -123,8 +124,8 @@ class _AppDisclosureState extends State<AppDisclosure> {
           isExpanded: _expanded,
           onTap: _toggle,
         ),
-        // Une seule animation, la hauteur, et sur le seul contenu : l'en-tête
-        // n'en fait pas partie, il suit la frappe du résumé sans délai.
+        // Une seule animation, la hauteur : celle du contenu, et celle du
+        // résumé qui se replie dans l'en-tête au même rythme.
         AnimatedSize(
           duration: _kDuration,
           curve: _kCurve,
@@ -224,7 +225,6 @@ class _DisclosureHeader extends StatelessWidget {
     // Encre foncée pour l'icône et le titre : c'est elle, et non la taille,
     // qui détache un groupe des libellés gris de ses champs.
     final ink = theme.colorScheme.onSurface;
-    final body = theme.textTheme.bodyMedium ?? const TextStyle();
 
     return Semantics(
       button: true,
@@ -254,11 +254,14 @@ class _DisclosureHeader extends StatelessWidget {
                 children: [
                   // Ligne à part du résumé : le titre reste en face de l'icône
                   // et du chevron. Seule, elle fait la cible tactile
-                  // d'atelier. Suivie d'un résumé, c'est l'en-tête entier qui
-                  // la fait, au-delà de 48.
+                  // d'atelier. Avec un résumé, c'est l'en-tête entier qui la
+                  // fait, marges comprises : il la garde une fois le résumé
+                  // replié.
                   ConstrainedBox(
                     constraints: BoxConstraints(
-                      minHeight: summary == null ? kFieldHeight : 0,
+                      minHeight: summary == null
+                          ? kFieldHeight
+                          : kFieldHeight - _insetWithSummary.vertical,
                     ),
                     child: Row(
                       children: [
@@ -287,21 +290,26 @@ class _DisclosureHeader extends StatelessWidget {
                     ),
                   ),
                   // Aligné sur l'icône, pas sur le titre : toute la largeur de
-                  // la carte pour des valeurs qui s'allongent vite. Affiché
-                  // dans les deux états : ouvert, le résumé suit la frappe.
-                  // Grisé alors, pour reculer derrière les champs qui disent
-                  // la même chose.
+                  // la carte pour des valeurs qui s'allongent vite. Replié
+                  // au rythme du contenu, et les marges de l'en-tête ne
+                  // bougent pas : sinon l'en-tête saute d'un coup pendant que
+                  // le contenu glisse.
                   if (summary != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: AppSpacing.xs),
-                      child: AnimatedDefaultTextStyle(
-                        duration: _kDuration,
-                        curve: _kCurve,
-                        style: body.copyWith(
-                          color: isExpanded ? AppColors.label : body.color,
-                        ),
-                        child: Text(summary),
-                      ),
+                    AnimatedSize(
+                      duration: _kDuration,
+                      curve: _kCurve,
+                      alignment: AlignmentDirectional.topStart,
+                      child: isExpanded
+                          ? const SizedBox(width: double.infinity)
+                          : Padding(
+                              padding: const EdgeInsets.only(
+                                top: AppSpacing.xs,
+                              ),
+                              child: Text(
+                                summary,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                            ),
                     ),
                 ],
               ),
