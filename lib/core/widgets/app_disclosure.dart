@@ -28,6 +28,8 @@ const Curve _kCurve = Curves.easeInOut;
 /// carte dans un autre sous-arbre, où le panneau repartirait fermé.
 /// Il est rangé dans le [PageStorage] de la route, sous son [title] : deux
 /// panneaux d'un même écran ne partagent donc pas un titre.
+///
+/// Sous un [AppDisclosureGroup], ouvrir un panneau referme les autres.
 class AppDisclosure extends StatefulWidget {
   const AppDisclosure({
     required this.title,
@@ -54,7 +56,7 @@ class AppDisclosure extends StatefulWidget {
   /// Le côté est celui de la carte qui le porte ([AppCard.padding]), puisqu'il
   /// en remplace le rembourrage sur toute sa hauteur. Le bas est à la charge
   /// du panneau : la carte n'a plus de rembourrage à lui prêter. Le haut
-  /// détache le premier libellé du fond teinté de l'en-tête.
+  /// détache le premier libellé de l'en-tête.
   static const EdgeInsets _bodyInset = EdgeInsets.all(AppSpacing.md);
 
   @override
@@ -63,6 +65,7 @@ class AppDisclosure extends StatefulWidget {
 
 class _AppDisclosureState extends State<AppDisclosure> {
   late bool _expanded;
+  ValueNotifier<String?>? _group;
 
   Object get _storageId => (AppDisclosure, widget.title);
 
@@ -75,9 +78,35 @@ class _AppDisclosureState extends State<AppDisclosure> {
         widget.initiallyExpanded;
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final group = context
+        .dependOnInheritedWidgetOfExactType<_DisclosureGroupScope>()
+        ?.lastOpened;
+    if (group == _group) return;
+    _group?.removeListener(_onGroupChanged);
+    _group = group?..addListener(_onGroupChanged);
+  }
+
+  @override
+  void dispose() {
+    _group?.removeListener(_onGroupChanged);
+    super.dispose();
+  }
+
+  void _onGroupChanged() {
+    if (_expanded && _group?.value != widget.title) _setExpanded(false);
+  }
+
   void _toggle() {
     hapticSelection(context);
-    setState(() => _expanded = !_expanded);
+    _setExpanded(!_expanded);
+    if (_expanded) _group?.value = widget.title;
+  }
+
+  void _setExpanded(bool isExpanded) {
+    setState(() => _expanded = isExpanded);
     PageStorage.maybeOf(context)
         ?.writeState(context, _expanded, identifier: _storageId);
   }
@@ -110,6 +139,46 @@ class _AppDisclosureState extends State<AppDisclosure> {
       ],
     );
   }
+}
+
+/// Accordéon : sous lui, un seul [AppDisclosure] ouvert à la fois.
+///
+/// Un panneau qu'on ouvre referme les autres, pour que la saisie reste courte
+/// et que le schéma, en dessous, reste à portée. Chaque panneau garde son
+/// propre état ouvert dans le [PageStorage] : le groupe ne fait que diffuser
+/// le dernier ouvert, il ne restaure rien.
+class AppDisclosureGroup extends StatefulWidget {
+  const AppDisclosureGroup({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  State<AppDisclosureGroup> createState() => _AppDisclosureGroupState();
+}
+
+class _AppDisclosureGroupState extends State<AppDisclosureGroup> {
+  final ValueNotifier<String?> _lastOpened = ValueNotifier(null);
+
+  @override
+  void dispose() {
+    _lastOpened.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      _DisclosureGroupScope(lastOpened: _lastOpened, child: widget.child);
+}
+
+class _DisclosureGroupScope extends InheritedWidget {
+  const _DisclosureGroupScope({required this.lastOpened, required super.child});
+
+  /// Titre du dernier panneau ouvert.
+  final ValueNotifier<String?> lastOpened;
+
+  @override
+  bool updateShouldNotify(_DisclosureGroupScope oldWidget) =>
+      lastOpened != oldWidget.lastOpened;
 }
 
 /// En-tête du panneau : icône, titre, chevron, et le résumé en dessous.

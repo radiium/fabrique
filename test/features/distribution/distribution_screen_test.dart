@@ -185,9 +185,6 @@ void main() {
     usePhone(tester);
     await pumpDistribution(tester);
 
-    await tester.tap(find.text('Bords et marges'));
-    await tester.pumpAndSettle();
-
     const labels = [
       'Écart – Écart',
       'Élément – Élément',
@@ -215,18 +212,27 @@ void main() {
       'Asymétriques',
     ];
 
-    for (final label in [...labels, ...knownWiderThanTestFont]) {
-      final finder = find.text(label);
-      expect(finder, findsWidgets, reason: label);
-      final expected = knownWiderThanTestFont.contains(label);
-      expect(
-        tester.renderObject<RenderParagraph>(finder.first).didExceedMaxLines,
-        expected,
-        reason: expected
-            ? '« $label » tient désormais : à retirer de la liste'
-            : '« $label » tronqué',
-      );
+    void expectLabels(List<String> shown) {
+      for (final label in shown) {
+        final finder = find.text(label);
+        expect(finder, findsWidgets, reason: label);
+        final expected = knownWiderThanTestFont.contains(label);
+        expect(
+          tester.renderObject<RenderParagraph>(finder.first).didExceedMaxLines,
+          expected,
+          reason: expected
+              ? '« $label » tient désormais : à retirer de la liste'
+              : '« $label » tronqué',
+        );
+      }
     }
+
+    // Un seul groupe ouvert à la fois : chacun se mesure pendant qu'il l'est.
+    expectLabels(const ['Calcul écart', 'Calcul nombre']);
+
+    await tester.tap(find.text('Bords et marges'));
+    await tester.pumpAndSettle();
+    expectLabels(const [...labels, 'Symétriques', 'Asymétriques']);
   });
 
   testWidgets('le mode « écart voulu » propose l’autre borne', (tester) async {

@@ -20,6 +20,7 @@ Un outil dont la saisie ne tient pas sur un écran (Calepinage, Répartition, Ti
 
 - La carte passe en `padding: zero` + `Clip.antiAlias`, et les groupes s'empilent **de bord à bord**. Chacun porte lui-même la marge horizontale et le filet au-dessus de son en-tête. Celui du premier se confond avec le bord de la carte. Un panneau bordé *et* marginé ferait une carte dans la carte.
 - **Seul le premier groupe est déplié à l'arrivée** : celui de ce qu'on vient de mesurer (la surface, la largeur, l'ouverture).
+- **Un seul groupe ouvert à la fois** (`AppDisclosureGroup`, posé par `ToolScaffold`) : en ouvrir un referme les autres. La saisie reste courte et le schéma reste à portée. On peut aussi tout refermer.
 - **Chaque groupe a un résumé** : c'est lui qui permet de fermer un groupe sans cacher ses valeurs. Ce qui est replié garde tout de même par défaut une valeur qui ne surprend pas : neutre (jeu nul, marge nulle) ou le cas le plus courant (bords Élément – Élément).
 - Un refus (`ErrorBanner`) se pose **après le dernier groupe**, marginé : il reste dans la carte de saisie, au-dessus du schéma.
 

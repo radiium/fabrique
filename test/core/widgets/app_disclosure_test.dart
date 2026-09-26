@@ -90,4 +90,39 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Contenu'), findsOneWidget);
   });
+
+  testWidgets('dans un groupe, ouvrir un panneau referme les autres', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: buildAppTheme(),
+        home: const Scaffold(
+          body: AppDisclosureGroup(
+            child: Column(
+              children: [
+                AppDisclosure(
+                  title: 'Surface',
+                  initiallyExpanded: true,
+                  child: Text('Contenu surface'),
+                ),
+                AppDisclosure(title: 'Jeux', child: Text('Contenu jeux')),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(find.text('Contenu surface'), findsOneWidget);
+
+    await tester.tap(find.text('Jeux'));
+    await tester.pumpAndSettle();
+    expect(find.text('Contenu jeux'), findsOneWidget);
+    expect(find.text('Contenu surface'), findsNothing);
+
+    await tester.tap(find.text('Jeux'));
+    await tester.pumpAndSettle();
+    expect(find.text('Contenu jeux'), findsNothing);
+    expect(find.text('Contenu surface'), findsNothing);
+  });
 }

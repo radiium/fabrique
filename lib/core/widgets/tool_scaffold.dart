@@ -40,7 +40,8 @@ class ToolScaffold extends StatelessWidget {
   /// bord à bord à la place d'[input].
   ///
   /// Pour un outil dont la saisie ne tient pas sur un écran : chaque groupe
-  /// fermé résume ses valeurs, et le schéma remonte d'autant.
+  /// fermé résume ses valeurs, et le schéma remonte d'autant. Un seul groupe
+  /// est ouvert à la fois ([AppDisclosureGroup]).
   final List<Widget>? inputGroups;
 
   final Widget visualization;
@@ -134,9 +135,11 @@ class _InputCard extends StatelessWidget {
     return AppCard(
       padding: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [...?groups],
+      child: AppDisclosureGroup(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [...?groups],
+        ),
       ),
     );
   }
