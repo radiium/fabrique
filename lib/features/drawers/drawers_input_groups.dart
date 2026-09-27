@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/drawers.dart';
-import '../../core/format.dart';
 import '../../core/widgets/app_disclosure.dart';
 import '../../core/widgets/app_dropdown.dart';
 import '../../core/widgets/app_segmented_button.dart';
@@ -11,9 +10,12 @@ import '../../core/widgets/count_field.dart';
 import '../../core/widgets/field_pair.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 import 'drawers_controller.dart';
 import 'drawers_front_heights.dart';
 import 'drawers_help.dart';
+import 'drawers_labels.dart';
 import 'drawers_painter.dart';
 
 /// Valeur du menu des longueurs qui rend le choix à l'outil.
@@ -35,15 +37,17 @@ class DrawersOpeningGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AppDisclosure(
-      title: 'Ouverture',
+      title: l10n.drawersOpening,
       icon: Icons.crop_square,
       initiallyExpanded: true,
-      summary:
-          '${formatNumber(input.openingWidth)} × '
-          '${formatNumber(input.openingHeight)} × '
-          '${formatNumber(input.openingDepth)} mm · '
-          'caisson ${formatNumber(input.carcassThickness)} mm',
+      summary: l10n.drawersSummaryOpening(
+        l10n.number(input.openingWidth),
+        l10n.number(input.openingHeight),
+        l10n.number(input.openingDepth),
+        l10n.number(input.carcassThickness),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -51,14 +55,14 @@ class DrawersOpeningGroup extends StatelessWidget {
           // plonge le mètre pour la profondeur.
           FieldPair(
             first: NumberField(
-              label: 'Largeur intérieure',
+              label: l10n.drawersOpeningWidth,
               suffix: 'mm',
-              about: kAboutOpening,
+              about: aboutOpening(l10n),
               value: input.openingWidth,
               onChanged: form.setOpeningWidth,
             ),
             second: NumberField(
-              label: 'Hauteur intérieure',
+              label: l10n.drawersOpeningHeight,
               suffix: 'mm',
               value: input.openingHeight,
               onChanged: form.setOpeningHeight,
@@ -66,14 +70,14 @@ class DrawersOpeningGroup extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           NumberField(
-            label: 'Profondeur intérieure',
+            label: l10n.drawersOpeningDepth,
             suffix: 'mm',
             value: input.openingDepth,
             onChanged: form.setOpeningDepth,
           ),
           const SizedBox(height: AppSpacing.md),
           NumberField(
-            label: 'Épaisseur du caisson',
+            label: l10n.drawersCarcassThickness,
             suffix: 'mm',
             value: input.carcassThickness,
             onChanged: form.setCarcassThickness,
@@ -97,43 +101,46 @@ class DrawersFrontsGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final count = input.drawerCount;
     final isAdjusted = input.fixedFrontHeights.any((h) => h != null);
 
     return AppDisclosure(
-      title: 'Tiroirs et façades',
+      title: l10n.drawersFrontsGroup,
       icon: Icons.view_agenda_outlined,
-      summary:
-          '$count tiroir${pluralS(count)} · '
-          'hauteurs ${isAdjusted ? 'ajustées' : 'égales'} · '
-          '${input.frontMount.label.toLowerCase()}, '
-          'façade ${formatNumber(input.frontThickness)} · '
-          'jeu ${formatNumber(input.frontGap)} mm',
+      summary: l10n.drawersSummaryFronts(
+        count,
+        (isAdjusted ? l10n.drawersHeightsAdjusted : l10n.drawersHeightsEqual)
+            .toLowerCase(),
+        input.frontMount.label(l10n).toLowerCase(),
+        l10n.number(input.frontThickness),
+        l10n.number(input.frontGap),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           CountField(
-            label: 'Nombre de tiroirs',
+            label: l10n.drawersCount,
             value: count,
             onChanged: form.setDrawerCount,
             min: 1,
             max: kMaxDrawerCount,
           ),
           const SizedBox(height: AppSpacing.md),
-          const LabeledField(
-            label: 'Hauteurs',
-            about: kAboutFrontHeights,
-            child: FrontHeightsButton(),
+          LabeledField(
+            label: l10n.drawersHeights,
+            about: aboutFrontHeights(l10n),
+            child: const FrontHeightsButton(),
           ),
           const FrontHeightsSummary(),
           const SizedBox(height: AppSpacing.md),
           LabeledField(
-            label: 'Pose de la façade',
-            about: kAboutFrontMount,
+            label: l10n.drawersFrontMount,
+            about: aboutFrontMount(l10n),
             child: AppSegmentedButton<FrontMount>(
               segments: [
                 for (final mount in FrontMount.values)
-                  AppSegment(value: mount, label: mount.label),
+                  AppSegment(value: mount, label: mount.label(l10n)),
               ],
               value: input.frontMount,
               onChanged: form.setFrontMount,
@@ -144,14 +151,14 @@ class DrawersFrontsGroup extends StatelessWidget {
           // calcul ne s'en sert qu'encastrée, mais le schéma dessine la façade
           // toujours.
           NumberField(
-            label: 'Épaisseur de façade',
+            label: l10n.drawersFrontThickness,
             suffix: 'mm',
             value: input.frontThickness,
             onChanged: form.setFrontThickness,
           ),
           const SizedBox(height: AppSpacing.md),
           NumberField(
-            label: 'Jeu entre façades',
+            label: l10n.drawersFrontGap,
             suffix: 'mm',
             value: input.frontGap,
             onChanged: form.setFrontGap,
@@ -171,35 +178,36 @@ class DrawersSlideGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final spec = slideSpecFor(input);
 
     return AppDisclosure(
-      title: 'Glissière',
+      title: l10n.drawersSlide,
       icon: Icons.swap_vert,
-      summary: _summary(input, spec),
+      summary: _summary(input, spec, l10n),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LabeledField(
-            label: 'Glissière',
-            about: kAboutSlide,
+            label: l10n.drawersSlide,
+            about: aboutSlide(l10n),
             child: AppDropdown<SlideKind>(
               value: input.slide,
               onSelected: form.setSlide,
-              entries: {for (final k in SlideKind.values) k: k.label},
+              entries: {for (final k in SlideKind.values) k: k.label(l10n)},
             ),
           ),
           if (input.slide == SlideKind.custom) ...[
             const SizedBox(height: AppSpacing.md),
             NumberField(
-              label: 'Jeu par côté',
+              label: l10n.drawersSideClearance,
               suffix: 'mm',
               value: input.customSideClearance,
               onChanged: form.setCustomSideClearance,
             ),
             const SizedBox(height: AppSpacing.md),
             NumberField(
-              label: 'Réduction de longueur',
+              label: l10n.drawersLengthReduction,
               suffix: 'mm',
               value: input.customLengthReduction,
               onChanged: form.setCustomLengthReduction,
@@ -208,16 +216,16 @@ class DrawersSlideGroup extends StatelessWidget {
           if (spec.nominalLengths.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.md),
             LabeledField(
-              label: 'Longueur de glissière',
-              about: kAboutSlideLength,
+              label: l10n.drawersSlideLength,
+              about: aboutSlideLength(l10n),
               child: AppDropdown<double>(
                 value: input.slideLength ?? _autoSlideLength,
                 onSelected: (mm) =>
                     form.setSlideLength(mm == _autoSlideLength ? null : mm),
                 entries: {
-                  _autoSlideLength: 'Automatique',
+                  _autoSlideLength: l10n.drawersSlideLengthAuto,
                   for (final mm in spec.nominalLengths)
-                    mm: '${formatNumber(mm)} mm',
+                    mm: '${l10n.number(mm)} mm',
                 },
               ),
             ),
@@ -229,17 +237,23 @@ class DrawersSlideGroup extends StatelessWidget {
 
   /// La famille, puis ce qui s'y règle : les jeux d'une glissière saisie à la
   /// main, la longueur d'une glissière qu'on achète.
-  static String _summary(DrawersInput input, SlideSpec spec) {
+  static String _summary(
+    DrawersInput input,
+    SlideSpec spec,
+    AppLocalizations l10n,
+  ) {
     final length = input.slideLength;
     return [
-      input.slide.label,
+      input.slide.label(l10n),
       if (input.slide == SlideKind.custom)
-        'jeu ${formatNumber(input.customSideClearance)}, '
-            'réduction ${formatNumber(input.customLengthReduction)} mm',
+        l10n.drawersSummaryCustomSlide(
+          l10n.number(input.customSideClearance),
+          l10n.number(input.customLengthReduction),
+        ),
       if (spec.nominalLengths.isNotEmpty)
         length == null
-            ? 'longueur automatique'
-            : 'longueur ${formatNumber(length)} mm',
+            ? l10n.drawersSummaryAutoLength
+            : l10n.drawersSummaryLength(l10n.number(length)),
     ].join(' · ');
   }
 }
@@ -253,25 +267,26 @@ class DrawersBoxGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final bottomRecess = slideSpecFor(input).bottomRecess;
 
     return AppDisclosure(
-      title: 'Caisse',
+      title: l10n.drawersBox,
       icon: Icons.inventory_2_outlined,
-      summary: _summary(input, bottomRecess),
+      summary: _summary(input, bottomRecess, l10n),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           FieldPair(
             first: NumberField(
-              label: 'Épaisseur des côtés',
+              label: l10n.drawersSideThickness,
               suffix: 'mm',
-              help: 'Aussi le devant et le dos.',
+              help: l10n.drawersSideThicknessHelp,
               value: input.sideThickness,
               onChanged: form.setSideThickness,
             ),
             second: NumberField(
-              label: 'Épaisseur du fond',
+              label: l10n.drawersBottomThickness,
               suffix: 'mm',
               value: input.bottomThickness,
               onChanged: form.setBottomThickness,
@@ -279,14 +294,14 @@ class DrawersBoxGroup extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           LabeledField(
-            label: 'Assemblage',
-            about: kAboutBoxJoint,
+            label: l10n.drawersBoxJoint,
+            about: aboutBoxJoint(l10n),
             child: ChoiceTiles<BoxJoint>(
               tiles: [
                 for (final joint in BoxJoint.values)
                   ChoiceTile(
                     value: joint,
-                    label: joint.label,
+                    label: joint.label(l10n),
                     preview: ({required selected}) => BoxJointPreviewPainter(
                       joint: joint,
                       selected: selected,
@@ -300,22 +315,22 @@ class DrawersBoxGroup extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           if (bottomRecess != null)
             LabeledField(
-              label: 'Fond',
-              help: 'Imposé par la glissière sous tiroir.',
+              label: l10n.drawersBottom,
+              help: l10n.drawersBottomImposedHelp,
               child: _LockedValue(
-                text: 'En retrait de ${formatNumber(bottomRecess)} mm',
+                text: l10n.drawersBottomRecess(l10n.number(bottomRecess)),
               ),
             )
           else ...[
             LabeledField(
-              label: 'Fond',
-              about: kAboutBottomMount,
+              label: l10n.drawersBottom,
+              about: aboutBottomMount(l10n),
               child: ChoiceTiles<BottomMount>(
                 tiles: [
                   for (final mount in BottomMount.values)
                     ChoiceTile(
                       value: mount,
-                      label: mount.label,
+                      label: mount.label(l10n),
                       preview: ({required selected}) =>
                           BottomMountPreviewPainter(
                             mount: mount,
@@ -333,7 +348,7 @@ class DrawersBoxGroup extends StatelessWidget {
             if (input.bottomMount == BottomMount.groove) ...[
               const SizedBox(height: AppSpacing.md),
               NumberField(
-                label: 'Profondeur de rainure',
+                label: l10n.drawersGrooveDepth,
                 suffix: 'mm',
                 value: input.grooveDepth,
                 onChanged: form.setGrooveDepth,
@@ -347,16 +362,24 @@ class DrawersBoxGroup extends StatelessWidget {
 
   /// Le fond se dit tel qu'il est monté, y compris quand la glissière l'impose
   /// : c'est là qu'on chercherait pourquoi les tuiles du fond ont disparu.
-  static String _summary(DrawersInput input, double? bottomRecess) {
+  static String _summary(
+    DrawersInput input,
+    double? bottomRecess,
+    AppLocalizations l10n,
+  ) {
     final bottom = switch ((bottomRecess, input.bottomMount)) {
-      (final recess?, _) => 'en retrait de ${formatNumber(recess)} mm',
-      (null, BottomMount.groove) =>
-        'en rainure de ${formatNumber(input.grooveDepth)} mm',
-      (null, final mount) => mount.label.toLowerCase(),
+      (final recess?, _) => l10n.drawersSummaryRecess(l10n.number(recess)),
+      (null, BottomMount.groove) => l10n.drawersSummaryGroove(
+        l10n.number(input.grooveDepth),
+      ),
+      (null, final mount) => mount.label(l10n).toLowerCase(),
     };
-    return 'côtés ${formatNumber(input.sideThickness)}, '
-        'fond ${formatNumber(input.bottomThickness)} mm · '
-        '${input.boxJoint.label.toLowerCase()} · fond $bottom';
+    return l10n.drawersSummaryBox(
+      l10n.number(input.sideThickness),
+      l10n.number(input.bottomThickness),
+      input.boxJoint.label(l10n).toLowerCase(),
+      bottom,
+    );
   }
 }
 

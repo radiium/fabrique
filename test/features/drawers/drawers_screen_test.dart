@@ -34,7 +34,7 @@ void main() {
     container.read(drawersFormProvider.notifier).setDrawerCount(2);
     await tester.pumpAndSettle();
 
-    expect(text('600 × 358.5'), findsOneWidget);
+    expect(text('600 × 358,5'), findsOneWidget);
     expect(text('Côté ×4'), findsOneWidget);
   });
 

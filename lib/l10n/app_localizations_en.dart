@@ -993,4 +993,384 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get layoutAboutOffsetSquare =>
       'On a square piece or a full sheet, the effect stays minor.';
+
+  @override
+  String get drawerPartSide => 'Side';
+
+  @override
+  String get drawerPartFront => 'Front';
+
+  @override
+  String get drawerPartBack => 'Back';
+
+  @override
+  String get drawerPartBottom => 'Bottom';
+
+  @override
+  String get drawerPartDrawerFront => 'Drawer front';
+
+  @override
+  String get slideBallBearing => 'Ball-bearing';
+
+  @override
+  String get slideUndermount => 'Undermount';
+
+  @override
+  String get slideWoodOnWood => 'Wood runners';
+
+  @override
+  String get slideCustom => 'Custom';
+
+  @override
+  String get frontMountOverlay => 'Overlay';
+
+  @override
+  String get frontMountInset => 'Inset';
+
+  @override
+  String get boxJointSidesOverlap => 'Sides overlap';
+
+  @override
+  String get boxJointFrontBackOverlap => 'Front and back overlap';
+
+  @override
+  String get bottomMountGroove => 'In a groove';
+
+  @override
+  String get bottomMountBetween => 'Between sides';
+
+  @override
+  String get bottomMountUnderneath => 'Under the box';
+
+  @override
+  String get drawersOpening => 'Opening';
+
+  @override
+  String get drawersOpeningWidth => 'Inside width';
+
+  @override
+  String get drawersOpeningHeight => 'Inside height';
+
+  @override
+  String get drawersOpeningDepth => 'Inside depth';
+
+  @override
+  String get drawersCarcassThickness => 'Carcass thickness';
+
+  @override
+  String drawersSummaryOpening(
+    String width,
+    String height,
+    String depth,
+    String carcass,
+  ) {
+    return '$width × $height × $depth mm · carcass $carcass mm';
+  }
+
+  @override
+  String get drawersFrontsGroup => 'Drawers and fronts';
+
+  @override
+  String get drawersCount => 'Number of drawers';
+
+  @override
+  String get drawersHeights => 'Heights';
+
+  @override
+  String get drawersHeightsAdjusted => 'Adjusted';
+
+  @override
+  String get drawersHeightsEqual => 'Equal';
+
+  @override
+  String get drawersFrontMount => 'Front style';
+
+  @override
+  String get drawersFrontThickness => 'Front thickness';
+
+  @override
+  String get drawersFrontGap => 'Gap between fronts';
+
+  @override
+  String drawersSummaryFronts(
+    int count,
+    String heights,
+    String mount,
+    String thickness,
+    String gap,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count drawers',
+      one: '$count drawer',
+    );
+    return '$_temp0 · $heights heights · $mount, front $thickness · gap $gap mm';
+  }
+
+  @override
+  String get drawersSlide => 'Slide';
+
+  @override
+  String get drawersSideClearance => 'Side clearance';
+
+  @override
+  String get drawersLengthReduction => 'Length reduction';
+
+  @override
+  String get drawersSlideLength => 'Slide length';
+
+  @override
+  String get drawersSlideLengthAuto => 'Automatic';
+
+  @override
+  String drawersSummaryCustomSlide(String clearance, String reduction) {
+    return 'clearance $clearance, reduction $reduction mm';
+  }
+
+  @override
+  String get drawersSummaryAutoLength => 'automatic length';
+
+  @override
+  String drawersSummaryLength(String length) {
+    return 'length $length mm';
+  }
+
+  @override
+  String get drawersBox => 'Box';
+
+  @override
+  String get drawersSideThickness => 'Side thickness';
+
+  @override
+  String get drawersSideThicknessHelp => 'Also the front and back.';
+
+  @override
+  String get drawersBottomThickness => 'Bottom thickness';
+
+  @override
+  String get drawersBoxJoint => 'Joinery';
+
+  @override
+  String get drawersBottom => 'Bottom';
+
+  @override
+  String get drawersBottomImposedHelp => 'Set by the undermount slide.';
+
+  @override
+  String drawersBottomRecess(String recess) {
+    return 'Set back $recess mm';
+  }
+
+  @override
+  String get drawersGrooveDepth => 'Groove depth';
+
+  @override
+  String drawersSummaryRecess(String recess) {
+    return 'set back $recess mm';
+  }
+
+  @override
+  String drawersSummaryGroove(String depth) {
+    return 'in a $depth mm groove';
+  }
+
+  @override
+  String drawersSummaryBox(
+    String side,
+    String bottom,
+    String joint,
+    String mount,
+  ) {
+    return 'sides $side, bottom $bottom mm · $joint · bottom $mount';
+  }
+
+  @override
+  String get drawersEditHeights => 'Edit front heights';
+
+  @override
+  String drawersHeightsTopToBottom(String heights) {
+    return 'Top to bottom: $heights mm';
+  }
+
+  @override
+  String get drawersFrontHeights => 'Front heights';
+
+  @override
+  String get drawersFrontHeightsHelp =>
+      'A height you enter stays fixed. The other fronts share the rest.';
+
+  @override
+  String get drawersHeightShared => 'Shared';
+
+  @override
+  String get drawersHeightFixed => 'Fixed';
+
+  @override
+  String get drawersResetHeights => 'Reset to equal';
+
+  @override
+  String drawersDrawer(int number) {
+    return 'Drawer $number';
+  }
+
+  @override
+  String drawersDrawerTop(int number) {
+    return 'Drawer $number (top)';
+  }
+
+  @override
+  String drawersDrawerBottom(int number) {
+    return 'Drawer $number (bottom)';
+  }
+
+  @override
+  String get drawersCutList => 'Cut list';
+
+  @override
+  String get drawersCutListPart => 'Part';
+
+  @override
+  String get drawersCutListSizes => 'L × W × T (mm)';
+
+  @override
+  String get drawersFrontsResult => 'Fronts — width × height';
+
+  @override
+  String drawersFrontsResultNote(String gap) {
+    return '$gap mm gap between fronts';
+  }
+
+  @override
+  String get drawersBoxResult => 'Box — width × length';
+
+  @override
+  String drawersBoxResultNote(String clearance) {
+    return 'Overall, $clearance mm clearance per side';
+  }
+
+  @override
+  String get drawersSlideLengthAutoNote => 'The longest that fits';
+
+  @override
+  String get drawersSlideLengthImposedNote => 'Your choice';
+
+  @override
+  String get drawersSlideAxes => 'Slide centerlines';
+
+  @override
+  String get drawersSlideAxesNote =>
+      'From the bottom of the opening, top to bottom';
+
+  @override
+  String get drawersPlanFronts => 'Fronts';
+
+  @override
+  String drawersPlanFrontsValue(String mount, String gap) {
+    return '$mount, gap $gap';
+  }
+
+  @override
+  String get drawersPlanDepth => 'Depth';
+
+  @override
+  String get drawersPlanThicknesses => 'Side / bottom th.';
+
+  @override
+  String get drawersPlanFrontThickness => 'Front th.';
+
+  @override
+  String get drawersPlanLength => 'Length';
+
+  @override
+  String get drawersPlanCount => 'Qty';
+
+  @override
+  String get drawersPlanLengthColumn => 'L (mm)';
+
+  @override
+  String get drawersPlanWidthColumn => 'W (mm)';
+
+  @override
+  String drawersPlanCutListFallback(int count) {
+    return '$count cut list rows — read them in the app';
+  }
+
+  @override
+  String get drawersPlanAxes => 'Slide centerlines, drawer 1 at top';
+
+  @override
+  String get drawersPlanAxesColumn => 'From the bottom of the opening';
+
+  @override
+  String drawersPlanAxesFallback(int count) {
+    return '$count centerlines — read them in the app';
+  }
+
+  @override
+  String get drawersPlanUndermountNote =>
+      'Undermount slide dimensions are a guide. Check the maker’s spec sheet.';
+
+  @override
+  String get drawersAboutOpeningBody =>
+      'Inside dimensions of the cabinet, where the drawers go: between the sides, between the bottom and the top, from the front edge to the back panel.';
+
+  @override
+  String get drawersAboutFrontHeightsBody =>
+      'By default, the fronts share the height equally. A fixed height stays fixed, and the other fronts share the rest.';
+
+  @override
+  String get drawersAboutSlideBody =>
+      'It sets the clearance between the cabinet sides and the box, and the box length.';
+
+  @override
+  String get drawersAboutSlideBallBearing =>
+      'Ball-bearing: side-mount slide, 12.7 mm clearance on each side.';
+
+  @override
+  String get drawersAboutSlideUndermount =>
+      'Undermount: slide hidden under the box. It needs a set-back bottom. Dimensions are a guide, check the maker’s spec sheet.';
+
+  @override
+  String get drawersAboutSlideWood =>
+      'Wood runners: the drawer slides on wooden runners, with no hardware.';
+
+  @override
+  String get drawersAboutSlideCustom =>
+      'Custom: the clearances from your maker’s spec sheet.';
+
+  @override
+  String get drawersAboutFrontMountBody =>
+      'Where the front sits relative to the cabinet.';
+
+  @override
+  String get drawersAboutFrontMountOverlay =>
+      'Overlay: in front of the cabinet. The front covers the edges of the sides, flush with their outer faces.';
+
+  @override
+  String get drawersAboutFrontMountInset =>
+      'Inset: inside the opening. The front sits flush with the edges, with a gap all around.';
+
+  @override
+  String get drawersAboutBoxJointBody =>
+      'Which parts run the full length. It changes the length of the front, back and sides, not the kind of joint.';
+
+  @override
+  String get drawersAboutBottomBody => 'How the bottom is held in the box.';
+
+  @override
+  String get drawersAboutBottomGroove =>
+      'In a groove: captured in a groove in all four parts. It is larger by the groove depth on each side.';
+
+  @override
+  String get drawersAboutBottomBetween =>
+      'Between sides: fitted inside with no groove, screwed, glued or on cleats. It takes the inside dimensions of the box.';
+
+  @override
+  String get drawersAboutBottomUnderneath =>
+      'Under the box: screwed or nailed underneath, to the overall dimensions.';
+
+  @override
+  String get drawersAboutSlideLengthBody =>
+      'By default, the longest length sold that fits in the depth. Choose one if you already have your slides.';
 }

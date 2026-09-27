@@ -2,67 +2,50 @@
 library;
 
 import '../../core/widgets/field_help.dart';
+import '../../l10n/app_localizations.dart';
 
-const kAboutOpening = FieldHelp(
-  title: 'Ouverture',
-  body:
-      'Cotes intérieures du caisson, là où vont les tiroirs : entre les '
-      'flancs, entre le fond et le dessus, du chant au panneau arrière.',
+FieldHelp aboutOpening(AppLocalizations l10n) =>
+    FieldHelp(title: l10n.drawersOpening, body: l10n.drawersAboutOpeningBody);
+
+FieldHelp aboutFrontHeights(AppLocalizations l10n) => FieldHelp(
+  title: l10n.drawersFrontHeights,
+  body: l10n.drawersAboutFrontHeightsBody,
 );
 
-const kAboutFrontHeights = FieldHelp(
-  title: 'Hauteurs des façades',
-  body:
-      'Par défaut, les façades se partagent la hauteur à parts égales. Une '
-      'hauteur fixée reste fixe, et les autres façades se partagent le reste.',
-);
-
-const kAboutSlide = FieldHelp(
-  title: 'Glissière',
-  body: 'Elle fixe le jeu entre les flancs et la caisse, et sa longueur.',
+FieldHelp aboutSlide(AppLocalizations l10n) => FieldHelp(
+  title: l10n.drawersSlide,
+  body: l10n.drawersAboutSlideBody,
   bullets: [
-    'À billes : glissière latérale, 12,7 mm de jeu de chaque côté.',
-    'Sous tiroir : glissière cachée sous la caisse. Elle impose un fond en '
-        'retrait. Cotes indicatives, à vérifier sur la fiche du fabricant.',
-    'Bois sur bois : le tiroir coulisse sur des coulisseaux en bois, sans '
-        'quincaillerie.',
-    'Personnalisée : les jeux de votre fiche fabricant.',
+    l10n.drawersAboutSlideBallBearing,
+    l10n.drawersAboutSlideUndermount,
+    l10n.drawersAboutSlideWood,
+    l10n.drawersAboutSlideCustom,
   ],
 );
 
-const kAboutFrontMount = FieldHelp(
-  title: 'Pose de la façade',
-  body: 'Où se pose la façade par rapport au caisson.',
+FieldHelp aboutFrontMount(AppLocalizations l10n) => FieldHelp(
+  title: l10n.drawersFrontMount,
+  body: l10n.drawersAboutFrontMountBody,
   bullets: [
-    'Applique : devant le caisson. La façade recouvre le chant des flancs, '
-        'à fleur de leurs bords.',
-    'Encastrée : dans l’ouverture. La façade affleure le chant, avec un jeu '
-        'tout autour.',
+    l10n.drawersAboutFrontMountOverlay,
+    l10n.drawersAboutFrontMountInset,
   ],
 );
 
-const kAboutBoxJoint = FieldHelp(
-  title: 'Assemblage',
-  body:
-      'Quelles pièces courent d’un bout à l’autre. Il change la longueur du '
-      'devant, du dos et des côtés, pas le type d’assemblage.',
-);
+FieldHelp aboutBoxJoint(AppLocalizations l10n) =>
+    FieldHelp(title: l10n.drawersBoxJoint, body: l10n.drawersAboutBoxJointBody);
 
-const kAboutBottomMount = FieldHelp(
-  title: 'Fond',
-  body: 'Comment le fond tient dans la caisse.',
+FieldHelp aboutBottomMount(AppLocalizations l10n) => FieldHelp(
+  title: l10n.drawersBottom,
+  body: l10n.drawersAboutBottomBody,
   bullets: [
-    'En rainure : pris dans une rainure des quatre pièces. Il dépasse de la '
-        'profondeur de rainure de chaque côté.',
-    'Entre les côtés : posé à l’intérieur sans rainure, vissé, collé ou sur '
-        'tasseaux. Il fait les cotes intérieures de la caisse.',
-    'Sous la caisse : vissé ou cloué dessous, aux dimensions hors tout.',
+    l10n.drawersAboutBottomGroove,
+    l10n.drawersAboutBottomBetween,
+    l10n.drawersAboutBottomUnderneath,
   ],
 );
 
-const kAboutSlideLength = FieldHelp(
-  title: 'Longueur de glissière',
-  body:
-      'Par défaut, la plus grande longueur vendue qui tient dans la '
-      'profondeur. Imposez-en une si vous avez déjà vos glissières.',
+FieldHelp aboutSlideLength(AppLocalizations l10n) => FieldHelp(
+  title: l10n.drawersSlideLength,
+  body: l10n.drawersAboutSlideLengthBody,
 );

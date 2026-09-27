@@ -180,13 +180,6 @@ const double kLabelPadding = 4;
 /// Ce qui sépare un chiffre de cote de la ligne qu'il cote.
 const double kLabelLift = 2;
 
-/// L'unité d'un schéma, déclarée une fois sous le dessin.
-///
-/// Un plan annonce son unité en légende et laisse tous ses chiffres nus.
-/// Répétée sur chaque cote, elle alourdit le chiffre le plus en vue, et elle
-/// laisse croire que les cotes qui ne la portent pas se lisent autrement.
-const String kUnitNote = 'Cotes en mm';
-
 /// Pose un chiffre de cote **au-dessus** de la ligne qui passe par [y], centré
 /// sur [cx].
 ///

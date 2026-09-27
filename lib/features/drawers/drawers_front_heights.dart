@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
-import '../../core/format.dart';
 import '../../core/widgets/haptics.dart';
 import '../../core/widgets/number_field.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 import 'drawers_controller.dart';
 
 /// Le bouton qui ouvre l'édition des hauteurs, à côté du nombre de tiroirs.
@@ -18,12 +19,13 @@ class FrontHeightsButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final input = ref.watch(drawersFormProvider);
     final isAdjusted = input.fixedFrontHeights.any((h) => h != null);
 
     return Semantics(
       button: true,
-      label: 'Modifier les hauteurs des façades',
+      label: l10n.drawersEditHeights,
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadii.field),
         onTap: () {
@@ -44,7 +46,9 @@ class FrontHeightsButton extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  isAdjusted ? 'Ajustées' : 'Égales',
+                  isAdjusted
+                      ? l10n.drawersHeightsAdjusted
+                      : l10n.drawersHeightsEqual,
                   style: controlTextStyle(context),
                 ),
               ),
@@ -70,11 +74,13 @@ class FrontHeightsSummary extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.xs),
       child: Text(
-        'De haut en bas : '
-        '${result.fronts.map((f) => formatNumber(f.height)).join(' · ')} mm',
+        l10n.drawersHeightsTopToBottom(
+          result.fronts.map((f) => l10n.number(f.height)).join(' · '),
+        ),
         style: Theme.of(context).textTheme.bodySmall
             ?.copyWith(color: AppColors.label),
       ),
@@ -105,6 +111,7 @@ class _FrontHeightsSheet extends ConsumerWidget {
     final result = ref.watch(drawersResultProvider).result;
     final form = ref.read(drawersFormProvider.notifier);
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
 
     double? fixedAt(int i) =>
         i < input.fixedFrontHeights.length ? input.fixedFrontHeights[i] : null;
@@ -120,11 +127,10 @@ class _FrontHeightsSheet extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Hauteurs des façades', style: theme.textTheme.titleLarge),
+            Text(l10n.drawersFrontHeights, style: theme.textTheme.titleLarge),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'Une hauteur saisie reste fixe. Les autres façades se partagent '
-              'le reste.',
+              l10n.drawersFrontHeightsHelp,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: AppColors.label,
               ),
@@ -132,9 +138,11 @@ class _FrontHeightsSheet extends ConsumerWidget {
             for (var i = 0; i < input.drawerCount; i++) ...[
               const SizedBox(height: AppSpacing.md),
               NumberField(
-                label: _drawerLabel(i, input.drawerCount),
+                label: _drawerLabel(i, input.drawerCount, l10n),
                 suffix: 'mm',
-                help: fixedAt(i) == null ? 'Partagée' : 'Fixée',
+                help: fixedAt(i) == null
+                    ? l10n.drawersHeightShared
+                    : l10n.drawersHeightFixed,
                 value:
                     fixedAt(i) ??
                     result?.fronts.elementAtOrNull(i)?.height ??
@@ -152,7 +160,7 @@ class _FrontHeightsSheet extends ConsumerWidget {
                         form.resetFrontHeights();
                       }
                     : null,
-                child: const Text('Remettre à égales'),
+                child: Text(l10n.drawersResetHeights),
               ),
             ),
           ],
@@ -162,12 +170,12 @@ class _FrontHeightsSheet extends ConsumerWidget {
   }
 
   /// « Tiroir 1 (haut) » : le rang seul ne dit pas dans quel sens on compte.
-  static String _drawerLabel(int index, int count) {
-    final position = switch (index) {
-      0 when count > 1 => ' (haut)',
-      _ when index == count - 1 && count > 1 => ' (bas)',
-      _ => '',
-    };
-    return 'Tiroir ${index + 1}$position';
-  }
+  static String _drawerLabel(int index, int count, AppLocalizations l10n) =>
+      switch (index) {
+        0 when count > 1 => l10n.drawersDrawerTop(index + 1),
+        _ when index == count - 1 && count > 1 => l10n.drawersDrawerBottom(
+          index + 1,
+        ),
+        _ => l10n.drawersDrawer(index + 1),
+      };
 }

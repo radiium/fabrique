@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/drawers.dart';
-import '../../core/format.dart';
 import '../../core/painting.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 
 /// Marges de la feuille. La droite de chaque vue porte ses cotes verticales,
 /// le haut ses cotes de largeur, le bas la note d'unité.
@@ -32,10 +33,15 @@ const double _hDimOffset = 10;
 /// Ordre de tracé : ce qui est derrière le plan de coupe d'abord, puis la
 /// coupe en deux passes ([_Section]), les cotes en dernier.
 class DrawersPainter extends CustomPainter {
-  const DrawersPainter({required this.result, required this.input});
+  const DrawersPainter({
+    required this.result,
+    required this.input,
+    required this.l10n,
+  });
 
   final DrawersResult? result;
   final DrawersInput input;
+  final AppLocalizations l10n;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -189,7 +195,7 @@ class DrawersPainter extends CustomPainter {
       x1: x(r.frontLeft),
       x2: x(r.frontLeft + r.frontWidth),
       y: math.min(carcassRect.top, y(frontsTop)) - _hDimOffset,
-      label: formatNumber(r.frontWidth),
+      label: l10n.number(r.frontWidth),
       bounds: sheet,
     );
 
@@ -200,7 +206,7 @@ class DrawersPainter extends CustomPainter {
       x1: carcassRect.left,
       x2: carcassRect.right,
       y: y(bounds.top) + _hDimSpace - _hDimOffset,
-      label: formatNumber(r.carcassWidth),
+      label: l10n.number(r.carcassWidth),
       bounds: sheet,
     );
     drawVDimension(
@@ -208,7 +214,7 @@ class DrawersPainter extends CustomPainter {
       y1: carcassRect.top,
       y2: carcassRect.bottom,
       x: x(bounds.left) - _hDimOffset,
-      label: formatNumber(r.carcassHeight),
+      label: l10n.number(r.carcassHeight),
       labelSide: -1,
     );
 
@@ -219,7 +225,7 @@ class DrawersPainter extends CustomPainter {
         y1: y(front.bottom + front.height),
         y2: y(front.bottom),
         x: dimX,
-        label: formatNumber(front.height),
+        label: l10n.number(front.height),
       );
     }
   }
@@ -253,7 +259,7 @@ class DrawersPainter extends CustomPainter {
       x1: x(boxLeft),
       x2: x(boxLeft + r.boxWidth),
       y: y(bounds.bottom) - _hDimOffset,
-      label: formatNumber(r.boxWidth),
+      label: l10n.number(r.boxWidth),
       bounds: sheet,
     );
     drawVDimension(
@@ -261,13 +267,13 @@ class DrawersPainter extends CustomPainter {
       y1: y(near + r.boxLength),
       y2: y(near),
       x: x(bounds.right) + _hDimOffset,
-      label: formatNumber(r.boxLength),
+      label: l10n.number(r.boxLength),
     );
   }
 
   /// L'unité du dessin, une fois, sous les deux vues.
   void _paintNote(Canvas canvas, Size size) {
-    final text = schemaText(kUnitNote, size: 9);
+    final text = schemaText(l10n.commonUnitNote, size: 9);
     text.paint(
       canvas,
       Offset((size.width - text.width) / 2, size.height - text.height - 4),
@@ -276,7 +282,9 @@ class DrawersPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(DrawersPainter oldDelegate) =>
-      oldDelegate.result != result || oldDelegate.input != input;
+      oldDelegate.result != result ||
+      oldDelegate.input != input ||
+      oldDelegate.l10n.localeName != l10n.localeName;
 }
 
 /// Une coupe, dessinée en deux passes : tous les aplats, puis tous les

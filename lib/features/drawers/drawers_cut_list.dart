@@ -6,6 +6,9 @@ import '../../core/calc/drawers.dart';
 import '../../core/format.dart';
 import '../../core/widgets/haptics.dart';
 import '../../core/widgets/table_rows.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
+import 'drawers_labels.dart';
 
 /// La fiche de débit : une ligne par groupe de pièces identiques.
 ///
@@ -24,25 +27,27 @@ class CutListTable extends StatelessWidget {
   Future<void> _copy(BuildContext context, List<CutPiece> pieces) async {
     hapticSelection(context);
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
     final lines = [
       for (final piece in pieces)
         [
-          piece.part.label,
+          piece.part.label(l10n),
           '${piece.quantity}',
-          formatNumber(piece.length),
-          formatNumber(piece.width),
-          formatNumber(piece.thickness),
+          l10n.number(piece.length),
+          l10n.number(piece.width),
+          l10n.number(piece.thickness),
         ].join('\t'),
     ];
     await Clipboard.setData(ClipboardData(text: lines.join('\n')));
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(const SnackBar(content: Text('Copié')));
+      ..showSnackBar(SnackBar(content: Text(l10n.commonCopied)));
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final headerStyle = tableHeaderStyle(theme);
     final cellStyle = tableCellStyle(theme);
     final pieces = this.pieces;
@@ -62,7 +67,7 @@ class CutListTable extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Fiche de débit',
+                    l10n.drawersCutList,
                     style: theme.textTheme.labelLarge,
                   ),
                 ),
@@ -76,11 +81,11 @@ class CutListTable extends StatelessWidget {
               TableHeaderRow(
                 child: Row(
                   children: [
-                    Text('Pièce', style: headerStyle),
+                    Text(l10n.drawersCutListPart, style: headerStyle),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
-                        'L × l × ép (mm)',
+                        l10n.drawersCutListSizes,
                         style: headerStyle,
                         textAlign: TextAlign.end,
                       ),
@@ -94,7 +99,7 @@ class CutListTable extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        '${piece.part.label} ×${piece.quantity}',
+                        '${piece.part.label(l10n)} ×${piece.quantity}',
                         style: cellStyle,
                       ),
                       const SizedBox(width: AppSpacing.md),
@@ -103,9 +108,9 @@ class CutListTable extends StatelessWidget {
                       // hors de la carte.
                       Expanded(
                         child: Text(
-                          '${formatNumber(piece.length)} × '
-                          '${formatNumber(piece.width)} × '
-                          '${formatNumber(piece.thickness)}',
+                          '${l10n.number(piece.length)} × '
+                          '${l10n.number(piece.width)} × '
+                          '${l10n.number(piece.thickness)}',
                           style: cellStyle,
                           textAlign: TextAlign.end,
                         ),

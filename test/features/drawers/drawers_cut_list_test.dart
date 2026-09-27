@@ -49,7 +49,7 @@ void main() {
     await tester.tap(find.byType(CutListTable));
     await tester.pump();
 
-    expect(copied, 'Côté\t4\t500\t203.5\t15\nFond\t2\t518.6\t482\t8');
+    expect(copied, 'Côté\t4\t500\t203,5\t15\nFond\t2\t518,6\t482\t8');
     expect(find.text('Copié'), findsOneWidget);
   });
 

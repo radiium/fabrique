@@ -683,5 +683,280 @@
   "layoutAboutOffsetStraight": "Droit : toutes les rangées démarrent au même endroit, les joints s’alignent en croix.",
   "layoutAboutOffsetHalf": "½ : le décalage classique des lames courtes et des plaques.",
   "layoutAboutOffsetThird": "⅓ : la règle des carreaux et des lames de plus de 60 cm, où un demi décalage fait tuiler le milieu de l’élément.",
-  "layoutAboutOffsetSquare": "Sur un élément carré ou une plaque pleine, l’effet reste marginal."
+  "layoutAboutOffsetSquare": "Sur un élément carré ou une plaque pleine, l’effet reste marginal.",
+  "drawerPartSide": "Côté",
+  "@drawerPartSide": {
+    "description": "Pièce de la fiche de débit"
+  },
+  "drawerPartFront": "Devant",
+  "drawerPartBack": "Dos",
+  "drawerPartBottom": "Fond",
+  "drawerPartDrawerFront": "Façade",
+  "slideBallBearing": "À billes",
+  "slideUndermount": "Sous tiroir",
+  "slideWoodOnWood": "Bois sur bois",
+  "slideCustom": "Personnalisée",
+  "frontMountOverlay": "Applique",
+  "@frontMountOverlay": {
+    "description": "Segment de sélecteur : 9 caractères au plus"
+  },
+  "frontMountInset": "Encastrée",
+  "boxJointSidesOverlap": "Côtés recouvrants",
+  "boxJointFrontBackOverlap": "Devant et dos recouvrants",
+  "bottomMountGroove": "En rainure",
+  "bottomMountBetween": "Entre les côtés",
+  "bottomMountUnderneath": "Sous la caisse",
+  "drawersOpening": "Ouverture",
+  "drawersOpeningWidth": "Largeur intérieure",
+  "drawersOpeningHeight": "Hauteur intérieure",
+  "drawersOpeningDepth": "Profondeur intérieure",
+  "drawersCarcassThickness": "Épaisseur du caisson",
+  "drawersSummaryOpening": "{width} × {height} × {depth} mm · caisson {carcass} mm",
+  "@drawersSummaryOpening": {
+    "placeholders": {
+      "width": {
+        "type": "String"
+      },
+      "height": {
+        "type": "String"
+      },
+      "depth": {
+        "type": "String"
+      },
+      "carcass": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersFrontsGroup": "Tiroirs et façades",
+  "drawersCount": "Nombre de tiroirs",
+  "drawersHeights": "Hauteurs",
+  "drawersHeightsAdjusted": "Ajustées",
+  "drawersHeightsEqual": "Égales",
+  "drawersFrontMount": "Pose de la façade",
+  "drawersFrontThickness": "Épaisseur de façade",
+  "drawersFrontGap": "Jeu entre façades",
+  "drawersSummaryFronts": "{count, plural, one{{count} tiroir} other{{count} tiroirs}} · hauteurs {heights} · {mount}, façade {thickness} · jeu {gap} mm",
+  "@drawersSummaryFronts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "heights": {
+        "type": "String"
+      },
+      "mount": {
+        "type": "String"
+      },
+      "thickness": {
+        "type": "String"
+      },
+      "gap": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersSlide": "Glissière",
+  "drawersSideClearance": "Jeu par côté",
+  "drawersLengthReduction": "Réduction de longueur",
+  "drawersSlideLength": "Longueur de glissière",
+  "drawersSlideLengthAuto": "Automatique",
+  "drawersSummaryCustomSlide": "jeu {clearance}, réduction {reduction} mm",
+  "@drawersSummaryCustomSlide": {
+    "placeholders": {
+      "clearance": {
+        "type": "String"
+      },
+      "reduction": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersSummaryAutoLength": "longueur automatique",
+  "drawersSummaryLength": "longueur {length} mm",
+  "@drawersSummaryLength": {
+    "placeholders": {
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersBox": "Caisse",
+  "drawersSideThickness": "Épaisseur des côtés",
+  "drawersSideThicknessHelp": "Aussi le devant et le dos.",
+  "drawersBottomThickness": "Épaisseur du fond",
+  "drawersBoxJoint": "Assemblage",
+  "drawersBottom": "Fond",
+  "drawersBottomImposedHelp": "Imposé par la glissière sous tiroir.",
+  "drawersBottomRecess": "En retrait de {recess} mm",
+  "@drawersBottomRecess": {
+    "placeholders": {
+      "recess": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersGrooveDepth": "Profondeur de rainure",
+  "drawersSummaryRecess": "en retrait de {recess} mm",
+  "@drawersSummaryRecess": {
+    "placeholders": {
+      "recess": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersSummaryGroove": "en rainure de {depth} mm",
+  "@drawersSummaryGroove": {
+    "placeholders": {
+      "depth": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersSummaryBox": "côtés {side}, fond {bottom} mm · {joint} · fond {mount}",
+  "@drawersSummaryBox": {
+    "placeholders": {
+      "side": {
+        "type": "String"
+      },
+      "bottom": {
+        "type": "String"
+      },
+      "joint": {
+        "type": "String"
+      },
+      "mount": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersEditHeights": "Modifier les hauteurs des façades",
+  "@drawersEditHeights": {
+    "description": "Annonce du lecteur d'écran"
+  },
+  "drawersHeightsTopToBottom": "De haut en bas : {heights} mm",
+  "@drawersHeightsTopToBottom": {
+    "placeholders": {
+      "heights": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersFrontHeights": "Hauteurs des façades",
+  "drawersFrontHeightsHelp": "Une hauteur saisie reste fixe. Les autres façades se partagent le reste.",
+  "drawersHeightShared": "Partagée",
+  "drawersHeightFixed": "Fixée",
+  "drawersResetHeights": "Remettre à égales",
+  "drawersDrawer": "Tiroir {number}",
+  "@drawersDrawer": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "drawersDrawerTop": "Tiroir {number} (haut)",
+  "@drawersDrawerTop": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "drawersDrawerBottom": "Tiroir {number} (bas)",
+  "@drawersDrawerBottom": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "drawersCutList": "Fiche de débit",
+  "drawersCutListPart": "Pièce",
+  "drawersCutListSizes": "L × l × ép (mm)",
+  "drawersFrontsResult": "Façades — largeur × hauteur",
+  "drawersFrontsResultNote": "Jeu de {gap} mm entre façades",
+  "@drawersFrontsResultNote": {
+    "placeholders": {
+      "gap": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersBoxResult": "Caisse — largeur × longueur",
+  "drawersBoxResultNote": "Hors tout, {clearance} mm de jeu par côté",
+  "@drawersBoxResultNote": {
+    "placeholders": {
+      "clearance": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersSlideLengthAutoNote": "La plus grande qui tient",
+  "drawersSlideLengthImposedNote": "Imposée",
+  "drawersSlideAxes": "Axes de glissière",
+  "drawersSlideAxesNote": "Depuis le bas de l’ouverture, de haut en bas",
+  "drawersPlanFronts": "Façades",
+  "@drawersPlanFronts": {
+    "description": "Case du cartouche, mise en capitales"
+  },
+  "drawersPlanFrontsValue": "{mount}, jeu {gap}",
+  "@drawersPlanFrontsValue": {
+    "placeholders": {
+      "mount": {
+        "type": "String"
+      },
+      "gap": {
+        "type": "String"
+      }
+    }
+  },
+  "drawersPlanDepth": "Profondeur",
+  "drawersPlanThicknesses": "Ép. côtés / fond",
+  "drawersPlanFrontThickness": "Ép. façade",
+  "drawersPlanLength": "Longueur",
+  "drawersPlanCount": "Nb",
+  "drawersPlanLengthColumn": "L (mm)",
+  "@drawersPlanLengthColumn": {
+    "description": "En-tête tel quel, sans capitales : l et L s'y distinguent"
+  },
+  "drawersPlanWidthColumn": "l (mm)",
+  "drawersPlanCutListFallback": "{count} lignes de débit — à lire dans l’app",
+  "@drawersPlanCutListFallback": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "drawersPlanAxes": "Axes de glissière, tiroir 1 en haut",
+  "drawersPlanAxesColumn": "Depuis le bas de l’ouverture",
+  "@drawersPlanAxesColumn": {
+    "description": "En-tête, mis en capitales, suivi de « (mm) »"
+  },
+  "drawersPlanAxesFallback": "{count} axes — à lire dans l’app",
+  "@drawersPlanAxesFallback": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "drawersPlanUndermountNote": "Cotes de glissière sous tiroir indicatives. Vérifier sur la fiche du fabricant.",
+  "drawersAboutOpeningBody": "Cotes intérieures du caisson, là où vont les tiroirs : entre les flancs, entre le fond et le dessus, du chant au panneau arrière.",
+  "drawersAboutFrontHeightsBody": "Par défaut, les façades se partagent la hauteur à parts égales. Une hauteur fixée reste fixe, et les autres façades se partagent le reste.",
+  "drawersAboutSlideBody": "Elle fixe le jeu entre les flancs et la caisse, et sa longueur.",
+  "drawersAboutSlideBallBearing": "À billes : glissière latérale, 12,7 mm de jeu de chaque côté.",
+  "drawersAboutSlideUndermount": "Sous tiroir : glissière cachée sous la caisse. Elle impose un fond en retrait. Cotes indicatives, à vérifier sur la fiche du fabricant.",
+  "drawersAboutSlideWood": "Bois sur bois : le tiroir coulisse sur des coulisseaux en bois, sans quincaillerie.",
+  "drawersAboutSlideCustom": "Personnalisée : les jeux de votre fiche fabricant.",
+  "drawersAboutFrontMountBody": "Où se pose la façade par rapport au caisson.",
+  "drawersAboutFrontMountOverlay": "Applique : devant le caisson. La façade recouvre le chant des flancs, à fleur de leurs bords.",
+  "drawersAboutFrontMountInset": "Encastrée : dans l’ouverture. La façade affleure le chant, avec un jeu tout autour.",
+  "drawersAboutBoxJointBody": "Quelles pièces courent d’un bout à l’autre. Il change la longueur du devant, du dos et des côtés, pas le type d’assemblage.",
+  "drawersAboutBottomBody": "Comment le fond tient dans la caisse.",
+  "drawersAboutBottomGroove": "En rainure : pris dans une rainure des quatre pièces. Il dépasse de la profondeur de rainure de chaque côté.",
+  "drawersAboutBottomBetween": "Entre les côtés : posé à l’intérieur sans rainure, vissé, collé ou sur tasseaux. Il fait les cotes intérieures de la caisse.",
+  "drawersAboutBottomUnderneath": "Sous la caisse : vissé ou cloué dessous, aux dimensions hors tout.",
+  "drawersAboutSlideLengthBody": "Par défaut, la plus grande longueur vendue qui tient dans la profondeur. Imposez-en une si vous avez déjà vos glissières."
 }

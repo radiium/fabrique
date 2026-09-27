@@ -1010,4 +1010,384 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get layoutAboutOffsetSquare =>
       'Sur un élément carré ou une plaque pleine, l’effet reste marginal.';
+
+  @override
+  String get drawerPartSide => 'Côté';
+
+  @override
+  String get drawerPartFront => 'Devant';
+
+  @override
+  String get drawerPartBack => 'Dos';
+
+  @override
+  String get drawerPartBottom => 'Fond';
+
+  @override
+  String get drawerPartDrawerFront => 'Façade';
+
+  @override
+  String get slideBallBearing => 'À billes';
+
+  @override
+  String get slideUndermount => 'Sous tiroir';
+
+  @override
+  String get slideWoodOnWood => 'Bois sur bois';
+
+  @override
+  String get slideCustom => 'Personnalisée';
+
+  @override
+  String get frontMountOverlay => 'Applique';
+
+  @override
+  String get frontMountInset => 'Encastrée';
+
+  @override
+  String get boxJointSidesOverlap => 'Côtés recouvrants';
+
+  @override
+  String get boxJointFrontBackOverlap => 'Devant et dos recouvrants';
+
+  @override
+  String get bottomMountGroove => 'En rainure';
+
+  @override
+  String get bottomMountBetween => 'Entre les côtés';
+
+  @override
+  String get bottomMountUnderneath => 'Sous la caisse';
+
+  @override
+  String get drawersOpening => 'Ouverture';
+
+  @override
+  String get drawersOpeningWidth => 'Largeur intérieure';
+
+  @override
+  String get drawersOpeningHeight => 'Hauteur intérieure';
+
+  @override
+  String get drawersOpeningDepth => 'Profondeur intérieure';
+
+  @override
+  String get drawersCarcassThickness => 'Épaisseur du caisson';
+
+  @override
+  String drawersSummaryOpening(
+    String width,
+    String height,
+    String depth,
+    String carcass,
+  ) {
+    return '$width × $height × $depth mm · caisson $carcass mm';
+  }
+
+  @override
+  String get drawersFrontsGroup => 'Tiroirs et façades';
+
+  @override
+  String get drawersCount => 'Nombre de tiroirs';
+
+  @override
+  String get drawersHeights => 'Hauteurs';
+
+  @override
+  String get drawersHeightsAdjusted => 'Ajustées';
+
+  @override
+  String get drawersHeightsEqual => 'Égales';
+
+  @override
+  String get drawersFrontMount => 'Pose de la façade';
+
+  @override
+  String get drawersFrontThickness => 'Épaisseur de façade';
+
+  @override
+  String get drawersFrontGap => 'Jeu entre façades';
+
+  @override
+  String drawersSummaryFronts(
+    int count,
+    String heights,
+    String mount,
+    String thickness,
+    String gap,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tiroirs',
+      one: '$count tiroir',
+    );
+    return '$_temp0 · hauteurs $heights · $mount, façade $thickness · jeu $gap mm';
+  }
+
+  @override
+  String get drawersSlide => 'Glissière';
+
+  @override
+  String get drawersSideClearance => 'Jeu par côté';
+
+  @override
+  String get drawersLengthReduction => 'Réduction de longueur';
+
+  @override
+  String get drawersSlideLength => 'Longueur de glissière';
+
+  @override
+  String get drawersSlideLengthAuto => 'Automatique';
+
+  @override
+  String drawersSummaryCustomSlide(String clearance, String reduction) {
+    return 'jeu $clearance, réduction $reduction mm';
+  }
+
+  @override
+  String get drawersSummaryAutoLength => 'longueur automatique';
+
+  @override
+  String drawersSummaryLength(String length) {
+    return 'longueur $length mm';
+  }
+
+  @override
+  String get drawersBox => 'Caisse';
+
+  @override
+  String get drawersSideThickness => 'Épaisseur des côtés';
+
+  @override
+  String get drawersSideThicknessHelp => 'Aussi le devant et le dos.';
+
+  @override
+  String get drawersBottomThickness => 'Épaisseur du fond';
+
+  @override
+  String get drawersBoxJoint => 'Assemblage';
+
+  @override
+  String get drawersBottom => 'Fond';
+
+  @override
+  String get drawersBottomImposedHelp => 'Imposé par la glissière sous tiroir.';
+
+  @override
+  String drawersBottomRecess(String recess) {
+    return 'En retrait de $recess mm';
+  }
+
+  @override
+  String get drawersGrooveDepth => 'Profondeur de rainure';
+
+  @override
+  String drawersSummaryRecess(String recess) {
+    return 'en retrait de $recess mm';
+  }
+
+  @override
+  String drawersSummaryGroove(String depth) {
+    return 'en rainure de $depth mm';
+  }
+
+  @override
+  String drawersSummaryBox(
+    String side,
+    String bottom,
+    String joint,
+    String mount,
+  ) {
+    return 'côtés $side, fond $bottom mm · $joint · fond $mount';
+  }
+
+  @override
+  String get drawersEditHeights => 'Modifier les hauteurs des façades';
+
+  @override
+  String drawersHeightsTopToBottom(String heights) {
+    return 'De haut en bas : $heights mm';
+  }
+
+  @override
+  String get drawersFrontHeights => 'Hauteurs des façades';
+
+  @override
+  String get drawersFrontHeightsHelp =>
+      'Une hauteur saisie reste fixe. Les autres façades se partagent le reste.';
+
+  @override
+  String get drawersHeightShared => 'Partagée';
+
+  @override
+  String get drawersHeightFixed => 'Fixée';
+
+  @override
+  String get drawersResetHeights => 'Remettre à égales';
+
+  @override
+  String drawersDrawer(int number) {
+    return 'Tiroir $number';
+  }
+
+  @override
+  String drawersDrawerTop(int number) {
+    return 'Tiroir $number (haut)';
+  }
+
+  @override
+  String drawersDrawerBottom(int number) {
+    return 'Tiroir $number (bas)';
+  }
+
+  @override
+  String get drawersCutList => 'Fiche de débit';
+
+  @override
+  String get drawersCutListPart => 'Pièce';
+
+  @override
+  String get drawersCutListSizes => 'L × l × ép (mm)';
+
+  @override
+  String get drawersFrontsResult => 'Façades — largeur × hauteur';
+
+  @override
+  String drawersFrontsResultNote(String gap) {
+    return 'Jeu de $gap mm entre façades';
+  }
+
+  @override
+  String get drawersBoxResult => 'Caisse — largeur × longueur';
+
+  @override
+  String drawersBoxResultNote(String clearance) {
+    return 'Hors tout, $clearance mm de jeu par côté';
+  }
+
+  @override
+  String get drawersSlideLengthAutoNote => 'La plus grande qui tient';
+
+  @override
+  String get drawersSlideLengthImposedNote => 'Imposée';
+
+  @override
+  String get drawersSlideAxes => 'Axes de glissière';
+
+  @override
+  String get drawersSlideAxesNote =>
+      'Depuis le bas de l’ouverture, de haut en bas';
+
+  @override
+  String get drawersPlanFronts => 'Façades';
+
+  @override
+  String drawersPlanFrontsValue(String mount, String gap) {
+    return '$mount, jeu $gap';
+  }
+
+  @override
+  String get drawersPlanDepth => 'Profondeur';
+
+  @override
+  String get drawersPlanThicknesses => 'Ép. côtés / fond';
+
+  @override
+  String get drawersPlanFrontThickness => 'Ép. façade';
+
+  @override
+  String get drawersPlanLength => 'Longueur';
+
+  @override
+  String get drawersPlanCount => 'Nb';
+
+  @override
+  String get drawersPlanLengthColumn => 'L (mm)';
+
+  @override
+  String get drawersPlanWidthColumn => 'l (mm)';
+
+  @override
+  String drawersPlanCutListFallback(int count) {
+    return '$count lignes de débit — à lire dans l’app';
+  }
+
+  @override
+  String get drawersPlanAxes => 'Axes de glissière, tiroir 1 en haut';
+
+  @override
+  String get drawersPlanAxesColumn => 'Depuis le bas de l’ouverture';
+
+  @override
+  String drawersPlanAxesFallback(int count) {
+    return '$count axes — à lire dans l’app';
+  }
+
+  @override
+  String get drawersPlanUndermountNote =>
+      'Cotes de glissière sous tiroir indicatives. Vérifier sur la fiche du fabricant.';
+
+  @override
+  String get drawersAboutOpeningBody =>
+      'Cotes intérieures du caisson, là où vont les tiroirs : entre les flancs, entre le fond et le dessus, du chant au panneau arrière.';
+
+  @override
+  String get drawersAboutFrontHeightsBody =>
+      'Par défaut, les façades se partagent la hauteur à parts égales. Une hauteur fixée reste fixe, et les autres façades se partagent le reste.';
+
+  @override
+  String get drawersAboutSlideBody =>
+      'Elle fixe le jeu entre les flancs et la caisse, et sa longueur.';
+
+  @override
+  String get drawersAboutSlideBallBearing =>
+      'À billes : glissière latérale, 12,7 mm de jeu de chaque côté.';
+
+  @override
+  String get drawersAboutSlideUndermount =>
+      'Sous tiroir : glissière cachée sous la caisse. Elle impose un fond en retrait. Cotes indicatives, à vérifier sur la fiche du fabricant.';
+
+  @override
+  String get drawersAboutSlideWood =>
+      'Bois sur bois : le tiroir coulisse sur des coulisseaux en bois, sans quincaillerie.';
+
+  @override
+  String get drawersAboutSlideCustom =>
+      'Personnalisée : les jeux de votre fiche fabricant.';
+
+  @override
+  String get drawersAboutFrontMountBody =>
+      'Où se pose la façade par rapport au caisson.';
+
+  @override
+  String get drawersAboutFrontMountOverlay =>
+      'Applique : devant le caisson. La façade recouvre le chant des flancs, à fleur de leurs bords.';
+
+  @override
+  String get drawersAboutFrontMountInset =>
+      'Encastrée : dans l’ouverture. La façade affleure le chant, avec un jeu tout autour.';
+
+  @override
+  String get drawersAboutBoxJointBody =>
+      'Quelles pièces courent d’un bout à l’autre. Il change la longueur du devant, du dos et des côtés, pas le type d’assemblage.';
+
+  @override
+  String get drawersAboutBottomBody => 'Comment le fond tient dans la caisse.';
+
+  @override
+  String get drawersAboutBottomGroove =>
+      'En rainure : pris dans une rainure des quatre pièces. Il dépasse de la profondeur de rainure de chaque côté.';
+
+  @override
+  String get drawersAboutBottomBetween =>
+      'Entre les côtés : posé à l’intérieur sans rainure, vissé, collé ou sur tasseaux. Il fait les cotes intérieures de la caisse.';
+
+  @override
+  String get drawersAboutBottomUnderneath =>
+      'Sous la caisse : vissé ou cloué dessous, aux dimensions hors tout.';
+
+  @override
+  String get drawersAboutSlideLengthBody =>
+      'Par défaut, la plus grande longueur vendue qui tient dans la profondeur. Imposez-en une si vous avez déjà vos glissières.';
 }

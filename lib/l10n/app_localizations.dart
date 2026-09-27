@@ -1715,6 +1715,634 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Sur un élément carré ou une plaque pleine, l’effet reste marginal.'**
   String get layoutAboutOffsetSquare;
+
+  /// Pièce de la fiche de débit
+  ///
+  /// In fr, this message translates to:
+  /// **'Côté'**
+  String get drawerPartSide;
+
+  /// No description provided for @drawerPartFront.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devant'**
+  String get drawerPartFront;
+
+  /// No description provided for @drawerPartBack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dos'**
+  String get drawerPartBack;
+
+  /// No description provided for @drawerPartBottom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fond'**
+  String get drawerPartBottom;
+
+  /// No description provided for @drawerPartDrawerFront.
+  ///
+  /// In fr, this message translates to:
+  /// **'Façade'**
+  String get drawerPartDrawerFront;
+
+  /// No description provided for @slideBallBearing.
+  ///
+  /// In fr, this message translates to:
+  /// **'À billes'**
+  String get slideBallBearing;
+
+  /// No description provided for @slideUndermount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous tiroir'**
+  String get slideUndermount;
+
+  /// No description provided for @slideWoodOnWood.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bois sur bois'**
+  String get slideWoodOnWood;
+
+  /// No description provided for @slideCustom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Personnalisée'**
+  String get slideCustom;
+
+  /// Segment de sélecteur : 9 caractères au plus
+  ///
+  /// In fr, this message translates to:
+  /// **'Applique'**
+  String get frontMountOverlay;
+
+  /// No description provided for @frontMountInset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encastrée'**
+  String get frontMountInset;
+
+  /// No description provided for @boxJointSidesOverlap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Côtés recouvrants'**
+  String get boxJointSidesOverlap;
+
+  /// No description provided for @boxJointFrontBackOverlap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devant et dos recouvrants'**
+  String get boxJointFrontBackOverlap;
+
+  /// No description provided for @bottomMountGroove.
+  ///
+  /// In fr, this message translates to:
+  /// **'En rainure'**
+  String get bottomMountGroove;
+
+  /// No description provided for @bottomMountBetween.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre les côtés'**
+  String get bottomMountBetween;
+
+  /// No description provided for @bottomMountUnderneath.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous la caisse'**
+  String get bottomMountUnderneath;
+
+  /// No description provided for @drawersOpening.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverture'**
+  String get drawersOpening;
+
+  /// No description provided for @drawersOpeningWidth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Largeur intérieure'**
+  String get drawersOpeningWidth;
+
+  /// No description provided for @drawersOpeningHeight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hauteur intérieure'**
+  String get drawersOpeningHeight;
+
+  /// No description provided for @drawersOpeningDepth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profondeur intérieure'**
+  String get drawersOpeningDepth;
+
+  /// No description provided for @drawersCarcassThickness.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épaisseur du caisson'**
+  String get drawersCarcassThickness;
+
+  /// No description provided for @drawersSummaryOpening.
+  ///
+  /// In fr, this message translates to:
+  /// **'{width} × {height} × {depth} mm · caisson {carcass} mm'**
+  String drawersSummaryOpening(
+    String width,
+    String height,
+    String depth,
+    String carcass,
+  );
+
+  /// No description provided for @drawersFrontsGroup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tiroirs et façades'**
+  String get drawersFrontsGroup;
+
+  /// No description provided for @drawersCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre de tiroirs'**
+  String get drawersCount;
+
+  /// No description provided for @drawersHeights.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hauteurs'**
+  String get drawersHeights;
+
+  /// No description provided for @drawersHeightsAdjusted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajustées'**
+  String get drawersHeightsAdjusted;
+
+  /// No description provided for @drawersHeightsEqual.
+  ///
+  /// In fr, this message translates to:
+  /// **'Égales'**
+  String get drawersHeightsEqual;
+
+  /// No description provided for @drawersFrontMount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pose de la façade'**
+  String get drawersFrontMount;
+
+  /// No description provided for @drawersFrontThickness.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épaisseur de façade'**
+  String get drawersFrontThickness;
+
+  /// No description provided for @drawersFrontGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jeu entre façades'**
+  String get drawersFrontGap;
+
+  /// No description provided for @drawersSummaryFronts.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, one{{count} tiroir} other{{count} tiroirs}} · hauteurs {heights} · {mount}, façade {thickness} · jeu {gap} mm'**
+  String drawersSummaryFronts(
+    int count,
+    String heights,
+    String mount,
+    String thickness,
+    String gap,
+  );
+
+  /// No description provided for @drawersSlide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Glissière'**
+  String get drawersSlide;
+
+  /// No description provided for @drawersSideClearance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jeu par côté'**
+  String get drawersSideClearance;
+
+  /// No description provided for @drawersLengthReduction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réduction de longueur'**
+  String get drawersLengthReduction;
+
+  /// No description provided for @drawersSlideLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'Longueur de glissière'**
+  String get drawersSlideLength;
+
+  /// No description provided for @drawersSlideLengthAuto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Automatique'**
+  String get drawersSlideLengthAuto;
+
+  /// No description provided for @drawersSummaryCustomSlide.
+  ///
+  /// In fr, this message translates to:
+  /// **'jeu {clearance}, réduction {reduction} mm'**
+  String drawersSummaryCustomSlide(String clearance, String reduction);
+
+  /// No description provided for @drawersSummaryAutoLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'longueur automatique'**
+  String get drawersSummaryAutoLength;
+
+  /// No description provided for @drawersSummaryLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'longueur {length} mm'**
+  String drawersSummaryLength(String length);
+
+  /// No description provided for @drawersBox.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse'**
+  String get drawersBox;
+
+  /// No description provided for @drawersSideThickness.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épaisseur des côtés'**
+  String get drawersSideThickness;
+
+  /// No description provided for @drawersSideThicknessHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aussi le devant et le dos.'**
+  String get drawersSideThicknessHelp;
+
+  /// No description provided for @drawersBottomThickness.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épaisseur du fond'**
+  String get drawersBottomThickness;
+
+  /// No description provided for @drawersBoxJoint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Assemblage'**
+  String get drawersBoxJoint;
+
+  /// No description provided for @drawersBottom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fond'**
+  String get drawersBottom;
+
+  /// No description provided for @drawersBottomImposedHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imposé par la glissière sous tiroir.'**
+  String get drawersBottomImposedHelp;
+
+  /// No description provided for @drawersBottomRecess.
+  ///
+  /// In fr, this message translates to:
+  /// **'En retrait de {recess} mm'**
+  String drawersBottomRecess(String recess);
+
+  /// No description provided for @drawersGrooveDepth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profondeur de rainure'**
+  String get drawersGrooveDepth;
+
+  /// No description provided for @drawersSummaryRecess.
+  ///
+  /// In fr, this message translates to:
+  /// **'en retrait de {recess} mm'**
+  String drawersSummaryRecess(String recess);
+
+  /// No description provided for @drawersSummaryGroove.
+  ///
+  /// In fr, this message translates to:
+  /// **'en rainure de {depth} mm'**
+  String drawersSummaryGroove(String depth);
+
+  /// No description provided for @drawersSummaryBox.
+  ///
+  /// In fr, this message translates to:
+  /// **'côtés {side}, fond {bottom} mm · {joint} · fond {mount}'**
+  String drawersSummaryBox(
+    String side,
+    String bottom,
+    String joint,
+    String mount,
+  );
+
+  /// Annonce du lecteur d'écran
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier les hauteurs des façades'**
+  String get drawersEditHeights;
+
+  /// No description provided for @drawersHeightsTopToBottom.
+  ///
+  /// In fr, this message translates to:
+  /// **'De haut en bas : {heights} mm'**
+  String drawersHeightsTopToBottom(String heights);
+
+  /// No description provided for @drawersFrontHeights.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hauteurs des façades'**
+  String get drawersFrontHeights;
+
+  /// No description provided for @drawersFrontHeightsHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une hauteur saisie reste fixe. Les autres façades se partagent le reste.'**
+  String get drawersFrontHeightsHelp;
+
+  /// No description provided for @drawersHeightShared.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partagée'**
+  String get drawersHeightShared;
+
+  /// No description provided for @drawersHeightFixed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fixée'**
+  String get drawersHeightFixed;
+
+  /// No description provided for @drawersResetHeights.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remettre à égales'**
+  String get drawersResetHeights;
+
+  /// No description provided for @drawersDrawer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tiroir {number}'**
+  String drawersDrawer(int number);
+
+  /// No description provided for @drawersDrawerTop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tiroir {number} (haut)'**
+  String drawersDrawerTop(int number);
+
+  /// No description provided for @drawersDrawerBottom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tiroir {number} (bas)'**
+  String drawersDrawerBottom(int number);
+
+  /// No description provided for @drawersCutList.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche de débit'**
+  String get drawersCutList;
+
+  /// No description provided for @drawersCutListPart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièce'**
+  String get drawersCutListPart;
+
+  /// No description provided for @drawersCutListSizes.
+  ///
+  /// In fr, this message translates to:
+  /// **'L × l × ép (mm)'**
+  String get drawersCutListSizes;
+
+  /// No description provided for @drawersFrontsResult.
+  ///
+  /// In fr, this message translates to:
+  /// **'Façades — largeur × hauteur'**
+  String get drawersFrontsResult;
+
+  /// No description provided for @drawersFrontsResultNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jeu de {gap} mm entre façades'**
+  String drawersFrontsResultNote(String gap);
+
+  /// No description provided for @drawersBoxResult.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse — largeur × longueur'**
+  String get drawersBoxResult;
+
+  /// No description provided for @drawersBoxResultNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors tout, {clearance} mm de jeu par côté'**
+  String drawersBoxResultNote(String clearance);
+
+  /// No description provided for @drawersSlideLengthAutoNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'La plus grande qui tient'**
+  String get drawersSlideLengthAutoNote;
+
+  /// No description provided for @drawersSlideLengthImposedNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imposée'**
+  String get drawersSlideLengthImposedNote;
+
+  /// No description provided for @drawersSlideAxes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Axes de glissière'**
+  String get drawersSlideAxes;
+
+  /// No description provided for @drawersSlideAxesNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis le bas de l’ouverture, de haut en bas'**
+  String get drawersSlideAxesNote;
+
+  /// Case du cartouche, mise en capitales
+  ///
+  /// In fr, this message translates to:
+  /// **'Façades'**
+  String get drawersPlanFronts;
+
+  /// No description provided for @drawersPlanFrontsValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'{mount}, jeu {gap}'**
+  String drawersPlanFrontsValue(String mount, String gap);
+
+  /// No description provided for @drawersPlanDepth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profondeur'**
+  String get drawersPlanDepth;
+
+  /// No description provided for @drawersPlanThicknesses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ép. côtés / fond'**
+  String get drawersPlanThicknesses;
+
+  /// No description provided for @drawersPlanFrontThickness.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ép. façade'**
+  String get drawersPlanFrontThickness;
+
+  /// No description provided for @drawersPlanLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'Longueur'**
+  String get drawersPlanLength;
+
+  /// No description provided for @drawersPlanCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nb'**
+  String get drawersPlanCount;
+
+  /// En-tête tel quel, sans capitales : l et L s'y distinguent
+  ///
+  /// In fr, this message translates to:
+  /// **'L (mm)'**
+  String get drawersPlanLengthColumn;
+
+  /// No description provided for @drawersPlanWidthColumn.
+  ///
+  /// In fr, this message translates to:
+  /// **'l (mm)'**
+  String get drawersPlanWidthColumn;
+
+  /// No description provided for @drawersPlanCutListFallback.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} lignes de débit — à lire dans l’app'**
+  String drawersPlanCutListFallback(int count);
+
+  /// No description provided for @drawersPlanAxes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Axes de glissière, tiroir 1 en haut'**
+  String get drawersPlanAxes;
+
+  /// En-tête, mis en capitales, suivi de « (mm) »
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis le bas de l’ouverture'**
+  String get drawersPlanAxesColumn;
+
+  /// No description provided for @drawersPlanAxesFallback.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} axes — à lire dans l’app'**
+  String drawersPlanAxesFallback(int count);
+
+  /// No description provided for @drawersPlanUndermountNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cotes de glissière sous tiroir indicatives. Vérifier sur la fiche du fabricant.'**
+  String get drawersPlanUndermountNote;
+
+  /// No description provided for @drawersAboutOpeningBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cotes intérieures du caisson, là où vont les tiroirs : entre les flancs, entre le fond et le dessus, du chant au panneau arrière.'**
+  String get drawersAboutOpeningBody;
+
+  /// No description provided for @drawersAboutFrontHeightsBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par défaut, les façades se partagent la hauteur à parts égales. Une hauteur fixée reste fixe, et les autres façades se partagent le reste.'**
+  String get drawersAboutFrontHeightsBody;
+
+  /// No description provided for @drawersAboutSlideBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Elle fixe le jeu entre les flancs et la caisse, et sa longueur.'**
+  String get drawersAboutSlideBody;
+
+  /// No description provided for @drawersAboutSlideBallBearing.
+  ///
+  /// In fr, this message translates to:
+  /// **'À billes : glissière latérale, 12,7 mm de jeu de chaque côté.'**
+  String get drawersAboutSlideBallBearing;
+
+  /// No description provided for @drawersAboutSlideUndermount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous tiroir : glissière cachée sous la caisse. Elle impose un fond en retrait. Cotes indicatives, à vérifier sur la fiche du fabricant.'**
+  String get drawersAboutSlideUndermount;
+
+  /// No description provided for @drawersAboutSlideWood.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bois sur bois : le tiroir coulisse sur des coulisseaux en bois, sans quincaillerie.'**
+  String get drawersAboutSlideWood;
+
+  /// No description provided for @drawersAboutSlideCustom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Personnalisée : les jeux de votre fiche fabricant.'**
+  String get drawersAboutSlideCustom;
+
+  /// No description provided for @drawersAboutFrontMountBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Où se pose la façade par rapport au caisson.'**
+  String get drawersAboutFrontMountBody;
+
+  /// No description provided for @drawersAboutFrontMountOverlay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Applique : devant le caisson. La façade recouvre le chant des flancs, à fleur de leurs bords.'**
+  String get drawersAboutFrontMountOverlay;
+
+  /// No description provided for @drawersAboutFrontMountInset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encastrée : dans l’ouverture. La façade affleure le chant, avec un jeu tout autour.'**
+  String get drawersAboutFrontMountInset;
+
+  /// No description provided for @drawersAboutBoxJointBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quelles pièces courent d’un bout à l’autre. Il change la longueur du devant, du dos et des côtés, pas le type d’assemblage.'**
+  String get drawersAboutBoxJointBody;
+
+  /// No description provided for @drawersAboutBottomBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comment le fond tient dans la caisse.'**
+  String get drawersAboutBottomBody;
+
+  /// No description provided for @drawersAboutBottomGroove.
+  ///
+  /// In fr, this message translates to:
+  /// **'En rainure : pris dans une rainure des quatre pièces. Il dépasse de la profondeur de rainure de chaque côté.'**
+  String get drawersAboutBottomGroove;
+
+  /// No description provided for @drawersAboutBottomBetween.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre les côtés : posé à l’intérieur sans rainure, vissé, collé ou sur tasseaux. Il fait les cotes intérieures de la caisse.'**
+  String get drawersAboutBottomBetween;
+
+  /// No description provided for @drawersAboutBottomUnderneath.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous la caisse : vissé ou cloué dessous, aux dimensions hors tout.'**
+  String get drawersAboutBottomUnderneath;
+
+  /// No description provided for @drawersAboutSlideLengthBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par défaut, la plus grande longueur vendue qui tient dans la profondeur. Imposez-en une si vous avez déjà vos glissières.'**
+  String get drawersAboutSlideLengthBody;
 }
 
 class _AppLocalizationsDelegate

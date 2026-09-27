@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'drawers_controller.dart';
 import 'drawers_painter.dart';
 
@@ -17,6 +18,7 @@ class DrawersSchema extends ConsumerWidget {
       painter: DrawersPainter(
         result: ref.watch(drawersResultProvider).result,
         input: ref.watch(drawersFormProvider),
+        l10n: AppLocalizations.of(context),
       ),
       size: Size.infinite,
     );

@@ -66,49 +66,6 @@ enum BottomMount {
 /// Une pièce de la fiche de débit.
 enum DrawerPart { side, front, back, bottom, drawerFront }
 
-/// Libellés d'affichage, partagés par l'écran et le cartouche du plan.
-extension DrawerPartDisplay on DrawerPart {
-  String get label => switch (this) {
-    DrawerPart.side => 'Côté',
-    DrawerPart.front => 'Devant',
-    DrawerPart.back => 'Dos',
-    DrawerPart.bottom => 'Fond',
-    DrawerPart.drawerFront => 'Façade',
-  };
-}
-
-extension SlideKindDisplay on SlideKind {
-  String get label => switch (this) {
-    SlideKind.ballBearing => 'À billes',
-    SlideKind.undermount => 'Sous tiroir',
-    SlideKind.woodOnWood => 'Bois sur bois',
-    SlideKind.custom => 'Personnalisée',
-  };
-}
-
-extension FrontMountDisplay on FrontMount {
-  /// Court : ces libellés tiennent dans un segment de sélecteur.
-  String get label => switch (this) {
-    FrontMount.overlay => 'Applique',
-    FrontMount.inset => 'Encastrée',
-  };
-}
-
-extension BoxJointDisplay on BoxJoint {
-  String get label => switch (this) {
-    BoxJoint.sidesOverlap => 'Côtés recouvrants',
-    BoxJoint.frontBackOverlap => 'Devant et dos recouvrants',
-  };
-}
-
-extension BottomMountDisplay on BottomMount {
-  String get label => switch (this) {
-    BottomMount.groove => 'En rainure',
-    BottomMount.between => 'Entre les côtés',
-    BottomMount.underneath => 'Sous la caisse',
-  };
-}
-
 /// Ce qu'une glissière impose à la caisse, en mm.
 @freezed
 abstract class SlideSpec with _$SlideSpec {

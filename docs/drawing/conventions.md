@@ -30,7 +30,7 @@ Les schémas se dessinent sur une **feuille blanche** (`SchemaSheet`). Donc **la
 
 ## Unité
 
-**Déclarée une fois, sous le dessin** (`kUnitNote` = `Cotes en mm`). Tous les chiffres restent nus. Répétée sur chaque cote, elle alourdit le chiffre et laisse croire que les autres se lisent autrement. Exception : le `Ø`, qui est un symbole de cote.
+**Déclarée une fois, sous le dessin** (`l10n.commonUnitNote` : « Cotes en mm », « Dimensions in mm »). Tous les chiffres restent nus. Répétée sur chaque cote, elle alourdit le chiffre et laisse croire que les autres se lisent autrement. Exception : le `Ø`, qui est un symbole de cote.
 
 ## Libellés détourés
 

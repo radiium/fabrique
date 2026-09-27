@@ -12,6 +12,7 @@ import '../../core/widgets/tool_scaffold.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/calc_errors.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'drawers_controller.dart';
 import 'drawers_cut_list.dart';
 import 'drawers_input_groups.dart';
@@ -52,41 +53,40 @@ class DrawersScreen extends ConsumerWidget {
       ),
       results: [
         ResultTile(
-          label: 'Façades — largeur × hauteur',
+          label: l10n.drawersFrontsResult,
           value: result == null
               ? kNoValue
-              : '${formatNumber(result.frontWidth)} × ${_heights(result)}',
+              : '${l10n.number(result.frontWidth)} × ${_heights(result, l10n)}',
           unit: 'mm',
-          note: 'Jeu de ${formatNumber(input.frontGap)} mm entre façades',
+          note: l10n.drawersFrontsResultNote(l10n.number(input.frontGap)),
         ),
         ResultTile(
-          label: 'Caisse — largeur × longueur',
+          label: l10n.drawersBoxResult,
           value: result == null
               ? kNoValue
-              : '${formatNumber(result.boxWidth)} × '
-                    '${formatNumber(result.boxLength)}',
+              : '${l10n.number(result.boxWidth)} × '
+                    '${l10n.number(result.boxLength)}',
           unit: 'mm',
           note: result == null
               ? null
-              : 'Hors tout, ${formatNumber(result.sideClearance)} mm de jeu '
-                    'par côté',
+              : l10n.drawersBoxResultNote(l10n.number(result.sideClearance)),
         ),
         if (input.slide != SlideKind.woodOnWood)
           ResultTile(
-            label: 'Longueur de glissière',
-            value: formatNumber(result?.slideLength),
+            label: l10n.drawersSlideLength,
+            value: l10n.number(result?.slideLength),
             unit: 'mm',
             note: result?.isSlideLengthAuto ?? true
-                ? 'La plus grande qui tient'
-                : 'Imposée',
+                ? l10n.drawersSlideLengthAutoNote
+                : l10n.drawersSlideLengthImposedNote,
           ),
         ResultTile(
-          label: 'Axes de glissière',
+          label: l10n.drawersSlideAxes,
           value: result == null
               ? kNoValue
-              : result.slideAxes.map(formatNumber).join(' · '),
+              : result.slideAxes.map(l10n.number).join(' · '),
           unit: 'mm',
-          note: 'Depuis le bas de l’ouverture, de haut en bas',
+          note: l10n.drawersSlideAxesNote,
         ),
         CutListTable(pieces: result?.cutList),
       ],
@@ -95,10 +95,10 @@ class DrawersScreen extends ConsumerWidget {
   }
 
   /// Une hauteur si elles sont toutes égales, la liste sinon.
-  static String _heights(DrawersResult r) {
+  static String _heights(DrawersResult r, AppLocalizations l10n) {
     final heights = r.fronts.map((f) => f.height).toSet();
     return heights.length == 1
-        ? formatNumber(heights.single)
-        : r.fronts.map((f) => formatNumber(f.height)).join(' · ');
+        ? l10n.number(heights.single)
+        : r.fronts.map((f) => l10n.number(f.height)).join(' · ');
   }
 }

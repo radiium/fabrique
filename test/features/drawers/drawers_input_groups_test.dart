@@ -9,14 +9,17 @@ import '../../support/app.dart';
 import '../../support/phone.dart';
 
 void main() {
-  Future<ProviderContainer> pumpDrawers(WidgetTester tester) async {
+  Future<ProviderContainer> pumpDrawers(
+    WidgetTester tester, {
+    Locale locale = const Locale('fr'),
+  }) async {
     usePhone(tester);
     final container = ProviderContainer();
     addTearDown(container.dispose);
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: testApp(home: const DrawersScreen()),
+        child: testApp(home: const DrawersScreen(), locale: locale),
       ),
     );
     return container;
@@ -47,6 +50,32 @@ void main() {
     await tester.pumpAndSettle();
 
     for (final summary in defaultSummaries) {
+      final finder = find.text(summary);
+      expect(finder, findsOneWidget, reason: summary);
+      expect(
+        tester.renderObject<RenderParagraph>(finder).didExceedMaxLines,
+        isFalse,
+        reason: summary,
+      );
+    }
+  });
+
+  testWidgets('les résumés anglais tiennent aussi sans tronquer', (
+    tester,
+  ) async {
+    // L'anglais n'a pas la longueur du français : ses résumés se mesurent à
+    // part.
+    const englishSummaries = [
+      '564 × 684 × 540 mm · carcass 18 mm',
+      '3 drawers · equal heights · overlay, front 18 · gap 3 mm',
+      'Ball-bearing · automatic length',
+      'sides 15, bottom 8 mm · sides overlap · bottom in a 6 mm groove',
+    ];
+    await pumpDrawers(tester, locale: const Locale('en'));
+    await tester.tap(find.text('Opening'));
+    await tester.pumpAndSettle();
+
+    for (final summary in englishSummaries) {
       final finder = find.text(summary);
       expect(finder, findsOneWidget, reason: summary);
       expect(
@@ -91,7 +120,7 @@ void main() {
 
     expect(
       find.text(
-        'Personnalisée · jeu 12.7, réduction 10 mm · longueur automatique',
+        'Personnalisée · jeu 12,7, réduction 10 mm · longueur automatique',
       ),
       findsOneWidget,
     );

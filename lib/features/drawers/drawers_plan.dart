@@ -4,11 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/calc/drawers.dart';
 import '../../core/export/plan.dart';
 import '../../core/export/plan_export_action.dart';
-import '../../core/format.dart';
 import '../../core/models/tool.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'drawers_controller.dart';
+import 'drawers_labels.dart';
 import 'drawers_painter.dart';
 import 'drawers_schema.dart';
 
@@ -31,70 +32,84 @@ PlanPainter? buildDrawersPlan({
         // Bois sur bois, la glissière reste seule sur sa rangée, en pleine
         // largeur.
         fields: [
-          ('DATE', formatPlanDate(date)),
+          (l10n.planDate.toUpperCase(), formatPlanDate(date)),
           (
-            'FAÇADES',
-            '${input.frontMount.label}, jeu ${formatNumber(input.frontGap)}',
+            l10n.drawersPlanFronts.toUpperCase(),
+            l10n.drawersPlanFrontsValue(
+              input.frontMount.label(l10n),
+              l10n.number(input.frontGap),
+            ),
           ),
           (
-            'OUVERTURE',
-            '${formatNumber(input.openingWidth)} × '
-                '${formatNumber(input.openingHeight)} mm',
+            l10n.drawersOpening.toUpperCase(),
+            '${l10n.number(input.openingWidth)} × '
+                '${l10n.number(input.openingHeight)} mm',
           ),
-          ('PROFONDEUR', '${formatNumber(input.openingDepth)} mm'),
           (
-            'ÉP. CÔTÉS / FOND',
-            '${formatNumber(input.sideThickness)} / '
-                '${formatNumber(input.bottomThickness)} mm',
+            l10n.drawersPlanDepth.toUpperCase(),
+            '${l10n.number(input.openingDepth)} mm',
           ),
-          ('ÉP. FAÇADE', '${formatNumber(input.frontThickness)} mm'),
-          ('GLISSIÈRE', input.slide.label),
+          (
+            l10n.drawersPlanThicknesses.toUpperCase(),
+            '${l10n.number(input.sideThickness)} / '
+                '${l10n.number(input.bottomThickness)} mm',
+          ),
+          (
+            l10n.drawersPlanFrontThickness.toUpperCase(),
+            '${l10n.number(input.frontThickness)} mm',
+          ),
+          (l10n.drawersSlide.toUpperCase(), input.slide.label(l10n)),
           if (result.slideLength case final length?)
-            ('LONGUEUR', '${formatNumber(length)} mm'),
+            (l10n.drawersPlanLength.toUpperCase(), '${l10n.number(length)} mm'),
         ],
         // La fiche de débit d'abord : c'est ce qu'on emporte à la scie. Les
         // axes ensuite, pour le traçage au montage.
         tables: [
           PlanTable(
-            title: 'FICHE DE DÉBIT',
+            title: l10n.drawersCutList.toUpperCase(),
             // La première colonne est celle des numéros, étroite et fixe.
             // L'épaisseur est dans les cases : une cinquième colonne ne
             // laisserait plus la place d'écrire `203.67`.
-            headers: const ['N°', 'PIÈCE', 'NB', 'L (mm)', 'l (mm)'],
+            headers: [
+              l10n.planIndex,
+              l10n.drawersCutListPart.toUpperCase(),
+              l10n.drawersPlanCount.toUpperCase(),
+              l10n.drawersPlanLengthColumn,
+              l10n.drawersPlanWidthColumn,
+            ],
             rows: [
               for (final (i, piece) in result.cutList.indexed)
                 [
                   '${i + 1}',
-                  piece.part.label,
+                  piece.part.label(l10n),
                   '${piece.quantity}',
-                  formatNumber(piece.length),
-                  formatNumber(piece.width),
+                  l10n.number(piece.length),
+                  l10n.number(piece.width),
                 ],
             ],
-            fallback:
-                '${result.cutList.length} lignes de débit — à lire dans '
-                'l’app',
+            fallback: l10n.drawersPlanCutListFallback(result.cutList.length),
           ),
           PlanTable(
-            title: 'AXES DE GLISSIÈRE, TIROIR 1 EN HAUT',
-            headers: const ['N°', 'DEPUIS LE BAS DE L’OUVERTURE (mm)'],
+            title: l10n.drawersPlanAxes.toUpperCase(),
+            headers: [
+              l10n.planIndex,
+              '${l10n.drawersPlanAxesColumn.toUpperCase()} (mm)',
+            ],
             rows: [
               for (final (i, axis) in result.slideAxes.indexed)
-                ['${i + 1}', formatNumber(axis)],
+                ['${i + 1}', l10n.number(axis)],
             ],
-            fallback: '${result.slideAxes.length} axes — à lire dans l’app',
+            fallback: l10n.drawersPlanAxesFallback(result.slideAxes.length),
           ),
         ],
         note: switch (input.slide) {
-          SlideKind.undermount =>
-            'Cotes de glissière sous tiroir indicatives. Vérifier sur la '
-                'fiche du fabricant.',
+          SlideKind.undermount => l10n.drawersPlanUndermountNote,
           SlideKind.ballBearing ||
           SlideKind.woodOnWood ||
           SlideKind.custom => null,
         },
       ),
-      drawing: DrawersPainter(result: result, input: input),
+      drawing: DrawersPainter(result: result, input: input, l10n: l10n),
     );
   }
   return null;
