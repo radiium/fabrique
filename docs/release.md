@@ -39,3 +39,13 @@ keyPassword=…
 flutter build apk --release
 apksigner verify --print-certs build/app/outputs/flutter-apk/app-release.apk
 ```
+
+## Fiche F-Droid
+
+`fastlane/metadata/android/fr-FR/` : F-Droid et IzzyOnDroid y lisent la fiche de l'app, à chaque version.
+
+- **Français seulement**, comme l'app. F-Droid affiche la seule langue disponible quand celle du téléphone manque.
+- `title.txt` : le nom affiché par l'app. `short_description.txt` : 80 caractères au plus. `full_description.txt` : 4000 au plus, quelques balises HTML (`<b>`, `<i>`, `<ul>`) permises.
+- **Un changelog par version**, `changelogs/<versionCode>.txt`, 500 caractères au plus, écrit dans le commit qui monte la version.
+- **« Aucun accès à Internet » est une promesse** : l'APK ne demande pas la permission `INTERNET`. Une dépendance qui l'ajouterait oblige à réécrire la description.
+- Captures, s'il y en a : `images/phoneScreenshots/1.png`, `2.png`… L'icône, F-Droid la tire de l'APK.
