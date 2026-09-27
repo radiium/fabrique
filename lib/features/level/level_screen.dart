@@ -10,6 +10,7 @@ import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'level_controller.dart';
 import 'level_schema.dart';
 
@@ -32,25 +33,23 @@ class LevelScreen extends ConsumerWidget {
       visualization: const SchemaCard(child: LevelSchema()),
       results: [
         ResultTile(
-          label: 'Inclinaison latérale',
-          value: formatDegrees(result?.rollDeg),
+          label: l10n.levelRoll,
+          value: l10n.degrees(result?.rollDeg),
           unit: '°',
-          note: 'Gauche ⇄ droite',
+          note: l10n.levelRollNote,
         ),
         ResultTile(
-          label: 'Inclinaison longitudinale',
-          value: formatDegrees(result?.pitchDeg),
+          label: l10n.levelPitch,
+          value: l10n.degrees(result?.pitchDeg),
           unit: '°',
-          note: 'Avant ⇄ arrière',
+          note: l10n.levelPitchNote,
         ),
         ResultTile(
-          label: 'État',
+          label: l10n.levelState,
           value: result == null
               ? kNoValue
-              : (result.isLevel ? 'À plat' : 'Hors niveau'),
-          note: zero == null
-              ? 'Par rapport à l’horizontale'
-              : 'Par rapport au zéro posé',
+              : (result.isLevel ? l10n.levelFlat : l10n.levelOff),
+          note: zero == null ? l10n.levelFromHorizontal : l10n.levelFromZero,
         ),
       ],
     );
@@ -70,6 +69,7 @@ class _Calibration extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final current = reading;
     final controller = ref.read(tiltZeroProvider.notifier);
 
@@ -86,7 +86,7 @@ class _Calibration extends ConsumerWidget {
                       ? null
                       : () => controller.calibrate(current),
                   icon: const Icon(Icons.adjust_outlined),
-                  label: const Text('Mettre à zéro'),
+                  label: Text(l10n.levelSetZero),
                 ),
               ),
             ),
@@ -96,7 +96,7 @@ class _Calibration extends ConsumerWidget {
                 height: kFieldHeight,
                 child: OutlinedButton(
                   onPressed: controller.reset,
-                  child: const Text('Annuler'),
+                  child: Text(l10n.levelCancelZero),
                 ),
               ),
             ],
@@ -104,9 +104,7 @@ class _Calibration extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          zero == null
-              ? 'Les angles sont donnés par rapport à l’horizontale.'
-              : 'Zéro posé : les angles sont relatifs à la surface calibrée.',
+          zero == null ? l10n.levelHorizontalHelp : l10n.levelZeroHelp,
           style: Theme.of(context).textTheme.bodySmall
               ?.copyWith(color: AppColors.label),
         ),
@@ -124,6 +122,7 @@ class _SensorUnavailable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -134,12 +133,12 @@ class _SensorUnavailable extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Accéléromètre indisponible',
+                l10n.levelSensorUnavailable,
                 style: theme.textTheme.titleSmall,
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'Cet outil demande un appareil équipé d’un accéléromètre.',
+                l10n.levelSensorUnavailableHelp,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: AppColors.label,
                 ),

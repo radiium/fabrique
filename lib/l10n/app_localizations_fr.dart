@@ -470,4 +470,52 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get converterOutOfScale =>
       'Rapport hors échelle — formes non à l’échelle';
+
+  @override
+  String get levelRoll => 'Inclinaison latérale';
+
+  @override
+  String get levelRollNote => 'Gauche ⇄ droite';
+
+  @override
+  String get levelPitch => 'Inclinaison longitudinale';
+
+  @override
+  String get levelPitchNote => 'Avant ⇄ arrière';
+
+  @override
+  String get levelState => 'État';
+
+  @override
+  String get levelFlat => 'À plat';
+
+  @override
+  String get levelOff => 'Hors niveau';
+
+  @override
+  String get levelFromHorizontal => 'Par rapport à l’horizontale';
+
+  @override
+  String get levelFromZero => 'Par rapport au zéro posé';
+
+  @override
+  String get levelSetZero => 'Mettre à zéro';
+
+  @override
+  String get levelCancelZero => 'Annuler';
+
+  @override
+  String get levelHorizontalHelp =>
+      'Les angles sont donnés par rapport à l’horizontale.';
+
+  @override
+  String get levelZeroHelp =>
+      'Zéro posé : les angles sont relatifs à la surface calibrée.';
+
+  @override
+  String get levelSensorUnavailable => 'Accéléromètre indisponible';
+
+  @override
+  String get levelSensorUnavailableHelp =>
+      'Cet outil demande un appareil équipé d’un accéléromètre.';
 }

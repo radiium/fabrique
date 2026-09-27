@@ -455,4 +455,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get converterOutOfScale => 'Ratio off the chart — shapes not to scale';
+
+  @override
+  String get levelRoll => 'Side tilt';
+
+  @override
+  String get levelRollNote => 'Left ⇄ right';
+
+  @override
+  String get levelPitch => 'Front tilt';
+
+  @override
+  String get levelPitchNote => 'Front ⇄ back';
+
+  @override
+  String get levelState => 'Status';
+
+  @override
+  String get levelFlat => 'Level';
+
+  @override
+  String get levelOff => 'Off level';
+
+  @override
+  String get levelFromHorizontal => 'Relative to horizontal';
+
+  @override
+  String get levelFromZero => 'Relative to the set zero';
+
+  @override
+  String get levelSetZero => 'Set zero';
+
+  @override
+  String get levelCancelZero => 'Cancel';
+
+  @override
+  String get levelHorizontalHelp => 'Angles are given relative to horizontal.';
+
+  @override
+  String get levelZeroHelp =>
+      'Zero set: angles are relative to the calibrated surface.';
+
+  @override
+  String get levelSensorUnavailable => 'Accelerometer unavailable';
+
+  @override
+  String get levelSensorUnavailableHelp =>
+      'This tool needs a device with an accelerometer.';
 }

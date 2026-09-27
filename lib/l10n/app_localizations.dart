@@ -857,6 +857,96 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Rapport hors échelle — formes non à l’échelle'**
   String get converterOutOfScale;
+
+  /// No description provided for @levelRoll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inclinaison latérale'**
+  String get levelRoll;
+
+  /// No description provided for @levelRollNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gauche ⇄ droite'**
+  String get levelRollNote;
+
+  /// No description provided for @levelPitch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inclinaison longitudinale'**
+  String get levelPitch;
+
+  /// No description provided for @levelPitchNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avant ⇄ arrière'**
+  String get levelPitchNote;
+
+  /// No description provided for @levelState.
+  ///
+  /// In fr, this message translates to:
+  /// **'État'**
+  String get levelState;
+
+  /// Aussi dessiné sous la fiole
+  ///
+  /// In fr, this message translates to:
+  /// **'À plat'**
+  String get levelFlat;
+
+  /// No description provided for @levelOff.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors niveau'**
+  String get levelOff;
+
+  /// No description provided for @levelFromHorizontal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par rapport à l’horizontale'**
+  String get levelFromHorizontal;
+
+  /// No description provided for @levelFromZero.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par rapport au zéro posé'**
+  String get levelFromZero;
+
+  /// No description provided for @levelSetZero.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre à zéro'**
+  String get levelSetZero;
+
+  /// No description provided for @levelCancelZero.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get levelCancelZero;
+
+  /// No description provided for @levelHorizontalHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les angles sont donnés par rapport à l’horizontale.'**
+  String get levelHorizontalHelp;
+
+  /// No description provided for @levelZeroHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zéro posé : les angles sont relatifs à la surface calibrée.'**
+  String get levelZeroHelp;
+
+  /// No description provided for @levelSensorUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accéléromètre indisponible'**
+  String get levelSensorUnavailable;
+
+  /// No description provided for @levelSensorUnavailableHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cet outil demande un appareil équipé d’un accéléromètre.'**
+  String get levelSensorUnavailableHelp;
 }
 
 class _AppLocalizationsDelegate

@@ -124,5 +124,20 @@
   "converterBoardFootNote": "The unit hardwood is sold by — 144 in³",
   "converterImperial": "Imperial",
   "converterImperialNote": "Rounded to 1/16 inch",
-  "converterOutOfScale": "Ratio off the chart — shapes not to scale"
+  "converterOutOfScale": "Ratio off the chart — shapes not to scale",
+  "levelRoll": "Side tilt",
+  "levelRollNote": "Left ⇄ right",
+  "levelPitch": "Front tilt",
+  "levelPitchNote": "Front ⇄ back",
+  "levelState": "Status",
+  "levelFlat": "Level",
+  "levelOff": "Off level",
+  "levelFromHorizontal": "Relative to horizontal",
+  "levelFromZero": "Relative to the set zero",
+  "levelSetZero": "Set zero",
+  "levelCancelZero": "Cancel",
+  "levelHorizontalHelp": "Angles are given relative to horizontal.",
+  "levelZeroHelp": "Zero set: angles are relative to the calibrated surface.",
+  "levelSensorUnavailable": "Accelerometer unavailable",
+  "levelSensorUnavailableHelp": "This tool needs a device with an accelerometer."
 }

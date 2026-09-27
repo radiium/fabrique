@@ -335,5 +335,23 @@
   "converterOutOfScale": "Rapport hors échelle — formes non à l’échelle",
   "@converterOutOfScale": {
     "description": "Légende de schéma"
-  }
+  },
+  "levelRoll": "Inclinaison latérale",
+  "levelRollNote": "Gauche ⇄ droite",
+  "levelPitch": "Inclinaison longitudinale",
+  "levelPitchNote": "Avant ⇄ arrière",
+  "levelState": "État",
+  "levelFlat": "À plat",
+  "@levelFlat": {
+    "description": "Aussi dessiné sous la fiole"
+  },
+  "levelOff": "Hors niveau",
+  "levelFromHorizontal": "Par rapport à l’horizontale",
+  "levelFromZero": "Par rapport au zéro posé",
+  "levelSetZero": "Mettre à zéro",
+  "levelCancelZero": "Annuler",
+  "levelHorizontalHelp": "Les angles sont donnés par rapport à l’horizontale.",
+  "levelZeroHelp": "Zéro posé : les angles sont relatifs à la surface calibrée.",
+  "levelSensorUnavailable": "Accéléromètre indisponible",
+  "levelSensorUnavailableHelp": "Cet outil demande un appareil équipé d’un accéléromètre."
 }

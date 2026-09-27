@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/tilt.dart';
-import '../../core/format.dart';
 import '../../core/painting.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 
 /// Inclinaison correspondant au bord de la fiole.
 const double _maxAngle = 10;
@@ -28,9 +29,11 @@ const double _stateBand = 24;
 /// à bulle — pas comme une bille qui roulerait dans la pente. C'est ce qui rend
 /// la lecture transposable à l'outil que le menuisier a déjà en main.
 class LevelPainter extends CustomPainter {
-  const LevelPainter({required this.result});
+  const LevelPainter({required this.result, required this.l10n});
 
   final TiltResult? result;
+
+  final AppLocalizations l10n;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -80,7 +83,7 @@ class LevelPainter extends CustomPainter {
       // de la taille d'une pièce de monnaie, ce serait illisible.
       if (angle % 5 != 0) continue;
       schemaText(
-        '${formatDegrees(angle)}°',
+        '${l10n.degrees(angle)}°',
         size: 9,
       ).paint(canvas, Offset(center.dx + ringRadius + 3, center.dy - 12));
     }
@@ -162,7 +165,7 @@ class LevelPainter extends CustomPainter {
 
     for (final (i, (glyph, value)) in readouts.indexed) {
       final text = schemaText(
-        '$glyph ${formatDegrees(value)}°',
+        '$glyph ${l10n.degrees(value)}°',
         size: 22,
         color: AppColors.accentDeep,
         weight: FontWeight.w700,
@@ -178,7 +181,7 @@ class LevelPainter extends CustomPainter {
 
   void _paintState(Canvas canvas, Size size, TiltResult r) {
     final text = schemaText(
-      r.isLevel ? 'À plat' : 'Hors niveau',
+      r.isLevel ? l10n.levelFlat : l10n.levelOff,
       size: 13,
       color: r.isLevel ? AppColors.accent : AppColors.label,
       weight: r.isLevel ? FontWeight.w700 : FontWeight.w600,
@@ -193,5 +196,6 @@ class LevelPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LevelPainter old) => old.result != result;
+  bool shouldRepaint(LevelPainter old) =>
+      old.result != result || old.l10n.localeName != l10n.localeName;
 }
