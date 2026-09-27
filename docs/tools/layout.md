@@ -147,6 +147,7 @@ Vue de dessus : les rectangles posés par le cœur, `isCut` compris. Le painter 
 - **Éléments en `field`, surface découverte en blanc.** Pièces à couper remplies en orange.
 - **Un seul trait de joint, quel que soit le remplissage.** Cerner les coupes en orange sur fond orange effaçait la trame d'une rangée entièrement rabotée, et avec elle le décalage. C'est le remplissage qui dit « à couper ».
 - **Au-delà de 1500 éléments, on cesse de cerner** : les filets se touchent et forment un aplat.
+- **Tous les aplats, puis tous les joints** (règle des deux passes, [conventions](../drawing/conventions.md)). Les éléments ne se chevauchent jamais, un test le vérifie.
 - **Jeu périphérique hachuré**, comme les marges de la Répartition.
 - **Contour de la surface tracé en dernier**, pour rester net là où une pièce affleure.
 - **Deux cotes de surface** (largeur au-dessus, longueur à gauche) et l'unité en bas. En vignette (`compact`), elles tombent : la surface récupère environ un quart de la hauteur, et les cotes sont dans les champs juste au-dessus.

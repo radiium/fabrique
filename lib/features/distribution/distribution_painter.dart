@@ -354,15 +354,34 @@ class DistributionPainter extends CustomPainter {
       view.x(length),
       view.rect.bottom,
     );
+    final elements = _elementRects(r, view);
+
+    // Deux passes : tous les aplats, puis tous les traits. Un trait est centré
+    // sur l'arête, et un aplat posé après lui en mangerait la moitié.
     canvas.drawRect(rect, Paint()..color = AppColors.field);
-
     _paintOffsets(canvas, view);
-    _paintElements(canvas, r, view);
+    final fill = Paint()..color = AppColors.accent;
+    for (final element in elements) {
+      canvas.drawRect(element, fill);
+    }
 
-    // Le filet de la pièce en dernier : un élément le traverse de part en part
-    // et le recouvrirait, laissant le bas de la barre décalé d'une épaisseur de
-    // trait à chaque raccord. Sur un plan, le contour de la pièce est continu
-    // et ce qu'on y pose se dessine dedans.
+    // Seulement les deux chants d'un élément : les arêtes horizontales
+    // appartiennent à la pièce.
+    final chant = Paint()
+      ..color = AppColors.accentDeep
+      ..strokeWidth = kDimStroke;
+    for (final element in elements) {
+      for (final x in [element.left, element.right]) {
+        canvas.drawLine(
+          Offset(x, element.top),
+          Offset(x, element.bottom),
+          chant,
+        );
+      }
+    }
+
+    // Le filet de la pièce en dernier : un élément la traverse de part en
+    // part, et son chant ne doit pas trouer le contour.
     canvas
       ..drawRect(
         rect,
@@ -412,19 +431,10 @@ class DistributionPainter extends CustomPainter {
     }
   }
 
-  /// Les éléments à l'échelle. Une largeur nulle passe ici comme les autres :
-  /// le `clamp` en fait un trait.
-  void _paintElements(
-    Canvas canvas,
-    DistributionResult r,
-    SchemaViewport view,
-  ) {
-    final fill = Paint()..color = AppColors.accent;
-    final stroke = Paint()
-      ..color = AppColors.accentDeep
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = kDimStroke;
-
+  /// Les éléments à l'échelle, limités à ceux que la fenêtre montre. Une
+  /// largeur nulle passe ici comme les autres : le `clamp` en fait un trait.
+  List<Rect> _elementRects(DistributionResult r, SchemaViewport view) {
+    final rects = <Rect>[];
     for (final position in r.positions) {
       final left = view.x(position);
       // Les positions sont croissantes : passé le bord droit, c'est fini.
@@ -434,20 +444,17 @@ class DistributionPainter extends CustomPainter {
 
       // Toute la hauteur de la bande : un élément traverse la pièce de part en
       // part, et un jeu au-dessus et en dessous le ferait flotter dedans.
-      final rect = Rect.fromLTRB(
-        left,
-        view.rect.top,
-        // Un bardage serré ne doit pas se résoudre en une trame vide.
-        left + (right - left).clamp(_minElementPixels, double.infinity),
-        view.rect.bottom,
+      rects.add(
+        Rect.fromLTRB(
+          left,
+          view.rect.top,
+          // Un bardage serré ne doit pas se résoudre en une trame vide.
+          left + (right - left).clamp(_minElementPixels, double.infinity),
+          view.rect.bottom,
+        ),
       );
-      canvas.drawRect(rect, fill);
-      // Seulement les deux chants : les arêtes horizontales appartiennent à la
-      // pièce, et c'est elle qui les trace, après.
-      for (final x in [rect.left + 0.5, rect.right - 0.5]) {
-        canvas.drawLine(Offset(x, rect.top), Offset(x, rect.bottom), stroke);
-      }
     }
+    return rects;
   }
 
   /// Le titre d'un panneau, centré au-dessus de lui.

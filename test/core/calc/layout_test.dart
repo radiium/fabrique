@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fabrique/core/calc/calc_exception.dart';
 import 'package:fabrique/core/calc/layout.dart';
 import 'package:fabrique/core/models/enums.dart';
@@ -253,6 +255,57 @@ void main() {
       // rogne pas la surface à couvrir.
       expect(r.surfaceArea, closeTo(1020 * 1000, 1e-6));
       expect(r.coveredArea, closeTo(1000 * 980, 1e-6));
+    });
+  });
+
+  group('computeLayout — dessin', () {
+    // Le schéma pose tous les aplats avant tous les joints : deux éléments
+    // qui se chevauchent y seraient dessinés l'un sous l'autre sans le dire.
+    test('les éléments ne se chevauchent jamais, dans la pose', () {
+      const inputs = [
+        LayoutInput(surfaceX: 1050, surfaceY: 730, elementX: 300, elementY: 90),
+        LayoutInput(
+          surfaceX: 1200,
+          surfaceY: 900,
+          elementX: 600,
+          elementY: 150,
+          gapX: 3,
+          gapY: 2,
+          perimeterGap: 10,
+          offset: JointOffset.third,
+          balanceRows: true,
+        ),
+        LayoutInput(
+          surfaceX: 900,
+          surfaceY: 1300,
+          elementX: 1100,
+          elementY: 130,
+          flip: true,
+          balanceRows: true,
+          offset: JointOffset.straight,
+        ),
+      ];
+      for (final input in inputs) {
+        final elements = computeLayout(input).elements;
+        final g = input.perimeterGap;
+        for (final (i, a) in elements.indexed) {
+          expect(a.x, greaterThanOrEqualTo(g - 1e-9), reason: '$input');
+          expect(a.y, greaterThanOrEqualTo(g - 1e-9), reason: '$input');
+          expect(a.x + a.w, lessThanOrEqualTo(input.surfaceX - g + 1e-9));
+          expect(a.y + a.h, lessThanOrEqualTo(input.surfaceY - g + 1e-9));
+          for (final b in elements.skip(i + 1)) {
+            final overlapX =
+                math.min(a.x + a.w, b.x + b.w) - math.max(a.x, b.x);
+            final overlapY =
+                math.min(a.y + a.h, b.y + b.h) - math.max(a.y, b.y);
+            expect(
+              overlapX <= 1e-9 || overlapY <= 1e-9,
+              isTrue,
+              reason: '$a chevauche $b ($input)',
+            );
+          }
+        }
+      }
     });
   });
 

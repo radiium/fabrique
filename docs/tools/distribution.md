@@ -122,6 +122,7 @@ Un encart sous `Écart souhaité` propose la borne **écartée**. Celle que l'ou
 - **Proportions** : les panneaux couvrent 83 % de la largeur de la vue d'ensemble (sinon deux bouts se lisent aussi longs que la pièce), et leur barre est deux fois plus épaisse (sinon le détail se lit comme un étirement).
 - **Cotes serrées** : chiffre sorti **hors de la pièce**, vers la marge de la feuille. Vers l'intérieur, il tomberait au-delà des attaches de l'étage voisin.
 - **Une seule grammaire** : des rectangles à l'échelle, qu'une largeur nulle réduit à un trait de 2 px. Basculer vers des disques ferait sauter le dessin à chaque passage par zéro.
+- **Tous les aplats (pièce, marges hachurées, éléments), puis tous les traits** (règle des deux passes, [conventions](../drawing/conventions.md)). Les chants d'un élément sont centrés sur ses arêtes, et le contour de la pièce passe en dernier : c'est lui qui porte les arêtes horizontales.
 - **Marges hachurées** : la zone existe, rien n'y est réparti.
 - **Boîte de référence 336 × 255**, mise à l'échelle uniformément. **Vignette en 5/4**, plus haute que le 16/10 commun : les trois bandes s'empilent en hauteur de texte.
 - **Pas de `compact`** : la vue d'ensemble ne porte qu'un chiffre, les panneaux portent tout le reste.

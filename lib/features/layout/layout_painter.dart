@@ -173,15 +173,24 @@ class LayoutPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = kDimStroke;
 
-    for (final element in r.elements) {
-      final rect = Rect.fromLTWH(
-        origin.dx + element.x * scale,
-        origin.dy + element.y * scale,
-        element.w * scale,
-        element.h * scale,
-      );
-      canvas.drawRect(rect, element.isCut ? cutFill : fullFill);
-      if (stroked) canvas.drawRect(rect, seam);
+    final rects = [
+      for (final element in r.elements)
+        Rect.fromLTWH(
+          origin.dx + element.x * scale,
+          origin.dy + element.y * scale,
+          element.w * scale,
+          element.h * scale,
+        ),
+    ];
+
+    // Deux passes : un joint est centré sur l'arête, et l'aplat de l'élément
+    // voisin, posé après lui, en mangerait la moitié.
+    for (final (i, element) in r.elements.indexed) {
+      canvas.drawRect(rects[i], element.isCut ? cutFill : fullFill);
+    }
+    if (!stroked) return;
+    for (final rect in rects) {
+      canvas.drawRect(rect, seam);
     }
   }
 
