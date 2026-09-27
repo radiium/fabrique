@@ -984,5 +984,6 @@
   "planSaveFailed": "Enregistrement impossible",
   "planExportFailed": "Export impossible",
   "schemaFit": "Ajuster à l’écran",
-  "schemaRotate": "Pivoter le schéma"
+  "schemaRotate": "Pivoter le schéma",
+  "unknownTool": "Outil inconnu"
 }

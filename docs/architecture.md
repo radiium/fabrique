@@ -94,7 +94,7 @@ Un refus du cœur est un `CalcError` : une classe scellée en Dart pur, qui port
 
 Les nombres affichés prennent le séparateur décimal de la langue (`2,5` / `2.5`) : l'UI écrit `l10n.number(x)` (`l10n/numbers.dart`) plutôt que `formatNumber(x)`, qui garde le point par défaut pour rester sans Flutter. La saisie accepte les deux séparateurs.
 
-La traduction des écrans-outils est en cours : l'accueil et les Réglages passent par `AppLocalizations`, les écrans-outils ont encore leurs libellés en dur.
+Dans une feature, même principe : les enums qu'elle affiche se nomment par une méthode `label(l10n)` (`DistributionMode`, `LayoutMaterial`) ou, s'ils vivent dans `core/calc`, par un fichier d'extensions (`drawers_labels.dart`). Les aides des ⓘ sont des fonctions `FieldHelp aboutX(AppLocalizations l10n)`, groupées dans `*_help.dart`. Les cases du cartouche s'écrivent dans l'ARB comme à l'écran et passent en capitales dans le builder du plan ; les en-têtes où la casse porte un sens (`l (mm)`, `L (mm)`) restent tels quels.
 
 ## Ce que démontrent les tests du cœur
 

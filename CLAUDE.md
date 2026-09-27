@@ -20,7 +20,7 @@
 flutter run                  # -d chrome pour le web
 flutter test
 dart run build_runner build  # après toute modif @freezed / @riverpod
-flutter gen-l10n             # après édition de lib/l10n/app_fr.arb
+flutter gen-l10n             # après édition de lib/l10n/app_*.arb
 ```
 
 Avant de rendre la main : `dart fix --apply`, `dart format lib test`, `flutter analyze` propre, `flutter test` vert.
@@ -41,7 +41,7 @@ Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/
 - **Modèles `@freezed`, providers `@riverpod`.** Le résultat d'un outil est un provider dérivé de sa saisie : ni `setState` dans le calcul, ni bouton « calculer ». `setState` reste permis pour un état d'interface local (rotation, export en cours).
 - **Une feature-outil** : `*_screen`, `*_controller`, `*_schema` (seul point de construction du painter), `*_painter`. Le reste seulement si besoin.
 - **Atelier** : cibles ≥ 48 px (`kFieldHeight`), aucun libellé tronqué en silence. Le schéma peut passer sous la ligne de flottaison : un outil riche ne tient pas dans un écran.
-- **Textes en français**, en dur dans les écrans-outils. Seuls l'accueil et les Réglages passent par `AppLocalizations`.
+- **Tout texte lu passe par `AppLocalizations`**, en français et en anglais, painters et plan exporté compris. Une clé ajoutée l'est dans les deux ARB (un test compare). Un nombre affiché passe par `l10n.number`, pour le séparateur décimal. `core/` ne porte aucun texte : ses enums se nomment par une extension côté UI.
 
 ## Règles de code
 

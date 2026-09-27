@@ -11,6 +11,7 @@ import '../features/layout/layout_screen.dart';
 import '../features/level/level_screen.dart';
 import '../features/schema/schema_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../l10n/app_localizations.dart';
 import 'routes.dart';
 
 /// Navigation déclarative, deep-linking prêt pour le web : accueil, réglages,
@@ -97,6 +98,8 @@ class _UnknownToolScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('Outil inconnu')));
+    return Scaffold(
+      body: Center(child: Text(AppLocalizations.of(context).unknownTool)),
+    );
   }
 }

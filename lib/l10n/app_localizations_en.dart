@@ -1411,4 +1411,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get schemaRotate => 'Rotate the drawing';
+
+  @override
+  String get unknownTool => 'Unknown tool';
 }

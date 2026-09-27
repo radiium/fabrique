@@ -1428,4 +1428,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get schemaRotate => 'Pivoter le schéma';
+
+  @override
+  String get unknownTool => 'Outil inconnu';
 }

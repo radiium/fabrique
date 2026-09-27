@@ -381,5 +381,6 @@
   "planSaveFailed": "Could not save",
   "planExportFailed": "Could not export",
   "schemaFit": "Fit to screen",
-  "schemaRotate": "Rotate the drawing"
+  "schemaRotate": "Rotate the drawing",
+  "unknownTool": "Unknown tool"
 }

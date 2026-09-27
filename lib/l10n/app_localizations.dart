@@ -2415,6 +2415,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Pivoter le schéma'**
   String get schemaRotate;
+
+  /// No description provided for @unknownTool.
+  ///
+  /// In fr, this message translates to:
+  /// **'Outil inconnu'**
+  String get unknownTool;
 }
 
 class _AppLocalizationsDelegate
