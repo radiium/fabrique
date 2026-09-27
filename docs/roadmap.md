@@ -6,6 +6,19 @@
 - **Le plan du Convertisseur.** `core/export/` est générique, boutons compris : il manque un `converter_plan.dart` (le cartouche, et une enveloppe de `PlanExportAction`), branché dans `resultsFooter` et dans le `switch` sur `Tool` de `schema_screen.dart`. Un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous.
 - **Vérifier sur appareil le libellé du sélecteur de matériau** du Calepinage. Un nom de produit et deux cotes ne peuvent pas passer la mesure pessimiste de la police de test, donc son test garde le rapport au lieu du seuil. À confirmer à l'œil, comme l'ont été « Symétriques » et « Calcul écart ».
 
+## Publication
+
+Dans l'ordre. La signature, la version et la fiche sont en place (voir [release.md](release.md)).
+
+- **L'icône de l'app** : c'est encore celle de Flutter, dans `android/app/src/main/res/mipmap-*` et `web/icons/`. F-Droid la tire de l'APK.
+- **Les captures d'écran** de la fiche : `fastlane/metadata/android/fr-FR/images/phoneScreenshots/1.png`, `2.png`…
+- **Un dépôt public**, GitHub ou Codeberg : F-Droid et IzzyOnDroid partent des sources et des tags. Puis le premier tag, `v0.1.0`.
+- **Le workflow de release**, sur un tag `v*` : analyse et tests, APK signé (la clé en secret du dépôt, réécrite en `key.properties`), Release avec l'APK joint.
+- **IzzyOnDroid** : demande d'inclusion une fois la première Release publiée. Il reprend l'APK de la Release, signé par notre clé, et publie en un jour.
+- **F-Droid officiel** : merge request sur `fdroiddata`, avec Flutter figé en sous-module git, `UpdateCheckMode: Tags` et le `versionCode` lu dans le `pubspec`. Revue de quelques semaines. F-Droid signe alors avec sa propre clé : passer d'IzzyOnDroid à F-Droid demandera de réinstaller, sauf build reproductible.
+- **Vérifier la fiche sur un téléphone en anglais** : elle n'existe qu'en `fr-FR`, et le repli de F-Droid sur la seule langue disponible reste à confirmer. Sinon, une fiche `en-US`.
+- **Le web** : `flutter build web`, hébergé sur les Pages de l'hébergeur git.
+
 ## Si l'usage le demande
 
 - **La visu du Convertisseur hors longueur.** La comparaison à un repère est honnête, mais pauvre pour la masse et la pression.
@@ -32,4 +45,3 @@
 - **Projets** (sauvegarder plusieurs saisies) : il faudrait une vraie base locale (Drift ou Isar), isolée derrière un repository.
 - **`riverpod_lint` / `custom_lint`** : retenter quand leurs versions s'aligneront sur Riverpod 3.4 + freezed 3.x.
 - **Équerrage de caisson** : en réserve, candidat naturel pour un septième outil.
-- **`README.md` racine** : encore le texte par défaut de Flutter.
