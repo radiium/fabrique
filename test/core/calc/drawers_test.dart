@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fabrique/core/calc/calc_exception.dart';
 import 'package:fabrique/core/calc/drawers.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -40,6 +42,9 @@ void main() {
       expect(r.fronts.map((f) => f.height), everyElement(near(249.667)));
       expect(r.fronts.first.bottom + r.fronts.first.height, near(737.5));
       expect(r.fronts.last.bottom, near(-17.5));
+
+      expect(r.carcassWidth, near(600));
+      expect(r.carcassHeight, near(758));
 
       expect(r.sideClearance, 12.7);
       expect(r.boxWidth, near(536.6));
@@ -211,24 +216,29 @@ void main() {
 
     test('une glissière latérale se centre sur son axe, dans le jeu', () {
       final r = computeDrawers(base);
-      final slide = r.faceSections.first.slides.first;
+      final slide = r.faceSections.first.slides.first.bounds;
 
       expect((slide.y0 + slide.y1) / 2, near(r.slideAxes.first));
       expect(slide.x0, 0);
       expect(slide.x1, near(r.sideClearance));
     });
 
-    test(
-      'sous tiroir : glissières dans le retrait, cachées vues de dessus',
-      () {
-        final r = computeDrawers(base.copyWith(slide: SlideKind.undermount));
-        final face = r.faceSections.first;
+    test('sous tiroir : glissières sous les côtés et dans le retrait, cachées vues de dessus', () {
+      final r = computeDrawers(base.copyWith(slide: SlideKind.undermount));
+      final face = r.faceSections.first;
 
-        expect(face.slides.first.y0, near(r.boxBottoms.first));
-        expect(face.slides.first.y1, near(face.bottom.y0));
-        expect(r.topSection.slides, isEmpty);
-      },
-    );
+      // Le L descend dans le dégagement de 3 sous la caisse et remonte
+      // jusque sous le fond.
+      expect(
+        face.slides.map((s) => s.bounds.y0),
+        everyElement(near(r.boxBottoms.first - 3)),
+      );
+      expect(
+        face.slides.map((s) => s.bounds.y1).reduce(math.max),
+        near(face.bottom.y0),
+      );
+      expect(r.topSection.slides, isEmpty);
+    });
 
     test('bois sur bois : aucune glissière à dessiner', () {
       final r = computeDrawers(base.copyWith(slide: SlideKind.woodOnWood));
@@ -264,8 +274,17 @@ void main() {
       final r = computeDrawers(base);
       final face = r.faceSections.last;
       // En rainure : il entre de 6 dans chaque côté, à 10 du bas.
-      expect(face.sides.first.x1 - face.bottom.x0, near(6));
+      expect(face.sides.first.bounds.x1 - face.bottom.x0, near(6));
       expect(face.bottom.y0, near(r.boxBottoms.last + kGrooveLift));
+    });
+
+    test('en rainure, le côté est entaillé à la place exacte du fond', () {
+      final face = computeDrawers(base).faceSections.last;
+      final side = face.sides.first.points;
+      final b = face.bottom;
+
+      expect(side, contains(SectionPoint(b.x0, b.y0)));
+      expect(side, contains(SectionPoint(b.x0, b.y1)));
     });
   });
 
@@ -309,6 +328,35 @@ void main() {
           );
           ceiling = r.boxBottoms[i];
         }
+      }
+    });
+
+    test('les pièces d’une coupe ne se chevauchent jamais', () {
+      for (final input in inputs) {
+        final r = computeDrawers(input);
+        for (final face in r.faceSections) {
+          expectNoOverlap([
+            ...face.sides.map((s) => s.points),
+            _corners(face.bottom),
+            ...face.slides.map((s) => s.points),
+          ], reason: 'coupe de face, $input');
+          for (final piece in [
+            ...face.sides.map((s) => s.bounds),
+            face.bottom,
+          ]) {
+            expect(piece.x0, greaterThanOrEqualTo(-1e-9), reason: '$input');
+            expect(
+              piece.x1,
+              lessThanOrEqualTo(input.openingWidth + 1e-9),
+              reason: '$input',
+            );
+          }
+        }
+        final t = r.topSection;
+        expectNoOverlap([
+          for (final p in [...t.flanks, ...t.walls, ...t.slides, t.front])
+            _corners(p),
+        ], reason: 'coupe de dessus, $input');
       }
     });
 
@@ -402,4 +450,52 @@ void main() {
       );
     });
   });
+}
+
+List<SectionPoint> _corners(SectionRect r) => SectionPolygon.rect(r).points;
+
+/// Le point est-il strictement dans le polygone ? Lancer de rayon.
+bool _isInside(List<SectionPoint> polygon, double x, double y) {
+  var isInside = false;
+  for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    final a = polygon[i];
+    final b = polygon[j];
+    if ((a.y > y) != (b.y > y) &&
+        x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x) {
+      isInside = !isInside;
+    }
+  }
+  return isInside;
+}
+
+/// Échantillonne l'intersection des boîtes de chaque paire : aucun point ne
+/// doit tomber dans les deux pièces. Le pas décalé évite de tomber pile sur
+/// une arête commune, où « dedans » ne veut rien dire.
+void expectNoOverlap(
+  List<List<SectionPoint>> pieces, {
+  required String reason,
+}) {
+  const steps = 20;
+  for (var i = 0; i < pieces.length; i++) {
+    for (var j = i + 1; j < pieces.length; j++) {
+      final a = SectionPolygon(pieces[i]).bounds;
+      final b = SectionPolygon(pieces[j]).bounds;
+      final x0 = math.max(a.x0, b.x0);
+      final x1 = math.min(a.x1, b.x1);
+      final y0 = math.max(a.y0, b.y0);
+      final y1 = math.min(a.y1, b.y1);
+      if (x1 - x0 <= 1e-9 || y1 - y0 <= 1e-9) continue;
+      for (var u = 0; u < steps; u++) {
+        for (var v = 0; v < steps; v++) {
+          final x = x0 + (x1 - x0) * (u + 0.37) / steps;
+          final y = y0 + (y1 - y0) * (v + 0.61) / steps;
+          expect(
+            _isInside(pieces[i], x, y) && _isInside(pieces[j], x, y),
+            isFalse,
+            reason: 'pièces $i et $j en ($x, $y), $reason',
+          );
+        }
+      }
+    }
+  }
 }

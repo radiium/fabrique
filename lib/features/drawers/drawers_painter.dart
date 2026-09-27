@@ -14,6 +14,10 @@ const double _topMargin = 26;
 const double _bottomMargin = 22;
 const double _vDimSpace = 44;
 
+/// Place sous la vue de face pour la largeur hors tout du caisson : son
+/// chiffre se pose entre le caisson et la ligne de cote.
+const double _hDimSpace = 30;
+
 /// Blanc entre les deux vues, cotes verticales de la vue de face comprises.
 const double _viewGap = 20;
 
@@ -25,8 +29,8 @@ const double _hDimOffset = 10;
 /// Une seule échelle pour les deux vues : la coupe se lit à côté de la face,
 /// et une profondeur tracée plus grande qu'une hauteur mentirait.
 ///
-/// Ordre de tracé : ce qui est derrière le plan de coupe d'abord, puis les
-/// glissières, les pièces coupées par-dessus, les cotes en dernier.
+/// Ordre de tracé : ce qui est derrière le plan de coupe d'abord, puis la
+/// coupe en deux passes ([_Section]), les cotes en dernier.
 class DrawersPainter extends CustomPainter {
   const DrawersPainter({required this.result, required this.input});
 
@@ -46,9 +50,12 @@ class DrawersPainter extends CustomPainter {
     final face = _faceBounds(r);
     final top = _topBounds(r);
 
+    // Trois colonnes de cotes verticales : le hors tout à gauche de la face,
+    // les façades à sa droite, la longueur de caisse à droite du dessus.
     final availableWidth =
-        size.width - 2 * _sideMargin - 2 * _vDimSpace - _viewGap;
-    final availableHeight = size.height - _topMargin - _bottomMargin;
+        size.width - 2 * _sideMargin - 3 * _vDimSpace - _viewGap;
+    final availableHeight =
+        size.height - _topMargin - _hDimSpace - _bottomMargin;
     if (availableWidth <= 0 || availableHeight <= 0) return;
 
     final scale = math.min(
@@ -58,8 +65,8 @@ class DrawersPainter extends CustomPainter {
     if (!scale.isFinite || scale <= 0) return;
 
     final drawnWidth =
-        (face.width + top.width) * scale + 2 * _vDimSpace + _viewGap;
-    final left = (size.width - drawnWidth) / 2;
+        (face.width + top.width) * scale + 3 * _vDimSpace + _viewGap;
+    final left = (size.width - drawnWidth) / 2 + _vDimSpace;
     final sheet = Offset.zero & size;
 
     _paintFace(
@@ -130,9 +137,11 @@ class DrawersPainter extends CustomPainter {
     double y(double mm) => topLeft.dy + (bounds.bottom - mm) * scale;
     Rect rect(double x0, double y0, double x1, double y1) =>
         Rect.fromLTRB(x(x0), y(y1), x(x1), y(y0));
-    Rect section(SectionRect p) => rect(p.x0, p.y0, p.x1, p.y1);
+    Path section(SectionRect p) =>
+        Path()..addRect(rect(p.x0, p.y0, p.x1, p.y1));
+    Path polygon(SectionPolygon p) => Path()
+      ..addPolygon([for (final v in p.points) Offset(x(v.x), y(v.y))], true);
 
-    final paints = _Paints();
     final beyond = Paint()
       ..color = kSchemaInk
       ..style = PaintingStyle.stroke
@@ -160,29 +169,19 @@ class DrawersPainter extends CustomPainter {
       width + carcass,
       height + carcass,
     );
-    canvas
-      ..drawPath(
+    final cut = _Section()
+      ..cut(
         Path()
           ..fillType = PathFillType.evenOdd
           ..addRect(carcassRect)
           ..addRect(opening),
-        paints.fill,
-      )
-      ..drawRect(carcassRect, paints.outline)
-      ..drawRect(opening, paints.outline);
-
+      );
     for (final drawer in r.faceSections) {
-      // Les glissières d'abord : la caisse passe devant celles qui la
-      // débordent.
-      for (final slide in drawer.slides) {
-        canvas.drawRect(section(slide), paints.slide);
-      }
-      for (final side in drawer.sides) {
-        paints.cut(canvas, section(side));
-      }
-      // Le fond après les côtés : en rainure, il passe par-dessus eux.
-      paints.cut(canvas, section(drawer.bottom));
+      drawer.slides.map(polygon).forEach(cut.hardware);
+      drawer.sides.map(polygon).forEach(cut.cut);
+      cut.cut(section(drawer.bottom));
     }
+    cut.paint(canvas);
 
     final frontsTop = r.fronts.first.bottom + r.fronts.first.height;
     drawHDimension(
@@ -192,6 +191,25 @@ class DrawersPainter extends CustomPainter {
       y: math.min(carcassRect.top, y(frontsTop)) - _hDimOffset,
       label: formatNumber(r.frontWidth),
       bounds: sheet,
+    );
+
+    // Le caisson hors tout, sous la vue et à gauche : le haut et la droite
+    // sont aux façades.
+    drawHDimension(
+      canvas,
+      x1: carcassRect.left,
+      x2: carcassRect.right,
+      y: y(bounds.top) + _hDimSpace - _hDimOffset,
+      label: formatNumber(r.carcassWidth),
+      bounds: sheet,
+    );
+    drawVDimension(
+      canvas,
+      y1: carcassRect.top,
+      y2: carcassRect.bottom,
+      x: x(bounds.left) - _hDimOffset,
+      label: formatNumber(r.carcassHeight),
+      labelSide: -1,
     );
 
     final dimX = x(bounds.right) + _hDimOffset;
@@ -219,17 +237,14 @@ class DrawersPainter extends CustomPainter {
   }) {
     double x(double mm) => topLeft.dx + (mm - bounds.left) * scale;
     double y(double mm) => topLeft.dy + (bounds.bottom - mm) * scale;
-    Rect section(SectionRect p) =>
-        Rect.fromLTRB(x(p.x0), y(p.y1), x(p.x1), y(p.y0));
+    Path section(SectionRect p) =>
+        Path()..addRect(Rect.fromLTRB(x(p.x0), y(p.y1), x(p.x1), y(p.y0)));
 
-    final paints = _Paints();
     final t = r.topSection;
-    for (final slide in t.slides) {
-      canvas.drawRect(section(slide), paints.slide);
-    }
-    for (final piece in [...t.flanks, ...t.walls, t.front]) {
-      paints.cut(canvas, section(piece));
-    }
+    final cut = _Section();
+    t.slides.map(section).forEach(cut.hardware);
+    [...t.flanks, ...t.walls, t.front].map(section).forEach(cut.cut);
+    cut.paint(canvas);
 
     final boxLeft = r.sideClearance;
     final near = r.boxSetback;
@@ -264,19 +279,41 @@ class DrawersPainter extends CustomPainter {
       oldDelegate.result != result || oldDelegate.input != input;
 }
 
-/// Les trois encres d'une coupe : matière coupée, contour, glissière.
-class _Paints {
-  final fill = Paint()..color = AppColors.field;
-  final outline = Paint()
-    ..color = kSchemaInk
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = kOutlineStroke;
-  final slide = Paint()..color = kExtensionLine;
+/// Une coupe, dessinée en deux passes : tous les aplats, puis tous les
+/// contours.
+///
+/// Deux pièces assemblées partagent une arête, et leurs traits, centrés
+/// dessus, se confondent en un seul. Dessinées pièce par pièce, l'aplat de la
+/// suivante mangerait la moitié du contour de la précédente. Ce qui suppose
+/// des pièces qui ne se chevauchent pas : le cœur les rend ainsi.
+class _Section {
+  final _cuts = <Path>[];
+  final _hardware = <Path>[];
 
-  /// Une pièce coupée : matière, puis contour.
-  void cut(Canvas canvas, Rect piece) => canvas
-    ..drawRect(piece, fill)
-    ..drawRect(piece, outline);
+  /// Une pièce coupée : matière et contour.
+  void cut(Path piece) => _cuts.add(piece);
+
+  /// Une glissière : un aplat gris, et le même contour que la matière. Sans
+  /// lui, son bout s'arrêterait au milieu du trait de la pièce voisine.
+  void hardware(Path piece) => _hardware.add(piece);
+
+  void paint(Canvas canvas) {
+    final fill = Paint()..color = AppColors.field;
+    final slide = Paint()..color = kExtensionLine;
+    final outline = Paint()
+      ..color = kSchemaInk
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = kOutlineStroke;
+    for (final piece in _hardware) {
+      canvas.drawPath(piece, slide);
+    }
+    for (final piece in _cuts) {
+      canvas.drawPath(piece, fill);
+    }
+    for (final piece in [..._hardware, ..._cuts]) {
+      canvas.drawPath(piece, outline);
+    }
+  }
 }
 
 /// Le remplissage et le contour d'une pièce de pictogramme.

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../format.dart';
@@ -227,16 +229,50 @@ abstract class SectionRect with _$SectionRect {
   }) = _SectionRect;
 }
 
+/// Un sommet de [SectionPolygon], en mm, dans le repère de [SectionRect].
+@freezed
+abstract class SectionPoint with _$SectionPoint {
+  const factory SectionPoint(double x, double y) = _SectionPoint;
+}
+
+/// Une pièce de coupe qui n'est pas un rectangle : un côté entaillé par la
+/// rainure du fond. Sommets dans l'ordre du contour.
+@freezed
+abstract class SectionPolygon with _$SectionPolygon {
+  const factory SectionPolygon(List<SectionPoint> points) = _SectionPolygon;
+  const SectionPolygon._();
+
+  factory SectionPolygon.rect(SectionRect r) => SectionPolygon([
+    SectionPoint(r.x0, r.y0),
+    SectionPoint(r.x1, r.y0),
+    SectionPoint(r.x1, r.y1),
+    SectionPoint(r.x0, r.y1),
+  ]);
+
+  /// Le rectangle qui l'englobe.
+  SectionRect get bounds => SectionRect(
+    x0: points.map((p) => p.x).reduce(math.min),
+    y0: points.map((p) => p.y).reduce(math.min),
+    x1: points.map((p) => p.x).reduce(math.max),
+    y1: points.map((p) => p.y).reduce(math.max),
+  );
+}
+
 /// Un tiroir dans la coupe de face : ce que coupe le plan vertical au milieu
 /// de la profondeur.
+///
+/// Les pièces ne se chevauchent jamais : chacune a sa forme réelle, et deux
+/// pièces assemblées partagent l'arête où elles se touchent. C'est ce qui
+/// permet de les dessiner sans ordre entre elles.
 @freezed
 abstract class DrawerFaceSection with _$DrawerFaceSection {
   const factory DrawerFaceSection({
-    required List<SectionRect> sides,
+    /// Entaillés par la rainure quand le fond y entre.
+    required List<SectionPolygon> sides,
     required SectionRect bottom,
 
-    /// Vides en bois sur bois.
-    required List<SectionRect> slides,
+    /// Vides en bois sur bois. Un L en sous tiroir.
+    required List<SectionPolygon> slides,
   }) = _DrawerFaceSection;
 }
 
@@ -272,6 +308,13 @@ abstract class DrawersResult with _$DrawersResult {
 
     /// Jeu effectivement laissé entre flanc et côté, de chaque côté.
     required double sideClearance,
+
+    /// Caisson hors tout, face : l'ouverture plus un flanc de chaque côté.
+    ///
+    /// La profondeur n'y figure pas : elle dépend de la pose du dos, que
+    /// l'outil ne connaît pas.
+    required double carcassWidth,
+    required double carcassHeight,
 
     /// Caisse hors tout.
     required double boxWidth,
@@ -485,6 +528,8 @@ DrawersResult computeDrawers(DrawersInput input) {
     frontWidth: frontWidth,
     frontLeft: frontLeft,
     sideClearance: spec.sideClearance,
+    carcassWidth: input.openingWidth + 2 * input.carcassThickness,
+    carcassHeight: input.openingHeight + 2 * input.carcassThickness,
     boxWidth: boxWidth,
     boxLength: boxLength,
     boxSetback: boxSetback,
@@ -546,6 +591,7 @@ DrawerFaceSection _faceSection(
   final right = left + boxWidth;
   final top = boxBottom + boxHeight;
   final floor = boxBottom + bottomLift;
+  final slideFloor = boxBottom - spec.clearanceBelow;
   final width = input.openingWidth;
 
   final isUnderneath =
@@ -582,47 +628,86 @@ DrawerFaceSection _faceSection(
   };
 
   final slides = switch ((slideAxis, spec.bottomRecess)) {
-    (null, _) => const <SectionRect>[],
-    // Sous tiroir : du flanc jusque sous le fond, dans le retrait.
+    (null, _) => const <SectionPolygon>[],
+    // Sous tiroir : un L d'un seul tenant, qui part du flanc, passe sous le
+    // côté, dans le dégagement du dessous, et remonte sous le fond, dans le
+    // retrait. Il contourne le côté : la glissière ne le traverse pas.
     (_?, _?) => [
-      SectionRect(
-        x0: 0,
-        y0: boxBottom,
-        x1: left + side + kUndermountSlideReach,
-        y1: floor,
-      ),
-      SectionRect(
-        x0: right - side - kUndermountSlideReach,
-        y0: boxBottom,
-        x1: width,
-        y1: floor,
-      ),
+      SectionPolygon([
+        SectionPoint(0, slideFloor),
+        SectionPoint(left + side + kUndermountSlideReach, slideFloor),
+        SectionPoint(left + side + kUndermountSlideReach, floor),
+        SectionPoint(left + side, floor),
+        SectionPoint(left + side, boxBottom),
+        SectionPoint(0, boxBottom),
+      ]),
+      SectionPolygon([
+        SectionPoint(right - side - kUndermountSlideReach, slideFloor),
+        SectionPoint(width, slideFloor),
+        SectionPoint(width, boxBottom),
+        SectionPoint(right - side, boxBottom),
+        SectionPoint(right - side, floor),
+        SectionPoint(right - side - kUndermountSlideReach, floor),
+      ]),
     ],
     // Latérale : dans le jeu, centrée sur son axe.
     (final axis?, null) => [
-      SectionRect(
-        x0: 0,
-        y0: axis - kSideSlideProfile / 2,
-        x1: left,
-        y1: axis + kSideSlideProfile / 2,
+      SectionPolygon.rect(
+        SectionRect(
+          x0: 0,
+          y0: axis - kSideSlideProfile / 2,
+          x1: left,
+          y1: axis + kSideSlideProfile / 2,
+        ),
       ),
-      SectionRect(
-        x0: right,
-        y0: axis - kSideSlideProfile / 2,
-        x1: width,
-        y1: axis + kSideSlideProfile / 2,
+      SectionPolygon.rect(
+        SectionRect(
+          x0: right,
+          y0: axis - kSideSlideProfile / 2,
+          x1: width,
+          y1: axis + kSideSlideProfile / 2,
+        ),
       ),
     ],
   };
 
-  return DrawerFaceSection(
-    sides: [
-      SectionRect(x0: left, y0: sidesFrom, x1: left + side, y1: top),
-      SectionRect(x0: right - side, y0: sidesFrom, x1: right, y1: top),
-    ],
-    bottom: bottomRect,
-    slides: slides,
-  );
+  final isGrooved =
+      spec.bottomRecess == null && input.bottomMount == BottomMount.groove;
+  final groove = input.grooveDepth;
+  final sides = isGrooved
+      ? [
+          // L'entaille sur la face intérieure, à la place exacte du fond.
+          SectionPolygon([
+            SectionPoint(left, sidesFrom),
+            SectionPoint(left + side, sidesFrom),
+            SectionPoint(left + side, floor),
+            SectionPoint(left + side - groove, floor),
+            SectionPoint(left + side - groove, floor + bottom),
+            SectionPoint(left + side, floor + bottom),
+            SectionPoint(left + side, top),
+            SectionPoint(left, top),
+          ]),
+          SectionPolygon([
+            SectionPoint(right - side, sidesFrom),
+            SectionPoint(right, sidesFrom),
+            SectionPoint(right, top),
+            SectionPoint(right - side, top),
+            SectionPoint(right - side, floor + bottom),
+            SectionPoint(right - side + groove, floor + bottom),
+            SectionPoint(right - side + groove, floor),
+            SectionPoint(right - side, floor),
+          ]),
+        ]
+      : [
+          SectionPolygon.rect(
+            SectionRect(x0: left, y0: sidesFrom, x1: left + side, y1: top),
+          ),
+          SectionPolygon.rect(
+            SectionRect(x0: right - side, y0: sidesFrom, x1: right, y1: top),
+          ),
+        ];
+
+  return DrawerFaceSection(sides: sides, bottom: bottomRect, slides: slides);
 }
 
 /// Un tiroir dans la coupe de dessus.

@@ -97,16 +97,16 @@ Un refus s'affiche en `ErrorBanner` sous le dernier groupe (`DrawersOutcome`, co
 
 **Coupe de face** de la colonne et **coupe de dessus** d'un tiroir, côte à côte, **à la même échelle** : une profondeur tracée plus grande qu'une hauteur mentirait.
 
-- Coupe de face : un plan vertical au milieu de la profondeur, vu vers l'avant. En coupe, le caisson, les côtés et le fond de chaque caisse (en rainure, entre les côtés ou dessous, tel que monté), et les glissières en gris : latérales dans le jeu, sous tiroir dans le retrait du fond. Derrière le plan, les façades en contour fin. Largeur de façade au-dessus, chaque hauteur de façade à droite.
+- Coupe de face : un plan vertical au milieu de la profondeur, vu vers l'avant. En coupe, le caisson, les côtés et le fond de chaque caisse (en rainure, entre les côtés ou dessous, tel que monté), et les glissières en gris : latérales dans le jeu, sous tiroir en L d'un seul tenant : sous le côté, dans le dégagement du dessous, puis sous le fond, dans son retrait. Derrière le plan, les façades en contour fin. Largeur de façade au-dessus, chaque hauteur de façade à droite. Le caisson hors tout (ouverture + 2 × caisson, `carcassWidth`, `carcassHeight`) en dessous et à gauche : la saisie reste l'ouverture intérieure, la cote que demande la glissière, et une épaisseur de panneau mesurée à côté ne s'y reporterait pas. Pas de profondeur hors tout : elle dépend de la pose du dos.
 - La hauteur de profil d'une glissière latérale (35 mm, `kSideSlideProfile`) et ce qu'une glissière sous tiroir avance sous le fond (30 mm, `kUndermountSlideReach`) sont des ordres de grandeur pour la reconnaître, pas des cotes.
 - Coupe de dessus : un plan horizontal à mi-hauteur de la caisse. Flancs du caisson, glissières latérales en gris dans le jeu, côtés, devant et dos tels que l'assemblage les coupe, façade devant. Une glissière sous tiroir est cachée sous le fond : elle n'y figure pas. Largeur de caisse au-dessus, longueur à droite.
-- **Le cœur rend les coupes toutes faites** (`faceSections`, `topSection`, des `SectionRect` en mm, et `frontLeft`) : le painter ne fait que les poser à l'échelle.
+- **Le cœur rend les coupes toutes faites** (`faceSections`, `topSection`, des `SectionRect` en mm, et `frontLeft`) : le painter ne fait que les poser à l'échelle. Les pièces ne se chevauchent jamais : en rainure, le côté est un `SectionPolygon` entaillé à la place exacte du fond. C'est ce qui permet de dessiner la coupe en deux passes, aplats puis contours (voir [drawing/conventions.md](../drawing/conventions.md)).
 
 ---
 
 ## Plan exporté
 
-Les deux vues dans la zone de dessin. Le cartouche porte ce que le dessin ne cote pas : ouverture, profondeur, pose et jeu des façades, épaisseurs, glissière et sa longueur (absente en bois sur bois).
+Les deux vues dans la zone de dessin, cotes hors tout comprises. Le cartouche porte ce que le dessin ne cote pas : ouverture, profondeur, pose et jeu des façades, épaisseurs, glissière et sa longueur (absente en bois sur bois).
 
 Deux tables, la plus importante d'abord, chacune en tout ou rien :
 
