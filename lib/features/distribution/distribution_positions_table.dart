@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../../app/theme.dart';
 import '../../core/calc/distribution.dart';
 import '../../core/format.dart';
+import '../../core/widgets/table_rows.dart';
 
 /// Les cotes de pose en table numérotée plutôt qu'en ruban `250 · 500 · 750`.
 ///
@@ -37,7 +38,7 @@ class PositionsTable extends StatelessWidget {
   /// Largeur de la colonne N°, **mesurée** sur le plus large de ses contenus
   /// (l'en-tête ou le dernier numéro) plutôt que fixée. Une largeur ronde y
   /// laisserait du mou : les numéros sont cadrés à droite, donc ce mou tombe
-  /// entièrement à gauche du chiffre et s'ajoute à [_cellPadding] — la première
+  /// entièrement à gauche du chiffre et s'ajoute à [kTableCellPadding] — la première
   /// cellule aurait alors trois fois le blanc de la dernière. Collée au
   /// contenu, la colonne rend le rembourrage de la ligne visible tel quel des
   /// deux côtés.
@@ -62,15 +63,6 @@ class PositionsTable extends StatelessWidget {
 
   static const String _indexHeader = 'N°';
 
-  /// Le tableau tient la gouttière de [AppSpacing.md] de la carte, comme tout
-  /// le reste — c'est la rayure qui commence et finit sur cette ligne. Les
-  /// cellules, elles, rentrent de [AppSpacing.sm] : sans ça le dernier chiffre,
-  /// cadré à droite, toucherait le bord de la rayure. Porté par les lignes et
-  /// par l'en-tête, jamais par le titre, sinon les colonnes décrocheraient.
-  static const EdgeInsets _cellPadding = EdgeInsets.symmetric(
-    horizontal: AppSpacing.sm,
-  );
-
   Future<void> _copy(BuildContext context, DistributionResult r) async {
     final messenger = ScaffoldMessenger.of(context);
     // Une position par ligne, colonnes séparées par une tabulation : ça tombe
@@ -92,12 +84,8 @@ class PositionsTable extends StatelessWidget {
     final r = result;
     final hasRows = r != null && r.positions.isNotEmpty;
 
-    final headerStyle = theme.textTheme.bodySmall?.copyWith(
-      color: AppColors.label,
-    );
-    final cellStyle = theme.textTheme.titleMedium?.copyWith(
-      fontFeatures: const [FontFeature.tabularFigures()],
-    );
+    final headerStyle = tableHeaderStyle(theme);
+    final cellStyle = tableCellStyle(theme);
     final indexWidth = _indexColumnWidth(
       '${hasRows ? r.positions.length : 0}',
       headerStyle,
@@ -135,8 +123,7 @@ class PositionsTable extends StatelessWidget {
             else ...[
               // L'unité va dans l'en-tête : elle qualifie la colonne entière,
               // pas chaque ligne — la répéter quinze fois serait du bruit.
-              Padding(
-                padding: _cellPadding,
+              TableHeaderRow(
                 child: Row(
                   children: [
                     SizedBox(
@@ -168,49 +155,38 @@ class PositionsTable extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.xs),
               for (final (i, position) in r.positions.indexed)
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    // Rayures discrètes : de l'accroche pour l'œil qui
-                    // redescend la colonne entre deux traits de crayon.
-                    color: i.isOdd ? AppColors.field : Colors.transparent,
-                    borderRadius: BorderRadius.circular(AppRadii.field),
-                  ),
-                  child: Padding(
-                    padding: _cellPadding.add(
-                      const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: indexWidth,
-                          child: Text(
-                            '${i + 1}',
-                            style: cellStyle?.copyWith(color: AppColors.label),
-                            textAlign: TextAlign.end,
-                          ),
+                TableStripeRow(
+                  index: i,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: indexWidth,
+                        child: Text(
+                          '${i + 1}',
+                          style: cellStyle?.copyWith(color: AppColors.label),
+                          textAlign: TextAlign.end,
                         ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Text(
+                          formatNumber(position),
+                          style: cellStyle,
+                          textAlign: TextAlign.end,
+                        ),
+                      ),
+                      if (hasWidth) ...[
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: Text(
-                            formatNumber(position),
+                            formatNumber(r.centers[i]),
                             style: cellStyle,
                             textAlign: TextAlign.end,
                           ),
                         ),
-                        if (hasWidth) ...[
-                          const SizedBox(width: AppSpacing.md),
-                          Expanded(
-                            child: Text(
-                              formatNumber(r.centers[i]),
-                              style: cellStyle,
-                              textAlign: TextAlign.end,
-                            ),
-                          ),
-                        ],
                       ],
-                    ),
+                    ],
                   ),
                 ),
             ],

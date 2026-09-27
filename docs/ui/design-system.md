@@ -39,6 +39,7 @@ Rien dans le code ne les relie : `test/core/widgets/control_metrics_test.dart` l
 
 - **`AppSegmentedButton`** : écrit à la main (Material ne permet pas une pastille arrondie dans la piste). Tronque en silence : voir [writing.md](writing.md).
 - **`AppDropdown`** : `DropdownMenu` non éditable, pleine largeur. Pour une liste qui ne tient pas en segments.
+- **`TableHeaderRow` · `TableStripeRow`** (`table_rows.dart`) : les tables de résultats (positions de la Répartition, fiche de débit des Tiroirs). En-tête discret en `bodySmall`, chiffres tabulaires en `titleMedium`, une ligne sur deux rayée d'un aplat `field` arrondi, les cellules rentrées de `sm` dans la rayure. Une table de plus prend ces deux lignes, pas un style à elle.
 - **`AppSwitchField`** : **toute la ligne bascule**, libellé compris. ⚠️ Donc jamais de ⓘ dedans : une cible d'aide posée là changerait le réglage une fois sur deux. Ce qu'un switch a à expliquer tient dans sa ligne `help`.
 - **`NumberField`** : une cote en mm. Clavier numérique, notifie à chaque frappe. **Jamais de boutons − / +** : une cote se mesure puis se tape.
 - **`CountField`** : un nombre d'éléments (entier, bornes obligatoires). **Toujours** des boutons − / + (appui maintenu = défilement) : un nombre s'essaie au pouce. Le choix se fait par le type, pas par un paramètre : un compteur ne peut pas oublier ses boutons, une cote ne peut pas en recevoir. Les boutons prennent le fond et le filet d'un champ (`field`, `border`), `accentWash` à l'appui.

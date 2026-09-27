@@ -5,7 +5,7 @@
 | Couche | Fichiers |
 |---|---|
 | Calcul | `lib/core/calc/drawers.dart` · `test/core/calc/drawers_test.dart` |
-| Écran | `lib/features/drawers/` : `_screen`, `_controller`, `_help`, et ses composants `_front_heights` (bouton et feuille des hauteurs), `_cut_list` (fiche de débit) · `test/features/drawers/drawers_screen_test.dart`, `drawers_input_groups_test.dart` |
+| Écran | `lib/features/drawers/` : `_screen`, `_controller`, `_help`, et ses composants `_front_heights` (bouton et feuille des hauteurs), `_cut_list` (fiche de débit) · `test/features/drawers/drawers_screen_test.dart`, `drawers_input_groups_test.dart`, `drawers_cut_list_test.dart` |
 | Schéma | `_schema`, `_painter` (dont les pictogrammes d'assemblage et de fond) · `test/features/drawers/drawers_painter_test.dart` |
 | Plan | `_plan` · `test/features/drawers/drawers_plan_test.dart` |
 
@@ -89,7 +89,7 @@ Un refus s'affiche en `ErrorBanner` sous le dernier groupe (`DrawersOutcome`, co
 - `Caisse — largeur × longueur`, hors tout, avec le jeu par côté
 - `Longueur de glissière` (absente en bois sur bois)
 - `Axes de glissière`, depuis le bas de l'ouverture : ce qu'on trace sur le flanc
-- la fiche de débit, en deux colonnes : `Pièce` (`Côté ×6`) et `L × l × ép (mm)`. Cinq colonnes ne tiendraient pas sur un téléphone.
+- la fiche de débit, en deux colonnes : `Pièce` (`Côté ×6`) et `L × l × ép (mm)`. Cinq colonnes ne tiendraient pas sur un téléphone. Un tap la copie pour un tableur : une pièce par ligne, pièce, quantité et cotes séparées par des tabulations.
 
 ---
 
