@@ -1,5 +1,5 @@
 name: fabrique
-description: "Menuiserie — boîte à outils de calcul pour l'atelier."
+description: "Fabrique — cinq outils de calcul pour l'atelier de menuiserie."
 publish_to: 'none'
 version: 0.1.0+1
 

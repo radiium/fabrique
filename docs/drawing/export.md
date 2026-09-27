@@ -16,7 +16,7 @@ Câblé pour la Répartition, le Calepinage et les Tiroirs. Le Niveau en est exc
 - **Le painter se rejoue hors de l'arbre de widgets**, à 2339 px de large (A4 à 200 dpi). Capturer la page affichée rendrait la vignette à la résolution du téléphone de celui qui exporte. 200 et non 150 dpi : le corps 8,5 du cartouche descendrait sinon à 25 px.
 - **Tout est coté dans une boîte de 594 × 420** (`kPlanWidth` × `kPlanHeight`), qu'une seule mise à l'échelle uniforme amène à la taille disponible. ⚠️ Ces deux valeurs fixent aussi les tailles de texte du cartouche, réglées à la mesure : y toucher rouvre la question du nombre de lignes qui tiennent.
 - **Cartouche en colonne le long du bord droit**, pas en bandeau bas. Une liste veut de la hauteur, et la zone de dessin garde des proportions proches de celles des schémas. Un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous.
-- **Nom de fichier** : `menuiserie-<outil>-<date>.png`. Un dossier de chantier en contient plusieurs.
+- **Nom de fichier** : `fabrique-<outil>-<date>.png`. Un dossier de chantier en contient plusieurs.
 
 ## Le cartouche
 

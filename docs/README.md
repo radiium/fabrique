@@ -1,4 +1,4 @@
-# Menuiserie — documentation
+# Fabrique — documentation
 
 Cinq outils de calcul pour l'atelier, sur Android et Web. Le cœur de calcul est en Dart pur, testé sans appareil. Les écrans le branchent en temps réel.
 

@@ -1,11 +1,11 @@
 {
-    "name": "fabrique",
-    "short_name": "fabrique",
+    "name": "Fabrique",
+    "short_name": "Fabrique",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Cinq outils de calcul pour l'atelier de menuiserie.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

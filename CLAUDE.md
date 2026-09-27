@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-`fabrique` est l'app **« Menuiserie »** : cinq outils de calcul pour l'atelier (Calepinage, Répartition, Tiroirs, Niveau, Convertisseur), sur Android et Web.
+**Fabrique** : cinq outils de calcul pour l'atelier (Calepinage, Répartition, Tiroirs, Niveau, Convertisseur), sur Android et Web.
 
 ## Documentation
 

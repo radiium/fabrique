@@ -59,13 +59,13 @@ Future<Uint8List> renderPlanPng(
   }
 }
 
-/// `menuiserie-repartition-2026-09-23.png`.
+/// `fabrique-distribution-2026-09-23.png`.
 ///
 /// L'outil et la date dans le nom : un dossier de chantier finit par en
 /// contenir plusieurs, et `image.png` ne se retrouve pas.
 String planFileName(Tool tool, DateTime date) {
   String two(int v) => v.toString().padLeft(2, '0');
-  return 'menuiserie-${tool.id}-${date.year}-${two(date.month)}-'
+  return 'fabrique-${tool.id}-${date.year}-${two(date.month)}-'
       '${two(date.day)}.png';
 }
 
