@@ -32,7 +32,7 @@ PlanPainter? buildDrawersPlan({
         // Bois sur bois, la glissière reste seule sur sa rangée, en pleine
         // largeur.
         fields: [
-          (l10n.planDate.toUpperCase(), formatPlanDate(date)),
+          (l10n.planDate.toUpperCase(), formatPlanDate(date, l10n)),
           (
             l10n.drawersPlanFronts.toUpperCase(),
             l10n.drawersPlanFrontsValue(

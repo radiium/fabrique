@@ -101,13 +101,13 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
             valueListenable: _view,
             builder: (context, view, child) => IconButton(
               icon: const Icon(Icons.fit_screen),
-              tooltip: 'Ajuster à l’écran',
+              tooltip: AppLocalizations.of(context).schemaFit,
               onPressed: view.isIdentity() ? null : _fit,
             ),
           ),
           IconButton(
             icon: const Icon(Icons.rotate_90_degrees_cw),
-            tooltip: 'Pivoter le schéma',
+            tooltip: AppLocalizations.of(context).schemaRotate,
             onPressed: _rotate,
           ),
           // L'export en dernier : « ajuster » et « pivoter » règlent la vue,

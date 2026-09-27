@@ -23,6 +23,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Une case du cartouche : son intitulé en petites capitales, sa valeur.
 typedef PlanField = (String label, String value);
@@ -79,10 +80,11 @@ class Plan {
   final String? note;
 }
 
-/// `23/09/2026` — la date telle qu'on l'écrit sur un plan.
-String formatPlanDate(DateTime date) {
+/// `23/09/2026` — la date telle qu'on l'écrit sur un plan, dans l'ordre de la
+/// langue (`09/23/2026` en anglais).
+String formatPlanDate(DateTime date, AppLocalizations l10n) {
   String two(int v) => v.toString().padLeft(2, '0');
-  return '${two(date.day)}/${two(date.month)}/${date.year}';
+  return l10n.planDateValue(two(date.day), two(date.month), '${date.year}');
 }
 
 /// Les proportions d'une A4 à l'italienne, et la boîte dans laquelle le plan

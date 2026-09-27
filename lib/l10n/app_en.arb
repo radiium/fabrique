@@ -369,5 +369,17 @@
   "drawersAboutBottomGroove": "In a groove: captured in a groove in all four parts. It is larger by the groove depth on each side.",
   "drawersAboutBottomBetween": "Between sides: fitted inside with no groove, screwed, glued or on cleats. It takes the inside dimensions of the box.",
   "drawersAboutBottomUnderneath": "Under the box: screwed or nailed underneath, to the overall dimensions.",
-  "drawersAboutSlideLengthBody": "By default, the longest length sold that fits in the depth. Choose one if you already have your slides."
+  "drawersAboutSlideLengthBody": "By default, the longest length sold that fits in the depth. Choose one if you already have your slides.",
+  "planDateValue": "{month}/{day}/{year}",
+  "planExport": "Export",
+  "planShare": "Share",
+  "planExportTooltip": "Export the plan",
+  "planDownloaded": "Plan downloaded",
+  "planSaved": "Plan saved to your photos",
+  "planView": "View",
+  "planPhotosDenied": "Photo access denied",
+  "planSaveFailed": "Could not save",
+  "planExportFailed": "Could not export",
+  "schemaFit": "Fit to screen",
+  "schemaRotate": "Rotate the drawing"
 }

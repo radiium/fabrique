@@ -1373,4 +1373,42 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get drawersAboutSlideLengthBody =>
       'By default, the longest length sold that fits in the depth. Choose one if you already have your slides.';
+
+  @override
+  String planDateValue(String day, String month, String year) {
+    return '$month/$day/$year';
+  }
+
+  @override
+  String get planExport => 'Export';
+
+  @override
+  String get planShare => 'Share';
+
+  @override
+  String get planExportTooltip => 'Export the plan';
+
+  @override
+  String get planDownloaded => 'Plan downloaded';
+
+  @override
+  String get planSaved => 'Plan saved to your photos';
+
+  @override
+  String get planView => 'View';
+
+  @override
+  String get planPhotosDenied => 'Photo access denied';
+
+  @override
+  String get planSaveFailed => 'Could not save';
+
+  @override
+  String get planExportFailed => 'Could not export';
+
+  @override
+  String get schemaFit => 'Fit to screen';
+
+  @override
+  String get schemaRotate => 'Rotate the drawing';
 }

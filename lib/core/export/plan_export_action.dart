@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../models/tool.dart';
 import '../widgets/app_card_actions.dart';
 import '../widgets/haptics.dart';
@@ -85,6 +86,7 @@ class _PlanExportActionState extends State<PlanExportAction> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final idle = widget.ready && _running == _Running.none;
 
     if (widget.compact) {
@@ -96,7 +98,7 @@ class _PlanExportActionState extends State<PlanExportAction> {
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
             : const Icon(Icons.download),
-        tooltip: 'Exporter le plan',
+        tooltip: l10n.planExportTooltip,
         onPressed: idle
             ? () {
                 hapticSelection(context);
@@ -110,13 +112,13 @@ class _PlanExportActionState extends State<PlanExportAction> {
       actions: [
         CardAction(
           icon: Icons.download,
-          label: 'Exporter',
+          label: l10n.planExport,
           busy: _running == _Running.save,
           onTap: idle ? () => _run(_Running.save, savePlan) : null,
         ),
         CardAction(
           icon: Icons.share,
-          label: 'Partager',
+          label: l10n.planShare,
           busy: _running == _Running.share,
           onTap: idle ? () => _run(_Running.share, sharePlan) : null,
         ),

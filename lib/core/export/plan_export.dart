@@ -14,6 +14,7 @@ import 'package:gal/gal.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../app/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../models/tool.dart';
 import 'plan.dart';
 import 'plan_download.dart';
@@ -95,6 +96,7 @@ Future<bool> savePlan(
   required DateTime date,
 }) async {
   final messenger = ScaffoldMessenger.of(context);
+  final l10n = AppLocalizations.of(context);
   final name = planFileName(tool, date);
 
   try {
@@ -105,7 +107,7 @@ Future<bool> savePlan(
     // prend les fichiers que sur une poignée de navigateurs.
     if (kIsWeb) {
       await downloadPlan(bytes, name);
-      messenger.showSnackBar(const SnackBar(content: Text('Plan téléchargé')));
+      messenger.showSnackBar(SnackBar(content: Text(l10n.planDownloaded)));
       return true;
     }
 
@@ -116,13 +118,13 @@ Future<bool> savePlan(
     // si le plan est bien là, et à recommencer quand on ne le trouve pas.
     // La galerie s'ouvre sur son dernier élément, qui vient d'être écrit.
     messenger.showSnackBar(
-      const SnackBar(
-        content: Text('Plan enregistré dans vos photos'),
+      SnackBar(
+        content: Text(l10n.planSaved),
         // `persist` vaut `action != null` par défaut : un SnackBar qui porte
         // une action reste à l'écran indéfiniment. Ici c'est un accusé de
         // réception, pas une question — il doit s'effacer tout seul.
         persist: false,
-        action: SnackBarAction(label: 'Voir', onPressed: Gal.open),
+        action: SnackBarAction(label: l10n.planView, onPressed: Gal.open),
       ),
     );
     return true;
@@ -133,17 +135,15 @@ Future<bool> savePlan(
       SnackBar(
         content: Text(
           error.type == GalExceptionType.accessDenied
-              ? 'Accès aux photos refusé'
-              : 'Enregistrement impossible',
+              ? l10n.planPhotosDenied
+              : l10n.planSaveFailed,
         ),
       ),
     );
     return false;
   } catch (error, stack) {
     debugPrint('Enregistrement du plan impossible : $error\n$stack');
-    messenger.showSnackBar(
-      const SnackBar(content: Text('Enregistrement impossible')),
-    );
+    messenger.showSnackBar(SnackBar(content: Text(l10n.planSaveFailed)));
     return false;
   }
 }
@@ -163,6 +163,7 @@ Future<bool> sharePlan(
   required DateTime date,
 }) async {
   final messenger = ScaffoldMessenger.of(context);
+  final exportFailed = AppLocalizations.of(context).planExportFailed;
   final name = planFileName(tool, date);
 
   try {
@@ -180,7 +181,7 @@ Future<bool> sharePlan(
     // Le message reste court à l'écran : devant la scie, un détail technique
     // n'aide personne. Le détail part dans la console, seul endroit où il sert.
     debugPrint('Export du plan impossible : $error\n$stack');
-    messenger.showSnackBar(const SnackBar(content: Text('Export impossible')));
+    messenger.showSnackBar(SnackBar(content: Text(exportFailed)));
     return false;
   }
 }

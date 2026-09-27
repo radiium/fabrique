@@ -958,5 +958,31 @@
   "drawersAboutBottomGroove": "En rainure : pris dans une rainure des quatre pièces. Il dépasse de la profondeur de rainure de chaque côté.",
   "drawersAboutBottomBetween": "Entre les côtés : posé à l’intérieur sans rainure, vissé, collé ou sur tasseaux. Il fait les cotes intérieures de la caisse.",
   "drawersAboutBottomUnderneath": "Sous la caisse : vissé ou cloué dessous, aux dimensions hors tout.",
-  "drawersAboutSlideLengthBody": "Par défaut, la plus grande longueur vendue qui tient dans la profondeur. Imposez-en une si vous avez déjà vos glissières."
+  "drawersAboutSlideLengthBody": "Par défaut, la plus grande longueur vendue qui tient dans la profondeur. Imposez-en une si vous avez déjà vos glissières.",
+  "planDateValue": "{day}/{month}/{year}",
+  "@planDateValue": {
+    "description": "La date du cartouche, dans l'ordre de la langue",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "planExport": "Exporter",
+  "planShare": "Partager",
+  "planExportTooltip": "Exporter le plan",
+  "planDownloaded": "Plan téléchargé",
+  "planSaved": "Plan enregistré dans vos photos",
+  "planView": "Voir",
+  "planPhotosDenied": "Accès aux photos refusé",
+  "planSaveFailed": "Enregistrement impossible",
+  "planExportFailed": "Export impossible",
+  "schemaFit": "Ajuster à l’écran",
+  "schemaRotate": "Pivoter le schéma"
 }

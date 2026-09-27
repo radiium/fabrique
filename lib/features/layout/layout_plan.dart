@@ -41,7 +41,7 @@ PlanPainter? buildLayoutPlan({
       // L'élément, lui, est dessiné sans être coté, et les jeux ne se mesurent
       // pas à l'œil sur une trame.
       fields: [
-        (l10n.planDate.toUpperCase(), formatPlanDate(date)),
+        (l10n.planDate.toUpperCase(), formatPlanDate(date, l10n)),
         (
           l10n.layoutPlanElement.toUpperCase(),
           '${l10n.number(input.elementX)} × ${l10n.number(input.elementY)} mm',

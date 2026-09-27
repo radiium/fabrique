@@ -2343,6 +2343,78 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Par défaut, la plus grande longueur vendue qui tient dans la profondeur. Imposez-en une si vous avez déjà vos glissières.'**
   String get drawersAboutSlideLengthBody;
+
+  /// La date du cartouche, dans l'ordre de la langue
+  ///
+  /// In fr, this message translates to:
+  /// **'{day}/{month}/{year}'**
+  String planDateValue(String day, String month, String year);
+
+  /// No description provided for @planExport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exporter'**
+  String get planExport;
+
+  /// No description provided for @planShare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partager'**
+  String get planShare;
+
+  /// No description provided for @planExportTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exporter le plan'**
+  String get planExportTooltip;
+
+  /// No description provided for @planDownloaded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plan téléchargé'**
+  String get planDownloaded;
+
+  /// No description provided for @planSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plan enregistré dans vos photos'**
+  String get planSaved;
+
+  /// No description provided for @planView.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir'**
+  String get planView;
+
+  /// No description provided for @planPhotosDenied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès aux photos refusé'**
+  String get planPhotosDenied;
+
+  /// No description provided for @planSaveFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrement impossible'**
+  String get planSaveFailed;
+
+  /// No description provided for @planExportFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Export impossible'**
+  String get planExportFailed;
+
+  /// No description provided for @schemaFit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajuster à l’écran'**
+  String get schemaFit;
+
+  /// No description provided for @schemaRotate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pivoter le schéma'**
+  String get schemaRotate;
 }
 
 class _AppLocalizationsDelegate

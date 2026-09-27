@@ -42,7 +42,7 @@ PlanPainter? buildDistributionPlan({
       // mêmes chiffres exacts : les réécrire ici serait une redite, et chaque
       // case gagnée est une position de plus dans la table.
       fields: [
-        (l10n.planDate.toUpperCase(), formatPlanDate(date)),
+        (l10n.planDate.toUpperCase(), formatPlanDate(date, l10n)),
         (l10n.distributionPlanElements.toUpperCase(), '${result.count}'),
         // L'écart visé est la seule saisie que le dessin ne montre pas — il ne
         // porte que l'écart obtenu. Sans elle, rien n'explique le nombre

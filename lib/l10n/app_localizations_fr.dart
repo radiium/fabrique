@@ -1390,4 +1390,42 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get drawersAboutSlideLengthBody =>
       'Par défaut, la plus grande longueur vendue qui tient dans la profondeur. Imposez-en une si vous avez déjà vos glissières.';
+
+  @override
+  String planDateValue(String day, String month, String year) {
+    return '$day/$month/$year';
+  }
+
+  @override
+  String get planExport => 'Exporter';
+
+  @override
+  String get planShare => 'Partager';
+
+  @override
+  String get planExportTooltip => 'Exporter le plan';
+
+  @override
+  String get planDownloaded => 'Plan téléchargé';
+
+  @override
+  String get planSaved => 'Plan enregistré dans vos photos';
+
+  @override
+  String get planView => 'Voir';
+
+  @override
+  String get planPhotosDenied => 'Accès aux photos refusé';
+
+  @override
+  String get planSaveFailed => 'Enregistrement impossible';
+
+  @override
+  String get planExportFailed => 'Export impossible';
+
+  @override
+  String get schemaFit => 'Ajuster à l’écran';
+
+  @override
+  String get schemaRotate => 'Pivoter le schéma';
 }
