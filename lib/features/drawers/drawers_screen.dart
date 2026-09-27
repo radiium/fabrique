@@ -9,6 +9,8 @@ import '../../core/widgets/error_banner.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'drawers_controller.dart';
 import 'drawers_cut_list.dart';
 import 'drawers_input_groups.dart';
@@ -20,13 +22,14 @@ class DrawersScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final input = ref.watch(drawersFormProvider);
     final outcome = ref.watch(drawersResultProvider);
     final result = outcome.result;
     final form = ref.read(drawersFormProvider.notifier);
 
     return ToolScaffold(
-      title: Tool.drawers.label,
+      title: Tool.drawers.label(l10n),
       onReset: form.reset,
       canReset: input != kDrawersDefaults,
       inputGroups: [

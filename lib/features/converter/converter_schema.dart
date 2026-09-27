@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/models/measure_unit.dart';
+import '../../l10n/app_localizations.dart';
 import 'comparison_painter.dart';
 import 'converter_controller.dart';
 import 'converter_painter.dart';
@@ -21,11 +22,12 @@ class ConverterSchema extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final input = ref.watch(converterFormProvider);
     final result = ref.watch(converterResultProvider);
+    final l10n = AppLocalizations.of(context);
 
     return CustomPaint(
       painter: input.quantity == Quantity.length
           ? RulerPainter(result: result)
-          : ComparisonPainter(result: result, unit: input.unit),
+          : ComparisonPainter(result: result, unit: input.unit, l10n: l10n),
       size: Size.infinite,
     );
   }

@@ -8,6 +8,8 @@ import '../../core/models/tool.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'level_controller.dart';
 import 'level_schema.dart';
 
@@ -17,12 +19,13 @@ class LevelScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final reading = ref.watch(accelStreamProvider);
     final zero = ref.watch(tiltZeroProvider);
     final result = ref.watch(tiltResultProvider);
 
     return ToolScaffold(
-      title: Tool.level.label,
+      title: Tool.level.label(l10n),
       input: reading.hasError
           ? const _SensorUnavailable()
           : _Calibration(reading: reading.value, zero: zero),

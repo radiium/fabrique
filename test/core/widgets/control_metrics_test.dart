@@ -7,6 +7,7 @@ import 'package:fabrique/core/widgets/number_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
 import '../../support/phone.dart';
 
 /// Tout ce qui se saisit ou se choisit fait [kFieldHeight] de haut et
@@ -21,8 +22,7 @@ void main() {
     usePhone(tester);
 
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: Scaffold(
           body: Column(
             children: [

@@ -8,10 +8,12 @@ import 'package:fabrique/features/layout/layout_screen.dart';
 import 'package:fabrique/features/level/level_screen.dart';
 import 'package:fabrique/features/schema/schema_screen.dart';
 import 'package:fabrique/features/settings/settings_screen.dart';
+import 'package:fabrique/l10n/labels.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../support/app.dart';
+import '../support/l10n.dart';
 
 /// Les chemins sont construits par `AppRoutes`, les segments déclarés par le
 /// routeur : rien ne relie les deux à la compilation, seulement ce test.
@@ -28,7 +30,7 @@ void main() {
   });
 
   for (final tool in Tool.values) {
-    testWidgets('${tool.label} a son écran et sa page de schéma', (
+    testWidgets('${tool.label(fr)} a son écran et sa page de schéma', (
       tester,
     ) async {
       final router = await pumpApp(tester, AppRoutes.tool(tool));

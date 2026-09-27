@@ -1,28 +1,29 @@
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/models/measure_unit.dart';
 import 'package:fabrique/core/widgets/result_tile.dart';
 import 'package:fabrique/features/converter/converter_controller.dart';
 import 'package:fabrique/features/converter/converter_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:fabrique/l10n/labels.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
+import '../../support/l10n.dart';
 import '../../support/phone.dart';
 
 /// Le seul écran dont la forme change avec la saisie : les unités, le schéma
 /// et les tuiles dépendent tous de la grandeur choisie.
 void main() {
-  Future<ProviderContainer> pumpConverter(WidgetTester tester) async {
+  Future<ProviderContainer> pumpConverter(
+    WidgetTester tester, {
+    Locale locale = const Locale('fr'),
+  }) async {
     final container = ProviderContainer();
     addTearDown(container.dispose);
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(
-          theme: buildAppTheme(),
-          home: const ConverterScreen(),
-        ),
+        child: testApp(home: const ConverterScreen(), locale: locale),
       ),
     );
     return container;
@@ -36,7 +37,7 @@ void main() {
       form.setQuantity(quantity);
       await tester.pumpAndSettle();
 
-      expect(tester.takeException(), isNull, reason: quantity.label);
+      expect(tester.takeException(), isNull, reason: quantity.name);
 
       // Une tuile par unité de la grandeur, plus l'impérial composé en
       // longueur (actif par défaut).
@@ -45,7 +46,7 @@ void main() {
       expect(
         find.byType(ResultTile),
         findsNWidgets(expected),
-        reason: quantity.label,
+        reason: quantity.name,
       );
     }
   });
@@ -78,31 +79,36 @@ void main() {
     expect(input.unit, Quantity.mass.defaultUnit);
   });
 
-  testWidgets('aucun symbole d’unité n’est tronqué sur un téléphone', (
-    tester,
-  ) async {
-    // Le segmented tronque en silence (`overflow: ellipsis`) : un symbole trop
-    // large donnerait « mba… » sans que rien ne lève, et c'est la seule façon
-    // de s'en apercevoir sans regarder.
-    usePhone(tester);
+  for (final l10n in allLocales) {
+    testWidgets('aucun symbole d’unité n’est tronqué sur un téléphone '
+        '(${l10n.localeName})', (tester) async {
+      // Le segmented tronque en silence (`overflow: ellipsis`) : un symbole
+      // trop large donnerait « mba… » sans que rien ne lève, et c'est la
+      // seule façon de s'en apercevoir sans regarder.
+      usePhone(tester);
 
-    final container = await pumpConverter(tester);
-    final form = container.read(converterFormProvider.notifier);
+      final container = await pumpConverter(
+        tester,
+        locale: Locale(l10n.localeName),
+      );
+      final form = container.read(converterFormProvider.notifier);
 
-    for (final quantity in Quantity.values) {
-      form.setQuantity(quantity);
-      await tester.pumpAndSettle();
+      for (final quantity in Quantity.values) {
+        form.setQuantity(quantity);
+        await tester.pumpAndSettle();
 
-      for (final unit in quantity.units) {
-        final label = find.text(unit.symbol);
-        if (label.evaluate().isEmpty) continue;
-        expect(
-          tester.renderObject<RenderParagraph>(label.first).didExceedMaxLines,
-          isFalse,
-          reason:
-              '${unit.symbol} (${quantity.label}) tronqué dans le segmented',
-        );
+        for (final unit in quantity.units) {
+          final symbol = unit.symbol(l10n);
+          final label = find.text(symbol);
+          if (label.evaluate().isEmpty) continue;
+          expect(
+            tester.renderObject<RenderParagraph>(label.first).didExceedMaxLines,
+            isFalse,
+            reason:
+                '$symbol (${quantity.label(l10n)}) tronqué dans le segmented',
+          );
+        }
       }
-    }
-  });
+    });
+  }
 }

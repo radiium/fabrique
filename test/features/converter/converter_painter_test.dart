@@ -8,6 +8,8 @@ import 'package:fabrique/features/converter/converter_controller.dart';
 import 'package:fabrique/features/converter/converter_painter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/l10n.dart';
+
 /// Le résultat tel que le provider le construit.
 ConverterResult _resultFor(double value, MeasureUnit unit) {
   final base = toBase(value, unit);
@@ -46,6 +48,7 @@ void main() {
           final painter = ComparisonPainter(
             result: _resultFor(value, unit),
             unit: unit,
+            l10n: fr,
           );
           for (final size in sizes) {
             painter.paint(Canvas(PictureRecorder()), size);
@@ -58,9 +61,10 @@ void main() {
   test('une saisie refusée se rend sans lever', () {
     for (final size in sizes) {
       const RulerPainter(result: null).paint(Canvas(PictureRecorder()), size);
-      const ComparisonPainter(
+      ComparisonPainter(
         result: null,
         unit: MeasureUnit.kilogram,
+        l10n: fr,
       ).paint(Canvas(PictureRecorder()), size);
     }
   });

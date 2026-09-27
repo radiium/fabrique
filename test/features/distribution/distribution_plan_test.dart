@@ -1,5 +1,4 @@
 import 'package:fabrique/app/routes.dart';
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/distribution.dart';
 import 'package:fabrique/core/export/plan.dart';
 import 'package:fabrique/core/export/plan_export.dart';
@@ -16,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/app.dart';
+import '../../support/l10n.dart';
 import '../../support/phone.dart';
 
 /// Le plan est la seule image qui sorte de l'app : une fois partie, personne
@@ -31,6 +31,7 @@ void main() {
   }
 
   PlanPainter? planOf(ProviderContainer c) => buildDistributionPlan(
+    l10n: fr,
     input: c.read(distributionFormProvider),
     outcome: c.read(distributionResultProvider),
     date: DateTime(2026, 9, 23),
@@ -98,10 +99,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: c,
-        child: MaterialApp(
-          theme: buildAppTheme(),
-          home: const Scaffold(body: DistributionPlanView()),
-        ),
+        child: testApp(home: const Scaffold(body: DistributionPlanView())),
       ),
     );
 
@@ -143,10 +141,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: c,
-        child: MaterialApp(
-          theme: buildAppTheme(),
-          home: const DistributionScreen(),
-        ),
+        child: testApp(home: const DistributionScreen()),
       ),
     );
 
@@ -177,10 +172,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container(),
-        child: MaterialApp(
-          theme: buildAppTheme(),
-          home: const DistributionScreen(),
-        ),
+        child: testApp(home: const DistributionScreen()),
       ),
     );
 

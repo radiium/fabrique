@@ -5,6 +5,8 @@ import 'package:fabrique/features/drawers/drawers_controller.dart';
 import 'package:fabrique/features/drawers/drawers_plan.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/l10n.dart';
+
 void main() {
   PlanPainter? planOf(DrawersInput input) {
     DrawersOutcome outcome;
@@ -14,6 +16,7 @@ void main() {
       outcome = DrawersFailure(e.message);
     }
     return buildDrawersPlan(
+      l10n: fr,
       input: input,
       outcome: outcome,
       date: DateTime(2026, 9, 26),

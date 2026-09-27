@@ -5,6 +5,8 @@ import '../../app/routes.dart';
 import '../../app/theme.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/app_card.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 
 /// Icône ligne + nom + sous-titre une ligne.
 IconData iconFor(Tool tool) => switch (tool) {
@@ -25,6 +27,7 @@ class ToolCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return AppCard(
       onTap: () => context.go(AppRoutes.tool(tool)),
       child: Row(
@@ -36,7 +39,7 @@ class ToolCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  tool.label,
+                  tool.label(l10n),
                   // Le nom de l'outil est le texte qu'on vise depuis l'établi,
                   // téléphone posé : il se lit en `titleLarge`, un cran
                   // au-dessus des contrôles (18 px), pas en dessous.
@@ -45,7 +48,7 @@ class ToolCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  tool.subtitle,
+                  tool.subtitle(l10n),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodyMedium?.copyWith(

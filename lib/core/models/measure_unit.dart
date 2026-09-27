@@ -12,16 +12,11 @@ library;
 /// Une famille d'unités. Chaque grandeur a sa propre table, et on ne convertit
 /// jamais d'une famille à l'autre.
 enum Quantity {
-  length('Longueur'),
-  area('Surface'),
-  volume('Volume'),
-  mass('Masse'),
-  pressure('Pression');
-
-  const Quantity(this.label);
-
-  /// Libellé affiché dans le sélecteur de catégorie.
-  final String label;
+  length,
+  area,
+  volume,
+  mass,
+  pressure;
 
   /// Les unités de cette grandeur, dans l'ordre d'affichage : métrique du plus
   /// petit au plus grand, puis impérial.
@@ -51,58 +46,51 @@ enum Quantity {
 /// découpe que `LengthUnit` et `mmPerUnit` — l'enum décrit, le cœur calcule.
 enum MeasureUnit {
   // Longueur — base mm.
-  mm(Quantity.length, 'mm', 'Millimètres'),
-  cm(Quantity.length, 'cm', 'Centimètres'),
-  m(Quantity.length, 'm', 'Mètres'),
-  inch(Quantity.length, 'po', 'Pouces'),
-  foot(Quantity.length, 'pi', 'Pieds'),
+  mm(Quantity.length),
+  cm(Quantity.length),
+  m(Quantity.length),
+  inch(Quantity.length),
+  foot(Quantity.length),
 
   // Surface — base mm².
-  mm2(Quantity.area, 'mm²', 'Millimètres carrés'),
-  cm2(Quantity.area, 'cm²', 'Centimètres carrés'),
-  m2(Quantity.area, 'm²', 'Mètres carrés'),
-  inch2(Quantity.area, 'po²', 'Pouces carrés'),
-  foot2(Quantity.area, 'pi²', 'Pieds carrés'),
+  mm2(Quantity.area),
+  cm2(Quantity.area),
+  m2(Quantity.area),
+  inch2(Quantity.area),
+  foot2(Quantity.area),
 
   // Volume — base mm³. Le mm³ ne figure pas dans la liste : aucune cote
   // d'atelier ne s'exprime ainsi, il ne sert que de pivot interne.
-  cm3(Quantity.volume, 'cm³', 'Centimètres cubes'),
-  liter(Quantity.volume, 'L', 'Litres'),
-  m3(Quantity.volume, 'm³', 'Mètres cubes'),
-  inch3(Quantity.volume, 'po³', 'Pouces cubes'),
+  cm3(Quantity.volume),
+  liter(Quantity.volume),
+  m3(Quantity.volume),
+  inch3(Quantity.volume),
 
   /// Le pied-planche (PMP) : l'unité d'achat du bois dur. Conversion pénible,
   /// propre au bois, et absente de tous les convertisseurs génériques — c'est
   /// elle qui justifie à elle seule que cet outil existe.
-  boardFoot(Quantity.volume, 'pmp', 'Pieds-planche'),
+  boardFoot(Quantity.volume),
 
   // Masse — base g.
-  gram(Quantity.mass, 'g', 'Grammes'),
-  kilogram(Quantity.mass, 'kg', 'Kilogrammes'),
-  tonne(Quantity.mass, 't', 'Tonnes'),
-  ounce(Quantity.mass, 'oz', 'Onces'),
-  pound(Quantity.mass, 'lb', 'Livres'),
+  gram(Quantity.mass),
+  kilogram(Quantity.mass),
+  tonne(Quantity.mass),
+  ounce(Quantity.mass),
+  pound(Quantity.mass),
 
   // Pression — base Pa. bar et PSI pour le compresseur et la cloueuse, MPa
   // pour les résistances de matériaux (béton, bois). Pas de mbar : c'est un
   // décalage de virgule depuis le bar, et son symbole est le seul de toute la
   // table qui ne tienne pas dans un segment sur un téléphone de 400 px.
-  bar(Quantity.pressure, 'bar', 'Bars'),
-  kilopascal(Quantity.pressure, 'kPa', 'Kilopascals'),
-  megapascal(Quantity.pressure, 'MPa', 'Mégapascals'),
-  psi(Quantity.pressure, 'PSI', 'Livres par pouce carré');
+  bar(Quantity.pressure),
+  kilopascal(Quantity.pressure),
+  megapascal(Quantity.pressure),
+  psi(Quantity.pressure);
 
-  const MeasureUnit(this.quantity, this.symbol, this.label);
+  const MeasureUnit(this.quantity);
 
   /// La famille à laquelle l'unité appartient.
   final Quantity quantity;
-
-  /// Symbole court, tel qu'il s'écrit à côté d'un chiffre — et assez étroit
-  /// pour tenir dans un segment de sélecteur sur un téléphone.
-  final String symbol;
-
-  /// Nom complet, pour les libellés de tuile de résultat.
-  final String label;
 }
 
 /// Les unités groupées par grandeur, calculé au premier accès.

@@ -9,6 +9,8 @@ import '../../core/widgets/error_banner.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'distribution_controller.dart';
 import 'distribution_form.dart';
 import 'distribution_input_groups.dart';
@@ -21,6 +23,7 @@ class DistributionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final input = ref.watch(distributionFormProvider);
     final outcome = ref.watch(distributionResultProvider);
     final form = ref.read(distributionFormProvider.notifier);
@@ -29,7 +32,7 @@ class DistributionScreen extends ConsumerWidget {
     final result = ready?.best;
 
     return ToolScaffold(
-      title: Tool.distribution.label,
+      title: Tool.distribution.label(l10n),
       onReset: form.reset,
       canReset: input != kDistributionDefaults,
       inputGroups: [

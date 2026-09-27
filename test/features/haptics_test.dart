@@ -1,5 +1,4 @@
 import 'package:fabrique/app/app.dart';
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/persistence/settings_controller.dart';
 import 'package:fabrique/core/widgets/app_switch_field.dart';
 import 'package:fabrique/core/widgets/count_field.dart';
@@ -8,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/app.dart';
 
 /// Le réglage « retour haptique », de bout en bout.
 ///
@@ -46,8 +47,7 @@ void main() {
       ],
     );
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: Scaffold(
           body: enabled == null
               ? controls

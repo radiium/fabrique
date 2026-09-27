@@ -20,6 +20,7 @@ lib/
 │   └── widgets/         ToolScaffold, NumberField, CountField, ResultTile, FieldPair…
 ├── features/            home, settings, schema, et un dossier par outil
 └── l10n/                app_fr.arb (gabarit) · app_en.arb → AppLocalizations
+                         labels.dart : libellés et symboles des modèles de core/models
 
 test/
 ├── core/                le cœur de calcul et les primitives de dessin, sans appareil ;
@@ -86,6 +87,8 @@ Les versions font foi dans `pubspec.yaml`.
 **Écartés** : toute base locale (Isar, Drift) tant qu'il n'y a pas de « projets », toute DI tierce.
 
 **i18n** : français et anglais, le français sert de gabarit (`app_fr.arb`). Par défaut l'app suit le téléphone : sa première langue prise en charge l'emporte, région ignorée, et l'anglais sert de repli pour toute autre langue. Le réglage Langue peut imposer l'une ou l'autre (`appLocaleProvider`). Tant que les réglages chargent, l'app suit le téléphone plutôt que d'attendre le disque. Un test vérifie que les deux ARB ont les mêmes clés et les mêmes paramètres.
+
+Les enums de `core/models` ne portent aucun texte : `l10n/labels.dart` les nomme (`tool.label(l10n)`, `unit.symbol(l10n)`), une table `switch` par enum. Un builder de plan ou un painter reçoit `AppLocalizations` de son écran ou de son schéma, qui le lisent dans le contexte.
 
 La traduction des écrans-outils est en cours : l'accueil et les Réglages passent par `AppLocalizations`, les écrans-outils ont encore leurs libellés en dur.
 

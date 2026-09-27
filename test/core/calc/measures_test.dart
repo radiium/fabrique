@@ -15,21 +15,14 @@ void main() {
         expect(
           q.units.length,
           inInclusiveRange(2, 5),
-          reason: '${q.label} : ${q.units.length} unités',
+          reason: '${q.name} : ${q.units.length} unités',
         );
-      }
-    });
-
-    test('symboles distincts au sein d’une grandeur', () {
-      for (final q in Quantity.values) {
-        final symbols = q.units.map((u) => u.symbol).toSet();
-        expect(symbols.length, q.units.length, reason: q.label);
       }
     });
 
     test('l’unité par défaut appartient à sa grandeur', () {
       for (final q in Quantity.values) {
-        expect(q.defaultUnit.quantity, q, reason: q.label);
+        expect(q.defaultUnit.quantity, q, reason: q.name);
       }
     });
 

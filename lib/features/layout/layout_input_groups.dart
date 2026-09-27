@@ -11,6 +11,8 @@ import '../../core/widgets/app_switch_field.dart';
 import '../../core/widgets/field_pair.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'layout_controller.dart';
 import 'layout_help.dart';
 import 'layout_presets.dart';
@@ -69,10 +71,11 @@ class LayoutElementGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AppDisclosure(
       title: 'Élément et pose',
       icon: Icons.grid_view,
-      summary: _summary(input),
+      summary: _summary(input, l10n),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -108,7 +111,7 @@ class LayoutElementGroup extends StatelessWidget {
               onChanged: form.setOffset,
               segments: [
                 for (final offset in JointOffset.values)
-                  AppSegment(value: offset, label: offset.label),
+                  AppSegment(value: offset, label: offset.label(l10n)),
               ],
             ),
           ),
@@ -138,13 +141,13 @@ class LayoutElementGroup extends StatelessWidget {
 
   /// Le nom du produit s'il correspond, le format sinon : le nom porte déjà
   /// ses cotes. Un interrupteur ne s'y lit qu'allumé, éteint il ne change rien.
-  static String _summary(LayoutInput input) {
+  static String _summary(LayoutInput input, AppLocalizations l10n) {
     final preset = matchLayoutPreset(input);
     return [
       preset?.label ??
           '${formatNumber(input.elementX)} × '
               '${formatNumber(input.elementY)} mm',
-      'décalage ${input.offset.label.toLowerCase()}',
+      'décalage ${input.offset.label(l10n).toLowerCase()}',
       if (input.flip) 'orientation inversée',
       if (input.balanceRows) 'rangées équilibrées',
     ].join(' · ');

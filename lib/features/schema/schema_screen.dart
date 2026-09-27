@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/theme.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/haptics.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../converter/converter_schema.dart';
 import '../distribution/distribution_plan.dart';
 import '../drawers/drawers_plan.dart';
@@ -90,7 +92,7 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
       // à déplacer sous le doigt, et c'est pour ça qu'on est venu.
       backgroundColor: AppColors.cardSurface,
       appBar: AppBar(
-        title: Text(widget.tool.label),
+        title: Text(widget.tool.label(AppLocalizations.of(context))),
         actions: [
           // Grisé tant que rien n'a bougé, jamais masqué : c'est le seul
           // retour possible d'un schéma réduit ou poussé hors de l'écran, et

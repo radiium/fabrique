@@ -6,6 +6,8 @@ import '../../core/export/plan.dart';
 import '../../core/export/plan_export_action.dart';
 import '../../core/format.dart';
 import '../../core/models/tool.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'drawers_controller.dart';
 import 'drawers_painter.dart';
 import 'drawers_schema.dart';
@@ -15,6 +17,7 @@ import 'drawers_schema.dart';
 ///
 /// `null` quand la saisie est refusée : l'écran de l'outil dit déjà pourquoi.
 PlanPainter? buildDrawersPlan({
+  required AppLocalizations l10n,
   required DrawersInput input,
   required DrawersOutcome outcome,
   required DateTime date,
@@ -22,7 +25,7 @@ PlanPainter? buildDrawersPlan({
   if (outcome case DrawersReady(:final result)) {
     return PlanPainter(
       plan: Plan(
-        title: Tool.drawers.label,
+        title: Tool.drawers.label(l10n),
         // Ce que le dessin ne cote pas : l'ouverture, les épaisseurs, la
         // glissière. Les façades et la caisse sont cotées sur les deux vues.
         // Bois sur bois, la glissière reste seule sur sa rangée, en pleine
@@ -106,7 +109,9 @@ class DrawersPlanView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final painter = buildDrawersPlan(
+      l10n: l10n,
       input: ref.watch(drawersFormProvider),
       outcome: ref.watch(drawersResultProvider),
       date: DateTime.now(),
@@ -126,11 +131,13 @@ class DrawersExportAction extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return PlanExportAction(
       tool: Tool.drawers,
       compact: compact,
       ready: ref.watch(drawersResultProvider) is DrawersReady,
       buildPlan: (date) => buildDrawersPlan(
+        l10n: l10n,
         input: ref.read(drawersFormProvider),
         outcome: ref.read(drawersResultProvider),
         date: date,

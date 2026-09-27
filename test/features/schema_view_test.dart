@@ -2,10 +2,12 @@ import 'package:fabrique/app/routes.dart';
 import 'package:fabrique/core/models/tool.dart';
 import 'package:fabrique/core/widgets/schema_card.dart';
 import 'package:fabrique/features/schema/schema_screen.dart';
+import 'package:fabrique/l10n/labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/app.dart';
+import '../support/l10n.dart';
 
 /// Le schéma d'un outil se regarde en plein écran, et c'est la vignette qui y
 /// mène. Deux choses que ni `flutter analyze` ni les tests du cœur ne voient :
@@ -13,7 +15,7 @@ import '../support/app.dart';
 /// mêmes annotations), et une route qui ne mène nulle part.
 void main() {
   for (final tool in Tool.values.where((t) => t != Tool.level)) {
-    testWidgets('${tool.label} — la vignette ouvre le schéma, qui pivote', (
+    testWidgets('${tool.label(fr)} — la vignette ouvre le schéma, qui pivote', (
       tester,
     ) async {
       // Pivoter donne au painter une boîte à l'autre proportion : c'est le

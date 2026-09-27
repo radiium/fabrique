@@ -1,8 +1,9 @@
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/widgets/result_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../support/app.dart';
 
 void main() {
   testWidgets('des copies à la suite ne font pas la queue', (tester) async {
@@ -16,8 +17,7 @@ void main() {
       () => messenger.setMockMethodCallHandler(SystemChannels.platform, null),
     );
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: const Scaffold(
           body: ResultTile(label: 'Écart', value: '250'),
         ),

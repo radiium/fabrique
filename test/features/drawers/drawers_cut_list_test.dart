@@ -1,9 +1,10 @@
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/drawers.dart';
 import 'package:fabrique/features/drawers/drawers_cut_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../support/app.dart';
 
 void main() {
   testWidgets('un tap copie la fiche, une pièce par ligne pour un tableur', (
@@ -21,8 +22,7 @@ void main() {
       () => messenger.setMockMethodCallHandler(SystemChannels.platform, null),
     );
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: const Scaffold(
           body: CutListTable(
             pieces: [
@@ -55,10 +55,7 @@ void main() {
 
   testWidgets('saisie refusée : rien à copier', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
-        home: const Scaffold(body: CutListTable(pieces: null)),
-      ),
+      testApp(home: const Scaffold(body: CutListTable(pieces: null))),
     );
 
     expect(find.byIcon(Icons.copy_outlined), findsNothing);

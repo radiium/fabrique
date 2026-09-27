@@ -1,5 +1,4 @@
 import 'package:fabrique/app/routes.dart';
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/layout.dart';
 import 'package:fabrique/core/export/plan.dart';
 import 'package:fabrique/core/export/plan_export.dart';
@@ -11,11 +10,11 @@ import 'package:fabrique/features/layout/layout_controller.dart';
 import 'package:fabrique/features/layout/layout_plan.dart';
 import 'package:fabrique/features/layout/layout_presets.dart';
 import 'package:fabrique/features/layout/layout_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/app.dart';
+import '../../support/l10n.dart';
 
 /// Le plan est la seule image qui sorte de l'app : une fois partie, personne
 /// ne peut plus la corriger. Ce qui se vérifie ici, c'est ce qu'aucune autre
@@ -30,6 +29,7 @@ void main() {
   }
 
   PlanPainter? planOf(ProviderContainer c) => buildLayoutPlan(
+    l10n: fr,
     input: c.read(layoutFormProvider),
     outcome: c.read(layoutResultProvider),
     date: DateTime(2026, 9, 23),
@@ -156,7 +156,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: c,
-        child: MaterialApp(theme: buildAppTheme(), home: const LayoutScreen()),
+        child: testApp(home: const LayoutScreen()),
       ),
     );
 

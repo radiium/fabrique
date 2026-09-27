@@ -39,3 +39,16 @@ Future<GoRouter> pumpApp(
   await tester.pumpAndSettle();
   return router;
 }
+
+/// Une `MaterialApp` de test : le thème et les textes de l'app, sans routeur.
+///
+/// Tout widget qui lit `AppLocalizations` a besoin de ses délégués, jusqu'au
+/// plus petit contrôle partagé.
+Widget testApp({required Widget home, Locale locale = const Locale('fr')}) =>
+    MaterialApp(
+      theme: buildAppTheme(),
+      locale: locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      home: home,
+    );

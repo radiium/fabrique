@@ -7,11 +7,11 @@ import 'package:fabrique/core/widgets/schema_card.dart';
 import 'package:fabrique/features/layout/layout_controller.dart';
 import 'package:fabrique/features/layout/layout_presets.dart';
 import 'package:fabrique/features/layout/layout_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
 import '../../support/phone.dart';
 
 /// Le Calepinage a huit contrôles, en trois groupes repliables. Un contrôle
@@ -24,7 +24,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(theme: buildAppTheme(), home: const LayoutScreen()),
+        child: testApp(home: const LayoutScreen()),
       ),
     );
     return container;

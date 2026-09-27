@@ -14,6 +14,8 @@ import '../../core/widgets/number_field.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'converter_controller.dart';
 import 'converter_schema.dart';
 
@@ -22,6 +24,7 @@ class ConverterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final input = ref.watch(converterFormProvider);
     final result = ref.watch(converterResultProvider);
     final form = ref.read(converterFormProvider.notifier);
@@ -30,7 +33,7 @@ class ConverterScreen extends ConsumerWidget {
     final isLength = quantity == Quantity.length;
 
     return ToolScaffold(
-      title: Tool.converter.label,
+      title: Tool.converter.label(l10n),
       onReset: form.reset,
       canReset: input != kConverterDefaults,
       input: Column(
@@ -45,7 +48,7 @@ class ConverterScreen extends ConsumerWidget {
             child: AppDropdown<Quantity>(
               value: quantity,
               onSelected: form.setQuantity,
-              entries: {for (final q in Quantity.values) q: q.label},
+              entries: {for (final q in Quantity.values) q: q.label(l10n)},
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -53,7 +56,7 @@ class ConverterScreen extends ConsumerWidget {
             label: 'Valeur',
             // Le suffixe suit l'unité source : la saisie se lit d'un coup
             // d'œil sans remonter au sélecteur.
-            suffix: input.unit.symbol,
+            suffix: input.unit.symbol(l10n),
             value: input.value,
             onChanged: form.setValue,
           ),
@@ -65,7 +68,7 @@ class ConverterScreen extends ConsumerWidget {
               onChanged: form.setUnit,
               segments: [
                 for (final unit in quantity.units)
-                  AppSegment(value: unit, label: unit.symbol),
+                  AppSegment(value: unit, label: unit.symbol(l10n)),
               ],
             ),
           ),
@@ -92,9 +95,9 @@ class ConverterScreen extends ConsumerWidget {
       results: [
         for (final unit in quantity.units)
           ResultTile(
-            label: unit.label,
+            label: unit.label(l10n),
             value: formatNumber(result?.perUnit[unit]),
-            unit: unit.symbol,
+            unit: unit.symbol(l10n),
             note: unit == MeasureUnit.boardFoot
                 ? 'L’unité d’achat du bois dur — 144 po³'
                 : null,

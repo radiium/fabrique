@@ -1,19 +1,14 @@
 {
   "@@locale": "fr",
-
   "appTitle": "Fabrique",
   "@appTitle": {
     "description": "Nom de l'app, barre de titre et accueil"
   },
-
   "settings": "Réglages",
-
   "theme": "Thème",
   "themeLightLocked": "Clair",
-
   "haptics": "Retour haptique",
   "hapticsHelp": "Vibration brève sur les boutons − / + et les sélecteurs.",
-
   "language": "Langue",
   "languageSystem": "Langue du téléphone",
   "@languageSystem": {
@@ -24,11 +19,67 @@
     "description": "Chaque langue s'affiche dans sa propre langue : identique dans tous les ARB"
   },
   "languageEnglish": "English",
-
   "settingsLockedSection": "Verrouillé pour cette version",
-
   "settingsLoadFailed": "Réglages illisibles",
   "@settingsLoadFailed": {
     "description": "Titre affiché si shared_preferences échoue à l'ouverture"
+  },
+  "toolLayout": "Calepinage",
+  "toolLayoutSubtitle": "Pose sur surface, % de perte",
+  "@toolLayoutSubtitle": {
+    "description": "Sous-titre d'accueil, une ligne tronquée au-delà d'environ 34 caractères"
+  },
+  "toolDistribution": "Répartition",
+  "toolDistributionSubtitle": "Écart ou nombre d’éléments",
+  "toolDrawers": "Tiroirs",
+  "toolDrawersSubtitle": "Débit, façades, glissières",
+  "toolLevel": "Niveau",
+  "toolLevelSubtitle": "Bulle et inclinomètre",
+  "toolConverter": "Convertisseur",
+  "toolConverterSubtitle": "Cinq grandeurs, unités d’atelier",
+  "quantityLength": "Longueur",
+  "quantityArea": "Surface",
+  "quantityVolume": "Volume",
+  "quantityMass": "Masse",
+  "quantityPressure": "Pression",
+  "unitInchSymbol": "po",
+  "@unitInchSymbol": {
+    "description": "Symbole du pouce, décliné en po² et po³ ; tient dans un segment de sélecteur"
+  },
+  "unitFootSymbol": "pi",
+  "@unitFootSymbol": {
+    "description": "Symbole du pied, décliné en pi²"
+  },
+  "unitBoardFootSymbol": "pmp",
+  "@unitBoardFootSymbol": {
+    "description": "Symbole du pied-planche"
+  },
+  "unitMillimeters": "Millimètres",
+  "unitCentimeters": "Centimètres",
+  "unitMeters": "Mètres",
+  "unitInches": "Pouces",
+  "unitFeet": "Pieds",
+  "unitSquareMillimeters": "Millimètres carrés",
+  "unitSquareCentimeters": "Centimètres carrés",
+  "unitSquareMeters": "Mètres carrés",
+  "unitSquareInches": "Pouces carrés",
+  "unitSquareFeet": "Pieds carrés",
+  "unitCubicCentimeters": "Centimètres cubes",
+  "unitLiters": "Litres",
+  "unitCubicMeters": "Mètres cubes",
+  "unitCubicInches": "Pouces cubes",
+  "unitBoardFeet": "Pieds-planche",
+  "unitGrams": "Grammes",
+  "unitKilograms": "Kilogrammes",
+  "unitTonnes": "Tonnes",
+  "unitOunces": "Onces",
+  "unitPounds": "Livres",
+  "unitBars": "Bars",
+  "unitKilopascals": "Kilopascals",
+  "unitMegapascals": "Mégapascals",
+  "unitPsi": "Livres par pouce carré",
+  "jointOffsetStraight": "Droit",
+  "@jointOffsetStraight": {
+    "description": "Segment de sélecteur : 9 caractères au plus"
   }
 }

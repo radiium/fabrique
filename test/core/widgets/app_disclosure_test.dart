@@ -3,6 +3,8 @@ import 'package:fabrique/core/widgets/app_disclosure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
+
 void main() {
   Future<void> pumpDisclosure(
     WidgetTester tester, {
@@ -15,8 +17,7 @@ void main() {
       child: const Text('Contenu'),
     );
     return tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: Scaffold(
           // Deux parents de types différents, comme les corps étroit et large
           // de `ToolScaffold` : l'élément du panneau n'est pas réutilisé.
@@ -104,8 +105,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: const Scaffold(
           body: AppDisclosureGroup(
             child: Column(

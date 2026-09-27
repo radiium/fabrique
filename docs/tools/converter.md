@@ -16,7 +16,7 @@ Une valeur, convertie dans toutes les unités de sa grandeur à la fois.
 - **Le tri des unités fait la valeur de l'outil.** Une unité n'entre que si on la croise sur un chantier **et** qu'elle est pénible sans outil. Sans ce tri, l'écran redevient un convertisseur générique, que le téléphone fait déjà mieux.
   - D'où le **pied-planche** (`pmp`, 144 po³), l'unité d'achat du bois dur, absente des convertisseurs génériques.
   - D'où **aucun préfixe SI pur** (mg, dL, hPa…) : un décalage de virgule se fait de tête.
-- **Cinq unités au plus par grandeur**, symboles courts : c'est ce que tient un `AppSegmentedButton` sur un téléphone. Le millibar a été retiré pour cette seule raison (72 px mesurés pour 65,6 disponibles sur un écran de 400 px).
+- **Cinq unités au plus par grandeur**, symboles courts : c'est ce que tient un `AppSegmentedButton` sur un téléphone. Les symboles impériaux suivent la langue (`po` · `pi` · `pmp` en français, `in` · `ft` · `BF` en anglais), les autres s'écrivent pareil partout ; le tableau ci-dessous est en français. Le millibar a été retiré pour cette seule raison (72 px mesurés pour 65,6 disponibles sur un écran de 400 px).
 - **On ne convertit jamais d'une grandeur à l'autre** : `convert` lève.
 
 | Grandeur | Pivot | Unités |

@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
 import '../../support/phone.dart';
 
 /// L'écran change de forme avec la saisie — le champ piloté suit le mode, le
@@ -21,10 +22,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(
-          theme: buildAppTheme(),
-          home: const DistributionScreen(),
-        ),
+        child: testApp(home: const DistributionScreen()),
       ),
     );
     return container;

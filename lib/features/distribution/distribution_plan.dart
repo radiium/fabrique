@@ -5,6 +5,8 @@ import '../../core/export/plan.dart';
 import '../../core/export/plan_export_action.dart';
 import '../../core/format.dart';
 import '../../core/models/tool.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'distribution_controller.dart';
 import 'distribution_form.dart';
 import 'distribution_painter.dart';
@@ -19,6 +21,7 @@ import 'distribution_schema.dart';
 /// `null` quand la saisie est refusée. Il n'y a alors pas de plan à faire — le
 /// cartouche n'aurait que des tirets, et l'écran de l'outil dit déjà pourquoi.
 PlanPainter? buildDistributionPlan({
+  required AppLocalizations l10n,
   required DistributionFormState input,
   required DistributionOutcome outcome,
   required DateTime date,
@@ -30,7 +33,7 @@ PlanPainter? buildDistributionPlan({
 
   return PlanPainter(
     plan: Plan(
-      title: Tool.distribution.label,
+      title: Tool.distribution.label(l10n),
       // Le cartouche ne porte **que ce que le dessin ne cote pas**. La largeur
       // totale, la largeur d'élément et les marges sont sur le schéma, aux
       // mêmes chiffres exacts : les réécrire ici serait une redite, et chaque
@@ -96,7 +99,9 @@ class DistributionPlanView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final painter = buildDistributionPlan(
+      l10n: l10n,
       input: ref.watch(distributionFormProvider),
       outcome: ref.watch(distributionResultProvider),
       date: DateTime.now(),
@@ -116,11 +121,13 @@ class DistributionExportAction extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return PlanExportAction(
       tool: Tool.distribution,
       compact: compact,
       ready: ref.watch(distributionResultProvider) is DistributionReady,
       buildPlan: (date) => buildDistributionPlan(
+        l10n: l10n,
         input: ref.read(distributionFormProvider),
         outcome: ref.read(distributionResultProvider),
         date: date,

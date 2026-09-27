@@ -88,10 +88,7 @@ double fromBase(double base, MeasureUnit unit) {
 /// est de refuser franchement plutôt que de rendre un nombre.
 double convert(double value, MeasureUnit from, MeasureUnit to) {
   if (from.quantity != to.quantity) {
-    throw CalcException(
-      'Conversion impossible : ${from.symbol} (${from.quantity.label}) '
-      'vers ${to.symbol} (${to.quantity.label})',
-    );
+    throw CalcException('Conversion impossible : ${from.name} vers ${to.name}');
   }
   return fromBase(toBase(value, from), to);
 }

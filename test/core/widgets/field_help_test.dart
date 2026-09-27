@@ -5,6 +5,7 @@ import 'package:fabrique/core/widgets/number_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
 import '../../support/phone.dart';
 
 /// L'aide de champ ne se vérifie qu'au rendu : qu'elle s'ouvre, qu'elle se
@@ -19,12 +20,7 @@ void main() {
 
   Future<void> pump(WidgetTester tester, Widget child) async {
     usePhone(tester);
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
-        home: Scaffold(body: child),
-      ),
-    );
+    await tester.pumpWidget(testApp(home: Scaffold(body: child)));
   }
 
   testWidgets('un tap sur la ligne de libellé ouvre la feuille', (

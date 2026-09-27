@@ -1,8 +1,8 @@
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/widgets/app_card_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
 import '../../support/phone.dart';
 
 void main() {
@@ -13,8 +13,7 @@ void main() {
   }) async {
     usePhone(tester);
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: Builder(
           builder: (context) => MediaQuery(
             data: MediaQuery.of(context)

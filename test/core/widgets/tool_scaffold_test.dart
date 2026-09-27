@@ -1,9 +1,9 @@
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/widgets/app_disclosure.dart';
 import 'package:fabrique/core/widgets/tool_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
 import '../../support/phone.dart';
 
 void main() {
@@ -17,8 +17,7 @@ void main() {
   }) async {
     usePhone(tester);
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: ToolScaffold(
           title: 'Outil',
           input: input,

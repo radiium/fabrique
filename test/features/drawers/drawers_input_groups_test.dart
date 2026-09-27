@@ -1,12 +1,11 @@
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/calc/drawers.dart';
 import 'package:fabrique/features/drawers/drawers_controller.dart';
 import 'package:fabrique/features/drawers/drawers_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
 import '../../support/phone.dart';
 
 void main() {
@@ -17,7 +16,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(theme: buildAppTheme(), home: const DrawersScreen()),
+        child: testApp(home: const DrawersScreen()),
       ),
     );
     return container;

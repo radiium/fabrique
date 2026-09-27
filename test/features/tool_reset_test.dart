@@ -1,4 +1,3 @@
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/features/converter/converter_controller.dart';
 import 'package:fabrique/features/converter/converter_screen.dart';
 import 'package:fabrique/features/distribution/distribution_controller.dart';
@@ -10,6 +9,8 @@ import 'package:fabrique/features/layout/layout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/app.dart';
 
 /// Le bouton « réinitialiser » de l'`AppBar`.
 ///
@@ -26,7 +27,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(theme: buildAppTheme(), home: screen),
+        child: testApp(home: screen),
       ),
     );
     return container;

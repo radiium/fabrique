@@ -1,14 +1,14 @@
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/models/tool.dart';
 import 'package:fabrique/core/widgets/schema_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
+
 void main() {
   Future<void> pumpCard(WidgetTester tester, {Tool? expandFor}) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: Scaffold(
           body: SizedBox(
             height: 200,

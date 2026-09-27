@@ -5,8 +5,9 @@ import '../../core/calc/layout.dart';
 import '../../core/export/plan.dart';
 import '../../core/export/plan_export_action.dart';
 import '../../core/format.dart';
-import '../../core/models/enums.dart';
 import '../../core/models/tool.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'layout_controller.dart';
 import 'layout_painter.dart';
 import 'layout_schema.dart';
@@ -23,6 +24,7 @@ const double _mm2PerM2 = 1000 * 1000;
 /// `null` quand la saisie est refusée. Il n'y a alors pas de plan à faire — le
 /// cartouche n'aurait que des tirets, et l'écran de l'outil dit déjà pourquoi.
 PlanPainter? buildLayoutPlan({
+  required AppLocalizations l10n,
   required LayoutInput input,
   required LayoutOutcome outcome,
   required DateTime date,
@@ -33,7 +35,7 @@ PlanPainter? buildLayoutPlan({
 
   return PlanPainter(
     plan: Plan(
-      title: Tool.layout.label,
+      title: Tool.layout.label(l10n),
       // Le cartouche ne porte **que ce que le dessin ne cote pas**. Les deux
       // cotes de la surface sont sur le schéma, aux mêmes chiffres exacts.
       // L'élément, lui, est dessiné sans être coté, et les jeux ne se mesurent
@@ -44,7 +46,7 @@ PlanPainter? buildLayoutPlan({
           'ÉLÉMENT',
           '${formatNumber(input.elementX)} × ${formatNumber(input.elementY)} mm',
         ),
-        ('DÉCALAGE', input.offset.label),
+        ('DÉCALAGE', input.offset.label(l10n)),
         if (input.gapX > 0 || input.gapY > 0)
           (
             'JEU',
@@ -103,7 +105,9 @@ class LayoutPlanView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final painter = buildLayoutPlan(
+      l10n: l10n,
       input: ref.watch(layoutFormProvider),
       outcome: ref.watch(layoutResultProvider),
       date: DateTime.now(),
@@ -123,11 +127,13 @@ class LayoutExportAction extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return PlanExportAction(
       tool: Tool.layout,
       compact: compact,
       ready: ref.watch(layoutResultProvider) is LayoutReady,
       buildPlan: (date) => buildLayoutPlan(
+        l10n: l10n,
         input: ref.read(layoutFormProvider),
         outcome: ref.read(layoutResultProvider),
         date: date,

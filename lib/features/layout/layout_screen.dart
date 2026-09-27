@@ -9,6 +9,8 @@ import '../../core/widgets/error_banner.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'layout_controller.dart';
 import 'layout_input_groups.dart';
 import 'layout_plan.dart';
@@ -27,13 +29,14 @@ class LayoutScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final input = ref.watch(layoutFormProvider);
     final outcome = ref.watch(layoutResultProvider);
     final result = outcome is LayoutReady ? outcome.result : null;
     final form = ref.read(layoutFormProvider.notifier);
 
     return ToolScaffold(
-      title: Tool.layout.label,
+      title: Tool.layout.label(l10n),
       onReset: form.reset,
       canReset: input != kLayoutDefaults,
       inputGroups: [

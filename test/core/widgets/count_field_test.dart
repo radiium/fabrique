@@ -1,9 +1,9 @@
-import 'package:fabrique/app/theme.dart';
 import 'package:fabrique/core/widgets/count_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/app.dart';
 import '../../support/phone.dart';
 
 void main() {
@@ -11,8 +11,7 @@ void main() {
     usePhone(tester);
     final changes = <int>[];
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildAppTheme(),
+      testApp(
         home: Scaffold(
           body: CountField(
             label: 'Nombre',

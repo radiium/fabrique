@@ -6,6 +6,8 @@ import '../../app/theme.dart';
 import '../../core/format.dart';
 import '../../core/models/measure_unit.dart';
 import '../../core/painting.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import 'converter_controller.dart';
 
 /// Marge intérieure du canvas.
@@ -30,13 +32,19 @@ const double _cubeDepth = 0.34;
 /// Assumé : c'est plus pauvre que la double règle des longueurs. Une pression
 /// n'a pas de forme, et lui en inventer une mentirait.
 class ComparisonPainter extends CustomPainter {
-  const ComparisonPainter({required this.result, required this.unit});
+  const ComparisonPainter({
+    required this.result,
+    required this.unit,
+    required this.l10n,
+  });
 
   final ConverterResult? result;
 
   /// L'unité saisie : la forme est cotée dans l'unité que l'utilisateur a
   /// sous les yeux, pas dans le repère.
   final MeasureUnit unit;
+
+  final AppLocalizations l10n;
 
   /// Le repère de chaque famille : une quantité que tout le monde se figure.
   static const Map<Quantity, MeasureUnit> _reference = {
@@ -83,8 +91,8 @@ class ComparisonPainter extends CustomPainter {
 
     final (valueExtent, refExtent, outOfScale) = _extents(k, maxExtent);
 
-    final valueLabel = '${formatNumber(r.perUnit[unit])} ${unit.symbol}';
-    final refLabel = '1 ${reference.symbol}';
+    final valueLabel = '${formatNumber(r.perUnit[unit])} ${unit.symbol(l10n)}';
+    final refLabel = '1 ${reference.symbol(l10n)}';
 
     switch (r.quantity) {
       case Quantity.area:
@@ -332,5 +340,7 @@ class ComparisonPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(ComparisonPainter old) =>
-      old.result != result || old.unit != unit;
+      old.result != result ||
+      old.unit != unit ||
+      old.l10n.localeName != l10n.localeName;
 }
