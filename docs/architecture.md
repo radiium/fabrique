@@ -86,7 +86,7 @@ Les versions font foi dans `pubspec.yaml`.
 
 **Écartés** : toute base locale (Isar, Drift) tant qu'il n'y a pas de « projets », toute DI tierce.
 
-**i18n** : français et anglais, le français sert de gabarit (`app_fr.arb`). Par défaut l'app suit le téléphone : sa première langue prise en charge l'emporte, région ignorée, et l'anglais sert de repli pour toute autre langue. Le réglage Langue peut imposer l'une ou l'autre (`appLocaleProvider`). Tant que les réglages chargent, l'app suit le téléphone plutôt que d'attendre le disque. Un test vérifie que les deux ARB ont les mêmes clés et les mêmes paramètres.
+**i18n** : français et anglais, le français sert de gabarit (`app_fr.arb`). Par défaut l'app suit le téléphone : sa première langue prise en charge l'emporte, région ignorée, et l'anglais sert de repli pour toute autre langue. Le réglage Langue peut imposer l'une ou l'autre (`appLocaleProvider`). Tant que les réglages chargent, l'app suit le téléphone plutôt que d'attendre le disque. Un test vérifie que les deux ARB ont les mêmes clés et les mêmes paramètres. Sur Android 13 et plus, la langue se choisit aussi dans les réglages système de l'app (`res/xml/locales_config.xml`, même liste que les ARB) : l'app la reçoit comme langue du téléphone. Sur le web, le framework pose lui-même le `lang` de la page.
 
 Les enums de `core/models` ne portent aucun texte : `l10n/labels.dart` les nomme (`tool.label(l10n)`, `unit.symbol(l10n)`), une table `switch` par enum. Un builder de plan ou un painter reçoit `AppLocalizations` de son écran ou de son schéma, qui le lisent dans le contexte.
 

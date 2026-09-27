@@ -1,0 +1,15 @@
+Five calculators for the woodworking shop. Every result updates as you type, with a dimensioned drawing.
+
+<b>Tile layout</b>: lay identical pieces over a surface (tile, boards, flooring, pavers, sheets). Number of whole and cut pieces, cut sizes, waste percentage, stacked or offset joints, gaps and perimeter gap.
+
+<b>Spacing</b>: space pieces across a width (balusters, slats, shelves, drilling centers). From a count or a target gap, with margins, and the pitch to mark out.
+
+<b>Drawers</b>: from the cabinet opening, the cut list for the boxes and fronts, the slide length and where to screw the slides.
+
+<b>Level</b>: bubble level and inclinometer using the phone's accelerometer, with zeroing.
+
+<b>Converter</b>: lengths, areas, volumes, weights and pressures, limited to the units you meet on a job site. Inches in fractions down to 1/16, board feet.
+
+Each calculation's drawing exports as an image, to your photos or through sharing.
+
+Everything is in millimeters. In French and English. No ads, no account, and no Internet access.

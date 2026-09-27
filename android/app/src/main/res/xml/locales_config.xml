@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Les langues de l'app, pour le choix par application d'Android 13 et plus.
+     Même liste que les ARB de lib/l10n : une langue ajoutée d'un côté
+     s'ajoute de l'autre. -->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="fr" />
+    <locale android:name="en" />
+</locale-config>

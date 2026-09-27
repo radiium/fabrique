@@ -12,4 +12,4 @@ Cinq outils de calcul pour l'atelier de menuiserie. Chaque résultat se met à j
 
 Le plan de chaque calcul s'exporte en image, dans les photos ou par le partage.
 
-Tout est en millimètres. Pas de publicité, pas de compte, et aucun accès à Internet.
+Tout est en millimètres. En français et en anglais. Pas de publicité, pas de compte, et aucun accès à Internet.

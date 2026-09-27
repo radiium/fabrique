@@ -37,6 +37,13 @@ android {
         versionName = flutter.versionName
     }
 
+    // Les ressources des dépendances ne gardent que les langues de l'app : une
+    // boîte de dialogue système en allemand dans une app en anglais se lirait
+    // comme un bug.
+    androidResources {
+        localeFilters += listOf("fr", "en")
+    }
+
     signingConfigs {
         if (keyProperties != null) {
             create("release") {
