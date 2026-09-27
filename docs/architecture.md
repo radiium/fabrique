@@ -53,7 +53,7 @@ S'y ajoutent, seulement si l'outil en a besoin :
 
 1. **Saisie** : modèle `@freezed` immuable, avec `fromJson` / `toJson` pour la persistance.
 2. **Notifier** `@riverpod` : tient la saisie, une méthode par champ qui fait `copyWith`, et `reset()`.
-3. **Résultat dérivé** : un provider `watch` la saisie et appelle la fonction pure. Il attrape `CalcException` et rend `null`, que l'écran affiche `—`. Exception : Répartition et Calepinage rendent un type scellé `…Ready` / `…Failure(message)`, pour afficher le motif du refus (voir [ui/tool-screen.md](ui/tool-screen.md)).
+3. **Résultat dérivé** : un provider `watch` la saisie et appelle la fonction pure. Il attrape `CalcException` et rend `null`, que l'écran affiche `—`. Exception : Répartition, Calepinage et Tiroirs rendent un type scellé `…Ready` / `…Failure(reason)`, pour afficher le motif du refus (voir [ui/tool-screen.md](ui/tool-screen.md)).
 4. **Écran** : `watch` le résultat. Pas de bouton « calculer » : le calcul temps réel est une exigence.
 5. **Painter** : reçoit le résultat et dessine. Il ne calcule rien.
 
@@ -89,6 +89,8 @@ Les versions font foi dans `pubspec.yaml`.
 **i18n** : français et anglais, le français sert de gabarit (`app_fr.arb`). Par défaut l'app suit le téléphone : sa première langue prise en charge l'emporte, région ignorée, et l'anglais sert de repli pour toute autre langue. Le réglage Langue peut imposer l'une ou l'autre (`appLocaleProvider`). Tant que les réglages chargent, l'app suit le téléphone plutôt que d'attendre le disque. Un test vérifie que les deux ARB ont les mêmes clés et les mêmes paramètres.
 
 Les enums de `core/models` ne portent aucun texte : `l10n/labels.dart` les nomme (`tool.label(l10n)`, `unit.symbol(l10n)`), une table `switch` par enum. Un builder de plan ou un painter reçoit `AppLocalizations` de son écran ou de son schéma, qui le lisent dans le contexte.
+
+Un refus du cœur est un `CalcError` : une classe scellée en Dart pur, qui porte les chiffres bruts et, pour une cote nulle ou négative, le champ en cause (`PositiveField`, `NonNegativeField`). `l10n/calc_errors.dart` le rédige par un `switch` sans joker : un motif ajouté casse la compilation tant qu'il n'a pas sa phrase dans les deux langues.
 
 Les nombres affichés prennent le séparateur décimal de la langue (`2,5` / `2.5`) : l'UI écrit `l10n.number(x)` (`l10n/numbers.dart`) plutôt que `formatNumber(x)`, qui garde le point par défaut pour rester sans Flutter. La saisie accepte les deux séparateurs.
 

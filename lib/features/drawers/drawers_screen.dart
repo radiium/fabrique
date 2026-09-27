@@ -10,6 +10,7 @@ import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
 import '../../l10n/app_localizations.dart';
+import '../../l10n/calc_errors.dart';
 import '../../l10n/labels.dart';
 import 'drawers_controller.dart';
 import 'drawers_cut_list.dart';
@@ -39,10 +40,10 @@ class DrawersScreen extends ConsumerWidget {
         DrawersBoxGroup(input: input, form: form),
         // Dans la carte de saisie, pas près des résultats : sur mobile, ils
         // sont sous le schéma.
-        if (outcome case DrawersFailure(:final message))
+        if (outcome case DrawersFailure(:final reason))
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: ErrorBanner(message: message),
+            child: ErrorBanner(message: l10n.calcError(reason)),
           ),
       ],
       visualization: const SchemaCard(

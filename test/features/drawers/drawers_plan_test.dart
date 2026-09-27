@@ -13,7 +13,7 @@ void main() {
     try {
       outcome = DrawersReady(computeDrawers(input));
     } on CalcException catch (e) {
-      outcome = DrawersFailure(e.message);
+      outcome = DrawersFailure(e.reason);
     }
     return buildDrawersPlan(
       l10n: fr,

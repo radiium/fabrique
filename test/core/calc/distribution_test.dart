@@ -167,12 +167,10 @@ void main() {
   });
 
   group('computeDistribution — erreurs', () {
-    void expectMessage(void Function() body, Matcher message) {
+    void expectRefusal(void Function() body, Matcher reason) {
       expect(
         body,
-        throwsA(
-          isA<CalcException>().having((e) => e.message, 'message', message),
-        ),
+        throwsA(isA<CalcException>().having((e) => e.reason, 'reason', reason)),
       );
     }
 
@@ -202,7 +200,7 @@ void main() {
     });
 
     test('les marges mangent toute la largeur', () {
-      expectMessage(
+      expectRefusal(
         () => computeDistribution(
           const DistributionInput(
             length: 100,
@@ -211,12 +209,12 @@ void main() {
             endOffset: 40,
           ),
         ),
-        contains('marges'),
+        isA<MarginsFillWidth>(),
       );
     });
 
     test('un seul élément ne peut pas border les deux côtés', () {
-      expectMessage(
+      expectRefusal(
         () => computeDistribution(
           const DistributionInput(
             length: 100,
@@ -226,12 +224,12 @@ void main() {
             endEdge: DistributionEdge.element,
           ),
         ),
-        contains('au moins 2'),
+        isA<TooFewElements>().having((e) => e.minCount, 'minCount', 2),
       );
     });
 
     test('une rangée bordée d’un élément en compte au moins un', () {
-      expectMessage(
+      expectRefusal(
         () => computeDistribution(
           const DistributionInput(
             length: 100,
@@ -240,28 +238,34 @@ void main() {
             startEdge: DistributionEdge.element,
           ),
         ),
-        contains('au moins 1'),
+        isA<TooFewElements>().having((e) => e.minCount, 'minCount', 1),
       );
     });
 
-    test('ça ne rentre pas : le message donne les deux cotes', () {
-      expectMessage(
+    test('ça ne rentre pas : le refus porte les deux cotes', () {
+      expectRefusal(
         () => computeDistribution(
           const DistributionInput(length: 100, count: 11, elementWidth: 10),
         ),
-        allOf(contains('110'), contains('100')),
+        isA<ElementsOverflow>()
+            .having((e) => e.occupied, 'occupied', 110)
+            .having((e) => e.available, 'available', 100),
       );
     });
 
     test('nombre d’éléments déraisonnable', () {
-      expectMessage(
+      expectRefusal(
         () => computeDistribution(
           const DistributionInput(
             length: 100000,
             count: kMaxDistributionCount + 1,
           ),
         ),
-        contains('$kMaxDistributionCount'),
+        isA<TooManyElements>().having(
+          (e) => e.maxCount,
+          'maxCount',
+          kMaxDistributionCount,
+        ),
       );
     });
 
@@ -281,12 +285,10 @@ void main() {
   });
 
   group('computeDistributionForSpacing', () {
-    void expectTargetMessage(void Function() body, Matcher message) {
+    void expectTargetRefusal(void Function() body, Matcher reason) {
       expect(
         body,
-        throwsA(
-          isA<CalcException>().having((e) => e.message, 'message', message),
-        ),
+        throwsA(isA<CalcException>().having((e) => e.reason, 'reason', reason)),
       );
     }
 
@@ -409,9 +411,9 @@ void main() {
         ),
         throwsA(
           isA<CalcException>().having(
-            (e) => e.message,
-            'message',
-            contains('trop petit'),
+            (e) => e.reason,
+            'reason',
+            isA<GapTooSmall>(),
           ),
         ),
       );
@@ -440,7 +442,7 @@ void main() {
 
     test('aucune borne réalisable : erreur explicite', () {
       // Bords élément/élément → 2 éléments minimum, soit 120 mm dans 100.
-      expectTargetMessage(
+      expectTargetRefusal(
         () => computeDistributionForSpacing(
           const DistributionTargetInput(
             length: 100,
@@ -450,7 +452,7 @@ void main() {
             endEdge: DistributionEdge.element,
           ),
         ),
-        contains('Aucune répartition'),
+        isA<NoDistributionForGap>(),
       );
     });
   });

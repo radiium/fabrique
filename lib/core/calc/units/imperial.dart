@@ -35,13 +35,13 @@ const int _inchesPerFoot = 12;
 /// (6/16 → 3/8). Une valeur entière rend `num: 0, den: 1`.
 ImperialParts mmToImperial(double mm, {int denominator = 16}) {
   if (!mm.isFinite) {
-    throw const CalcException('Valeur non finie');
+    throw const CalcException(NonFiniteValue());
   }
   if (mm < 0) {
-    throw const CalcException('Longueur négative');
+    throw const CalcException(NegativeLength());
   }
   if (denominator < 1) {
-    throw const CalcException('Dénominateur invalide');
+    throw const CalcException(InvalidDenominator());
   }
 
   // Tout se joue en nombre de crans de 1/denominator de pouce : l'arrondi fait
@@ -65,10 +65,10 @@ ImperialParts mmToImperial(double mm, {int denominator = 16}) {
 /// Recompose une longueur impériale en millimètres.
 double imperialToMm(ImperialParts p) {
   if (p.den < 1) {
-    throw const CalcException('Dénominateur invalide');
+    throw const CalcException(InvalidDenominator());
   }
   if (p.feet < 0 || p.inches < 0 || p.num < 0) {
-    throw const CalcException('Longueur négative');
+    throw const CalcException(NegativeLength());
   }
   final totalInches = p.feet * _inchesPerFoot + p.inches + p.num / p.den;
   return totalInches * _mmPerInch;
@@ -77,7 +77,7 @@ double imperialToMm(ImperialParts p) {
 /// Formate pour l'affichage, ex. `2' 6 3/8"`.
 String formatImperial(ImperialParts p) {
   if (p.den < 1) {
-    throw const CalcException('Dénominateur invalide');
+    throw const CalcException(InvalidDenominator());
   }
 
   final fraction = p.num > 0 ? '${p.num}/${p.den}' : '';

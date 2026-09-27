@@ -30,12 +30,12 @@ final class DistributionReady extends DistributionOutcome {
   final DistributionResult? other;
 }
 
-/// Saisie refusée par le cœur — [message] est rédigé pour être affiché tel
-/// quel.
+/// Saisie refusée par le cœur, avec son motif : l'écran le rédige dans la
+/// langue de l'app.
 final class DistributionFailure extends DistributionOutcome {
-  const DistributionFailure(this.message);
+  const DistributionFailure(this.reason);
 
-  final String message;
+  final CalcError reason;
 }
 
 /// Saisie de départ, et cible du bouton « réinitialiser ».
@@ -118,6 +118,6 @@ DistributionOutcome distributionResult(Ref ref) {
         return DistributionReady(best: found.best, other: found.other);
     }
   } on CalcException catch (e) {
-    return DistributionFailure(e.message);
+    return DistributionFailure(e.reason);
   }
 }

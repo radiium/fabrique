@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../format.dart';
 import 'calc_exception.dart';
 
 part 'drawers.freezed.dart';
@@ -440,18 +439,17 @@ DrawersResult computeDrawers(DrawersInput input) {
     FrontMount.inset => input.openingWidth - 2 * input.frontGap,
   };
   if (frontWidth <= 0) {
-    throw const CalcException(
-      'Les jeux autour de la façade prennent toute la largeur intérieure',
-    );
+    throw const CalcException(FrontGapsFillWidth());
   }
 
   final side = input.sideThickness;
   final boxWidth = input.openingWidth - 2 * spec.sideClearance;
   if (boxWidth - 2 * side <= 0) {
     throw CalcException(
-      'La glissière et les côtés prennent '
-      '${formatNumber(2 * spec.sideClearance + 2 * side)} mm '
-      'pour ${formatNumber(input.openingWidth)} mm de largeur intérieure',
+      SlideAndSidesTooWide(
+        needed: 2 * spec.sideClearance + 2 * side,
+        opening: input.openingWidth,
+      ),
     );
   }
 
@@ -461,9 +459,7 @@ DrawersResult computeDrawers(DrawersInput input) {
   };
   final usefulDepth = input.openingDepth - boxSetback;
   if (usefulDepth <= 0) {
-    throw const CalcException(
-      'La façade encastrée prend toute la profondeur intérieure',
-    );
+    throw const CalcException(InsetFrontFillsDepth());
   }
   final (slideLength, isSlideLengthAuto) = _slideLength(
     input,
@@ -475,9 +471,7 @@ DrawersResult computeDrawers(DrawersInput input) {
     null => usefulDepth,
   };
   if (boxLength - 2 * side <= 0) {
-    throw CalcException(
-      'Caisse trop courte : ${formatNumber(boxLength)} mm de longueur',
-    );
+    throw CalcException(BoxTooShort(boxLength));
   }
 
   final bottomLift =
@@ -500,8 +494,7 @@ DrawersResult computeDrawers(DrawersInput input) {
     if (height < kMinBoxHeight ||
         height - bottomLift - input.bottomThickness <= 0) {
       throw CalcException(
-        'Caisse trop basse : ${formatNumber(height)} mm pour le tiroir '
-        '${i + 1} (${formatNumber(kMinBoxHeight)} au minimum)',
+        BoxTooLow(height: height, drawer: i + 1, minimum: kMinBoxHeight),
       );
     }
     boxBottoms.add(bottom + spec.clearanceBelow);
@@ -795,59 +788,56 @@ void _validate(DrawersInput input) {
     for (final height in input.fixedFrontHeights) ?height,
   ];
   if (values.any((v) => !v.isFinite)) {
-    throw const CalcException('Saisie incomplète');
+    throw const CalcException(IncompleteInput());
   }
 
-  for (final (value, message) in [
-    (input.openingWidth, 'La largeur intérieure doit être supérieure à 0'),
-    (input.openingHeight, 'La hauteur intérieure doit être supérieure à 0'),
-    (input.openingDepth, 'La profondeur intérieure doit être supérieure à 0'),
-    (input.carcassThickness, "L'épaisseur du caisson doit être supérieure à 0"),
-    (input.frontThickness, "L'épaisseur de façade doit être supérieure à 0"),
-    (input.sideThickness, "L'épaisseur des côtés doit être supérieure à 0"),
-    (input.bottomThickness, "L'épaisseur du fond doit être supérieure à 0"),
+  for (final (value, field) in [
+    (input.openingWidth, PositiveField.openingWidth),
+    (input.openingHeight, PositiveField.openingHeight),
+    (input.openingDepth, PositiveField.openingDepth),
+    (input.carcassThickness, PositiveField.carcassThickness),
+    (input.frontThickness, PositiveField.frontThickness),
+    (input.sideThickness, PositiveField.sideThickness),
+    (input.bottomThickness, PositiveField.bottomThickness),
   ]) {
-    if (value <= 0) throw CalcException(message);
+    if (value <= 0) throw CalcException(MustBePositive(field));
   }
 
   if (input.drawerCount < 1) {
-    throw const CalcException('Il faut au moins un tiroir');
+    throw const CalcException(NoDrawer());
   }
   if (input.frontGap < 0) {
-    throw const CalcException('Le jeu entre façades ne peut pas être négatif');
+    throw const CalcException(MustNotBeNegative(NonNegativeField.frontGap));
   }
   if (input.fixedFrontHeights.any((h) => h != null && h <= 0)) {
-    throw const CalcException('Une hauteur de façade doit être supérieure à 0');
+    throw const CalcException(MustBePositive(PositiveField.frontHeight));
   }
 }
 
 /// Ce que seule la glissière choisie rend invalide.
 void _validateSlide(DrawersInput input, SlideSpec spec) {
   if (spec.sideClearance < 0) {
-    throw const CalcException('Le jeu par côté ne peut pas être négatif');
+    throw const CalcException(
+      MustNotBeNegative(NonNegativeField.sideClearance),
+    );
   }
   if (spec.lengthReduction < 0) {
     throw const CalcException(
-      'La réduction de longueur ne peut pas être négative',
+      MustNotBeNegative(NonNegativeField.lengthReduction),
     );
   }
   if (input.slideLength case final length?
       when spec.nominalLengths.isNotEmpty && length <= 0) {
-    throw const CalcException(
-      'La longueur de glissière doit être supérieure à 0',
-    );
+    throw const CalcException(MustBePositive(PositiveField.slideLength));
   }
   // Une glissière qui impose son fond rend la rainure sans objet.
   if (spec.bottomRecess == null && input.bottomMount == BottomMount.groove) {
     if (input.grooveDepth <= 0) {
-      throw const CalcException(
-        'La profondeur de rainure doit être supérieure à 0',
-      );
+      throw const CalcException(MustBePositive(PositiveField.grooveDepth));
     }
     if (input.grooveDepth >= input.sideThickness) {
       throw CalcException(
-        'Une rainure de ${formatNumber(input.grooveDepth)} mm traverse '
-        'un côté de ${formatNumber(input.sideThickness)} mm',
+        GrooveThroughSide(groove: input.grooveDepth, side: input.sideThickness),
       );
     }
   }
@@ -872,9 +862,7 @@ List<DrawerFrontSlot> _fronts(DrawersInput input) {
     FrontMount.inset => (height - gap, height - (count + 1) * gap),
   };
   if (span <= 0) {
-    throw const CalcException(
-      'Les jeux entre façades prennent toute la hauteur intérieure',
-    );
+    throw const CalcException(FrontGapsFillHeight());
   }
 
   final fixed = [
@@ -885,10 +873,7 @@ List<DrawerFrontSlot> _fronts(DrawersInput input) {
   final shared = freeCount == 0 ? 0.0 : (span - fixedSum) / freeCount;
   final fits = freeCount == 0 ? (fixedSum - span).abs() < _epsilon : shared > 0;
   if (!fits) {
-    throw CalcException(
-      'Les hauteurs fixées font ${formatNumber(fixedSum)} mm '
-      'pour ${formatNumber(span)} mm de façades',
-    );
+    throw CalcException(FixedHeightsTooTall(fixed: fixedSum, available: span));
   }
 
   final slots = <DrawerFrontSlot>[];
@@ -918,8 +903,7 @@ List<DrawerFrontSlot> _fronts(DrawersInput input) {
   if (input.slideLength case final imposed?) {
     if (imposed > usefulDepth) {
       throw CalcException(
-        'Une glissière de ${formatNumber(imposed)} mm ne tient pas dans '
-        '${formatNumber(usefulDepth)} mm de profondeur utile',
+        SlideTooLong(slide: imposed, usefulDepth: usefulDepth),
       );
     }
     return (imposed, false);
@@ -927,9 +911,10 @@ List<DrawerFrontSlot> _fronts(DrawersInput input) {
   final fitting = spec.nominalLengths.where((l) => l <= usefulDepth);
   if (fitting.isEmpty) {
     throw CalcException(
-      'La profondeur utile (${formatNumber(usefulDepth)} mm) est plus courte '
-      'que la plus petite glissière '
-      '(${formatNumber(spec.nominalLengths.first)} mm)',
+      DepthTooShortForSlides(
+        usefulDepth: usefulDepth,
+        shortestSlide: spec.nominalLengths.first,
+      ),
     );
   }
   return (fitting.last, true);

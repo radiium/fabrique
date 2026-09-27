@@ -10,6 +10,7 @@ import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
 import '../../l10n/app_localizations.dart';
+import '../../l10n/calc_errors.dart';
 import '../../l10n/labels.dart';
 import 'distribution_controller.dart';
 import 'distribution_form.dart';
@@ -41,10 +42,10 @@ class DistributionScreen extends ConsumerWidget {
         // Le refus s'affiche dans la carte de saisie. Sur mobile, les
         // résultats sont sous le schéma : un message posé là serait lu deux
         // écrans plus bas que le champ fautif.
-        if (outcome case DistributionFailure(:final message))
+        if (outcome case DistributionFailure(:final reason))
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: ErrorBanner(message: message),
+            child: ErrorBanner(message: l10n.calcError(reason)),
           ),
       ],
       // Plus haute que le 16/10 commun : la vue d'ensemble et les deux

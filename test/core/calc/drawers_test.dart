@@ -21,15 +21,9 @@ void main() {
             p.part == part && (width == null || (p.width - width).abs() < 1e-3),
       );
 
-  void expectRefused(DrawersInput input, String fragment) => expect(
+  void expectRefused(DrawersInput input, Matcher reason) => expect(
     () => computeDrawers(input),
-    throwsA(
-      isA<CalcException>().having(
-        (e) => e.message,
-        'message',
-        contains(fragment),
-      ),
-    ),
+    throwsA(isA<CalcException>().having((e) => e.reason, 'reason', reason)),
   );
 
   group('computeDrawers — cas de référence', () {
@@ -179,7 +173,9 @@ void main() {
 
       expectRefused(
         base.copyWith(fixedFrontHeights: const [300, 300, 300]),
-        'Les hauteurs fixées font 900 mm pour 750 mm',
+        isA<FixedHeightsTooTall>()
+            .having((e) => e.fixed, 'fixed', near(900))
+            .having((e) => e.available, 'available', near(750)),
       );
     });
 
@@ -383,50 +379,68 @@ void main() {
     test('une cote nulle', () {
       expectRefused(
         base.copyWith(openingWidth: 0),
-        'La largeur intérieure doit être supérieure à 0',
+        isA<MustBePositive>().having(
+          (e) => e.field,
+          'field',
+          PositiveField.openingWidth,
+        ),
       );
       expectRefused(
         base.copyWith(sideThickness: 0),
-        "L'épaisseur des côtés doit être supérieure à 0",
+        isA<MustBePositive>().having(
+          (e) => e.field,
+          'field',
+          PositiveField.sideThickness,
+        ),
       );
     });
 
     test('une valeur non finie', () {
       expectRefused(
         base.copyWith(openingDepth: double.nan),
-        'Saisie incomplète',
+        isA<IncompleteInput>(),
       );
     });
 
     test('une ouverture trop étroite pour la glissière et les côtés', () {
       expectRefused(
         base.copyWith(openingWidth: 50),
-        'La glissière et les côtés prennent 55.4 mm pour 50 mm',
+        isA<SlideAndSidesTooWide>()
+            .having((e) => e.needed, 'needed', near(55.4))
+            .having((e) => e.opening, 'opening', near(50)),
       );
     });
 
     test('une profondeur plus courte que la plus petite glissière', () {
       expectRefused(
         base.copyWith(openingDepth: 200),
-        'plus courte que la plus petite glissière (250 mm)',
+        isA<DepthTooShortForSlides>().having(
+          (e) => e.shortestSlide,
+          'shortestSlide',
+          near(250),
+        ),
       );
     });
 
     test('une glissière imposée plus longue que la profondeur utile', () {
       expectRefused(
         base.copyWith(slideLength: 600),
-        'Une glissière de 600 mm ne tient pas dans 540 mm',
+        isA<SlideTooLong>()
+            .having((e) => e.slide, 'slide', near(600))
+            .having((e) => e.usefulDepth, 'usefulDepth', near(540)),
       );
     });
 
     test('une caisse trop basse', () {
-      expectRefused(base.copyWith(openingHeight: 150), 'Caisse trop basse');
+      expectRefused(base.copyWith(openingHeight: 150), isA<BoxTooLow>());
     });
 
     test('une rainure qui traverse le côté', () {
       expectRefused(
         base.copyWith(grooveDepth: 15),
-        'Une rainure de 15 mm traverse un côté de 15 mm',
+        isA<GrooveThroughSide>()
+            .having((e) => e.groove, 'groove', near(15))
+            .having((e) => e.side, 'side', near(15)),
       );
     });
 
@@ -442,11 +456,19 @@ void main() {
     test('des jeux négatifs', () {
       expectRefused(
         base.copyWith(frontGap: -1),
-        'Le jeu entre façades ne peut pas être négatif',
+        isA<MustNotBeNegative>().having(
+          (e) => e.field,
+          'field',
+          NonNegativeField.frontGap,
+        ),
       );
       expectRefused(
         base.copyWith(slide: SlideKind.custom, customSideClearance: -1),
-        'Le jeu par côté ne peut pas être négatif',
+        isA<MustNotBeNegative>().having(
+          (e) => e.field,
+          'field',
+          NonNegativeField.sideClearance,
+        ),
       );
     });
   });

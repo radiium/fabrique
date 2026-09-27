@@ -106,5 +106,219 @@
   "commonUnitNote": "Cotes en mm",
   "@commonUnitNote": {
     "description": "Légende d'unité sous chaque schéma"
+  },
+  "calcIncompleteInput": "Saisie incomplète",
+  "calcNonFiniteValue": "Valeur non finie",
+  "calcNegativeLength": "Longueur négative",
+  "calcInvalidDenominator": "Dénominateur invalide",
+  "calcIncompatibleUnits": "Conversion impossible : {from} ({fromQuantity}) vers {to} ({toQuantity})",
+  "@calcIncompatibleUnits": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "fromQuantity": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "toQuantity": {
+        "type": "String"
+      }
+    }
+  },
+  "calcInvalidLevelThreshold": "Seuil de niveau invalide",
+  "calcInvalidSensorReading": "Lecture accéléromètre invalide",
+  "calcPositiveTotalWidth": "La largeur totale doit être supérieure à 0",
+  "@calcPositiveTotalWidth": {
+    "description": "Refus de saisie : nomme la cote comme l'écran"
+  },
+  "calcPositiveSurfaceWidth": "La largeur de surface doit être un nombre positif",
+  "calcPositiveSurfaceLength": "La longueur de surface doit être un nombre positif",
+  "calcPositiveTileWidth": "La largeur d'élément doit être un nombre positif",
+  "calcPositiveTileLength": "La longueur d'élément doit être un nombre positif",
+  "calcPositiveOpeningWidth": "La largeur intérieure doit être supérieure à 0",
+  "calcPositiveOpeningHeight": "La hauteur intérieure doit être supérieure à 0",
+  "calcPositiveOpeningDepth": "La profondeur intérieure doit être supérieure à 0",
+  "calcPositiveCarcassThickness": "L'épaisseur du caisson doit être supérieure à 0",
+  "calcPositiveFrontThickness": "L'épaisseur de façade doit être supérieure à 0",
+  "calcPositiveSideThickness": "L'épaisseur des côtés doit être supérieure à 0",
+  "calcPositiveBottomThickness": "L'épaisseur du fond doit être supérieure à 0",
+  "calcPositiveFrontHeight": "Une hauteur de façade doit être supérieure à 0",
+  "calcPositiveSlideLength": "La longueur de glissière doit être supérieure à 0",
+  "calcPositiveGrooveDepth": "La profondeur de rainure doit être supérieure à 0",
+  "calcNonNegativeElementWidth": "La largeur d'un élément ne peut pas être négative",
+  "calcNonNegativeMargin": "Une marge ne peut pas être négative",
+  "calcNonNegativeElementCount": "Le nombre d'éléments ne peut pas être négatif",
+  "calcNonNegativeTargetGap": "L'écart visé ne peut pas être négatif",
+  "calcNonNegativeHorizontalGap": "Le jeu horizontal ne peut pas être négatif",
+  "calcNonNegativeVerticalGap": "Le jeu vertical ne peut pas être négatif",
+  "calcNonNegativePerimeterGap": "Le jeu périphérique ne peut pas être négatif",
+  "calcNonNegativeFrontGap": "Le jeu entre façades ne peut pas être négatif",
+  "calcNonNegativeSideClearance": "Le jeu par côté ne peut pas être négatif",
+  "calcNonNegativeLengthReduction": "La réduction de longueur ne peut pas être négative",
+  "calcMarginsFillWidth": "Les marges occupent toute la largeur : il ne reste rien à répartir",
+  "calcTooFewElements": "Cette disposition demande au moins {count, plural, one{{count} élément} other{{count} éléments}}",
+  "@calcTooFewElements": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calcTooManyElements": "Trop d'éléments : {max} au maximum",
+  "@calcTooManyElements": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "calcElementsOverflow": "{count, plural, one{{count} élément occupe} other{Les {count} éléments occupent}} {occupied} mm pour {available} mm disponibles",
+  "@calcElementsOverflow": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "occupied": {
+        "type": "String"
+      },
+      "available": {
+        "type": "String"
+      }
+    }
+  },
+  "calcWidthAndGapBothZero": "Largeur et écart ne peuvent pas être nuls tous les deux",
+  "calcNoDistributionForGap": "Aucune répartition ne correspond à cet écart",
+  "calcGapTooSmall": "Écart trop petit : il faudrait plus de {max} éléments",
+  "@calcGapTooSmall": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "calcTileLargerThanSurface": "L'élément fait {tileWidth} × {tileLength} mm pour une zone à couvrir de {surfaceWidth} × {surfaceLength} mm",
+  "@calcTileLargerThanSurface": {
+    "description": "Zone à couvrir : la surface moins le jeu périphérique",
+    "placeholders": {
+      "tileWidth": {
+        "type": "String"
+      },
+      "tileLength": {
+        "type": "String"
+      },
+      "surfaceWidth": {
+        "type": "String"
+      },
+      "surfaceLength": {
+        "type": "String"
+      }
+    }
+  },
+  "calcTooManyTiles": "Cette saisie demanderait {count} éléments, {max} au maximum",
+  "@calcTooManyTiles": {
+    "description": "L'ordre de grandeur dit où chercher la faute de frappe",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "calcPerimeterGapFillsSurface": "Le jeu périphérique de {gap} mm ne laisse rien à couvrir sur {smallest} mm",
+  "@calcPerimeterGapFillsSurface": {
+    "placeholders": {
+      "gap": {
+        "type": "String"
+      },
+      "smallest": {
+        "type": "String"
+      }
+    }
+  },
+  "calcNoDrawer": "Il faut au moins un tiroir",
+  "calcFrontGapsFillWidth": "Les jeux autour de la façade prennent toute la largeur intérieure",
+  "calcFrontGapsFillHeight": "Les jeux entre façades prennent toute la hauteur intérieure",
+  "calcInsetFrontFillsDepth": "La façade encastrée prend toute la profondeur intérieure",
+  "calcSlideAndSidesTooWide": "La glissière et les côtés prennent {needed} mm pour {opening} mm de largeur intérieure",
+  "@calcSlideAndSidesTooWide": {
+    "placeholders": {
+      "needed": {
+        "type": "String"
+      },
+      "opening": {
+        "type": "String"
+      }
+    }
+  },
+  "calcBoxTooShort": "Caisse trop courte : {length} mm de longueur",
+  "@calcBoxTooShort": {
+    "placeholders": {
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "calcBoxTooLow": "Caisse trop basse : {height} mm pour le tiroir {drawer} ({minimum} au minimum)",
+  "@calcBoxTooLow": {
+    "placeholders": {
+      "height": {
+        "type": "String"
+      },
+      "drawer": {
+        "type": "int"
+      },
+      "minimum": {
+        "type": "String"
+      }
+    }
+  },
+  "calcGrooveThroughSide": "Une rainure de {groove} mm traverse un côté de {side} mm",
+  "@calcGrooveThroughSide": {
+    "placeholders": {
+      "groove": {
+        "type": "String"
+      },
+      "side": {
+        "type": "String"
+      }
+    }
+  },
+  "calcFixedHeightsTooTall": "Les hauteurs fixées font {fixed} mm pour {available} mm de façades",
+  "@calcFixedHeightsTooTall": {
+    "placeholders": {
+      "fixed": {
+        "type": "String"
+      },
+      "available": {
+        "type": "String"
+      }
+    }
+  },
+  "calcSlideTooLong": "Une glissière de {slide} mm ne tient pas dans {usefulDepth} mm de profondeur utile",
+  "@calcSlideTooLong": {
+    "placeholders": {
+      "slide": {
+        "type": "String"
+      },
+      "usefulDepth": {
+        "type": "String"
+      }
+    }
+  },
+  "calcDepthTooShortForSlides": "La profondeur utile ({usefulDepth} mm) est plus courte que la plus petite glissière ({shortest} mm)",
+  "@calcDepthTooShortForSlides": {
+    "placeholders": {
+      "usefulDepth": {
+        "type": "String"
+      },
+      "shortest": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -36,7 +36,7 @@ TiltResult computeTilt(
   double levelThresholdDeg = 0.5,
 }) {
   if (!levelThresholdDeg.isFinite || levelThresholdDeg < 0) {
-    throw const CalcException('Seuil de niveau invalide');
+    throw const CalcException(InvalidLevelThreshold());
   }
 
   final pitch = _pitchDeg(r) - (zero == null ? 0 : _pitchDeg(zero));
@@ -67,9 +67,9 @@ double _rollDeg(AccelReading r) {
 
 void _guard(AccelReading r) {
   if (!r.x.isFinite || !r.y.isFinite || !r.z.isFinite) {
-    throw const CalcException('Lecture accéléromètre non finie');
+    throw const CalcException(InvalidSensorReading());
   }
   if (math.sqrt(r.x * r.x + r.y * r.y + r.z * r.z) < _minMagnitude) {
-    throw const CalcException('Lecture accéléromètre nulle');
+    throw const CalcException(InvalidSensorReading());
   }
 }

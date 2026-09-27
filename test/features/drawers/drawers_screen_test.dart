@@ -49,7 +49,7 @@ void main() {
     expect(find.byType(ErrorBanner, skipOffstage: false), findsOneWidget);
     expect(
       text(
-        'La glissière et les côtés prennent 55.4 mm pour 50 mm de largeur '
+        'La glissière et les côtés prennent 55,4 mm pour 50 mm de largeur '
         'intérieure',
       ),
       findsOneWidget,

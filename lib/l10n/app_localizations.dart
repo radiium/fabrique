@@ -475,6 +475,334 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Cotes en mm'**
   String get commonUnitNote;
+
+  /// No description provided for @calcIncompleteInput.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisie incomplète'**
+  String get calcIncompleteInput;
+
+  /// No description provided for @calcNonFiniteValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur non finie'**
+  String get calcNonFiniteValue;
+
+  /// No description provided for @calcNegativeLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'Longueur négative'**
+  String get calcNegativeLength;
+
+  /// No description provided for @calcInvalidDenominator.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dénominateur invalide'**
+  String get calcInvalidDenominator;
+
+  /// No description provided for @calcIncompatibleUnits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conversion impossible : {from} ({fromQuantity}) vers {to} ({toQuantity})'**
+  String calcIncompatibleUnits(
+    String from,
+    String fromQuantity,
+    String to,
+    String toQuantity,
+  );
+
+  /// No description provided for @calcInvalidLevelThreshold.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil de niveau invalide'**
+  String get calcInvalidLevelThreshold;
+
+  /// No description provided for @calcInvalidSensorReading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lecture accéléromètre invalide'**
+  String get calcInvalidSensorReading;
+
+  /// Refus de saisie : nomme la cote comme l'écran
+  ///
+  /// In fr, this message translates to:
+  /// **'La largeur totale doit être supérieure à 0'**
+  String get calcPositiveTotalWidth;
+
+  /// No description provided for @calcPositiveSurfaceWidth.
+  ///
+  /// In fr, this message translates to:
+  /// **'La largeur de surface doit être un nombre positif'**
+  String get calcPositiveSurfaceWidth;
+
+  /// No description provided for @calcPositiveSurfaceLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'La longueur de surface doit être un nombre positif'**
+  String get calcPositiveSurfaceLength;
+
+  /// No description provided for @calcPositiveTileWidth.
+  ///
+  /// In fr, this message translates to:
+  /// **'La largeur d\'élément doit être un nombre positif'**
+  String get calcPositiveTileWidth;
+
+  /// No description provided for @calcPositiveTileLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'La longueur d\'élément doit être un nombre positif'**
+  String get calcPositiveTileLength;
+
+  /// No description provided for @calcPositiveOpeningWidth.
+  ///
+  /// In fr, this message translates to:
+  /// **'La largeur intérieure doit être supérieure à 0'**
+  String get calcPositiveOpeningWidth;
+
+  /// No description provided for @calcPositiveOpeningHeight.
+  ///
+  /// In fr, this message translates to:
+  /// **'La hauteur intérieure doit être supérieure à 0'**
+  String get calcPositiveOpeningHeight;
+
+  /// No description provided for @calcPositiveOpeningDepth.
+  ///
+  /// In fr, this message translates to:
+  /// **'La profondeur intérieure doit être supérieure à 0'**
+  String get calcPositiveOpeningDepth;
+
+  /// No description provided for @calcPositiveCarcassThickness.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'épaisseur du caisson doit être supérieure à 0'**
+  String get calcPositiveCarcassThickness;
+
+  /// No description provided for @calcPositiveFrontThickness.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'épaisseur de façade doit être supérieure à 0'**
+  String get calcPositiveFrontThickness;
+
+  /// No description provided for @calcPositiveSideThickness.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'épaisseur des côtés doit être supérieure à 0'**
+  String get calcPositiveSideThickness;
+
+  /// No description provided for @calcPositiveBottomThickness.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'épaisseur du fond doit être supérieure à 0'**
+  String get calcPositiveBottomThickness;
+
+  /// No description provided for @calcPositiveFrontHeight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une hauteur de façade doit être supérieure à 0'**
+  String get calcPositiveFrontHeight;
+
+  /// No description provided for @calcPositiveSlideLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'La longueur de glissière doit être supérieure à 0'**
+  String get calcPositiveSlideLength;
+
+  /// No description provided for @calcPositiveGrooveDepth.
+  ///
+  /// In fr, this message translates to:
+  /// **'La profondeur de rainure doit être supérieure à 0'**
+  String get calcPositiveGrooveDepth;
+
+  /// No description provided for @calcNonNegativeElementWidth.
+  ///
+  /// In fr, this message translates to:
+  /// **'La largeur d\'un élément ne peut pas être négative'**
+  String get calcNonNegativeElementWidth;
+
+  /// No description provided for @calcNonNegativeMargin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une marge ne peut pas être négative'**
+  String get calcNonNegativeMargin;
+
+  /// No description provided for @calcNonNegativeElementCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le nombre d\'éléments ne peut pas être négatif'**
+  String get calcNonNegativeElementCount;
+
+  /// No description provided for @calcNonNegativeTargetGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'écart visé ne peut pas être négatif'**
+  String get calcNonNegativeTargetGap;
+
+  /// No description provided for @calcNonNegativeHorizontalGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le jeu horizontal ne peut pas être négatif'**
+  String get calcNonNegativeHorizontalGap;
+
+  /// No description provided for @calcNonNegativeVerticalGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le jeu vertical ne peut pas être négatif'**
+  String get calcNonNegativeVerticalGap;
+
+  /// No description provided for @calcNonNegativePerimeterGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le jeu périphérique ne peut pas être négatif'**
+  String get calcNonNegativePerimeterGap;
+
+  /// No description provided for @calcNonNegativeFrontGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le jeu entre façades ne peut pas être négatif'**
+  String get calcNonNegativeFrontGap;
+
+  /// No description provided for @calcNonNegativeSideClearance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le jeu par côté ne peut pas être négatif'**
+  String get calcNonNegativeSideClearance;
+
+  /// No description provided for @calcNonNegativeLengthReduction.
+  ///
+  /// In fr, this message translates to:
+  /// **'La réduction de longueur ne peut pas être négative'**
+  String get calcNonNegativeLengthReduction;
+
+  /// No description provided for @calcMarginsFillWidth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les marges occupent toute la largeur : il ne reste rien à répartir'**
+  String get calcMarginsFillWidth;
+
+  /// No description provided for @calcTooFewElements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette disposition demande au moins {count, plural, one{{count} élément} other{{count} éléments}}'**
+  String calcTooFewElements(int count);
+
+  /// No description provided for @calcTooManyElements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop d\'éléments : {max} au maximum'**
+  String calcTooManyElements(int max);
+
+  /// No description provided for @calcElementsOverflow.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, one{{count} élément occupe} other{Les {count} éléments occupent}} {occupied} mm pour {available} mm disponibles'**
+  String calcElementsOverflow(int count, String occupied, String available);
+
+  /// No description provided for @calcWidthAndGapBothZero.
+  ///
+  /// In fr, this message translates to:
+  /// **'Largeur et écart ne peuvent pas être nuls tous les deux'**
+  String get calcWidthAndGapBothZero;
+
+  /// No description provided for @calcNoDistributionForGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune répartition ne correspond à cet écart'**
+  String get calcNoDistributionForGap;
+
+  /// No description provided for @calcGapTooSmall.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart trop petit : il faudrait plus de {max} éléments'**
+  String calcGapTooSmall(int max);
+
+  /// Zone à couvrir : la surface moins le jeu périphérique
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'élément fait {tileWidth} × {tileLength} mm pour une zone à couvrir de {surfaceWidth} × {surfaceLength} mm'**
+  String calcTileLargerThanSurface(
+    String tileWidth,
+    String tileLength,
+    String surfaceWidth,
+    String surfaceLength,
+  );
+
+  /// L'ordre de grandeur dit où chercher la faute de frappe
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette saisie demanderait {count} éléments, {max} au maximum'**
+  String calcTooManyTiles(String count, int max);
+
+  /// No description provided for @calcPerimeterGapFillsSurface.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le jeu périphérique de {gap} mm ne laisse rien à couvrir sur {smallest} mm'**
+  String calcPerimeterGapFillsSurface(String gap, String smallest);
+
+  /// No description provided for @calcNoDrawer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Il faut au moins un tiroir'**
+  String get calcNoDrawer;
+
+  /// No description provided for @calcFrontGapsFillWidth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les jeux autour de la façade prennent toute la largeur intérieure'**
+  String get calcFrontGapsFillWidth;
+
+  /// No description provided for @calcFrontGapsFillHeight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les jeux entre façades prennent toute la hauteur intérieure'**
+  String get calcFrontGapsFillHeight;
+
+  /// No description provided for @calcInsetFrontFillsDepth.
+  ///
+  /// In fr, this message translates to:
+  /// **'La façade encastrée prend toute la profondeur intérieure'**
+  String get calcInsetFrontFillsDepth;
+
+  /// No description provided for @calcSlideAndSidesTooWide.
+  ///
+  /// In fr, this message translates to:
+  /// **'La glissière et les côtés prennent {needed} mm pour {opening} mm de largeur intérieure'**
+  String calcSlideAndSidesTooWide(String needed, String opening);
+
+  /// No description provided for @calcBoxTooShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse trop courte : {length} mm de longueur'**
+  String calcBoxTooShort(String length);
+
+  /// No description provided for @calcBoxTooLow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse trop basse : {height} mm pour le tiroir {drawer} ({minimum} au minimum)'**
+  String calcBoxTooLow(String height, int drawer, String minimum);
+
+  /// No description provided for @calcGrooveThroughSide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une rainure de {groove} mm traverse un côté de {side} mm'**
+  String calcGrooveThroughSide(String groove, String side);
+
+  /// No description provided for @calcFixedHeightsTooTall.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les hauteurs fixées font {fixed} mm pour {available} mm de façades'**
+  String calcFixedHeightsTooTall(String fixed, String available);
+
+  /// No description provided for @calcSlideTooLong.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une glissière de {slide} mm ne tient pas dans {usefulDepth} mm de profondeur utile'**
+  String calcSlideTooLong(String slide, String usefulDepth);
+
+  /// No description provided for @calcDepthTooShortForSlides.
+  ///
+  /// In fr, this message translates to:
+  /// **'La profondeur utile ({usefulDepth} mm) est plus courte que la plus petite glissière ({shortest} mm)'**
+  String calcDepthTooShortForSlides(String usefulDepth, String shortest);
 }
 
 class _AppLocalizationsDelegate

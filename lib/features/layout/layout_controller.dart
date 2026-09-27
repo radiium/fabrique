@@ -72,12 +72,12 @@ final class LayoutReady extends LayoutOutcome {
   final LayoutResult result;
 }
 
-/// Saisie refusée par le cœur — [message] est rédigé pour être affiché tel
-/// quel.
+/// Saisie refusée par le cœur, avec son motif : l'écran le rédige dans la
+/// langue de l'app.
 final class LayoutFailure extends LayoutOutcome {
-  const LayoutFailure(this.message);
+  const LayoutFailure(this.reason);
 
-  final String message;
+  final CalcError reason;
 }
 
 @riverpod
@@ -86,6 +86,6 @@ LayoutOutcome layoutResult(Ref ref) {
   try {
     return LayoutReady(computeLayout(input));
   } on CalcException catch (error) {
-    return LayoutFailure(error.message);
+    return LayoutFailure(error.reason);
   }
 }

@@ -200,4 +200,231 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonUnitNote => 'Dimensions in mm';
+
+  @override
+  String get calcIncompleteInput => 'Incomplete input';
+
+  @override
+  String get calcNonFiniteValue => 'Invalid value';
+
+  @override
+  String get calcNegativeLength => 'Negative length';
+
+  @override
+  String get calcInvalidDenominator => 'Invalid denominator';
+
+  @override
+  String calcIncompatibleUnits(
+    String from,
+    String fromQuantity,
+    String to,
+    String toQuantity,
+  ) {
+    return 'Cannot convert $from ($fromQuantity) to $to ($toQuantity)';
+  }
+
+  @override
+  String get calcInvalidLevelThreshold => 'Invalid level threshold';
+
+  @override
+  String get calcInvalidSensorReading => 'Invalid accelerometer reading';
+
+  @override
+  String get calcPositiveTotalWidth => 'Total width must be greater than 0';
+
+  @override
+  String get calcPositiveSurfaceWidth =>
+      'Surface width must be a positive number';
+
+  @override
+  String get calcPositiveSurfaceLength =>
+      'Surface length must be a positive number';
+
+  @override
+  String get calcPositiveTileWidth => 'Tile width must be a positive number';
+
+  @override
+  String get calcPositiveTileLength => 'Tile length must be a positive number';
+
+  @override
+  String get calcPositiveOpeningWidth => 'Inside width must be greater than 0';
+
+  @override
+  String get calcPositiveOpeningHeight =>
+      'Inside height must be greater than 0';
+
+  @override
+  String get calcPositiveOpeningDepth => 'Inside depth must be greater than 0';
+
+  @override
+  String get calcPositiveCarcassThickness =>
+      'Carcass thickness must be greater than 0';
+
+  @override
+  String get calcPositiveFrontThickness =>
+      'Front thickness must be greater than 0';
+
+  @override
+  String get calcPositiveSideThickness =>
+      'Side thickness must be greater than 0';
+
+  @override
+  String get calcPositiveBottomThickness =>
+      'Bottom thickness must be greater than 0';
+
+  @override
+  String get calcPositiveFrontHeight => 'A front height must be greater than 0';
+
+  @override
+  String get calcPositiveSlideLength => 'Slide length must be greater than 0';
+
+  @override
+  String get calcPositiveGrooveDepth => 'Groove depth must be greater than 0';
+
+  @override
+  String get calcNonNegativeElementWidth => 'Piece width cannot be negative';
+
+  @override
+  String get calcNonNegativeMargin => 'A margin cannot be negative';
+
+  @override
+  String get calcNonNegativeElementCount =>
+      'The number of pieces cannot be negative';
+
+  @override
+  String get calcNonNegativeTargetGap => 'The target gap cannot be negative';
+
+  @override
+  String get calcNonNegativeHorizontalGap =>
+      'Horizontal gap cannot be negative';
+
+  @override
+  String get calcNonNegativeVerticalGap => 'Vertical gap cannot be negative';
+
+  @override
+  String get calcNonNegativePerimeterGap => 'Perimeter gap cannot be negative';
+
+  @override
+  String get calcNonNegativeFrontGap =>
+      'The gap between fronts cannot be negative';
+
+  @override
+  String get calcNonNegativeSideClearance =>
+      'Side clearance cannot be negative';
+
+  @override
+  String get calcNonNegativeLengthReduction =>
+      'Length reduction cannot be negative';
+
+  @override
+  String get calcMarginsFillWidth =>
+      'The margins take up the full width: nothing is left to space out';
+
+  @override
+  String calcTooFewElements(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pieces',
+      one: '$count piece',
+    );
+    return 'This arrangement needs at least $_temp0';
+  }
+
+  @override
+  String calcTooManyElements(int max) {
+    return 'Too many pieces: $max at most';
+  }
+
+  @override
+  String calcElementsOverflow(int count, String occupied, String available) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pieces take',
+      one: '$count piece takes',
+    );
+    return '$_temp0 $occupied mm of the $available mm available';
+  }
+
+  @override
+  String get calcWidthAndGapBothZero => 'Width and gap cannot both be zero';
+
+  @override
+  String get calcNoDistributionForGap => 'No spacing matches this gap';
+
+  @override
+  String calcGapTooSmall(int max) {
+    return 'Gap too small: it would take more than $max pieces';
+  }
+
+  @override
+  String calcTileLargerThanSurface(
+    String tileWidth,
+    String tileLength,
+    String surfaceWidth,
+    String surfaceLength,
+  ) {
+    return 'The tile is $tileWidth × $tileLength mm for an area to cover of $surfaceWidth × $surfaceLength mm';
+  }
+
+  @override
+  String calcTooManyTiles(String count, int max) {
+    return 'This would take $count tiles, $max at most';
+  }
+
+  @override
+  String calcPerimeterGapFillsSurface(String gap, String smallest) {
+    return 'A $gap mm perimeter gap leaves nothing to cover on $smallest mm';
+  }
+
+  @override
+  String get calcNoDrawer => 'At least one drawer is needed';
+
+  @override
+  String get calcFrontGapsFillWidth =>
+      'The gaps around the front take up the full inside width';
+
+  @override
+  String get calcFrontGapsFillHeight =>
+      'The gaps between fronts take up the full inside height';
+
+  @override
+  String get calcInsetFrontFillsDepth =>
+      'The inset front takes up the full inside depth';
+
+  @override
+  String calcSlideAndSidesTooWide(String needed, String opening) {
+    return 'Slides and sides take $needed mm of a $opening mm inside width';
+  }
+
+  @override
+  String calcBoxTooShort(String length) {
+    return 'Box too short: $length mm long';
+  }
+
+  @override
+  String calcBoxTooLow(String height, int drawer, String minimum) {
+    return 'Box too low: $height mm for drawer $drawer ($minimum minimum)';
+  }
+
+  @override
+  String calcGrooveThroughSide(String groove, String side) {
+    return 'A $groove mm groove goes through a $side mm side';
+  }
+
+  @override
+  String calcFixedHeightsTooTall(String fixed, String available) {
+    return 'The fixed heights add up to $fixed mm for $available mm of fronts';
+  }
+
+  @override
+  String calcSlideTooLong(String slide, String usefulDepth) {
+    return 'A $slide mm slide does not fit in $usefulDepth mm of usable depth';
+  }
+
+  @override
+  String calcDepthTooShortForSlides(String usefulDepth, String shortest) {
+    return 'The usable depth ($usefulDepth mm) is shorter than the shortest slide ($shortest mm)';
+  }
 }

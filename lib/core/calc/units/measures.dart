@@ -67,7 +67,7 @@ double baseFactor(MeasureUnit unit) => switch (unit) {
 /// Convertit [value] exprimée en [unit] vers le pivot de sa grandeur.
 double toBase(double value, MeasureUnit unit) {
   if (!value.isFinite) {
-    throw const CalcException('Valeur non finie');
+    throw const CalcException(NonFiniteValue());
   }
   return value * baseFactor(unit);
 }
@@ -76,7 +76,7 @@ double toBase(double value, MeasureUnit unit) {
 /// [unit].
 double fromBase(double base, MeasureUnit unit) {
   if (!base.isFinite) {
-    throw const CalcException('Valeur non finie');
+    throw const CalcException(NonFiniteValue());
   }
   return base / baseFactor(unit);
 }
@@ -88,7 +88,7 @@ double fromBase(double base, MeasureUnit unit) {
 /// est de refuser franchement plutôt que de rendre un nombre.
 double convert(double value, MeasureUnit from, MeasureUnit to) {
   if (from.quantity != to.quantity) {
-    throw CalcException('Conversion impossible : ${from.name} vers ${to.name}');
+    throw CalcException(IncompatibleUnits(from, to));
   }
   return fromBase(toBase(value, from), to);
 }

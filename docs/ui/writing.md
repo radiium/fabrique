@@ -10,7 +10,7 @@ FR uniquement au lancement.
 
 ## Ponctuation : le tiret sépare, il ne relie pas
 
-**Ni tiret cadratin ni point-virgule dans un texte explicatif** : corps et points d'un `FieldHelp`, message de `CalcException`, toute prose de plus d'une ligne. Le lecteur est debout et ne démêle pas une incise. Deux phrases, un deux-points ou une parenthèse.
+**Ni tiret cadratin ni point-virgule dans un texte explicatif** : corps et points d'un `FieldHelp`, message d'un refus (`calc…` dans les ARB), toute prose de plus d'une ligne. Le lecteur est debout et ne démêle pas une incise. Deux phrases, un deux-points ou une parenthèse.
 
 Le tiret reste **là où il sépare visuellement** :
 

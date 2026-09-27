@@ -635,74 +635,89 @@ void main() {
       );
     });
 
-    test('les refus nomment les cotes comme l’écran', () {
-      // « Surface X » enverrait chercher un champ qui n'existe pas : l'écran
-      // dit « Surface — largeur ». Un seul mot par chose, jusque dans les
-      // messages d'erreur.
-      final messages = <String>[];
-      for (final bad in [
-        input(surfaceX: 0),
-        input(elementY: -1),
-        input(gapX: -1),
-        const LayoutInput(
-          surfaceX: 1000,
-          surfaceY: 1000,
-          elementX: 100,
-          elementY: 100,
-          perimeterGap: 500,
-        ),
-        const LayoutInput(
-          surfaceX: 1000,
-          surfaceY: 1000,
-          elementX: 2000,
-          elementY: 100,
-        ),
-        const LayoutInput(
-          surfaceX: 3000,
-          surfaceY: 2000,
-          elementX: 1,
-          elementY: 1,
-        ),
-      ]) {
+    test('chaque refus dit quelle cote corriger', () {
+      // Le motif désigne le champ : l'écran le rédige avec le libellé qu'il
+      // affiche, jamais avec un nom de code.
+      CalcError reasonOf(LayoutInput bad) {
         try {
           computeLayout(bad);
-          fail('aurait dû lever');
         } on CalcException catch (e) {
-          messages.add(e.message);
+          return e.reason;
         }
+        fail('aurait dû lever');
       }
 
-      expect(messages, hasLength(6));
-      for (final message in messages) {
-        for (final codeish in [
-          'Surface X',
-          'Surface Y',
-          'Élément X',
-          'Jeu X',
-        ]) {
-          expect(message, isNot(contains(codeish)), reason: message);
-        }
-        expect(message.trim(), isNotEmpty);
-      }
+      expect(
+        reasonOf(input(surfaceX: 0)),
+        isA<MustBePositive>().having(
+          (e) => e.field,
+          'field',
+          PositiveField.surfaceWidth,
+        ),
+      );
+      expect(
+        reasonOf(input(elementY: -1)),
+        isA<MustBePositive>().having(
+          (e) => e.field,
+          'field',
+          PositiveField.tileLength,
+        ),
+      );
+      expect(
+        reasonOf(input(gapX: -1)),
+        isA<MustNotBeNegative>().having(
+          (e) => e.field,
+          'field',
+          NonNegativeField.horizontalGap,
+        ),
+      );
+      expect(
+        reasonOf(
+          const LayoutInput(
+            surfaceX: 1000,
+            surfaceY: 1000,
+            elementX: 100,
+            elementY: 100,
+            perimeterGap: 500,
+          ),
+        ),
+        isA<PerimeterGapFillsSurface>(),
+      );
+      expect(
+        reasonOf(
+          const LayoutInput(
+            surfaceX: 1000,
+            surfaceY: 1000,
+            elementX: 2000,
+            elementY: 100,
+          ),
+        ),
+        isA<TileLargerThanSurface>(),
+      );
     });
 
     test('un refus de volume donne l’ordre de grandeur', () {
-      try {
-        computeLayout(
+      // Sur une faute de frappe il y a deux zéros d'écart, et c'est ça qui dit
+      // où chercher.
+      expect(
+        () => computeLayout(
           const LayoutInput(
             surfaceX: 3000,
             surfaceY: 2000,
             elementX: 1,
             elementY: 1,
           ),
-        );
-        fail('aurait dû lever');
-      } on CalcException catch (e) {
-        // Sur une faute de frappe il y a deux zéros d'écart, et c'est ça qui
-        // dit où chercher.
-        expect(e.message, contains('$kMaxLayoutElements'));
-        expect(e.message, contains('6'));
-      }
+        ),
+        throwsA(
+          isA<CalcException>().having(
+            (e) => e.reason,
+            'reason',
+            isA<TooManyTiles>()
+                .having((e) => e.count, 'count', greaterThan(5e6))
+                .having((e) => e.maxCount, 'maxCount', kMaxLayoutElements),
+          ),
+        ),
+      );
     });
 
     test('élément exactement à la dimension de la surface → accepté', () {

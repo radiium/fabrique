@@ -10,6 +10,7 @@ import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
 import '../../l10n/app_localizations.dart';
+import '../../l10n/calc_errors.dart';
 import '../../l10n/labels.dart';
 import 'layout_controller.dart';
 import 'layout_input_groups.dart';
@@ -46,10 +47,10 @@ class LayoutScreen extends ConsumerWidget {
         // Le refus s'affiche dans la carte de saisie. Sur mobile, les
         // résultats sont sous le schéma : un message posé là serait lu deux
         // écrans plus bas que le champ fautif.
-        if (outcome case LayoutFailure(:final message))
+        if (outcome case LayoutFailure(:final reason))
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: ErrorBanner(message: message),
+            child: ErrorBanner(message: l10n.calcError(reason)),
           ),
       ],
       visualization: const SchemaCard(

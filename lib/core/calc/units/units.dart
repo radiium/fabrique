@@ -13,7 +13,7 @@ double mmPerUnit(LengthUnit unit) => switch (unit) {
 /// Convertit [value] exprimée en [unit] vers des millimètres.
 double toMm(double value, LengthUnit unit) {
   if (!value.isFinite) {
-    throw const CalcException('Valeur non finie');
+    throw const CalcException(NonFiniteValue());
   }
   return value * mmPerUnit(unit);
 }
@@ -21,7 +21,7 @@ double toMm(double value, LengthUnit unit) {
 /// Convertit [mm] vers [unit].
 double fromMm(double mm, LengthUnit unit) {
   if (!mm.isFinite) {
-    throw const CalcException('Valeur non finie');
+    throw const CalcException(NonFiniteValue());
   }
   return mm / mmPerUnit(unit);
 }

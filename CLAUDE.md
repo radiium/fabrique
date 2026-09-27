@@ -37,7 +37,7 @@ Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/
 - **Le painter peint, le core calcule.** Aucune math dans le rendu.
 - **`lib/core/calc` n'importe jamais Flutter** : c'est ce qui le rend testable sans appareil.
 - **Tout est en millimètres** (`double`). Conversions aux frontières de l'UI seulement.
-- **Une saisie invalide lève `CalcException`**, jamais une valeur fausse. Son message s'affiche tel quel.
+- **Une saisie invalide lève `CalcException`**, jamais une valeur fausse. Elle porte un motif typé (`CalcError`), avec ses chiffres, et l'UI le rédige dans la langue de l'app (`l10n.calcError`).
 - **Modèles `@freezed`, providers `@riverpod`.** Le résultat d'un outil est un provider dérivé de sa saisie : ni `setState` dans le calcul, ni bouton « calculer ». `setState` reste permis pour un état d'interface local (rotation, export en cours).
 - **Une feature-outil** : `*_screen`, `*_controller`, `*_schema` (seul point de construction du painter), `*_painter`. Le reste seulement si besoin.
 - **Atelier** : cibles ≥ 48 px (`kFieldHeight`), aucun libellé tronqué en silence. Le schéma peut passer sous la ligne de flottaison : un outil riche ne tient pas dans un écran.

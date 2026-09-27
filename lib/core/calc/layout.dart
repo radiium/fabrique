@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../format.dart';
 import '../models/enums.dart';
 import 'calc_exception.dart';
 
@@ -180,11 +179,13 @@ LayoutResult computeLayout(LayoutInput input) {
   final gapV = flip ? input.gapX : input.gapY;
 
   if (eu > su + _eps || ev > sv + _eps) {
-    // Avec un jeu périphérique, la zone à couvrir n'est plus la surface saisie
-    // et l'écart ne se voit nulle part : le message porte donc les deux cotes.
     throw CalcException(
-      "L'élément fait ${formatNumber(eu)} × ${formatNumber(ev)} mm pour une "
-      'zone à couvrir de ${formatNumber(su)} × ${formatNumber(sv)} mm',
+      TileLargerThanSurface(
+        tileWidth: eu,
+        tileLength: ev,
+        surfaceWidth: su,
+        surfaceLength: sv,
+      ),
     );
   }
 
@@ -336,43 +337,37 @@ void _guardVolume({
     // L'ordre de grandeur plutôt que le seul plafond : sur une faute de frappe
     // il y a deux zéros d'écart, et c'est ça qui dit où chercher.
     throw CalcException(
-      'Cette saisie demanderait ${formatNumber(rows * cols)} éléments, '
-      '$kMaxLayoutElements au maximum',
+      TooManyTiles(count: rows * cols, maxCount: kMaxLayoutElements),
     );
   }
 }
 
 void _validate(LayoutInput input) {
-  // Les cotes se nomment ici comme à l'écran. Un refus qui parlerait de
-  // « Surface X » enverrait chercher un champ qui n'existe pas.
-  final dims = {
-    'La largeur de surface': input.surfaceX,
-    'La longueur de surface': input.surfaceY,
-    "La largeur d'élément": input.elementX,
-    "La longueur d'élément": input.elementY,
-  };
-  for (final entry in dims.entries) {
-    if (!entry.value.isFinite || entry.value <= 0) {
-      throw CalcException('${entry.key} doit être un nombre positif');
+  for (final (field, value) in [
+    (PositiveField.surfaceWidth, input.surfaceX),
+    (PositiveField.surfaceLength, input.surfaceY),
+    (PositiveField.tileWidth, input.elementX),
+    (PositiveField.tileLength, input.elementY),
+  ]) {
+    if (!value.isFinite || value <= 0) {
+      throw CalcException(MustBePositive(field));
     }
   }
 
-  final gaps = {
-    'Le jeu horizontal': input.gapX,
-    'Le jeu vertical': input.gapY,
-    'Le jeu périphérique': input.perimeterGap,
-  };
-  for (final entry in gaps.entries) {
-    if (!entry.value.isFinite || entry.value < 0) {
-      throw CalcException('${entry.key} ne peut pas être négatif');
+  for (final (field, value) in [
+    (NonNegativeField.horizontalGap, input.gapX),
+    (NonNegativeField.verticalGap, input.gapY),
+    (NonNegativeField.perimeterGap, input.perimeterGap),
+  ]) {
+    if (!value.isFinite || value < 0) {
+      throw CalcException(MustNotBeNegative(field));
     }
   }
 
   final smallest = math.min(input.surfaceX, input.surfaceY);
   if (2 * input.perimeterGap >= smallest) {
     throw CalcException(
-      'Le jeu périphérique de ${formatNumber(input.perimeterGap)} mm ne laisse '
-      'rien à couvrir sur ${formatNumber(smallest)} mm',
+      PerimeterGapFillsSurface(gap: input.perimeterGap, smallest: smallest),
     );
   }
 }

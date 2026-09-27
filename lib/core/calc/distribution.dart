@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../format.dart';
 import 'calc_exception.dart';
 
 part 'distribution.freezed.dart';
@@ -166,25 +165,21 @@ double _validatedSpan({
       !elementWidth.isFinite ||
       !startOffset.isFinite ||
       !endOffset.isFinite) {
-    throw const CalcException('Saisie incomplète');
+    throw const CalcException(IncompleteInput());
   }
   if (length <= 0) {
-    throw const CalcException('La largeur totale doit être supérieure à 0');
+    throw const CalcException(MustBePositive(PositiveField.totalWidth));
   }
   if (elementWidth < 0) {
-    throw const CalcException(
-      "La largeur d'un élément ne peut pas être négative",
-    );
+    throw const CalcException(MustNotBeNegative(NonNegativeField.elementWidth));
   }
   if (startOffset < 0 || endOffset < 0) {
-    throw const CalcException('Une marge ne peut pas être négative');
+    throw const CalcException(MustNotBeNegative(NonNegativeField.margin));
   }
 
   final span = length - startOffset - endOffset;
   if (span <= 0) {
-    throw const CalcException(
-      'Les marges occupent toute la largeur : il ne reste rien à répartir',
-    );
+    throw const CalcException(MarginsFillWidth());
   }
   return span;
 }
@@ -206,25 +201,19 @@ DistributionResult computeDistribution(DistributionInput input) {
   final minCount = _edgeElements(input.startEdge, input.endEdge);
 
   if (count < 0) {
-    throw const CalcException("Le nombre d'éléments ne peut pas être négatif");
+    throw const CalcException(MustNotBeNegative(NonNegativeField.elementCount));
   }
   if (count < minCount) {
-    throw CalcException(
-      'Cette disposition demande au moins $minCount '
-      '${minCount > 1 ? 'éléments' : 'élément'}',
-    );
+    throw CalcException(TooFewElements(minCount));
   }
   if (count > kMaxDistributionCount) {
-    throw const CalcException(
-      "Trop d'éléments : $kMaxDistributionCount au maximum",
-    );
+    throw const CalcException(TooManyElements(kMaxDistributionCount));
   }
 
   final occupied = count * width;
   if (occupied > span) {
     throw CalcException(
-      'Les $count éléments occupent ${formatNumber(occupied)} mm '
-      'pour ${formatNumber(span)} mm disponibles',
+      ElementsOverflow(count: count, occupied: occupied, available: span),
     );
   }
 
@@ -280,29 +269,25 @@ DistributionTargetResult computeDistributionForSpacing(
   final width = input.elementWidth;
 
   if (!target.isFinite) {
-    throw const CalcException('Saisie incomplète');
+    throw const CalcException(IncompleteInput());
   }
   if (target < 0) {
-    throw const CalcException("L'écart visé ne peut pas être négatif");
+    throw const CalcException(MustNotBeNegative(NonNegativeField.targetGap));
   }
   if (width + target <= 0) {
-    throw const CalcException(
-      "Largeur et écart ne peuvent pas être nuls tous les deux",
-    );
+    throw const CalcException(WidthAndGapBothZero());
   }
 
   // c = 1 − (bords occupés par un élément).
   final c = 1 - _edgeElements(input.startEdge, input.endEdge);
   final exact = (span - c * target) / (width + target);
   if (!exact.isFinite) {
-    throw const CalcException('Aucune répartition ne correspond à cet écart');
+    throw const CalcException(NoDistributionForGap());
   }
   // Dit franchement que l'écart est trop petit, plutôt que de laisser les deux
   // bornes échouer plus bas sur un message vague.
   if (exact.floor() > kMaxDistributionCount) {
-    throw const CalcException(
-      "Écart trop petit : il faudrait plus de $kMaxDistributionCount éléments",
-    );
+    throw const CalcException(GapTooSmall(kMaxDistributionCount));
   }
 
   DistributionResult? evaluate(int count) {
@@ -333,7 +318,7 @@ DistributionTargetResult computeDistributionForSpacing(
   }.map(evaluate).nonNulls.toList(growable: false);
 
   if (candidates.isEmpty) {
-    throw const CalcException('Aucune répartition ne correspond à cet écart');
+    throw const CalcException(NoDistributionForGap());
   }
 
   candidates.sort(

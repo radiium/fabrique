@@ -113,12 +113,12 @@ final class DrawersReady extends DrawersOutcome {
   final DrawersResult result;
 }
 
-/// Saisie refusée par le cœur. [message] est rédigé pour être affiché tel
-/// quel.
+/// Saisie refusée par le cœur, avec son motif : l'écran le rédige dans la
+/// langue de l'app.
 final class DrawersFailure extends DrawersOutcome {
-  const DrawersFailure(this.message);
+  const DrawersFailure(this.reason);
 
-  final String message;
+  final CalcError reason;
 }
 
 /// Le résultat, ou `null` sur un refus : ce que lisent le schéma et les
@@ -137,6 +137,6 @@ DrawersOutcome drawersResult(Ref ref) {
   try {
     return DrawersReady(computeDrawers(input));
   } on CalcException catch (error) {
-    return DrawersFailure(error.message);
+    return DrawersFailure(error.reason);
   }
 }

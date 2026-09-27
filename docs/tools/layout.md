@@ -61,7 +61,7 @@ Sur un axe de portée `s`, élément `e`, jeu `g` :
 
 ### Refus (`CalcException`)
 
-Les messages **nomment les cotes comme l'écran** et portent les chiffres :
+Chaque refus porte un motif `CalcError` et ses chiffres ; sa phrase **nomme les cotes comme l'écran** :
 
 - dimension nulle, négative ou non finie (« La largeur de surface doit être un nombre positif »)
 - jeu négatif
