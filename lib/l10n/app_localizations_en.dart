@@ -174,4 +174,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jointOffsetStraight => 'Stacked';
+
+  @override
+  String get decimalSeparator => '.';
+
+  @override
+  String get commonExpandSchema => 'Enlarge the drawing';
+
+  @override
+  String get commonCopied => 'Copied';
+
+  @override
+  String commonHelpFor(String label) {
+    return 'Help: $label';
+  }
+
+  @override
+  String get commonReset => 'Reset inputs';
+
+  @override
+  String get commonDecrement => 'One less';
+
+  @override
+  String get commonIncrement => 'One more';
+
+  @override
+  String get commonUnitNote => 'Dimensions in mm';
 }

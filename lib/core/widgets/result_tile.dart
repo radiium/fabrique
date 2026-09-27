@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
+import '../../l10n/app_localizations.dart';
 import 'haptics.dart';
 
 /// Une valeur calculée, copiable d'un tap.
@@ -84,11 +85,12 @@ class ResultTile extends StatelessWidget {
   Future<void> _copy(BuildContext context) async {
     hapticSelection(context);
     final messenger = ScaffoldMessenger.of(context);
+    final copied = AppLocalizations.of(context).commonCopied;
     await Clipboard.setData(ClipboardData(text: value));
     // Remplace le « Copié » précédent : des copies à la suite empileraient
     // leurs SnackBar sur les résultats pendant plusieurs secondes.
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(const SnackBar(content: Text('Copié')));
+      ..showSnackBar(SnackBar(content: Text(copied)));
   }
 }

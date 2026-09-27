@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Saisie numérique nue, sans libellé : le socle commun de `NumberField` et de
 /// `CountField`.
@@ -35,6 +36,8 @@ class NumericInput extends StatefulWidget {
 }
 
 class _NumericInputState extends State<NumericInput> {
+  // Tardif : le premier accès a lieu dans `build`, où le séparateur décimal de
+  // la langue se lit dans le contexte.
   late final TextEditingController _controller = TextEditingController(
     text: _format(widget.value),
   );
@@ -100,6 +103,9 @@ class _NumericInputState extends State<NumericInput> {
   static double? _parse(String raw) =>
       double.tryParse(raw.replaceAll(',', '.'));
 
-  static String _format(double v) =>
-      v == v.roundToDouble() ? v.toStringAsFixed(0) : '$v';
+  /// La valeur telle qu'on la taperait : sans zéros inutiles, avec le
+  /// séparateur décimal de la langue. [_parse] relit les deux séparateurs.
+  String _format(double v) => v == v.roundToDouble()
+      ? v.toStringAsFixed(0)
+      : '$v'.replaceFirst('.', AppLocalizations.of(context).decimalSeparator);
 }

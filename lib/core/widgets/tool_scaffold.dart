@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import '../../l10n/app_localizations.dart';
 import 'app_card.dart';
 import 'app_disclosure.dart';
 import 'haptics.dart';
@@ -278,7 +279,7 @@ class _ResetAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.restart_alt),
-      tooltip: 'Réinitialiser la saisie',
+      tooltip: AppLocalizations.of(context).commonReset,
       onPressed: enabled
           ? () {
               hapticImpact(context);

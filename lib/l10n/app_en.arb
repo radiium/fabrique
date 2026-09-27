@@ -54,5 +54,13 @@
   "unitKilopascals": "Kilopascals",
   "unitMegapascals": "Megapascals",
   "unitPsi": "Pounds per square inch",
-  "jointOffsetStraight": "Stacked"
+  "jointOffsetStraight": "Stacked",
+  "decimalSeparator": ".",
+  "commonExpandSchema": "Enlarge the drawing",
+  "commonCopied": "Copied",
+  "commonHelpFor": "Help: {label}",
+  "commonReset": "Reset inputs",
+  "commonDecrement": "One less",
+  "commonIncrement": "One more",
+  "commonUnitNote": "Dimensions in mm"
 }

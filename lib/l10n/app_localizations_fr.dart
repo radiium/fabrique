@@ -174,4 +174,30 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get jointOffsetStraight => 'Droit';
+
+  @override
+  String get decimalSeparator => ',';
+
+  @override
+  String get commonExpandSchema => 'Agrandir le schéma';
+
+  @override
+  String get commonCopied => 'Copié';
+
+  @override
+  String commonHelpFor(String label) {
+    return 'Aide : $label';
+  }
+
+  @override
+  String get commonReset => 'Réinitialiser la saisie';
+
+  @override
+  String get commonDecrement => 'Un de moins';
+
+  @override
+  String get commonIncrement => 'Un de plus';
+
+  @override
+  String get commonUnitNote => 'Cotes en mm';
 }

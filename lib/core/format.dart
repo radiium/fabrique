@@ -16,7 +16,10 @@ const String kNoValue = '—';
 /// La précision suit la magnitude — une cote en mètres a besoin de plus de
 /// décimales qu'une cote en millimètres pour rester exploitable.
 /// `null` ou valeur non finie → [kNoValue].
-String formatNumber(double? value) {
+///
+/// [decimalSeparator] est celui de la langue affichée : l'UI le prend dans
+/// `AppLocalizations` (`l10n.number`), le cœur reste sans Flutter.
+String formatNumber(double? value, {String decimalSeparator = '.'}) {
   if (value == null || !value.isFinite) return kNoValue;
 
   final magnitude = value.abs();
@@ -30,7 +33,9 @@ String formatNumber(double? value) {
   final text = value.toStringAsFixed(decimals);
   if (!text.contains('.')) return text;
   // Rogne la queue de zéros, et le point s'il ne reste plus rien derrière.
-  return text.replaceFirst(RegExp(r'\.?0+$'), '');
+  return text
+      .replaceFirst(RegExp(r'\.?0+$'), '')
+      .replaceFirst('.', decimalSeparator);
 }
 
 /// Formate un angle au dixième de degré, sans le symbole — l'appelant le pose
@@ -42,10 +47,10 @@ String formatNumber(double? value) {
 ///
 /// `-0.0` est ramené à `0.0` : le signe laisserait croire à une inclinaison là
 /// où il n'y en a pas.
-String formatDegrees(double? value) {
+String formatDegrees(double? value, {String decimalSeparator = '.'}) {
   if (value == null || !value.isFinite) return kNoValue;
   final text = value.toStringAsFixed(1);
-  return text == '-0.0' ? '0.0' : text;
+  return (text == '-0.0' ? '0.0' : text).replaceFirst('.', decimalSeparator);
 }
 
 /// Marque du pluriel après un compte : `''` pour 0 et 1, `'s'` au-delà.

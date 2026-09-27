@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import '../../l10n/app_localizations.dart';
 import 'app_segmented_button.dart';
 import 'field_help.dart';
 import 'haptics.dart';
@@ -107,7 +108,7 @@ class _AboutRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: 'Aide : $label',
+      label: AppLocalizations.of(context).commonHelpFor(label),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadii.field),
         onTap: () {

@@ -81,5 +81,30 @@
   "jointOffsetStraight": "Droit",
   "@jointOffsetStraight": {
     "description": "Segment de sélecteur : 9 caractères au plus"
+  },
+  "decimalSeparator": ",",
+  "@decimalSeparator": {
+    "description": "Séparateur décimal des nombres affichés ; la saisie accepte les deux"
+  },
+  "commonExpandSchema": "Agrandir le schéma",
+  "@commonExpandSchema": {
+    "description": "Nom du schéma cliquable pour un lecteur d'écran"
+  },
+  "commonCopied": "Copié",
+  "commonHelpFor": "Aide : {label}",
+  "@commonHelpFor": {
+    "description": "Nom du ⓘ pour un lecteur d'écran",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "commonReset": "Réinitialiser la saisie",
+  "commonDecrement": "Un de moins",
+  "commonIncrement": "Un de plus",
+  "commonUnitNote": "Cotes en mm",
+  "@commonUnitNote": {
+    "description": "Légende d'unité sous chaque schéma"
   }
 }

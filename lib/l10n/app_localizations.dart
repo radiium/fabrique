@@ -427,6 +427,54 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Droit'**
   String get jointOffsetStraight;
+
+  /// Séparateur décimal des nombres affichés ; la saisie accepte les deux
+  ///
+  /// In fr, this message translates to:
+  /// **','**
+  String get decimalSeparator;
+
+  /// Nom du schéma cliquable pour un lecteur d'écran
+  ///
+  /// In fr, this message translates to:
+  /// **'Agrandir le schéma'**
+  String get commonExpandSchema;
+
+  /// No description provided for @commonCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copié'**
+  String get commonCopied;
+
+  /// Nom du ⓘ pour un lecteur d'écran
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide : {label}'**
+  String commonHelpFor(String label);
+
+  /// No description provided for @commonReset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialiser la saisie'**
+  String get commonReset;
+
+  /// No description provided for @commonDecrement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un de moins'**
+  String get commonDecrement;
+
+  /// No description provided for @commonIncrement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un de plus'**
+  String get commonIncrement;
+
+  /// Légende d'unité sous chaque schéma
+  ///
+  /// In fr, this message translates to:
+  /// **'Cotes en mm'**
+  String get commonUnitNote;
 }
 
 class _AppLocalizationsDelegate

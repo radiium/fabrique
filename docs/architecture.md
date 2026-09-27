@@ -90,6 +90,8 @@ Les versions font foi dans `pubspec.yaml`.
 
 Les enums de `core/models` ne portent aucun texte : `l10n/labels.dart` les nomme (`tool.label(l10n)`, `unit.symbol(l10n)`), une table `switch` par enum. Un builder de plan ou un painter reçoit `AppLocalizations` de son écran ou de son schéma, qui le lisent dans le contexte.
 
+Les nombres affichés prennent le séparateur décimal de la langue (`2,5` / `2.5`) : l'UI écrit `l10n.number(x)` (`l10n/numbers.dart`) plutôt que `formatNumber(x)`, qui garde le point par défaut pour rester sans Flutter. La saisie accepte les deux séparateurs.
+
 La traduction des écrans-outils est en cours : l'accueil et les Réglages passent par `AppLocalizations`, les écrans-outils ont encore leurs libellés en dur.
 
 ## Ce que démontrent les tests du cœur

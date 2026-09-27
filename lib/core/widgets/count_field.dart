@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import '../../l10n/app_localizations.dart';
 import 'field_help.dart';
 import 'haptics.dart';
 import 'labeled_field.dart';
@@ -49,6 +50,7 @@ class CountField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     // Une frappe hors bornes passe telle quelle : c'est au calcul de la
     // refuser avec un message, pas au champ de la corriger en silence.
     return LabeledField(
@@ -59,7 +61,7 @@ class CountField extends StatelessWidget {
         children: [
           _StepButton(
             icon: Icons.remove,
-            tooltip: 'Un de moins',
+            tooltip: l10n.commonDecrement,
             onStep: value > min ? () => _bump(context, -1) : null,
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -75,7 +77,7 @@ class CountField extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           _StepButton(
             icon: Icons.add,
-            tooltip: 'Un de plus',
+            tooltip: l10n.commonIncrement,
             onStep: value < max ? () => _bump(context, 1) : null,
           ),
         ],

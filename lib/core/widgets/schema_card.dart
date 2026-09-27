@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
 import '../../app/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../models/tool.dart';
 import 'app_card.dart';
 import 'haptics.dart';
@@ -82,7 +83,7 @@ class SchemaCard extends StatelessWidget {
       // icône, et le dessin n'a pas de texte à lire.
       child: Semantics(
         button: true,
-        label: 'Agrandir le schéma',
+        label: AppLocalizations.of(context).commonExpandSchema,
         child: SchemaSheet(
           child: Stack(
             fit: StackFit.expand,
