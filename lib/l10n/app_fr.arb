@@ -15,7 +15,15 @@
   "hapticsHelp": "Vibration brève sur les boutons − / + et les sélecteurs.",
 
   "language": "Langue",
+  "languageSystem": "Langue du téléphone",
+  "@languageSystem": {
+    "description": "Suivre la langue du téléphone"
+  },
   "languageFrench": "Français",
+  "@languageFrench": {
+    "description": "Chaque langue s'affiche dans sa propre langue : identique dans tous les ARB"
+  },
+  "languageEnglish": "English",
 
   "settingsLockedSection": "Verrouillé pour cette version",
 

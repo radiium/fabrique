@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Settings {
 
- bool get haptics;
+ bool get haptics;@JsonKey(unknownEnumValue: AppLanguage.system) AppLanguage get language;
 /// Create a copy of Settings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +30,20 @@ $SettingsCopyWith<Settings> get copyWith => _$SettingsCopyWithImpl<Settings>(thi
 @override
 bool operator ==(Object other) {
   final _this = this as Settings;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Settings&&(identical(other.haptics, _this.haptics) || other.haptics == _this.haptics));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Settings&&(identical(other.haptics, _this.haptics) || other.haptics == _this.haptics)&&(identical(other.language, _this.language) || other.language == _this.language));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Settings;
-  return Object.hash(runtimeType,_this.haptics);
+  return Object.hash(runtimeType,_this.haptics,_this.language);
 }
 
 @override
 String toString() {
   final _this = this as Settings;
-  return 'Settings(haptics: ${_this.haptics})';
+  return 'Settings(haptics: ${_this.haptics}, language: ${_this.language})';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $SettingsCopyWith<$Res>  {
   factory $SettingsCopyWith(Settings value, $Res Function(Settings) _then) = _$SettingsCopyWithImpl;
 @useResult
 $Res call({
- bool haptics
+ bool haptics,@JsonKey(unknownEnumValue: AppLanguage.system) AppLanguage language
 });
 
 
@@ -71,10 +71,11 @@ class _$SettingsCopyWithImpl<$Res>
 
 /// Create a copy of Settings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? haptics = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? haptics = null,Object? language = null,}) {
   return _then(Settings(
 haptics: null == haptics ? _self.haptics : haptics // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as AppLanguage,
   ));
 }
 
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool haptics)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool haptics, @JsonKey(unknownEnumValue: AppLanguage.system)  AppLanguage language)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Settings() when $default != null:
-return $default(_that.haptics);case _:
+return $default(_that.haptics,_that.language);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.haptics);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool haptics)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool haptics, @JsonKey(unknownEnumValue: AppLanguage.system)  AppLanguage language)  $default,) {final _that = this;
 switch (_that) {
 case _Settings():
-return $default(_that.haptics);case _:
+return $default(_that.haptics,_that.language);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.haptics);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool haptics)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool haptics, @JsonKey(unknownEnumValue: AppLanguage.system)  AppLanguage language)?  $default,) {final _that = this;
 switch (_that) {
 case _Settings() when $default != null:
-return $default(_that.haptics);case _:
+return $default(_that.haptics,_that.language);case _:
   return null;
 
 }
@@ -215,10 +216,11 @@ return $default(_that.haptics);case _:
 @JsonSerializable()
 
 class _Settings implements Settings {
-  const _Settings({this.haptics = true});
+  const _Settings({this.haptics = true, @JsonKey(unknownEnumValue: AppLanguage.system) this.language = AppLanguage.system});
   factory _Settings.fromJson(Map<String, dynamic> json) => _$SettingsFromJson(json);
 
 @override@JsonKey() final  bool haptics;
+@override@JsonKey(unknownEnumValue: AppLanguage.system) final  AppLanguage language;
 
 /// Create a copy of Settings
 /// with the given fields replaced by the non-null parameter values.
@@ -233,18 +235,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Settings&&(identical(other.haptics, haptics) || other.haptics == haptics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Settings&&(identical(other.haptics, haptics) || other.haptics == haptics)&&(identical(other.language, language) || other.language == language));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,haptics);
+    return Object.hash(runtimeType,haptics,language);
 }
 
 @override
 String toString() {
-    return 'Settings(haptics: $haptics)';
+    return 'Settings(haptics: $haptics, language: $language)';
 }
 
 
@@ -255,7 +257,7 @@ abstract mixin class _$SettingsCopyWith<$Res> implements $SettingsCopyWith<$Res>
   factory _$SettingsCopyWith(_Settings value, $Res Function(_Settings) _then) = __$SettingsCopyWithImpl;
 @override @useResult
 $Res call({
- bool haptics
+ bool haptics,@JsonKey(unknownEnumValue: AppLanguage.system) AppLanguage language
 });
 
 
@@ -272,10 +274,11 @@ class __$SettingsCopyWithImpl<$Res>
 
 /// Create a copy of Settings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? haptics = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? haptics = null,Object? language = null,}) {
   return _then(_Settings(
 haptics: null == haptics ? _self.haptics : haptics // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as AppLanguage,
   ));
 }
 

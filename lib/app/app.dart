@@ -5,10 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/persistence/settings_controller.dart';
 import '../core/widgets/haptics.dart';
 import '../l10n/app_localizations.dart';
+import 'locale.dart';
 import 'router.dart';
 import 'theme.dart';
 
-/// i18n câblé, publié en FR seulement.
+/// Racine de l'app : réglages globaux, thème, langue et routeur.
 class FabriqueApp extends ConsumerWidget {
   const FabriqueApp({super.key});
 
@@ -25,7 +26,10 @@ class FabriqueApp extends ConsumerWidget {
         theme: buildAppTheme(),
         themeMode: ThemeMode.light,
         routerConfig: ref.watch(routerProvider),
-        locale: const Locale('fr'),
+        // `null` suit le téléphone : la résolution choisit alors parmi ses
+        // langues préférées, et retombe sur l'anglais.
+        locale: ref.watch(appLocaleProvider),
+        localeListResolutionCallback: resolveAppLocale,
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: const [
           AppLocalizations.delegate,

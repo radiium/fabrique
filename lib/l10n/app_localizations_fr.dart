@@ -32,7 +32,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get language => 'Langue';
 
   @override
+  String get languageSystem => 'Langue du téléphone';
+
+  @override
   String get languageFrench => 'Français';
+
+  @override
+  String get languageEnglish => 'English';
 
   @override
   String get settingsLockedSection => 'Verrouillé pour cette version';

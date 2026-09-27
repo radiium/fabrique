@@ -10,7 +10,12 @@ import 'package:go_router/go_router.dart';
 /// Monte l'app entière, routeur compris, sur [location].
 ///
 /// Rend le routeur, pour naviguer ensuite sans remonter un second arbre.
-Future<GoRouter> pumpApp(WidgetTester tester, String location) async {
+/// Le français par défaut : c'est la langue de référence des textes.
+Future<GoRouter> pumpApp(
+  WidgetTester tester,
+  String location, {
+  Locale locale = const Locale('fr'),
+}) async {
   final container = ProviderContainer();
   addTearDown(container.dispose);
   final router = container.read(routerProvider)..go(location);
@@ -20,7 +25,7 @@ Future<GoRouter> pumpApp(WidgetTester tester, String location) async {
       child: MaterialApp.router(
         theme: buildAppTheme(),
         routerConfig: router,
-        locale: const Locale('fr'),
+        locale: locale,
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: const [
           AppLocalizations.delegate,

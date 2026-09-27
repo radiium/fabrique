@@ -6,11 +6,26 @@ part of 'settings_controller.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_Settings _$SettingsFromJson(Map<String, dynamic> json) =>
-    _Settings(haptics: json['haptics'] as bool? ?? true);
+_Settings _$SettingsFromJson(Map<String, dynamic> json) => _Settings(
+  haptics: json['haptics'] as bool? ?? true,
+  language:
+      $enumDecodeNullable(
+        _$AppLanguageEnumMap,
+        json['language'],
+        unknownValue: AppLanguage.system,
+      ) ??
+      AppLanguage.system,
+);
 
 Map<String, dynamic> _$SettingsToJson(_Settings instance) => <String, dynamic>{
   'haptics': instance.haptics,
+  'language': _$AppLanguageEnumMap[instance.language]!,
+};
+
+const _$AppLanguageEnumMap = {
+  AppLanguage.system: 'system',
+  AppLanguage.fr: 'fr',
+  AppLanguage.en: 'en',
 };
 
 // **************************************************************************
@@ -84,7 +99,7 @@ final class SettingsControllerProvider
 }
 
 String _$settingsControllerHash() =>
-    r'da9efe9004e840c3feac49eef53c55d71a84898f';
+    r'4b262d663bee82589c646c49bd1ff7fe16287445';
 
 abstract class _$SettingsController extends $AsyncNotifier<Settings> {
   FutureOr<Settings> build();
@@ -157,3 +172,58 @@ final class HapticsEnabledProvider extends $FunctionalProvider<bool, bool, bool>
 }
 
 String _$hapticsEnabledHash() => r'2c7eb9d115de8cee1f52a74531b1435a709c7b41';
+
+/// La locale imposée par le réglage, `null` pour suivre le téléphone.
+///
+/// `null` aussi tant que les réglages chargent : le premier écran s'affiche
+/// dans la langue du téléphone plutôt que d'attendre le disque.
+
+@ProviderFor(appLocale)
+final appLocaleProvider = AppLocaleProvider._();
+
+/// La locale imposée par le réglage, `null` pour suivre le téléphone.
+///
+/// `null` aussi tant que les réglages chargent : le premier écran s'affiche
+/// dans la langue du téléphone plutôt que d'attendre le disque.
+
+final class AppLocaleProvider
+    extends $FunctionalProvider<Locale?, Locale?, Locale?>
+    with $Provider<Locale?> {
+  /// La locale imposée par le réglage, `null` pour suivre le téléphone.
+  ///
+  /// `null` aussi tant que les réglages chargent : le premier écran s'affiche
+  /// dans la langue du téléphone plutôt que d'attendre le disque.
+  AppLocaleProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appLocaleProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appLocaleHash();
+
+  @$internal
+  @override
+  $ProviderElement<Locale?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Locale? create(Ref ref) {
+    return appLocale(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Locale? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Locale?>(value),
+    );
+  }
+}
+
+String _$appLocaleHash() => r'ae001f9bb0fb76e5318919273bb5a315307d4c94';

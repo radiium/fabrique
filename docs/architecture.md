@@ -19,7 +19,7 @@ lib/
 │   ├── export/          plan.dart (feuille + cartouche) · plan_export.dart (PNG, système) · plan_export_action.dart (boutons)
 │   └── widgets/         ToolScaffold, NumberField, CountField, ResultTile, FieldPair…
 ├── features/            home, settings, schema, et un dossier par outil
-└── l10n/                app_fr.arb → AppLocalizations
+└── l10n/                app_fr.arb (gabarit) · app_en.arb → AppLocalizations
 
 test/
 ├── core/                le cœur de calcul et les primitives de dessin, sans appareil ;
@@ -58,7 +58,7 @@ S'y ajoutent, seulement si l'outil en a besoin :
 
 ## Persistance
 
-`shared_preferences` : une clé par outil (la dernière saisie, en JSON), plus le réglage haptique.
+`shared_preferences` : une clé par outil (la dernière saisie, en JSON), plus les réglages (haptique, langue).
 
 `PersistedForm<T>` branche un notifier sur le disque sans toucher à ses méthodes de champ. Le notifier déclare `tool`, `defaults`, `decode`, `encode`, et son `build()` rend `restore()`. Le mixin fait le reste : relecture, écriture différée de 400 ms, écriture finale au dispose. Le Niveau n'a rien à persister.
 
@@ -81,11 +81,13 @@ Les versions font foi dans `pubspec.yaml`.
 | `shared_preferences` | persistance |
 | `share_plus` · `gal` | partager, enregistrer dans les photos |
 | `freezed`, `json_serializable` | modèles immuables |
-| `flutter_localizations`, `intl` | i18n câblée, publiée en FR seulement |
+| `flutter_localizations`, `intl` | i18n, français et anglais |
 
 **Écartés** : toute base locale (Isar, Drift) tant qu'il n'y a pas de « projets », toute DI tierce.
 
-**i18n** : en pratique, seuls l'accueil et les Réglages passent par `AppLocalizations`. Les écrans-outils ont leurs libellés en dur.
+**i18n** : français et anglais, le français sert de gabarit (`app_fr.arb`). Par défaut l'app suit le téléphone : sa première langue prise en charge l'emporte, région ignorée, et l'anglais sert de repli pour toute autre langue. Le réglage Langue peut imposer l'une ou l'autre (`appLocaleProvider`). Tant que les réglages chargent, l'app suit le téléphone plutôt que d'attendre le disque. Un test vérifie que les deux ARB ont les mêmes clés et les mêmes paramètres.
+
+La traduction des écrans-outils est en cours : l'accueil et les Réglages passent par `AppLocalizations`, les écrans-outils ont encore leurs libellés en dur.
 
 ## Ce que démontrent les tests du cœur
 

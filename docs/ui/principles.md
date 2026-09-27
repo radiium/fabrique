@@ -18,4 +18,4 @@ Android et Web. Pas d'iOS : sans équivalent de F-Droid, l'app n'y serait distri
 ## Accueil et Réglages
 
 - **Accueil** : titre, icône Réglages en haut à droite, grille de cartes d'outils (icône, nom, sous-titre d'une ligne). Le sous-titre tronque en silence au-delà d'environ 34 caractères.
-- **Réglages** : le retour haptique (le seul réglable), plus le thème (clair) et la langue (FR), affichés verrouillés.
+- **Réglages** : le retour haptique et la langue (celle du téléphone, français ou anglais), plus le thème (clair), affiché verrouillé. La langue est une liste déroulante : « Langue du téléphone » ne tient pas dans un segment sur trois. Chaque langue s'y écrit dans sa propre langue, pour qu'on retrouve la sienne dans une app réglée dans une autre.

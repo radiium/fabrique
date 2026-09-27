@@ -1,0 +1,22 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Fabrique",
+
+  "settings": "Settings",
+
+  "theme": "Theme",
+  "themeLightLocked": "Light",
+
+  "haptics": "Haptic feedback",
+  "hapticsHelp": "Short vibration on the − / + buttons and selectors.",
+
+  "language": "Language",
+  "languageSystem": "Phone language",
+  "languageFrench": "Français",
+  "languageEnglish": "English",
+
+  "settingsLockedSection": "Locked for this version",
+
+  "settingsLoadFailed": "Settings unreadable"
+}

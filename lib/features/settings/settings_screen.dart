@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/theme.dart';
 import '../../core/persistence/settings_controller.dart';
 import '../../core/widgets/app_card.dart';
+import '../../core/widgets/app_dropdown.dart';
 import '../../core/widgets/app_switch_field.dart';
+import '../../core/widgets/labeled_field.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Au-delà, le formulaire cesse de s'étirer et se centre *horizontalement* :
@@ -13,7 +15,7 @@ import '../../l10n/app_localizations.dart';
 /// reste collé en haut, comme toutes les autres pages.
 const double _maxFormWidth = 560;
 
-/// Liste courte : haptique, plus le thème et la langue, arrêtés pour cette
+/// Liste courte : haptique et langue, plus le thème, arrêté pour cette
 /// version.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -65,6 +67,24 @@ class _SettingsForm extends ConsumerWidget {
                       value: settings.haptics,
                       onChanged: controller.setHaptics,
                     ),
+                    const SizedBox(height: AppSpacing.md),
+                    // En liste déroulante : « Langue du téléphone » ne tient
+                    // pas dans un segment sur trois.
+                    LabeledField(
+                      label: l10n.language,
+                      child: AppDropdown<AppLanguage>(
+                        value: settings.language,
+                        onSelected: controller.setLanguage,
+                        entries: {
+                          for (final language in AppLanguage.values)
+                            language: switch (language) {
+                              AppLanguage.system => l10n.languageSystem,
+                              AppLanguage.fr => l10n.languageFrench,
+                              AppLanguage.en => l10n.languageEnglish,
+                            },
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -82,10 +102,6 @@ class _SettingsForm extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     _LockedRow(label: l10n.theme, value: l10n.themeLightLocked),
-                    _LockedRow(
-                      label: l10n.language,
-                      value: l10n.languageFrench,
-                    ),
                   ],
                 ),
               ),

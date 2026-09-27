@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -6,10 +8,32 @@ import 'preferences_store.dart';
 part 'settings_controller.freezed.dart';
 part 'settings_controller.g.dart';
 
-/// Réglages globaux (écran Réglages). Thème verrouillé clair, langue FR.
+/// Langue de l'app : celle du téléphone, ou une langue imposée.
+enum AppLanguage {
+  system,
+  fr,
+  en;
+
+  /// La locale à imposer à l'app, `null` pour suivre le téléphone.
+  Locale? get locale => switch (this) {
+    AppLanguage.system => null,
+    AppLanguage.fr => const Locale('fr'),
+    AppLanguage.en => const Locale('en'),
+  };
+}
+
+/// Réglages globaux (écran Réglages). Thème verrouillé clair.
 @freezed
 abstract class Settings with _$Settings {
-  const factory Settings({@Default(true) bool haptics}) = _Settings;
+  const factory Settings({
+    @Default(true) bool haptics,
+    // Une langue inconnue (réglage écrit par une version plus récente) se
+    // relit comme « système » plutôt que de rendre tous les réglages
+    // illisibles.
+    @JsonKey(unknownEnumValue: AppLanguage.system)
+    @Default(AppLanguage.system)
+    AppLanguage language,
+  }) = _Settings;
 
   factory Settings.fromJson(Map<String, dynamic> json) =>
       _$SettingsFromJson(json);
@@ -30,6 +54,9 @@ class SettingsController extends _$SettingsController {
   Future<void> setHaptics(bool enabled) =>
       _update((s) => s.copyWith(haptics: enabled));
 
+  Future<void> setLanguage(AppLanguage language) =>
+      _update((s) => s.copyWith(language: language));
+
   Future<void> _update(Settings Function(Settings) change) async {
     final current = await future;
     final next = change(current);
@@ -46,3 +73,11 @@ class SettingsController extends _$SettingsController {
 @riverpod
 bool hapticsEnabled(Ref ref) =>
     ref.watch(settingsControllerProvider).value?.haptics ?? true;
+
+/// La locale imposée par le réglage, `null` pour suivre le téléphone.
+///
+/// `null` aussi tant que les réglages chargent : le premier écran s'affiche
+/// dans la langue du téléphone plutôt que d'attendre le disque.
+@riverpod
+Locale? appLocale(Ref ref) =>
+    ref.watch(settingsControllerProvider).value?.language.locale;
