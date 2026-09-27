@@ -171,10 +171,10 @@ abstract class DrawersInput with _$DrawersInput {
     @Default(8) double bottomThickness,
 
     /// Épaisseur des flancs du caisson : fixe le recouvrement en applique.
-    @Default(19) double carcassThickness,
+    @Default(18) double carcassThickness,
 
     /// Épaisseur de la façade : réduit la profondeur utile en pose encastrée.
-    @Default(19) double frontThickness,
+    @Default(18) double frontThickness,
     @Default(BoxJoint.sidesOverlap) BoxJoint boxJoint,
     @Default(BottomMount.groove) BottomMount bottomMount,
 

@@ -24,8 +24,8 @@ void main() {
   }
 
   const defaultSummaries = [
-    '562 × 720 × 540 mm · caisson 19 mm',
-    '3 tiroirs · hauteurs égales · applique, façade 19 · jeu 3 mm',
+    '564 × 684 × 540 mm · caisson 18 mm',
+    '3 tiroirs · hauteurs égales · applique, façade 18 · jeu 3 mm',
     'À billes · longueur automatique',
     'côtés 15, fond 8 mm · côtés recouvrants · fond en rainure de 6 mm',
   ];
@@ -68,7 +68,7 @@ void main() {
     await tester.pump();
 
     expect(
-      find.text('1 tiroir · hauteurs égales · applique, façade 19 · jeu 3 mm'),
+      find.text('1 tiroir · hauteurs égales · applique, façade 18 · jeu 3 mm'),
       findsOneWidget,
     );
     expect(find.text('Sous tiroir · longueur 450 mm'), findsOneWidget);

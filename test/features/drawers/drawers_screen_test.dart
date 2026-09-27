@@ -28,14 +28,14 @@ void main() {
   testWidgets('les résultats suivent la saisie', (tester) async {
     final container = await pumpDrawers(tester);
 
-    // (720 + 2 × 19 − 2 × 3) / 3, arrondi à l'affichage.
-    expect(text('600 × 250.67'), findsOneWidget);
+    // (684 + 2 × 18 − 2 × 3) / 3.
+    expect(text('600 × 238'), findsOneWidget);
     expect(text('Côté ×4'), findsOneWidget);
 
     container.read(drawersFormProvider.notifier).setDrawerCount(2);
     await tester.pumpAndSettle();
 
-    expect(text('600 × 377.5'), findsOneWidget);
+    expect(text('600 × 358.5'), findsOneWidget);
     expect(text('Côté ×4'), findsOneWidget);
   });
 

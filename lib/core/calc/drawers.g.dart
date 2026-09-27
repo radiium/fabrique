@@ -31,8 +31,8 @@ _DrawersInput _$DrawersInputFromJson(Map<String, dynamic> json) =>
       frontGap: (json['frontGap'] as num?)?.toDouble() ?? 3,
       sideThickness: (json['sideThickness'] as num?)?.toDouble() ?? 15,
       bottomThickness: (json['bottomThickness'] as num?)?.toDouble() ?? 8,
-      carcassThickness: (json['carcassThickness'] as num?)?.toDouble() ?? 19,
-      frontThickness: (json['frontThickness'] as num?)?.toDouble() ?? 19,
+      carcassThickness: (json['carcassThickness'] as num?)?.toDouble() ?? 18,
+      frontThickness: (json['frontThickness'] as num?)?.toDouble() ?? 18,
       boxJoint:
           $enumDecodeNullable(_$BoxJointEnumMap, json['boxJoint']) ??
           BoxJoint.sidesOverlap,

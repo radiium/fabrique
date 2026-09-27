@@ -8,10 +8,11 @@ import '../../core/persistence/persisted_form.dart';
 part 'drawers_controller.g.dart';
 
 /// Saisie de départ, et cible du bouton « réinitialiser » : un caisson de
-/// cuisine de 600, trois tiroirs à billes, façades en applique.
+/// 600 × 720 hors tout en panneaux de 18, trois tiroirs à billes, façades en
+/// applique.
 const DrawersInput kDrawersDefaults = DrawersInput(
-  openingWidth: 562,
-  openingHeight: 720,
+  openingWidth: 564,
+  openingHeight: 684,
   openingDepth: 540,
   drawerCount: 3,
 );

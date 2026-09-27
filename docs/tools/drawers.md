@@ -67,8 +67,8 @@ En **quatre groupes repliables**, chacun résumé sous son titre (voir [ui/tool-
 
 | Groupe | Contenu | Résumé par défaut |
 |---|---|---|
-| `Ouverture` | `Largeur intérieure` · `Hauteur intérieure`, puis `Profondeur intérieure` · `Épaisseur du caisson` : l'ordre dans lequel on mesure le caisson | `562 × 720 × 540 mm · caisson 19 mm` |
-| `Tiroirs et façades` | `Nombre de tiroirs` · `Hauteurs`, pose de la façade (`Applique` · `Encastrée`), épaisseur de façade et jeu entre façades | `3 tiroirs · hauteurs égales · applique, façade 19 · jeu 3 mm` |
+| `Ouverture` | `Largeur intérieure` · `Hauteur intérieure`, puis `Profondeur intérieure` · `Épaisseur du caisson` : l'ordre dans lequel on mesure le caisson | `564 × 684 × 540 mm · caisson 18 mm` |
+| `Tiroirs et façades` | `Nombre de tiroirs` · `Hauteurs`, pose de la façade (`Applique` · `Encastrée`), épaisseur de façade et jeu entre façades | `3 tiroirs · hauteurs égales · applique, façade 18 · jeu 3 mm` |
 | `Glissière` | le type, ses jeux si `Personnalisée`, la longueur (sauf bois sur bois) | `À billes · longueur automatique` |
 | `Caisse` | épaisseurs des côtés et du fond, assemblage, fond (et profondeur de rainure) | `côtés 15, fond 8 mm · côtés recouvrants · fond en rainure de 6 mm` |
 
@@ -78,7 +78,7 @@ En **quatre groupes repliables**, chacun résumé sous son titre (voir [ui/tool-
 
 **Assemblage et fond en tuiles pictogramme + texte** (`ChoiceTiles`), deux par ligne pour l'assemblage, trois pour le fond. « Devant et dos recouvrants » ne tient pas dans un segment, et le dessin (la caisse vue de dessus, la caisse en coupe) répond à la question mieux que le mot. Avec une glissière sous tiroir, les tuiles du fond laissent place à la valeur verrouillée : deux choix dont aucun ne s'applique ne se montrent pas.
 
-**Défauts** (`kDrawersDefaults`) : un caisson de cuisine de 600 (562 × 720 × 540), trois tiroirs à billes, façades en applique, côtés de 15, fond de 8 en rainure de 6, caisson et façade de 19, jeu de 3.
+**Défauts** (`kDrawersDefaults`) : un caisson de 600 × 720 hors tout (564 × 684 × 540 intérieur), trois tiroirs à billes, façades en applique, côtés de 15, fond de 8 en rainure de 6, caisson et façade de 18, jeu de 3.
 
 ### Résultats
 

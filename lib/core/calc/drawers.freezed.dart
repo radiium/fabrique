@@ -548,7 +548,7 @@ return $default(_that.openingWidth,_that.openingHeight,_that.openingDepth,_that.
 @JsonSerializable()
 
 class _DrawersInput implements DrawersInput {
-  const _DrawersInput({required this.openingWidth, required this.openingHeight, required this.openingDepth, required this.drawerCount,  List<double?> fixedFrontHeights = const <double?>[], this.slide = SlideKind.ballBearing, this.customSideClearance = 12.7, this.customLengthReduction = 0, this.slideLength, this.frontMount = FrontMount.overlay, this.frontGap = 3, this.sideThickness = 15, this.bottomThickness = 8, this.carcassThickness = 19, this.frontThickness = 19, this.boxJoint = BoxJoint.sidesOverlap, this.bottomMount = BottomMount.groove, this.grooveDepth = 6}): _fixedFrontHeights = fixedFrontHeights;
+  const _DrawersInput({required this.openingWidth, required this.openingHeight, required this.openingDepth, required this.drawerCount,  List<double?> fixedFrontHeights = const <double?>[], this.slide = SlideKind.ballBearing, this.customSideClearance = 12.7, this.customLengthReduction = 0, this.slideLength, this.frontMount = FrontMount.overlay, this.frontGap = 3, this.sideThickness = 15, this.bottomThickness = 8, this.carcassThickness = 18, this.frontThickness = 18, this.boxJoint = BoxJoint.sidesOverlap, this.bottomMount = BottomMount.groove, this.grooveDepth = 6}): _fixedFrontHeights = fixedFrontHeights;
   factory _DrawersInput.fromJson(Map<String, dynamic> json) => _$DrawersInputFromJson(json);
 
 /// Cotes intérieures de l'ouverture, entre flancs, fond et dessus.

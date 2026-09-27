@@ -5,7 +5,7 @@ import 'package:fabrique/core/calc/drawers.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  /// Un caisson de cuisine de 600 : les défauts de l'écran.
+  /// Un caisson de référence, aux épaisseurs par défaut (18).
   const base = DrawersInput(
     openingWidth: 562,
     openingHeight: 720,
@@ -36,15 +36,15 @@ void main() {
     test('trois tiroirs à billes en applique', () {
       final r = computeDrawers(base);
 
-      // 562 + 2 × 19 : la façade couvre le caisson d'un bord à l'autre.
-      expect(r.frontWidth, near(600));
-      // (720 + 2 × 19 − 2 × 3) / 3 : un jeu entre deux façades, aucun au bord.
-      expect(r.fronts.map((f) => f.height), everyElement(near(250.667)));
-      expect(r.fronts.first.bottom + r.fronts.first.height, near(739));
-      expect(r.fronts.last.bottom, near(-19));
+      // 562 + 2 × 18 : la façade couvre le caisson d'un bord à l'autre.
+      expect(r.frontWidth, near(598));
+      // (720 + 2 × 18 − 2 × 3) / 3 : un jeu entre deux façades, aucun au bord.
+      expect(r.fronts.map((f) => f.height), everyElement(near(250)));
+      expect(r.fronts.first.bottom + r.fronts.first.height, near(738));
+      expect(r.fronts.last.bottom, near(-18));
 
-      expect(r.carcassWidth, near(600));
-      expect(r.carcassHeight, near(758));
+      expect(r.carcassWidth, near(598));
+      expect(r.carcassHeight, near(756));
 
       expect(r.sideClearance, 12.7);
       expect(r.boxWidth, near(536.6));
@@ -56,11 +56,11 @@ void main() {
 
       // Le tiroir du milieu a un jeu entier au-dessus et au-dessous, ceux des
       // bouts perdent le recouvrement du caisson.
-      expect(r.boxHeights[0], near(203.167));
-      expect(r.boxHeights[1], near(223.667));
-      expect(r.boxHeights[2], near(203.167));
+      expect(r.boxHeights[0], near(203.5));
+      expect(r.boxHeights[1], near(223));
+      expect(r.boxHeights[2], near(203.5));
       expect(r.boxBottoms[2], near(10));
-      expect(r.slideAxes[2], near(10 + 203.167 / 2));
+      expect(r.slideAxes[2], near(10 + 203.5 / 2));
     });
 
     test('la fiche de débit regroupe les pièces identiques', () {
@@ -70,7 +70,7 @@ void main() {
       expect(sides.map((p) => p.quantity), [4, 2]);
       expect(piece(r, DrawerPart.side).length, 500);
       expect(piece(r, DrawerPart.front).length, near(506.6));
-      expect(piece(r, DrawerPart.back, width: 223.667).quantity, 1);
+      expect(piece(r, DrawerPart.back, width: 223).quantity, 1);
 
       final bottom = piece(r, DrawerPart.bottom);
       expect(bottom.quantity, 3);
@@ -81,8 +81,8 @@ void main() {
 
       final front = piece(r, DrawerPart.drawerFront);
       expect(front.quantity, 3);
-      expect(front.length, near(600));
-      expect(front.thickness, 19);
+      expect(front.length, near(598));
+      expect(front.thickness, 18);
     });
 
     test('sous tiroir : largeur intérieure = ouverture − 42 avec des côtés '
@@ -123,8 +123,8 @@ void main() {
       // (720 − 4 × 3) / 3
       expect(r.fronts.map((f) => f.height), everyElement(near(236)));
       expect(r.fronts.last.bottom, near(3));
-      expect(r.boxSetback, 19);
-      // 540 − 19 de façade : 521 utiles, la glissière de 500.
+      expect(r.boxSetback, 18);
+      // 540 − 18 de façade : 522 utiles, la glissière de 500.
       expect(r.slideLength, 500);
     });
 
@@ -143,7 +143,7 @@ void main() {
       );
 
       expect(r.bottomLift, 0);
-      expect(piece(r, DrawerPart.side).width, near(203.167 - 8));
+      expect(piece(r, DrawerPart.side).width, near(203.5 - 8));
       final bottom = piece(r, DrawerPart.bottom);
       expect(bottom.length, near(536.6));
       expect(bottom.width, 500);
@@ -167,19 +167,19 @@ void main() {
 
       expect(r.fronts[0].height, 300);
       expect(r.fronts[0].isFixed, isTrue);
-      expect(r.fronts[1].height, near(226));
+      expect(r.fronts[1].height, near(225));
       expect(r.fronts[2].isFixed, isFalse);
     });
 
     test('des hauteurs toutes fixées doivent faire la hauteur', () {
       final r = computeDrawers(
-        base.copyWith(fixedFrontHeights: const [300, 300, 152]),
+        base.copyWith(fixedFrontHeights: const [300, 300, 150]),
       );
-      expect(r.fronts.last.bottom, near(-19));
+      expect(r.fronts.last.bottom, near(-18));
 
       expectRefused(
         base.copyWith(fixedFrontHeights: const [300, 300, 300]),
-        'Les hauteurs fixées font 900 mm pour 752 mm',
+        'Les hauteurs fixées font 900 mm pour 750 mm',
       );
     });
 
@@ -207,7 +207,7 @@ void main() {
 
   group('computeDrawers — coupes', () {
     test('les façades se centrent sur l’ouverture', () {
-      expect(computeDrawers(base).frontLeft, near(-19));
+      expect(computeDrawers(base).frontLeft, near(-18));
       expect(
         computeDrawers(base.copyWith(frontMount: FrontMount.inset)).frontLeft,
         near(3),
