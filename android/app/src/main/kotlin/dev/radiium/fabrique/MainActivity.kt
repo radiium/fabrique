@@ -1,4 +1,4 @@
-package com.example.fabrique
+package dev.radiium.fabrique
 
 import io.flutter.embedding.android.FlutterActivity
 
