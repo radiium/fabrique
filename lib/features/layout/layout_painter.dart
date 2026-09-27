@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/layout.dart';
-import '../../core/format.dart';
 import '../../core/painting.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 
 /// Marges autour de la surface : de la place pour les cotes, à gauche et en
 /// haut, et un filet ailleurs.
@@ -34,6 +35,7 @@ class LayoutPainter extends CustomPainter {
   const LayoutPainter({
     required this.result,
     required this.input,
+    required this.l10n,
     this.compact = false,
   });
 
@@ -47,6 +49,8 @@ class LayoutPainter extends CustomPainter {
   /// Les cotes de la surface : [LayoutResult] n'expose que son aire, dont X et
   /// Y ne se déduisent pas.
   final LayoutInput input;
+
+  final AppLocalizations l10n;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -230,7 +234,7 @@ class LayoutPainter extends CustomPainter {
       x1: origin.dx,
       x2: origin.dx + width,
       y: dimY,
-      label: formatNumber(input.surfaceX),
+      label: l10n.number(input.surfaceX),
       ticks: false,
     );
 
@@ -247,7 +251,7 @@ class LayoutPainter extends CustomPainter {
       y1: origin.dy,
       y2: origin.dy + height,
       x: dimX,
-      label: formatNumber(input.surfaceY),
+      label: l10n.number(input.surfaceY),
       labelSide: -1,
       ticks: false,
     );
@@ -255,7 +259,7 @@ class LayoutPainter extends CustomPainter {
 
   /// L'unité du dessin, une fois, sous la surface.
   void _paintNote(Canvas canvas, Size size) {
-    final text = schemaText(kUnitNote, size: 9);
+    final text = schemaText(l10n.commonUnitNote, size: 9);
     text.paint(
       canvas,
       Offset((size.width - text.width) / 2, size.height - text.height - 4),
@@ -264,5 +268,8 @@ class LayoutPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(LayoutPainter old) =>
-      old.result != result || old.input != input || old.compact != compact;
+      old.result != result ||
+      old.input != input ||
+      old.compact != compact ||
+      old.l10n.localeName != l10n.localeName;
 }

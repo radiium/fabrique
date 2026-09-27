@@ -565,5 +565,123 @@
   "planIndex": "N°",
   "@planIndex": {
     "description": "En-tête de la colonne des numéros"
-  }
+  },
+  "layoutSurfaceGroup": "Surface",
+  "layoutSurfaceWidth": "Surface — largeur",
+  "@layoutSurfaceWidth": {
+    "description": "Libellé à deux étages : le tiret sépare"
+  },
+  "layoutSurfaceLength": "Surface — longueur",
+  "layoutElementGroup": "Élément et pose",
+  "layoutMaterial": "Matériau",
+  "layoutCustom": "Personnalisé",
+  "layoutMaterialDrywall": "Placo",
+  "@layoutMaterialDrywall": {
+    "description": "Nom de produit, suivi de son format : la valeur fermée du sélecteur tronque en silence"
+  },
+  "layoutMaterialTile": "Carrelage",
+  "layoutMaterialFlooring": "Parquet",
+  "layoutMaterialDecking": "Terrasse",
+  "layoutMaterialPanel": "Panneau",
+  "layoutElementWidth": "Élément — largeur",
+  "layoutElementLength": "Élément — longueur",
+  "layoutOffset": "Décalage des joints",
+  "layoutFlip": "Inverser l’orientation",
+  "layoutFlipHelp": "Le décalage de joints suit.",
+  "layoutBalance": "Équilibrer les rangées",
+  "layoutBalanceHelp": "Évite de finir sur une rangée plus mince qu’un demi-élément.",
+  "layoutSummaryOffset": "décalage {offset}",
+  "@layoutSummaryOffset": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "layoutSummaryFlipped": "orientation inversée",
+  "layoutSummaryBalanced": "rangées équilibrées",
+  "layoutGapsGroup": "Jeux",
+  "layoutGapX": "Jeu horizontal",
+  "layoutGapY": "Jeu vertical",
+  "layoutPerimeterGap": "Jeu périphérique",
+  "layoutPerimeterGapHelp": "Retrait tout autour de la pose, contre les quatre bords.",
+  "layoutNoGap": "Aucun jeu",
+  "layoutSummaryGaps": "entre éléments {x} × {y} · périphérique {perimeter} mm",
+  "@layoutSummaryGaps": {
+    "placeholders": {
+      "x": {
+        "type": "String"
+      },
+      "y": {
+        "type": "String"
+      },
+      "perimeter": {
+        "type": "String"
+      }
+    }
+  },
+  "layoutFullCount": "Éléments entiers",
+  "layoutCutCount": "Éléments à couper",
+  "layoutCutNote": "Surlignés en orange sur le schéma",
+  "layoutBalancedRows": "Rangées de bord",
+  "layoutBalancedNote": "Première et dernière, à la même épaisseur",
+  "layoutBalancedEndNote": "Première et dernière, à la même épaisseur. Pièces de bout : {end} mm",
+  "@layoutBalancedEndNote": {
+    "placeholders": {
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "layoutTotal": "Total à prévoir",
+  "layoutTotalNote": "Stock sans réemploi des chutes",
+  "layoutSurface": "Surface",
+  "layoutCovered": "Couverte : {area} m²",
+  "@layoutCovered": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
+  "layoutWaste": "Perte",
+  "layoutWasteNote": "Sans réemploi des chutes — estimation pessimiste",
+  "layoutPlanElement": "Élément",
+  "@layoutPlanElement": {
+    "description": "Case du cartouche, mise en capitales"
+  },
+  "layoutPlanOffset": "Décalage",
+  "layoutPlanGap": "Jeu",
+  "layoutPlanPerimeterGap": "Jeu périph.",
+  "layoutPlanFull": "Entiers",
+  "layoutPlanCut": "À couper",
+  "layoutPlanTotal": "Total",
+  "layoutPlanWaste": "Perte",
+  "layoutPlanCuts": "Pièces à couper",
+  "layoutPlanWidthColumn": "Larg.",
+  "@layoutPlanWidthColumn": {
+    "description": "En-tête de colonne, suivi de « (mm) »"
+  },
+  "layoutPlanLengthColumn": "Long.",
+  "layoutPlanCountColumn": "Nb",
+  "layoutPlanNoCut": "Aucune coupe, tout tombe juste",
+  "layoutPlanCutsFallback": "{count} cotes de coupe — à lire dans l’app",
+  "@layoutPlanCutsFallback": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "layoutPlanNote": "Perte estimée sans réemploi des chutes. Chaque coupe consomme un élément entier.",
+  "layoutAboutPerimeterBody": "Le retrait laissé tout autour de la pose, contre les quatre bords. La pièce ne rétrécit pas : c’est la pose qui recule, donc la surface annoncée reste celle du sol ou du mur.",
+  "layoutAboutPerimeterFlooring": "Parquet et stratifié : le joint de dilatation, autour de 10 mm.",
+  "layoutAboutPerimeterTile": "Carrelage : le joint au mur, autour de 5 mm.",
+  "layoutAboutPerimeterDrywall": "Plaque de plâtre : le jeu au sol, autour de 10 mm.",
+  "layoutAboutPerimeterNone": "Une pose jointive contre les murs se laisse à 0.",
+  "layoutAboutOffsetBody": "De combien chaque rangée démarre en retrait de la précédente. Le décalage suit le sens de pose : inverser l’orientation le fait pivoter avec le reste du motif.",
+  "layoutAboutOffsetStraight": "Droit : toutes les rangées démarrent au même endroit, les joints s’alignent en croix.",
+  "layoutAboutOffsetHalf": "½ : le décalage classique des lames courtes et des plaques.",
+  "layoutAboutOffsetThird": "⅓ : la règle des carreaux et des lames de plus de 60 cm, où un demi décalage fait tuiler le milieu de l’élément.",
+  "layoutAboutOffsetSquare": "Sur un élément carré ou une plaque pleine, l’effet reste marginal."
 }

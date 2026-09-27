@@ -12,19 +12,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/app.dart';
+import '../../support/l10n.dart';
 import '../../support/phone.dart';
 
 /// Le Calepinage a huit contrôles, en trois groupes repliables. Un contrôle
 /// sorti de son groupe, un résumé qui ment, un refus qui se lit loin du champ :
 /// ni `flutter analyze` ni les tests du cœur ne peuvent l'attraper.
 void main() {
-  Future<ProviderContainer> pumpLayout(WidgetTester tester) async {
+  Future<ProviderContainer> pumpLayout(
+    WidgetTester tester, {
+    Locale locale = const Locale('fr'),
+  }) async {
     final container = ProviderContainer();
     addTearDown(container.dispose);
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: testApp(home: const LayoutScreen()),
+        child: testApp(home: const LayoutScreen(), locale: locale),
       ),
     );
     return container;
@@ -83,7 +87,9 @@ void main() {
     container.read(layoutFormProvider.notifier)
       // Inversé d'abord : le preset traduit ses jeux selon le sens de pose.
       ..setFlip(true)
-      ..applyPreset(kLayoutPresets.firstWhere((p) => p.label.startsWith('Ter')))
+      ..applyPreset(
+        kLayoutPresets.firstWhere((p) => p.material == LayoutMaterial.decking),
+      )
       ..setBalanceRows(true);
     await tester.pump();
 
@@ -256,37 +262,44 @@ void main() {
       expect(find.text('Carrelage 600×600'), findsWidgets);
     });
 
-    testWidgets('aucun libellé ne déborde la valeur fermée', (tester) async {
-      usePhone(tester);
-      await pumpLayout(tester);
-      await open(tester, 'Élément et pose');
+    for (final l10n in allLocales) {
+      testWidgets(
+        'aucun libellé ne déborde la valeur fermée (${l10n.localeName})',
+        (tester) async {
+          usePhone(tester);
+          await pumpLayout(tester, locale: Locale(l10n.localeName));
+          await open(tester, l10n.layoutElementGroup);
 
-      final field = find.byType(AppDropdown<LayoutPreset?>);
-      final closed = tester.getRect(find.text('Personnalisé'));
-      final available = closed.width;
-      final style = controlTextStyle(tester.element(field));
+          final field = find.byType(AppDropdown<LayoutPreset?>);
+          final closed = tester.getRect(find.text(l10n.layoutCustom));
+          final available = closed.width;
+          final style = controlTextStyle(tester.element(field));
 
-      // ⚠️ Mesure divisée par deux, et c'est assumé. La police des tests donne
-      // à chaque glyphe la largeur de la taille de police, soit environ le
-      // double d'une vraie police — et un nom de produit suivi de deux cotes
-      // ne tient jamais dans les 14 caractères que cette mesure autorise ici.
-      // Le seuil brut est donc inatteignable par construction pour ce
-      // contrôle, là où il reste tenable pour un segment.
-      //
-      // Ce qui est gardé, c'est le rapport : un libellé qui grossirait d'un
-      // tiers tomberait quand même.
-      const testFontFactor = 2;
-      for (final preset in kLayoutPresets) {
-        final painter = TextPainter(
-          text: TextSpan(text: preset.label, style: style),
-          textDirection: TextDirection.ltr,
-        )..layout();
-        expect(
-          painter.width / testFontFactor,
-          lessThan(available),
-          reason: '« ${preset.label} » déborde la valeur fermée',
-        );
-      }
-    });
+          // ⚠️ Mesure divisée par deux, et c'est assumé. La police des tests
+          // donne à chaque glyphe la largeur de la taille de police, soit
+          // environ le double d'une vraie police — et un nom de produit suivi
+          // de deux cotes ne tient jamais dans les 14 caractères que cette
+          // mesure autorise ici. Le seuil brut est donc inatteignable par
+          // construction pour ce contrôle, là où il reste tenable pour un
+          // segment.
+          //
+          // Ce qui est gardé, c'est le rapport : un libellé qui grossirait
+          // d'un tiers tomberait quand même.
+          const testFontFactor = 2;
+          for (final preset in kLayoutPresets) {
+            final label = preset.label(l10n);
+            final painter = TextPainter(
+              text: TextSpan(text: label, style: style),
+              textDirection: TextDirection.ltr,
+            )..layout();
+            expect(
+              painter.width / testFontFactor,
+              lessThan(available),
+              reason: '« $label » déborde la valeur fermée',
+            );
+          }
+        },
+      );
+    }
   });
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/layout.dart';
-import '../../core/format.dart';
 import '../../core/models/enums.dart';
 import '../../core/widgets/app_disclosure.dart';
 import '../../core/widgets/app_dropdown.dart';
@@ -13,6 +12,7 @@ import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'layout_controller.dart';
 import 'layout_help.dart';
 import 'layout_presets.dart';
@@ -31,24 +31,25 @@ class LayoutSurfaceGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AppDisclosure(
-      title: 'Surface',
+      title: l10n.layoutSurfaceGroup,
       icon: Icons.crop_square,
       initiallyExpanded: true,
       summary:
-          '${formatNumber(input.surfaceX)} × '
-          '${formatNumber(input.surfaceY)} mm',
+          '${l10n.number(input.surfaceX)} × '
+          '${l10n.number(input.surfaceY)} mm',
       // Les cotes vont par paires : une largeur et une longueur se lisent
       // ensemble.
       child: FieldPair(
         first: NumberField(
-          label: 'Surface — largeur',
+          label: l10n.layoutSurfaceWidth,
           suffix: 'mm',
           value: input.surfaceX,
           onChanged: form.setSurfaceX,
         ),
         second: NumberField(
-          label: 'Surface — longueur',
+          label: l10n.layoutSurfaceLength,
           suffix: 'mm',
           value: input.surfaceY,
           onChanged: form.setSurfaceY,
@@ -73,7 +74,7 @@ class LayoutElementGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return AppDisclosure(
-      title: 'Élément et pose',
+      title: l10n.layoutElementGroup,
       icon: Icons.grid_view,
       summary: _summary(input, l10n),
       child: Column(
@@ -84,19 +85,19 @@ class LayoutElementGroup extends StatelessWidget {
           // réécrirait des champs situés au-dessus de lui se lirait comme un
           // bug.
           LabeledField(
-            label: 'Matériau',
+            label: l10n.layoutMaterial,
             child: _PresetDropdown(input: input, form: form),
           ),
           const SizedBox(height: AppSpacing.md),
           FieldPair(
             first: NumberField(
-              label: 'Élément — largeur',
+              label: l10n.layoutElementWidth,
               suffix: 'mm',
               value: input.elementX,
               onChanged: form.setElementX,
             ),
             second: NumberField(
-              label: 'Élément — longueur',
+              label: l10n.layoutElementLength,
               suffix: 'mm',
               value: input.elementY,
               onChanged: form.setElementY,
@@ -104,8 +105,8 @@ class LayoutElementGroup extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           LabeledField(
-            label: 'Décalage des joints',
-            about: kAboutOffset,
+            label: l10n.layoutOffset,
+            about: aboutOffset(l10n),
             child: AppSegmentedButton<JointOffset>(
               value: input.offset,
               onChanged: form.setOffset,
@@ -117,8 +118,8 @@ class LayoutElementGroup extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           AppSwitchField(
-            label: 'Inverser l’orientation',
-            help: 'Le décalage de joints suit.',
+            label: l10n.layoutFlip,
+            help: l10n.layoutFlipHelp,
             value: input.flip,
             onChanged: form.setFlip,
           ),
@@ -128,9 +129,8 @@ class LayoutElementGroup extends StatelessWidget {
           // dedans changerait le réglage une fois sur deux. L'explication tient
           // donc dans la ligne d'aide.
           AppSwitchField(
-            label: 'Équilibrer les rangées',
-            help:
-                'Évite de finir sur une rangée plus mince qu’un demi-élément.',
+            label: l10n.layoutBalance,
+            help: l10n.layoutBalanceHelp,
             value: input.balanceRows,
             onChanged: form.setBalanceRows,
           ),
@@ -144,12 +144,12 @@ class LayoutElementGroup extends StatelessWidget {
   static String _summary(LayoutInput input, AppLocalizations l10n) {
     final preset = matchLayoutPreset(input);
     return [
-      preset?.label ??
-          '${formatNumber(input.elementX)} × '
-              '${formatNumber(input.elementY)} mm',
-      'décalage ${input.offset.label(l10n).toLowerCase()}',
-      if (input.flip) 'orientation inversée',
-      if (input.balanceRows) 'rangées équilibrées',
+      preset?.label(l10n) ??
+          '${l10n.number(input.elementX)} × '
+              '${l10n.number(input.elementY)} mm',
+      l10n.layoutSummaryOffset(input.offset.label(l10n).toLowerCase()),
+      if (input.flip) l10n.layoutSummaryFlipped,
+      if (input.balanceRows) l10n.layoutSummaryBalanced,
     ].join(' · ');
   }
 }
@@ -163,22 +163,23 @@ class LayoutGapsGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AppDisclosure(
-      title: 'Jeux',
+      title: l10n.layoutGapsGroup,
       icon: Icons.border_outer,
-      summary: _summary(input),
+      summary: _summary(input, l10n),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           FieldPair(
             first: NumberField(
-              label: 'Jeu horizontal',
+              label: l10n.layoutGapX,
               suffix: 'mm',
               value: input.gapX,
               onChanged: form.setGapX,
             ),
             second: NumberField(
-              label: 'Jeu vertical',
+              label: l10n.layoutGapY,
               suffix: 'mm',
               value: input.gapY,
               onChanged: form.setGapY,
@@ -186,10 +187,10 @@ class LayoutGapsGroup extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           NumberField(
-            label: 'Jeu périphérique',
+            label: l10n.layoutPerimeterGap,
             suffix: 'mm',
-            help: 'Retrait tout autour de la pose, contre les quatre bords.',
-            about: kAboutPerimeterGap,
+            help: l10n.layoutPerimeterGapHelp,
+            about: aboutPerimeterGap(l10n),
             value: input.perimeterGap,
             onChanged: form.setPerimeterGap,
           ),
@@ -199,13 +200,15 @@ class LayoutGapsGroup extends StatelessWidget {
   }
 
   /// Horizontal × vertical, comme les champs, puis le périphérique.
-  static String _summary(LayoutInput input) {
+  static String _summary(LayoutInput input, AppLocalizations l10n) {
     if (input.gapX == 0 && input.gapY == 0 && input.perimeterGap == 0) {
-      return 'Aucun jeu';
+      return l10n.layoutNoGap;
     }
-    return 'entre éléments ${formatNumber(input.gapX)} × '
-        '${formatNumber(input.gapY)} · '
-        'périphérique ${formatNumber(input.perimeterGap)} mm';
+    return l10n.layoutSummaryGaps(
+      l10n.number(input.gapX),
+      l10n.number(input.gapY),
+      l10n.number(input.perimeterGap),
+    );
   }
 }
 
@@ -226,19 +229,20 @@ class _PresetDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final current = matchLayoutPreset(input);
     return AppDropdown<LayoutPreset?>(
       // `DropdownMenu` ne lit `initialSelection` qu'à la construction : sans
       // cette clé, taper une cote ferait passer la saisie en « Personnalisé »
       // sans que la valeur fermée bouge.
-      key: ValueKey(current?.label),
+      key: ValueKey(current),
       value: current,
       onSelected: (preset) {
         if (preset != null) form.applyPreset(preset);
       },
       entries: {
-        if (current == null) null: 'Personnalisé',
-        for (final preset in kLayoutPresets) preset: preset.label,
+        if (current == null) null: l10n.layoutCustom,
+        for (final preset in kLayoutPresets) preset: preset.label(l10n),
       },
     );
   }

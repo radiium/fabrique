@@ -1325,6 +1325,396 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'N°'**
   String get planIndex;
+
+  /// No description provided for @layoutSurfaceGroup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surface'**
+  String get layoutSurfaceGroup;
+
+  /// Libellé à deux étages : le tiret sépare
+  ///
+  /// In fr, this message translates to:
+  /// **'Surface — largeur'**
+  String get layoutSurfaceWidth;
+
+  /// No description provided for @layoutSurfaceLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surface — longueur'**
+  String get layoutSurfaceLength;
+
+  /// No description provided for @layoutElementGroup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élément et pose'**
+  String get layoutElementGroup;
+
+  /// No description provided for @layoutMaterial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Matériau'**
+  String get layoutMaterial;
+
+  /// No description provided for @layoutCustom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Personnalisé'**
+  String get layoutCustom;
+
+  /// Nom de produit, suivi de son format : la valeur fermée du sélecteur tronque en silence
+  ///
+  /// In fr, this message translates to:
+  /// **'Placo'**
+  String get layoutMaterialDrywall;
+
+  /// No description provided for @layoutMaterialTile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carrelage'**
+  String get layoutMaterialTile;
+
+  /// No description provided for @layoutMaterialFlooring.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parquet'**
+  String get layoutMaterialFlooring;
+
+  /// No description provided for @layoutMaterialDecking.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terrasse'**
+  String get layoutMaterialDecking;
+
+  /// No description provided for @layoutMaterialPanel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panneau'**
+  String get layoutMaterialPanel;
+
+  /// No description provided for @layoutElementWidth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élément — largeur'**
+  String get layoutElementWidth;
+
+  /// No description provided for @layoutElementLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élément — longueur'**
+  String get layoutElementLength;
+
+  /// No description provided for @layoutOffset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décalage des joints'**
+  String get layoutOffset;
+
+  /// No description provided for @layoutFlip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inverser l’orientation'**
+  String get layoutFlip;
+
+  /// No description provided for @layoutFlipHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le décalage de joints suit.'**
+  String get layoutFlipHelp;
+
+  /// No description provided for @layoutBalance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Équilibrer les rangées'**
+  String get layoutBalance;
+
+  /// No description provided for @layoutBalanceHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Évite de finir sur une rangée plus mince qu’un demi-élément.'**
+  String get layoutBalanceHelp;
+
+  /// No description provided for @layoutSummaryOffset.
+  ///
+  /// In fr, this message translates to:
+  /// **'décalage {offset}'**
+  String layoutSummaryOffset(String offset);
+
+  /// No description provided for @layoutSummaryFlipped.
+  ///
+  /// In fr, this message translates to:
+  /// **'orientation inversée'**
+  String get layoutSummaryFlipped;
+
+  /// No description provided for @layoutSummaryBalanced.
+  ///
+  /// In fr, this message translates to:
+  /// **'rangées équilibrées'**
+  String get layoutSummaryBalanced;
+
+  /// No description provided for @layoutGapsGroup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jeux'**
+  String get layoutGapsGroup;
+
+  /// No description provided for @layoutGapX.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jeu horizontal'**
+  String get layoutGapX;
+
+  /// No description provided for @layoutGapY.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jeu vertical'**
+  String get layoutGapY;
+
+  /// No description provided for @layoutPerimeterGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jeu périphérique'**
+  String get layoutPerimeterGap;
+
+  /// No description provided for @layoutPerimeterGapHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retrait tout autour de la pose, contre les quatre bords.'**
+  String get layoutPerimeterGapHelp;
+
+  /// No description provided for @layoutNoGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun jeu'**
+  String get layoutNoGap;
+
+  /// No description provided for @layoutSummaryGaps.
+  ///
+  /// In fr, this message translates to:
+  /// **'entre éléments {x} × {y} · périphérique {perimeter} mm'**
+  String layoutSummaryGaps(String x, String y, String perimeter);
+
+  /// No description provided for @layoutFullCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Éléments entiers'**
+  String get layoutFullCount;
+
+  /// No description provided for @layoutCutCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Éléments à couper'**
+  String get layoutCutCount;
+
+  /// No description provided for @layoutCutNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surlignés en orange sur le schéma'**
+  String get layoutCutNote;
+
+  /// No description provided for @layoutBalancedRows.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rangées de bord'**
+  String get layoutBalancedRows;
+
+  /// No description provided for @layoutBalancedNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Première et dernière, à la même épaisseur'**
+  String get layoutBalancedNote;
+
+  /// No description provided for @layoutBalancedEndNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Première et dernière, à la même épaisseur. Pièces de bout : {end} mm'**
+  String layoutBalancedEndNote(String end);
+
+  /// No description provided for @layoutTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total à prévoir'**
+  String get layoutTotal;
+
+  /// No description provided for @layoutTotalNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock sans réemploi des chutes'**
+  String get layoutTotalNote;
+
+  /// No description provided for @layoutSurface.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surface'**
+  String get layoutSurface;
+
+  /// No description provided for @layoutCovered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Couverte : {area} m²'**
+  String layoutCovered(String area);
+
+  /// No description provided for @layoutWaste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Perte'**
+  String get layoutWaste;
+
+  /// No description provided for @layoutWasteNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans réemploi des chutes — estimation pessimiste'**
+  String get layoutWasteNote;
+
+  /// Case du cartouche, mise en capitales
+  ///
+  /// In fr, this message translates to:
+  /// **'Élément'**
+  String get layoutPlanElement;
+
+  /// No description provided for @layoutPlanOffset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décalage'**
+  String get layoutPlanOffset;
+
+  /// No description provided for @layoutPlanGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jeu'**
+  String get layoutPlanGap;
+
+  /// No description provided for @layoutPlanPerimeterGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jeu périph.'**
+  String get layoutPlanPerimeterGap;
+
+  /// No description provided for @layoutPlanFull.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entiers'**
+  String get layoutPlanFull;
+
+  /// No description provided for @layoutPlanCut.
+  ///
+  /// In fr, this message translates to:
+  /// **'À couper'**
+  String get layoutPlanCut;
+
+  /// No description provided for @layoutPlanTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total'**
+  String get layoutPlanTotal;
+
+  /// No description provided for @layoutPlanWaste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Perte'**
+  String get layoutPlanWaste;
+
+  /// No description provided for @layoutPlanCuts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces à couper'**
+  String get layoutPlanCuts;
+
+  /// En-tête de colonne, suivi de « (mm) »
+  ///
+  /// In fr, this message translates to:
+  /// **'Larg.'**
+  String get layoutPlanWidthColumn;
+
+  /// No description provided for @layoutPlanLengthColumn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Long.'**
+  String get layoutPlanLengthColumn;
+
+  /// No description provided for @layoutPlanCountColumn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nb'**
+  String get layoutPlanCountColumn;
+
+  /// No description provided for @layoutPlanNoCut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune coupe, tout tombe juste'**
+  String get layoutPlanNoCut;
+
+  /// No description provided for @layoutPlanCutsFallback.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} cotes de coupe — à lire dans l’app'**
+  String layoutPlanCutsFallback(int count);
+
+  /// No description provided for @layoutPlanNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Perte estimée sans réemploi des chutes. Chaque coupe consomme un élément entier.'**
+  String get layoutPlanNote;
+
+  /// No description provided for @layoutAboutPerimeterBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le retrait laissé tout autour de la pose, contre les quatre bords. La pièce ne rétrécit pas : c’est la pose qui recule, donc la surface annoncée reste celle du sol ou du mur.'**
+  String get layoutAboutPerimeterBody;
+
+  /// No description provided for @layoutAboutPerimeterFlooring.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parquet et stratifié : le joint de dilatation, autour de 10 mm.'**
+  String get layoutAboutPerimeterFlooring;
+
+  /// No description provided for @layoutAboutPerimeterTile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carrelage : le joint au mur, autour de 5 mm.'**
+  String get layoutAboutPerimeterTile;
+
+  /// No description provided for @layoutAboutPerimeterDrywall.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plaque de plâtre : le jeu au sol, autour de 10 mm.'**
+  String get layoutAboutPerimeterDrywall;
+
+  /// No description provided for @layoutAboutPerimeterNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une pose jointive contre les murs se laisse à 0.'**
+  String get layoutAboutPerimeterNone;
+
+  /// No description provided for @layoutAboutOffsetBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'De combien chaque rangée démarre en retrait de la précédente. Le décalage suit le sens de pose : inverser l’orientation le fait pivoter avec le reste du motif.'**
+  String get layoutAboutOffsetBody;
+
+  /// No description provided for @layoutAboutOffsetStraight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Droit : toutes les rangées démarrent au même endroit, les joints s’alignent en croix.'**
+  String get layoutAboutOffsetStraight;
+
+  /// No description provided for @layoutAboutOffsetHalf.
+  ///
+  /// In fr, this message translates to:
+  /// **'½ : le décalage classique des lames courtes et des plaques.'**
+  String get layoutAboutOffsetHalf;
+
+  /// No description provided for @layoutAboutOffsetThird.
+  ///
+  /// In fr, this message translates to:
+  /// **'⅓ : la règle des carreaux et des lames de plus de 60 cm, où un demi décalage fait tuiler le milieu de l’élément.'**
+  String get layoutAboutOffsetThird;
+
+  /// No description provided for @layoutAboutOffsetSquare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur un élément carré ou une plaque pleine, l’effet reste marginal.'**
+  String get layoutAboutOffsetSquare;
 }
 
 class _AppLocalizationsDelegate

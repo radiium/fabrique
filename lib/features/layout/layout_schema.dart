@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'layout_controller.dart';
 import 'layout_painter.dart';
 
@@ -24,6 +25,7 @@ class LayoutSchema extends ConsumerWidget {
           LayoutFailure() => null,
         },
         input: ref.watch(layoutFormProvider),
+        l10n: AppLocalizations.of(context),
         compact: compact,
       ),
       size: Size.infinite,

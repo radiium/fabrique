@@ -1,5 +1,23 @@
 import '../../core/calc/layout.dart';
 import '../../core/models/enums.dart';
+import '../../l10n/app_localizations.dart';
+
+/// La famille d'un produit, qui le nomme.
+enum LayoutMaterial {
+  drywall,
+  tile,
+  flooring,
+  decking,
+  panel;
+
+  String label(AppLocalizations l10n) => switch (this) {
+    LayoutMaterial.drywall => l10n.layoutMaterialDrywall,
+    LayoutMaterial.tile => l10n.layoutMaterialTile,
+    LayoutMaterial.flooring => l10n.layoutMaterialFlooring,
+    LayoutMaterial.decking => l10n.layoutMaterialDecking,
+    LayoutMaterial.panel => l10n.layoutMaterialPanel,
+  };
+}
 
 /// Un produit courant et les règles de pose qui vont avec.
 ///
@@ -9,7 +27,8 @@ import '../../core/models/enums.dart';
 /// jamais dans `core/calc`.
 class LayoutPreset {
   const LayoutPreset({
-    required this.label,
+    required this.material,
+    required this.size,
     required this.elementX,
     required this.elementY,
     required this.perimeterGap,
@@ -18,8 +37,14 @@ class LayoutPreset {
     this.gapAcross = 0,
   });
 
+  final LayoutMaterial material;
+
+  /// Le format tel que le vend le fournisseur, qui n'est pas toujours l'ordre
+  /// des champs (le 600×1200 se pose en long).
+  final String size;
+
   /// Court : la valeur fermée d'un `DropdownMenu` tronque en silence.
-  final String label;
+  String label(AppLocalizations l10n) => '${material.label(l10n)} $size';
 
   final double elementX;
   final double elementY;
@@ -74,14 +99,16 @@ class LayoutPreset {
 /// fois. Seule la claire-voie est représentable.
 const List<LayoutPreset> kLayoutPresets = [
   LayoutPreset(
-    label: 'Placo 1200×2500',
+    material: LayoutMaterial.drywall,
+    size: '1200×2500',
     elementX: 1200,
     elementY: 2500,
     perimeterGap: 0,
     offset: JointOffset.straight,
   ),
   LayoutPreset(
-    label: 'Carrelage 600×600',
+    material: LayoutMaterial.tile,
+    size: '600×600',
     elementX: 600,
     elementY: 600,
     gapAlong: 2,
@@ -93,7 +120,8 @@ const List<LayoutPreset> kLayoutPresets = [
   // carreau : la règle passe au tiers. C'est le seul produit doublé de la
   // table, et c'est ce qui le justifie.
   LayoutPreset(
-    label: 'Carrelage 600×1200',
+    material: LayoutMaterial.tile,
+    size: '600×1200',
     elementX: 1200,
     elementY: 600,
     gapAlong: 2,
@@ -102,14 +130,16 @@ const List<LayoutPreset> kLayoutPresets = [
     offset: JointOffset.third,
   ),
   LayoutPreset(
-    label: 'Parquet 1285×192',
+    material: LayoutMaterial.flooring,
+    size: '1285×192',
     elementX: 1285,
     elementY: 192,
     perimeterGap: 10,
     offset: JointOffset.third,
   ),
   LayoutPreset(
-    label: 'Terrasse 4000×145',
+    material: LayoutMaterial.decking,
+    size: '4000×145',
     elementX: 4000,
     elementY: 145,
     gapAlong: 3,
@@ -118,7 +148,8 @@ const List<LayoutPreset> kLayoutPresets = [
     offset: JointOffset.straight,
   ),
   LayoutPreset(
-    label: 'Panneau 2500×1250',
+    material: LayoutMaterial.panel,
+    size: '2500×1250',
     elementX: 2500,
     elementY: 1250,
     gapAlong: 1,

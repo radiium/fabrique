@@ -241,10 +241,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Surface length must be a positive number';
 
   @override
-  String get calcPositiveTileWidth => 'Tile width must be a positive number';
+  String get calcPositiveTileWidth => 'Piece width must be a positive number';
 
   @override
-  String get calcPositiveTileLength => 'Tile length must be a positive number';
+  String get calcPositiveTileLength => 'Piece length must be a positive number';
 
   @override
   String get calcPositiveOpeningWidth => 'Inside width must be greater than 0';
@@ -365,12 +365,12 @@ class AppLocalizationsEn extends AppLocalizations {
     String surfaceWidth,
     String surfaceLength,
   ) {
-    return 'The tile is $tileWidth × $tileLength mm for an area to cover of $surfaceWidth × $surfaceLength mm';
+    return 'The piece is $tileWidth × $tileLength mm for an area to cover of $surfaceWidth × $surfaceLength mm';
   }
 
   @override
   String calcTooManyTiles(String count, int max) {
-    return 'This would take $count tiles, $max at most';
+    return 'This would take $count pieces, $max at most';
   }
 
   @override
@@ -740,7 +740,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get distributionAboutTargetBody =>
-      'The distance you want between two neighboring pieces. It almost never comes out even: the number of pieces is whole, the gap isn’t. So the tool returns the two whole-number layouts on either side of your target, closest first. If you have a maximum not to exceed (balusters at 4 inches) read the tighter of the two.';
+      'The distance you want between two neighboring pieces. It almost never comes out even: the number of pieces is whole, the gap isn’t. So the tool returns the two whole-number layouts on either side of your target, closest first. If you have a maximum not to exceed (balusters at 110 mm) read the tighter of the two.';
 
   @override
   String get distributionAboutEdgesBody =>
@@ -775,4 +775,222 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get planIndex => 'No.';
+
+  @override
+  String get layoutSurfaceGroup => 'Surface';
+
+  @override
+  String get layoutSurfaceWidth => 'Surface — width';
+
+  @override
+  String get layoutSurfaceLength => 'Surface — length';
+
+  @override
+  String get layoutElementGroup => 'Piece and pattern';
+
+  @override
+  String get layoutMaterial => 'Material';
+
+  @override
+  String get layoutCustom => 'Custom';
+
+  @override
+  String get layoutMaterialDrywall => 'Drywall';
+
+  @override
+  String get layoutMaterialTile => 'Tile';
+
+  @override
+  String get layoutMaterialFlooring => 'Flooring';
+
+  @override
+  String get layoutMaterialDecking => 'Decking';
+
+  @override
+  String get layoutMaterialPanel => 'Panel';
+
+  @override
+  String get layoutElementWidth => 'Piece — width';
+
+  @override
+  String get layoutElementLength => 'Piece — length';
+
+  @override
+  String get layoutOffset => 'Joint offset';
+
+  @override
+  String get layoutFlip => 'Rotate the layout';
+
+  @override
+  String get layoutFlipHelp => 'The joint offset follows.';
+
+  @override
+  String get layoutBalance => 'Balance the rows';
+
+  @override
+  String get layoutBalanceHelp =>
+      'Avoids ending on a row narrower than half a piece.';
+
+  @override
+  String layoutSummaryOffset(String offset) {
+    return 'offset $offset';
+  }
+
+  @override
+  String get layoutSummaryFlipped => 'rotated';
+
+  @override
+  String get layoutSummaryBalanced => 'balanced rows';
+
+  @override
+  String get layoutGapsGroup => 'Gaps';
+
+  @override
+  String get layoutGapX => 'Horizontal gap';
+
+  @override
+  String get layoutGapY => 'Vertical gap';
+
+  @override
+  String get layoutPerimeterGap => 'Perimeter gap';
+
+  @override
+  String get layoutPerimeterGapHelp =>
+      'Setback all around the layout, along all four edges.';
+
+  @override
+  String get layoutNoGap => 'No gaps';
+
+  @override
+  String layoutSummaryGaps(String x, String y, String perimeter) {
+    return 'between pieces $x × $y · perimeter $perimeter mm';
+  }
+
+  @override
+  String get layoutFullCount => 'Whole pieces';
+
+  @override
+  String get layoutCutCount => 'Pieces to cut';
+
+  @override
+  String get layoutCutNote => 'Highlighted in orange on the drawing';
+
+  @override
+  String get layoutBalancedRows => 'Edge rows';
+
+  @override
+  String get layoutBalancedNote => 'First and last, at the same width';
+
+  @override
+  String layoutBalancedEndNote(String end) {
+    return 'First and last, at the same width. End pieces: $end mm';
+  }
+
+  @override
+  String get layoutTotal => 'Total to buy';
+
+  @override
+  String get layoutTotalNote => 'Stock with no offcuts reused';
+
+  @override
+  String get layoutSurface => 'Area';
+
+  @override
+  String layoutCovered(String area) {
+    return 'Covered: $area m²';
+  }
+
+  @override
+  String get layoutWaste => 'Waste';
+
+  @override
+  String get layoutWasteNote => 'No offcuts reused — a cautious estimate';
+
+  @override
+  String get layoutPlanElement => 'Piece';
+
+  @override
+  String get layoutPlanOffset => 'Offset';
+
+  @override
+  String get layoutPlanGap => 'Gap';
+
+  @override
+  String get layoutPlanPerimeterGap => 'Perim. gap';
+
+  @override
+  String get layoutPlanFull => 'Whole';
+
+  @override
+  String get layoutPlanCut => 'To cut';
+
+  @override
+  String get layoutPlanTotal => 'Total';
+
+  @override
+  String get layoutPlanWaste => 'Waste';
+
+  @override
+  String get layoutPlanCuts => 'Pieces to cut';
+
+  @override
+  String get layoutPlanWidthColumn => 'Width';
+
+  @override
+  String get layoutPlanLengthColumn => 'Length';
+
+  @override
+  String get layoutPlanCountColumn => 'Qty';
+
+  @override
+  String get layoutPlanNoCut => 'No cuts, everything fits exactly';
+
+  @override
+  String layoutPlanCutsFallback(int count) {
+    return '$count cut sizes — read them in the app';
+  }
+
+  @override
+  String get layoutPlanNote =>
+      'Waste estimated with no offcuts reused. Each cut uses up a whole piece.';
+
+  @override
+  String get layoutAboutPerimeterBody =>
+      'The setback left all around the layout, along all four edges. The room doesn’t shrink: the layout pulls back, so the area shown stays that of the floor or wall.';
+
+  @override
+  String get layoutAboutPerimeterFlooring =>
+      'Wood and laminate flooring: the expansion gap, around 10 mm.';
+
+  @override
+  String get layoutAboutPerimeterTile =>
+      'Tile: the gap at the wall, around 5 mm.';
+
+  @override
+  String get layoutAboutPerimeterDrywall =>
+      'Drywall: the gap at the floor, around 10 mm.';
+
+  @override
+  String get layoutAboutPerimeterNone =>
+      'A layout tight to the walls stays at 0.';
+
+  @override
+  String get layoutAboutOffsetBody =>
+      'How far each row starts set back from the one before. The offset follows the laying direction: rotating the layout turns it with the rest of the pattern.';
+
+  @override
+  String get layoutAboutOffsetStraight =>
+      'Stacked: every row starts at the same place, the joints line up in a grid.';
+
+  @override
+  String get layoutAboutOffsetHalf =>
+      '½: the usual offset for short boards and sheets.';
+
+  @override
+  String get layoutAboutOffsetThird =>
+      '⅓: the rule for tiles and boards longer than 60 cm, where a half offset makes the middle of the piece lip.';
+
+  @override
+  String get layoutAboutOffsetSquare =>
+      'On a square piece or a full sheet, the effect stays minor.';
 }

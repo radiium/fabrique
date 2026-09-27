@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/calc/layout.dart';
 import '../../core/export/plan.dart';
 import '../../core/export/plan_export_action.dart';
-import '../../core/format.dart';
 import '../../core/models/tool.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'layout_controller.dart';
 import 'layout_painter.dart';
 import 'layout_schema.dart';
@@ -41,55 +41,67 @@ PlanPainter? buildLayoutPlan({
       // L'élément, lui, est dessiné sans être coté, et les jeux ne se mesurent
       // pas à l'œil sur une trame.
       fields: [
-        ('DATE', formatPlanDate(date)),
+        (l10n.planDate.toUpperCase(), formatPlanDate(date)),
         (
-          'ÉLÉMENT',
-          '${formatNumber(input.elementX)} × ${formatNumber(input.elementY)} mm',
+          l10n.layoutPlanElement.toUpperCase(),
+          '${l10n.number(input.elementX)} × ${l10n.number(input.elementY)} mm',
         ),
-        ('DÉCALAGE', input.offset.label(l10n)),
+        (l10n.layoutPlanOffset.toUpperCase(), input.offset.label(l10n)),
         if (input.gapX > 0 || input.gapY > 0)
           (
-            'JEU',
-            '${formatNumber(input.gapX)} × ${formatNumber(input.gapY)} mm',
+            l10n.layoutPlanGap.toUpperCase(),
+            '${l10n.number(input.gapX)} × ${l10n.number(input.gapY)} mm',
           ),
         if (input.perimeterGap > 0)
-          ('JEU PÉRIPH.', '${formatNumber(input.perimeterGap)} mm'),
-        ('ENTIERS', '${result.fullCount}'),
-        ('À COUPER', '${result.cutCount}'),
-        ('TOTAL', '${result.totalCount}'),
-        ('SURFACE', '${formatNumber(result.coveredArea / _mm2PerM2)} m²'),
-        ('PERTE', '${formatNumber(result.wastePercent)} %'),
+          (
+            l10n.layoutPlanPerimeterGap.toUpperCase(),
+            '${l10n.number(input.perimeterGap)} mm',
+          ),
+        (l10n.layoutPlanFull.toUpperCase(), '${result.fullCount}'),
+        (l10n.layoutPlanCut.toUpperCase(), '${result.cutCount}'),
+        (l10n.layoutPlanTotal.toUpperCase(), '${result.totalCount}'),
+        (
+          l10n.layoutSurface.toUpperCase(),
+          '${l10n.number(result.coveredArea / _mm2PerM2)} m²',
+        ),
+        (
+          l10n.layoutPlanWaste.toUpperCase(),
+          '${l10n.number(result.wastePercent)} %',
+        ),
       ],
       // La liste de débit : ce qu'on emporte à la scie. Elle remplace la table
       // des positions de la Répartition, et elle rend inutile une case pour
       // les rangées de bord équilibrées — leur cote est déjà une ligne ici.
       tables: [
         PlanTable(
-          title: 'PIÈCES À COUPER',
+          title: l10n.layoutPlanCuts.toUpperCase(),
           // La première colonne est celle des numéros, étroite et fixe : les
           // nombres vont donc dans les colonnes larges qui suivent.
-          headers: const ['N°', 'LARG. (mm)', 'LONG. (mm)', 'NB'],
+          headers: [
+            l10n.planIndex,
+            '${l10n.layoutPlanWidthColumn.toUpperCase()} (mm)',
+            '${l10n.layoutPlanLengthColumn.toUpperCase()} (mm)',
+            l10n.layoutPlanCountColumn.toUpperCase(),
+          ],
           rows: [
             for (final (i, cut) in cuts.indexed)
               [
                 '${i + 1}',
-                formatNumber(cut.w),
-                formatNumber(cut.h),
+                l10n.number(cut.w),
+                l10n.number(cut.h),
                 '${cut.count}',
               ],
           ],
           fallback: cuts.isEmpty
-              ? 'Aucune coupe, tout tombe juste'
-              : '${cuts.length} cotes de coupe — à lire dans l’app',
+              ? l10n.layoutPlanNoCut
+              : l10n.layoutPlanCutsFallback(cuts.length),
         ),
       ],
       // L'avertissement de l'outil, réservé avant tout le reste : c'est la
       // ligne qu'on n'a pas le droit de perdre sous un débordement.
-      note:
-          'Perte estimée sans réemploi des chutes. Chaque coupe consomme un '
-          'élément entier.',
+      note: l10n.layoutPlanNote,
     ),
-    drawing: LayoutPainter(result: result, input: input),
+    drawing: LayoutPainter(result: result, input: input, l10n: l10n),
   );
 }
 

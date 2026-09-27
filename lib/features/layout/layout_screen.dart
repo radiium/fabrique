@@ -12,6 +12,7 @@ import '../../core/widgets/tool_scaffold.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/calc_errors.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'layout_controller.dart';
 import 'layout_input_groups.dart';
 import 'layout_plan.dart';
@@ -59,42 +60,41 @@ class LayoutScreen extends ConsumerWidget {
       ),
       results: [
         ResultTile(
-          label: 'Éléments entiers',
+          label: l10n.layoutFullCount,
           value: result == null ? kNoValue : '${result.fullCount}',
         ),
         ResultTile(
-          label: 'Éléments à couper',
+          label: l10n.layoutCutCount,
           value: result == null ? kNoValue : '${result.cutCount}',
-          note: 'Surlignés en orange sur le schéma',
+          note: l10n.layoutCutNote,
         ),
         if (result case LayoutResult(:final balancedRow?, :final balancedEnd))
           ResultTile(
-            label: 'Rangées de bord',
-            value: formatNumber(balancedRow),
+            label: l10n.layoutBalancedRows,
+            value: l10n.number(balancedRow),
             unit: 'mm',
-            note: _balancedNote(balancedEnd),
+            note: _balancedNote(balancedEnd, l10n),
           ),
         ResultTile(
-          label: 'Total à prévoir',
+          label: l10n.layoutTotal,
           value: result == null ? kNoValue : '${result.totalCount}',
-          note: 'Stock sans réemploi des chutes',
+          note: l10n.layoutTotalNote,
         ),
         ResultTile(
-          label: 'Surface',
-          value: formatNumber(
+          label: l10n.layoutSurface,
+          value: l10n.number(
             result == null ? null : result.surfaceArea / _mm2PerM2,
           ),
           unit: 'm²',
           note: result == null
               ? null
-              : 'Couverte : '
-                    '${formatNumber(result.coveredArea / _mm2PerM2)} m²',
+              : l10n.layoutCovered(l10n.number(result.coveredArea / _mm2PerM2)),
         ),
         ResultTile(
-          label: 'Perte',
-          value: formatNumber(result?.wastePercent),
+          label: l10n.layoutWaste,
+          value: l10n.number(result?.wastePercent),
           unit: '%',
-          note: 'Sans réemploi des chutes — estimation pessimiste',
+          note: l10n.layoutWasteNote,
         ),
       ],
       resultsFooter: const LayoutExportAction(),
@@ -109,7 +109,6 @@ class LayoutScreen extends ConsumerWidget {
 ///
 /// [end] est la longueur des pièces de bout, nulle quand l'axe de pose ne
 /// s'est pas équilibré (tout décalage autre que droit).
-String _balancedNote(double? end) {
-  const base = 'Première et dernière, à la même épaisseur';
-  return end == null ? base : '$base. Pièces de bout : ${formatNumber(end)} mm';
-}
+String _balancedNote(double? end, AppLocalizations l10n) => end == null
+    ? l10n.layoutBalancedNote
+    : l10n.layoutBalancedEndNote(l10n.number(end));

@@ -791,4 +791,223 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get planIndex => 'N°';
+
+  @override
+  String get layoutSurfaceGroup => 'Surface';
+
+  @override
+  String get layoutSurfaceWidth => 'Surface — largeur';
+
+  @override
+  String get layoutSurfaceLength => 'Surface — longueur';
+
+  @override
+  String get layoutElementGroup => 'Élément et pose';
+
+  @override
+  String get layoutMaterial => 'Matériau';
+
+  @override
+  String get layoutCustom => 'Personnalisé';
+
+  @override
+  String get layoutMaterialDrywall => 'Placo';
+
+  @override
+  String get layoutMaterialTile => 'Carrelage';
+
+  @override
+  String get layoutMaterialFlooring => 'Parquet';
+
+  @override
+  String get layoutMaterialDecking => 'Terrasse';
+
+  @override
+  String get layoutMaterialPanel => 'Panneau';
+
+  @override
+  String get layoutElementWidth => 'Élément — largeur';
+
+  @override
+  String get layoutElementLength => 'Élément — longueur';
+
+  @override
+  String get layoutOffset => 'Décalage des joints';
+
+  @override
+  String get layoutFlip => 'Inverser l’orientation';
+
+  @override
+  String get layoutFlipHelp => 'Le décalage de joints suit.';
+
+  @override
+  String get layoutBalance => 'Équilibrer les rangées';
+
+  @override
+  String get layoutBalanceHelp =>
+      'Évite de finir sur une rangée plus mince qu’un demi-élément.';
+
+  @override
+  String layoutSummaryOffset(String offset) {
+    return 'décalage $offset';
+  }
+
+  @override
+  String get layoutSummaryFlipped => 'orientation inversée';
+
+  @override
+  String get layoutSummaryBalanced => 'rangées équilibrées';
+
+  @override
+  String get layoutGapsGroup => 'Jeux';
+
+  @override
+  String get layoutGapX => 'Jeu horizontal';
+
+  @override
+  String get layoutGapY => 'Jeu vertical';
+
+  @override
+  String get layoutPerimeterGap => 'Jeu périphérique';
+
+  @override
+  String get layoutPerimeterGapHelp =>
+      'Retrait tout autour de la pose, contre les quatre bords.';
+
+  @override
+  String get layoutNoGap => 'Aucun jeu';
+
+  @override
+  String layoutSummaryGaps(String x, String y, String perimeter) {
+    return 'entre éléments $x × $y · périphérique $perimeter mm';
+  }
+
+  @override
+  String get layoutFullCount => 'Éléments entiers';
+
+  @override
+  String get layoutCutCount => 'Éléments à couper';
+
+  @override
+  String get layoutCutNote => 'Surlignés en orange sur le schéma';
+
+  @override
+  String get layoutBalancedRows => 'Rangées de bord';
+
+  @override
+  String get layoutBalancedNote => 'Première et dernière, à la même épaisseur';
+
+  @override
+  String layoutBalancedEndNote(String end) {
+    return 'Première et dernière, à la même épaisseur. Pièces de bout : $end mm';
+  }
+
+  @override
+  String get layoutTotal => 'Total à prévoir';
+
+  @override
+  String get layoutTotalNote => 'Stock sans réemploi des chutes';
+
+  @override
+  String get layoutSurface => 'Surface';
+
+  @override
+  String layoutCovered(String area) {
+    return 'Couverte : $area m²';
+  }
+
+  @override
+  String get layoutWaste => 'Perte';
+
+  @override
+  String get layoutWasteNote =>
+      'Sans réemploi des chutes — estimation pessimiste';
+
+  @override
+  String get layoutPlanElement => 'Élément';
+
+  @override
+  String get layoutPlanOffset => 'Décalage';
+
+  @override
+  String get layoutPlanGap => 'Jeu';
+
+  @override
+  String get layoutPlanPerimeterGap => 'Jeu périph.';
+
+  @override
+  String get layoutPlanFull => 'Entiers';
+
+  @override
+  String get layoutPlanCut => 'À couper';
+
+  @override
+  String get layoutPlanTotal => 'Total';
+
+  @override
+  String get layoutPlanWaste => 'Perte';
+
+  @override
+  String get layoutPlanCuts => 'Pièces à couper';
+
+  @override
+  String get layoutPlanWidthColumn => 'Larg.';
+
+  @override
+  String get layoutPlanLengthColumn => 'Long.';
+
+  @override
+  String get layoutPlanCountColumn => 'Nb';
+
+  @override
+  String get layoutPlanNoCut => 'Aucune coupe, tout tombe juste';
+
+  @override
+  String layoutPlanCutsFallback(int count) {
+    return '$count cotes de coupe — à lire dans l’app';
+  }
+
+  @override
+  String get layoutPlanNote =>
+      'Perte estimée sans réemploi des chutes. Chaque coupe consomme un élément entier.';
+
+  @override
+  String get layoutAboutPerimeterBody =>
+      'Le retrait laissé tout autour de la pose, contre les quatre bords. La pièce ne rétrécit pas : c’est la pose qui recule, donc la surface annoncée reste celle du sol ou du mur.';
+
+  @override
+  String get layoutAboutPerimeterFlooring =>
+      'Parquet et stratifié : le joint de dilatation, autour de 10 mm.';
+
+  @override
+  String get layoutAboutPerimeterTile =>
+      'Carrelage : le joint au mur, autour de 5 mm.';
+
+  @override
+  String get layoutAboutPerimeterDrywall =>
+      'Plaque de plâtre : le jeu au sol, autour de 10 mm.';
+
+  @override
+  String get layoutAboutPerimeterNone =>
+      'Une pose jointive contre les murs se laisse à 0.';
+
+  @override
+  String get layoutAboutOffsetBody =>
+      'De combien chaque rangée démarre en retrait de la précédente. Le décalage suit le sens de pose : inverser l’orientation le fait pivoter avec le reste du motif.';
+
+  @override
+  String get layoutAboutOffsetStraight =>
+      'Droit : toutes les rangées démarrent au même endroit, les joints s’alignent en croix.';
+
+  @override
+  String get layoutAboutOffsetHalf =>
+      '½ : le décalage classique des lames courtes et des plaques.';
+
+  @override
+  String get layoutAboutOffsetThird =>
+      '⅓ : la règle des carreaux et des lames de plus de 60 cm, où un demi décalage fait tuiler le milieu de l’élément.';
+
+  @override
+  String get layoutAboutOffsetSquare =>
+      'Sur un élément carré ou une plaque pleine, l’effet reste marginal.';
 }
