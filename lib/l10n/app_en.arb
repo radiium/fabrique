@@ -115,5 +115,14 @@
   "calcGrooveThroughSide": "A {groove} mm groove goes through a {side} mm side",
   "calcFixedHeightsTooTall": "The fixed heights add up to {fixed} mm for {available} mm of fronts",
   "calcSlideTooLong": "A {slide} mm slide does not fit in {usefulDepth} mm of usable depth",
-  "calcDepthTooShortForSlides": "The usable depth ({usefulDepth} mm) is shorter than the shortest slide ({shortest} mm)"
+  "calcDepthTooShortForSlides": "The usable depth ({usefulDepth} mm) is shorter than the shortest slide ({shortest} mm)",
+  "converterQuantity": "Quantity",
+  "converterValue": "Value",
+  "converterSourceUnit": "From unit",
+  "converterCompoundImperial": "Feet and inches",
+  "converterCompoundImperialHelp": "Feet + inches + fraction, rounded to 1/16 inch.",
+  "converterBoardFootNote": "The unit hardwood is sold by — 144 in³",
+  "converterImperial": "Imperial",
+  "converterImperialNote": "Rounded to 1/16 inch",
+  "converterOutOfScale": "Ratio off the chart — shapes not to scale"
 }

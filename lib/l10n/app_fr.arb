@@ -320,5 +320,20 @@
         "type": "String"
       }
     }
+  },
+  "converterQuantity": "Grandeur",
+  "converterValue": "Valeur",
+  "converterSourceUnit": "Unité source",
+  "converterCompoundImperial": "Impérial composé",
+  "converterCompoundImperialHelp": "Pied + pouce + fraction, arrondi au 1/16 de pouce.",
+  "converterBoardFootNote": "L’unité d’achat du bois dur — 144 po³",
+  "@converterBoardFootNote": {
+    "description": "Note de ResultTile, une ligne : le tiret sépare"
+  },
+  "converterImperial": "Impérial",
+  "converterImperialNote": "Arrondi au 1/16 de pouce",
+  "converterOutOfScale": "Rapport hors échelle — formes non à l’échelle",
+  "@converterOutOfScale": {
+    "description": "Légende de schéma"
   }
 }

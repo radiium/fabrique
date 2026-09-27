@@ -26,7 +26,7 @@ class ConverterSchema extends ConsumerWidget {
 
     return CustomPaint(
       painter: input.quantity == Quantity.length
-          ? RulerPainter(result: result)
+          ? RulerPainter(result: result, l10n: l10n)
           : ComparisonPainter(result: result, unit: input.unit, l10n: l10n),
       size: Size.infinite,
     );

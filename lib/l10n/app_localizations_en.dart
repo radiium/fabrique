@@ -427,4 +427,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String calcDepthTooShortForSlides(String usefulDepth, String shortest) {
     return 'The usable depth ($usefulDepth mm) is shorter than the shortest slide ($shortest mm)';
   }
+
+  @override
+  String get converterQuantity => 'Quantity';
+
+  @override
+  String get converterValue => 'Value';
+
+  @override
+  String get converterSourceUnit => 'From unit';
+
+  @override
+  String get converterCompoundImperial => 'Feet and inches';
+
+  @override
+  String get converterCompoundImperialHelp =>
+      'Feet + inches + fraction, rounded to 1/16 inch.';
+
+  @override
+  String get converterBoardFootNote => 'The unit hardwood is sold by — 144 in³';
+
+  @override
+  String get converterImperial => 'Imperial';
+
+  @override
+  String get converterImperialNote => 'Rounded to 1/16 inch';
+
+  @override
+  String get converterOutOfScale => 'Ratio off the chart — shapes not to scale';
 }

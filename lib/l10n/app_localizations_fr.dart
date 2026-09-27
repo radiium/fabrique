@@ -441,4 +441,33 @@ class AppLocalizationsFr extends AppLocalizations {
   String calcDepthTooShortForSlides(String usefulDepth, String shortest) {
     return 'La profondeur utile ($usefulDepth mm) est plus courte que la plus petite glissière ($shortest mm)';
   }
+
+  @override
+  String get converterQuantity => 'Grandeur';
+
+  @override
+  String get converterValue => 'Valeur';
+
+  @override
+  String get converterSourceUnit => 'Unité source';
+
+  @override
+  String get converterCompoundImperial => 'Impérial composé';
+
+  @override
+  String get converterCompoundImperialHelp =>
+      'Pied + pouce + fraction, arrondi au 1/16 de pouce.';
+
+  @override
+  String get converterBoardFootNote => 'L’unité d’achat du bois dur — 144 po³';
+
+  @override
+  String get converterImperial => 'Impérial';
+
+  @override
+  String get converterImperialNote => 'Arrondi au 1/16 de pouce';
+
+  @override
+  String get converterOutOfScale =>
+      'Rapport hors échelle — formes non à l’échelle';
 }

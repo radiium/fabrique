@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/units/imperial.dart';
-import '../../core/format.dart';
 import '../../core/models/measure_unit.dart';
 import '../../core/painting.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 import 'converter_controller.dart';
 
 const double _sideMargin = 24;
@@ -75,9 +76,11 @@ const int _targetTicks = 7;
 /// Réservé aux longueurs : une règle graduée ne veut rien dire pour une masse
 /// ou une pression. Les autres grandeurs passent par `ComparisonPainter`.
 class RulerPainter extends CustomPainter {
-  const RulerPainter({required this.result});
+  const RulerPainter({required this.result, required this.l10n});
 
   final ConverterResult? result;
+
+  final AppLocalizations l10n;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -127,7 +130,7 @@ class RulerPainter extends CustomPainter {
       step: step,
       direction: -1,
       unit: 'mm',
-      label: formatNumber,
+      label: l10n.number,
     );
   }
 
@@ -148,7 +151,7 @@ class RulerPainter extends CustomPainter {
       span: span,
       step: stepInches * _mmPerInch,
       direction: 1,
-      unit: 'po',
+      unit: l10n.unitInchSymbol,
       label: (mm) => formatImperial(mmToImperial(mm, denominator: 64)),
     );
   }
@@ -237,7 +240,7 @@ class RulerPainter extends CustomPainter {
       ..drawCircle(Offset(x, imperialBaseline), 4, paint);
 
     final metric = schemaText(
-      '${formatNumber(r.base)} mm',
+      '${l10n.number(r.base)} mm',
       size: 13,
       color: AppColors.accentDeep,
       weight: FontWeight.w700,
@@ -283,5 +286,6 @@ class RulerPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(RulerPainter old) => old.result != result;
+  bool shouldRepaint(RulerPainter old) =>
+      old.result != result || old.l10n.localeName != l10n.localeName;
 }

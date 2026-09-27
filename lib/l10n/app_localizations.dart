@@ -803,6 +803,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'La profondeur utile ({usefulDepth} mm) est plus courte que la plus petite glissière ({shortest} mm)'**
   String calcDepthTooShortForSlides(String usefulDepth, String shortest);
+
+  /// No description provided for @converterQuantity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Grandeur'**
+  String get converterQuantity;
+
+  /// No description provided for @converterValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur'**
+  String get converterValue;
+
+  /// No description provided for @converterSourceUnit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Unité source'**
+  String get converterSourceUnit;
+
+  /// No description provided for @converterCompoundImperial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impérial composé'**
+  String get converterCompoundImperial;
+
+  /// No description provided for @converterCompoundImperialHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pied + pouce + fraction, arrondi au 1/16 de pouce.'**
+  String get converterCompoundImperialHelp;
+
+  /// Note de ResultTile, une ligne : le tiret sépare
+  ///
+  /// In fr, this message translates to:
+  /// **'L’unité d’achat du bois dur — 144 po³'**
+  String get converterBoardFootNote;
+
+  /// No description provided for @converterImperial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impérial'**
+  String get converterImperial;
+
+  /// No description provided for @converterImperialNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrondi au 1/16 de pouce'**
+  String get converterImperialNote;
+
+  /// Légende de schéma
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport hors échelle — formes non à l’échelle'**
+  String get converterOutOfScale;
 }
 
 class _AppLocalizationsDelegate

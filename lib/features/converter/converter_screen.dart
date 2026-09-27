@@ -16,6 +16,7 @@ import '../../core/widgets/schema_card.dart';
 import '../../core/widgets/tool_scaffold.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'converter_controller.dart';
 import 'converter_schema.dart';
 
@@ -44,7 +45,7 @@ class ConverterScreen extends ConsumerWidget {
           // segments : « Pression » écrit en toutes lettres ne tient pas dans
           // un segment de téléphone, là où « kPa » tient.
           LabeledField(
-            label: 'Grandeur',
+            label: l10n.converterQuantity,
             child: AppDropdown<Quantity>(
               value: quantity,
               onSelected: form.setQuantity,
@@ -53,7 +54,7 @@ class ConverterScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           NumberField(
-            label: 'Valeur',
+            label: l10n.converterValue,
             // Le suffixe suit l'unité source : la saisie se lit d'un coup
             // d'œil sans remonter au sélecteur.
             suffix: input.unit.symbol(l10n),
@@ -62,7 +63,7 @@ class ConverterScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           LabeledField(
-            label: 'Unité source',
+            label: l10n.converterSourceUnit,
             child: AppSegmentedButton<MeasureUnit>(
               value: input.unit,
               onChanged: form.setUnit,
@@ -78,8 +79,8 @@ class ConverterScreen extends ConsumerWidget {
           if (isLength) ...[
             const SizedBox(height: AppSpacing.md),
             AppSwitchField(
-              label: 'Impérial composé',
-              help: 'Pied + pouce + fraction, arrondi au 1/16 de pouce.',
+              label: l10n.converterCompoundImperial,
+              help: l10n.converterCompoundImperialHelp,
               value: input.compoundImperial,
               onChanged: form.setCompoundImperial,
             ),
@@ -96,20 +97,20 @@ class ConverterScreen extends ConsumerWidget {
         for (final unit in quantity.units)
           ResultTile(
             label: unit.label(l10n),
-            value: formatNumber(result?.perUnit[unit]),
+            value: l10n.number(result?.perUnit[unit]),
             unit: unit.symbol(l10n),
             note: unit == MeasureUnit.boardFoot
-                ? 'L’unité d’achat du bois dur — 144 po³'
+                ? l10n.converterBoardFootNote
                 : null,
           ),
         if (isLength && input.compoundImperial)
           ResultTile(
-            label: 'Impérial',
+            label: l10n.converterImperial,
             value: switch (result?.imperial) {
               final parts? => formatImperial(parts),
               null => kNoValue,
             },
-            note: 'Arrondi au 1/16 de pouce',
+            note: l10n.converterImperialNote,
           ),
       ],
     );

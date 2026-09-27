@@ -3,11 +3,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
-import '../../core/format.dart';
 import '../../core/models/measure_unit.dart';
 import '../../core/painting.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'converter_controller.dart';
 
 /// Marge intérieure du canvas.
@@ -91,7 +91,7 @@ class ComparisonPainter extends CustomPainter {
 
     final (valueExtent, refExtent, outOfScale) = _extents(k, maxExtent);
 
-    final valueLabel = '${formatNumber(r.perUnit[unit])} ${unit.symbol(l10n)}';
+    final valueLabel = '${l10n.number(r.perUnit[unit])} ${unit.symbol(l10n)}';
     final refLabel = '1 ${reference.symbol(l10n)}';
 
     switch (r.quantity) {
@@ -114,11 +114,7 @@ class ComparisonPainter extends CustomPainter {
     }
 
     if (outOfScale) {
-      _paintCaption(
-        canvas,
-        box,
-        'Rapport hors échelle — formes non à l’échelle',
-      );
+      _paintCaption(canvas, box, l10n.converterOutOfScale);
     }
   }
 

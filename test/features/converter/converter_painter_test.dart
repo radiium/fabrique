@@ -29,43 +29,54 @@ void main() {
   /// échelles rondes.
   const values = [0.0, 1.0, 100.0, 0.001, 1e6];
 
-  test('la double règle se rend sans lever', () {
-    for (final unit in Quantity.length.units) {
-      for (final value in values) {
-        final painter = RulerPainter(result: _resultFor(value, unit));
-        for (final size in sizes) {
-          painter.paint(Canvas(PictureRecorder()), size);
-        }
-      }
-    }
-  });
-
-  test('la comparaison se rend sans lever, pour chaque grandeur', () {
-    for (final quantity in Quantity.values) {
-      if (quantity == Quantity.length) continue;
-      for (final unit in quantity.units) {
-        for (final value in values) {
-          final painter = ComparisonPainter(
-            result: _resultFor(value, unit),
-            unit: unit,
-            l10n: fr,
-          );
-          for (final size in sizes) {
-            painter.paint(Canvas(PictureRecorder()), size);
+  // Les deux langues : un libellé plus long peut déborder autrement.
+  for (final l10n in allLocales) {
+    group(l10n.localeName, () {
+      test('la double règle se rend sans lever', () {
+        for (final unit in Quantity.length.units) {
+          for (final value in values) {
+            final painter = RulerPainter(
+              result: _resultFor(value, unit),
+              l10n: l10n,
+            );
+            for (final size in sizes) {
+              painter.paint(Canvas(PictureRecorder()), size);
+            }
           }
         }
-      }
-    }
-  });
+      });
 
-  test('une saisie refusée se rend sans lever', () {
-    for (final size in sizes) {
-      const RulerPainter(result: null).paint(Canvas(PictureRecorder()), size);
-      ComparisonPainter(
-        result: null,
-        unit: MeasureUnit.kilogram,
-        l10n: fr,
-      ).paint(Canvas(PictureRecorder()), size);
-    }
-  });
+      test('la comparaison se rend sans lever, pour chaque grandeur', () {
+        for (final quantity in Quantity.values) {
+          if (quantity == Quantity.length) continue;
+          for (final unit in quantity.units) {
+            for (final value in values) {
+              final painter = ComparisonPainter(
+                result: _resultFor(value, unit),
+                unit: unit,
+                l10n: l10n,
+              );
+              for (final size in sizes) {
+                painter.paint(Canvas(PictureRecorder()), size);
+              }
+            }
+          }
+        }
+      });
+
+      test('une saisie refusée se rend sans lever', () {
+        for (final size in sizes) {
+          RulerPainter(
+            result: null,
+            l10n: l10n,
+          ).paint(Canvas(PictureRecorder()), size);
+          ComparisonPainter(
+            result: null,
+            unit: MeasureUnit.kilogram,
+            l10n: l10n,
+          ).paint(Canvas(PictureRecorder()), size);
+        }
+      });
+    });
+  }
 }
