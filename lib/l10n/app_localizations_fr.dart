@@ -518,4 +518,277 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get levelSensorUnavailableHelp =>
       'Cet outil demande un appareil équipé d’un accéléromètre.';
+
+  @override
+  String get distributionModeLabel => 'Mode de calcul';
+
+  @override
+  String get distributionModeSpacing => 'Calcul écart';
+
+  @override
+  String get distributionModeCount => 'Calcul nombre';
+
+  @override
+  String get distributionEdgeElement => 'Élément';
+
+  @override
+  String get distributionEdgeGap => 'Écart';
+
+  @override
+  String distributionEdgePair(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get distributionGeometry => 'Géométrie';
+
+  @override
+  String get distributionLength => 'Largeur totale';
+
+  @override
+  String get distributionElementWidth => 'Largeur d’un élément';
+
+  @override
+  String get distributionCount => 'Nombre d’éléments';
+
+  @override
+  String get distributionTargetSpacing => 'Écart souhaité';
+
+  @override
+  String get distributionTargetSpacingHelp =>
+      'Le nombre d’éléments s’ajuste au plus proche.';
+
+  @override
+  String get distributionEdgesGroup => 'Bords et marges';
+
+  @override
+  String get distributionEdges => 'Type de répartition';
+
+  @override
+  String get distributionMargins => 'Marges';
+
+  @override
+  String get distributionMarginsHelp =>
+      'Réservées avant répartition — un chant, un tasseau en place.';
+
+  @override
+  String get distributionSymmetric => 'Symétriques';
+
+  @override
+  String get distributionAsymmetric => 'Asymétriques';
+
+  @override
+  String get distributionMargin => 'Marge';
+
+  @override
+  String get distributionMarginStart => 'Marge début';
+
+  @override
+  String get distributionMarginEnd => 'Marge fin';
+
+  @override
+  String distributionSummaryCount(int count, String width, String length) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count éléments',
+      one: '$count élément',
+    );
+    return '$_temp0 de $width sur $length mm';
+  }
+
+  @override
+  String distributionSummaryCountMarks(int count, String length) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count repères',
+      one: '$count repère',
+    );
+    return '$_temp0 sur $length mm';
+  }
+
+  @override
+  String distributionSummaryTarget(String width, String length, String target) {
+    return 'Éléments de $width sur $length mm · écart visé $target mm';
+  }
+
+  @override
+  String distributionSummaryTargetMarks(String length, String target) {
+    return 'Repères sur $length mm · écart visé $target mm';
+  }
+
+  @override
+  String distributionSummaryEdges(String edges, String margins) {
+    return '$edges · marges $margins mm';
+  }
+
+  @override
+  String distributionCountNote(String target) {
+    return 'Pour un écart visé de $target mm';
+  }
+
+  @override
+  String get distributionGapObtained => 'Écart obtenu';
+
+  @override
+  String get distributionGap => 'Écart';
+
+  @override
+  String get distributionPitch => 'Entraxe';
+
+  @override
+  String get distributionPitchNote => 'D’un bord d’élément au bord suivant';
+
+  @override
+  String distributionGapRule(int count, int gaps) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count éléments',
+      one: '$count élément',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      gaps,
+      locale: localeName,
+      other: '$gaps écarts',
+      one: '$gaps écart',
+    );
+    return '$_temp0 → $_temp1';
+  }
+
+  @override
+  String distributionCalloutExact(int count, String spacing) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count éléments',
+      one: '$count élément',
+    );
+    return '$_temp0 · $spacing mm exact';
+  }
+
+  @override
+  String distributionCalloutOther(int count, String spacing) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count éléments',
+      one: '$count élément',
+    );
+    return '$_temp0 → $spacing mm réel';
+  }
+
+  @override
+  String distributionCalloutAdoptLabel(int count, String spacing) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count éléments',
+      one: '$count élément',
+    );
+    return 'Prendre $_temp0, écart de $spacing millimètres';
+  }
+
+  @override
+  String get distributionCalloutAdopt => 'Prendre';
+
+  @override
+  String get distributionPositions => 'Positions depuis l’origine';
+
+  @override
+  String get distributionNoElement => 'Aucun élément';
+
+  @override
+  String get distributionEdgeColumn => 'Bord';
+
+  @override
+  String get distributionPositionColumn => 'Position';
+
+  @override
+  String get distributionCenterColumn => 'Centre';
+
+  @override
+  String get distributionSchemaStart => 'Début';
+
+  @override
+  String get distributionSchemaEnd => 'Fin';
+
+  @override
+  String distributionSchemaLegend(String zoom) {
+    return 'Cotes en mm — Détails ×$zoom';
+  }
+
+  @override
+  String get distributionPlanElements => 'Éléments';
+
+  @override
+  String get distributionPlanGaps => 'Écarts';
+
+  @override
+  String distributionPlanFallback(int count) {
+    return '$count positions — à copier depuis l’app';
+  }
+
+  @override
+  String get distributionAboutModeBody =>
+      'Détermine si l’écart entre les éléments ou leur nombre doit être calculé à partir des autres valeurs.';
+
+  @override
+  String get distributionAboutModeSpacing =>
+      'Calcul écart : vous donnez le nombre d’éléments, l’outil rend l’écart entre eux.';
+
+  @override
+  String get distributionAboutModeCount =>
+      'Calcul nombre : vous donnez l’écart voulu, l’outil rend le nombre d’éléments qui s’en approche le plus.';
+
+  @override
+  String get distributionAboutLengthBody =>
+      'Largeur totale disponible pour répartir les éléments : l’intérieur du cadre, l’entre-deux poteaux.';
+
+  @override
+  String get distributionAboutElementWidthBody =>
+      'Largeur occupée par chaque élément (barreau, lame, étagère). Saisissez 0 pour positionner des repères, traçages ou axes de perçage.';
+
+  @override
+  String get distributionAboutCountBody =>
+      'Nombre d’éléments à répartir dans la largeur disponible.\n\nUne disposition qui démarre ou finit par un élément en exige au moins un. Deux si elle fait les deux. Le champ ne descend pas en dessous, et plafonne à 500.';
+
+  @override
+  String get distributionAboutTargetBody =>
+      'Distance souhaitée entre deux éléments consécutifs. Ne tombe presque jamais juste : le nombre d’éléments est entier, l’écart ne l’est pas. L’outil rend donc les deux répartitions entières qui encadrent votre cible, la plus proche en premier. Si vous avez un maximum à ne pas dépasser (un barreaudage à 110 mm) lisez la plus serrée des deux.';
+
+  @override
+  String get distributionAboutEdgesBody =>
+      'Définit par quoi la rangée commence et finit : un élément collé au bord, ou un écart. Chaque combinaison change le nombre d’écarts, donc le résultat. Le schéma de chaque tuile le montre.';
+
+  @override
+  String get distributionAboutMarginsBody =>
+      'Définit si les deux marges se règlent ensemble ou séparément. Une marge réserve une bande à une extrémité (un chant, un tasseau déjà en place), retirée de la largeur totale avant le calcul.';
+
+  @override
+  String get distributionAboutMarginsSymmetric =>
+      'Symétriques : une seule marge, reprise à l’identique des deux côtés.';
+
+  @override
+  String get distributionAboutMarginsAsymmetric =>
+      'Asymétriques : une marge par côté. C’est le cas dès qu’une extrémité est contrainte et pas l’autre.';
+
+  @override
+  String get distributionAboutMarginBody =>
+      'Marge identique au début et à la fin. Sa valeur est retirée de la largeur totale avant le calcul de la répartition.';
+
+  @override
+  String get distributionAboutMarginStartBody =>
+      'Marge appliquée au début, côté gauche du schéma. Sa valeur est retirée de la largeur totale avant le calcul de la répartition.';
+
+  @override
+  String get distributionAboutMarginEndBody =>
+      'Marge appliquée à la fin, côté droit du schéma. Sa valeur est retirée de la largeur totale avant le calcul de la répartition.';
+
+  @override
+  String get planDate => 'Date';
+
+  @override
+  String get planIndex => 'N°';
 }

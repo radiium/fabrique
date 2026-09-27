@@ -353,5 +353,217 @@
   "levelHorizontalHelp": "Les angles sont donnés par rapport à l’horizontale.",
   "levelZeroHelp": "Zéro posé : les angles sont relatifs à la surface calibrée.",
   "levelSensorUnavailable": "Accéléromètre indisponible",
-  "levelSensorUnavailableHelp": "Cet outil demande un appareil équipé d’un accéléromètre."
+  "levelSensorUnavailableHelp": "Cet outil demande un appareil équipé d’un accéléromètre.",
+  "distributionModeLabel": "Mode de calcul",
+  "distributionModeSpacing": "Calcul écart",
+  "@distributionModeSpacing": {
+    "description": "Segment de sélecteur : 9 caractères au plus, sauf vérification sur appareil"
+  },
+  "distributionModeCount": "Calcul nombre",
+  "distributionEdgeElement": "Élément",
+  "@distributionEdgeElement": {
+    "description": "Un bord de rangée, dans « Élément – Écart »"
+  },
+  "distributionEdgeGap": "Écart",
+  "distributionEdgePair": "{start} – {end}",
+  "@distributionEdgePair": {
+    "description": "Une disposition : bord de début, bord de fin",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionGeometry": "Géométrie",
+  "distributionLength": "Largeur totale",
+  "distributionElementWidth": "Largeur d’un élément",
+  "distributionCount": "Nombre d’éléments",
+  "distributionTargetSpacing": "Écart souhaité",
+  "distributionTargetSpacingHelp": "Le nombre d’éléments s’ajuste au plus proche.",
+  "distributionEdgesGroup": "Bords et marges",
+  "distributionEdges": "Type de répartition",
+  "distributionMargins": "Marges",
+  "distributionMarginsHelp": "Réservées avant répartition — un chant, un tasseau en place.",
+  "distributionSymmetric": "Symétriques",
+  "distributionAsymmetric": "Asymétriques",
+  "distributionMargin": "Marge",
+  "distributionMarginStart": "Marge début",
+  "distributionMarginEnd": "Marge fin",
+  "distributionSummaryCount": "{count, plural, one{{count} élément} other{{count} éléments}} de {width} sur {length} mm",
+  "@distributionSummaryCount": {
+    "description": "Résumé du groupe replié",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "width": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionSummaryCountMarks": "{count, plural, one{{count} repère} other{{count} repères}} sur {length} mm",
+  "@distributionSummaryCountMarks": {
+    "description": "Sans largeur d'élément, les éléments sont des repères",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionSummaryTarget": "Éléments de {width} sur {length} mm · écart visé {target} mm",
+  "@distributionSummaryTarget": {
+    "placeholders": {
+      "width": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionSummaryTargetMarks": "Repères sur {length} mm · écart visé {target} mm",
+  "@distributionSummaryTargetMarks": {
+    "placeholders": {
+      "length": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionSummaryEdges": "{edges} · marges {margins} mm",
+  "@distributionSummaryEdges": {
+    "placeholders": {
+      "edges": {
+        "type": "String"
+      },
+      "margins": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionCountNote": "Pour un écart visé de {target} mm",
+  "@distributionCountNote": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionGapObtained": "Écart obtenu",
+  "distributionGap": "Écart",
+  "distributionPitch": "Entraxe",
+  "distributionPitchNote": "D’un bord d’élément au bord suivant",
+  "distributionGapRule": "{count, plural, one{{count} élément} other{{count} éléments}} → {gaps, plural, one{{gaps} écart} other{{gaps} écarts}}",
+  "@distributionGapRule": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "gaps": {
+        "type": "int"
+      }
+    }
+  },
+  "distributionCalloutExact": "{count, plural, one{{count} élément} other{{count} éléments}} · {spacing} mm exact",
+  "@distributionCalloutExact": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "spacing": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionCalloutOther": "{count, plural, one{{count} élément} other{{count} éléments}} → {spacing} mm réel",
+  "@distributionCalloutOther": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "spacing": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionCalloutAdoptLabel": "Prendre {count, plural, one{{count} élément} other{{count} éléments}}, écart de {spacing} millimètres",
+  "@distributionCalloutAdoptLabel": {
+    "description": "Annonce du lecteur d'écran",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "spacing": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionCalloutAdopt": "Prendre",
+  "distributionPositions": "Positions depuis l’origine",
+  "distributionNoElement": "Aucun élément",
+  "distributionEdgeColumn": "Bord",
+  "@distributionEdgeColumn": {
+    "description": "En-tête de colonne, suivi de « (mm) »"
+  },
+  "distributionPositionColumn": "Position",
+  "distributionCenterColumn": "Centre",
+  "distributionSchemaStart": "Début",
+  "distributionSchemaEnd": "Fin",
+  "distributionSchemaLegend": "Cotes en mm — Détails ×{zoom}",
+  "@distributionSchemaLegend": {
+    "placeholders": {
+      "zoom": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionPlanElements": "Éléments",
+  "@distributionPlanElements": {
+    "description": "Case du cartouche, mise en capitales"
+  },
+  "distributionPlanGaps": "Écarts",
+  "distributionPlanFallback": "{count} positions — à copier depuis l’app",
+  "@distributionPlanFallback": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "distributionAboutModeBody": "Détermine si l’écart entre les éléments ou leur nombre doit être calculé à partir des autres valeurs.",
+  "distributionAboutModeSpacing": "Calcul écart : vous donnez le nombre d’éléments, l’outil rend l’écart entre eux.",
+  "distributionAboutModeCount": "Calcul nombre : vous donnez l’écart voulu, l’outil rend le nombre d’éléments qui s’en approche le plus.",
+  "distributionAboutLengthBody": "Largeur totale disponible pour répartir les éléments : l’intérieur du cadre, l’entre-deux poteaux.",
+  "distributionAboutElementWidthBody": "Largeur occupée par chaque élément (barreau, lame, étagère). Saisissez 0 pour positionner des repères, traçages ou axes de perçage.",
+  "distributionAboutCountBody": "Nombre d’éléments à répartir dans la largeur disponible.\n\nUne disposition qui démarre ou finit par un élément en exige au moins un. Deux si elle fait les deux. Le champ ne descend pas en dessous, et plafonne à 500.",
+  "distributionAboutTargetBody": "Distance souhaitée entre deux éléments consécutifs. Ne tombe presque jamais juste : le nombre d’éléments est entier, l’écart ne l’est pas. L’outil rend donc les deux répartitions entières qui encadrent votre cible, la plus proche en premier. Si vous avez un maximum à ne pas dépasser (un barreaudage à 110 mm) lisez la plus serrée des deux.",
+  "distributionAboutEdgesBody": "Définit par quoi la rangée commence et finit : un élément collé au bord, ou un écart. Chaque combinaison change le nombre d’écarts, donc le résultat. Le schéma de chaque tuile le montre.",
+  "distributionAboutMarginsBody": "Définit si les deux marges se règlent ensemble ou séparément. Une marge réserve une bande à une extrémité (un chant, un tasseau déjà en place), retirée de la largeur totale avant le calcul.",
+  "distributionAboutMarginsSymmetric": "Symétriques : une seule marge, reprise à l’identique des deux côtés.",
+  "distributionAboutMarginsAsymmetric": "Asymétriques : une marge par côté. C’est le cas dès qu’une extrémité est contrainte et pas l’autre.",
+  "distributionAboutMarginBody": "Marge identique au début et à la fin. Sa valeur est retirée de la largeur totale avant le calcul de la répartition.",
+  "distributionAboutMarginStartBody": "Marge appliquée au début, côté gauche du schéma. Sa valeur est retirée de la largeur totale avant le calcul de la répartition.",
+  "distributionAboutMarginEndBody": "Marge appliquée à la fin, côté droit du schéma. Sa valeur est retirée de la largeur totale avant le calcul de la répartition.",
+  "planDate": "Date",
+  "@planDate": {
+    "description": "Case du cartouche, mise en capitales"
+  },
+  "planIndex": "N°",
+  "@planIndex": {
+    "description": "En-tête de la colonne des numéros"
+  }
 }

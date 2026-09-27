@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/distribution.dart';
-import '../../core/format.dart';
 import '../../core/widgets/haptics.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 
 /// Ce que l'écart demandé donne vraiment, et l'autre borne s'il y en a une.
 ///
@@ -41,12 +42,13 @@ class TargetCallout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final shown = other ?? best;
     final exact = other == null;
-    final label =
-        '${shown.count} élément${pluralS(shown.count)} '
-        '${exact ? '·' : '→'} ${formatNumber(shown.spacing)} mm '
-        '${exact ? 'exact' : 'réel'}';
+    final spacing = l10n.number(shown.spacing);
+    final label = exact
+        ? l10n.distributionCalloutExact(shown.count, spacing)
+        : l10n.distributionCalloutOther(shown.count, spacing);
 
     // Le beige ne veut dire qu'une chose : il y a quelque chose à faire ici.
     // Teinté en permanence, on cesserait de le voir, et l'offre passerait
@@ -97,9 +99,7 @@ class TargetCallout extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label:
-          'Prendre ${shown.count} éléments, écart de '
-          '${formatNumber(shown.spacing)} millimètres',
+      label: l10n.distributionCalloutAdoptLabel(shown.count, spacing),
       child: InkWell(
         onTap: () {
           hapticSelection(context);
@@ -132,7 +132,7 @@ class _AdoptButton extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       child: Text(
-        'Prendre',
+        AppLocalizations.of(context).distributionCalloutAdopt,
         style: Theme.of(context).textTheme.bodyMedium
             ?.copyWith(color: AppColors.onAccent, fontWeight: FontWeight.w600),
       ),

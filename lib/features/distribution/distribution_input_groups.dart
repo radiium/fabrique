@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/distribution.dart';
-import '../../core/format.dart';
 import '../../core/widgets/app_disclosure.dart';
 import '../../core/widgets/app_segmented_button.dart';
 import '../../core/widgets/count_field.dart';
 import '../../core/widgets/field_pair.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../core/widgets/number_field.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 import 'distribution_controller.dart';
 import 'distribution_edge_grid.dart';
 import 'distribution_form.dart';
@@ -33,21 +34,22 @@ class DistributionGeometryGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AppDisclosure(
-      title: 'Géométrie',
+      title: l10n.distributionGeometry,
       icon: Icons.straighten,
       initiallyExpanded: true,
-      summary: _summary(input),
+      summary: _summary(input, l10n),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LabeledField(
-            label: 'Mode de calcul',
-            about: kAboutMode,
+            label: l10n.distributionModeLabel,
+            about: aboutMode(l10n),
             child: AppSegmentedButton<DistributionMode>(
               segments: [
                 for (final mode in DistributionMode.values)
-                  AppSegment(value: mode, label: mode.label),
+                  AppSegment(value: mode, label: mode.label(l10n)),
               ],
               value: input.mode,
               onChanged: form.setMode,
@@ -56,16 +58,16 @@ class DistributionGeometryGroup extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           FieldPair(
             first: NumberField(
-              label: 'Largeur totale',
+              label: l10n.distributionLength,
               suffix: 'mm',
-              about: kAboutLength,
+              about: aboutLength(l10n),
               value: input.length,
               onChanged: form.setLength,
             ),
             second: NumberField(
-              label: 'Largeur d’un élément',
+              label: l10n.distributionElementWidth,
               suffix: 'mm',
-              about: kAboutElementWidth,
+              about: aboutElementWidth(l10n),
               value: input.elementWidth,
               onChanged: form.setElementWidth,
             ),
@@ -75,8 +77,8 @@ class DistributionGeometryGroup extends StatelessWidget {
           // pas seulement le résultat, il échange la saisie et la réponse.
           if (input.mode == DistributionMode.spacing)
             CountField(
-              label: 'Nombre d’éléments',
-              about: kAboutCount,
+              label: l10n.distributionCount,
+              about: aboutCount(l10n),
               value: input.count,
               onChanged: form.setCount,
               min: minDistributionCount(input.startEdge, input.endEdge),
@@ -84,10 +86,10 @@ class DistributionGeometryGroup extends StatelessWidget {
             )
           else ...[
             NumberField(
-              label: 'Écart souhaité',
+              label: l10n.distributionTargetSpacing,
               suffix: 'mm',
-              help: 'Le nombre d’éléments s’ajuste au plus proche.',
-              about: kAboutTargetSpacing,
+              help: l10n.distributionTargetSpacingHelp,
+              about: aboutTargetSpacing(l10n),
               value: input.targetSpacing,
               onChanged: form.setTargetSpacing,
             ),
@@ -111,17 +113,30 @@ class DistributionGeometryGroup extends StatelessWidget {
   /// Ce qu'on connaît, dit comme on le dirait : le nombre en « Calcul écart »,
   /// l'écart visé en « Calcul nombre ». Sans largeur, les éléments sont des
   /// repères.
-  static String _summary(DistributionFormState input) {
+  static String _summary(DistributionFormState input, AppLocalizations l10n) {
     final hasWidth = input.elementWidth > 0;
-    final span = 'sur ${formatNumber(input.length)} mm';
-    final width = hasWidth ? ' de ${formatNumber(input.elementWidth)}' : '';
-    return switch (input.mode) {
-      DistributionMode.spacing =>
-        '${input.count} ${hasWidth ? 'élément' : 'repère'}'
-            '${pluralS(input.count)}$width $span',
-      DistributionMode.count =>
-        '${hasWidth ? 'Éléments' : 'Repères'}$width $span · '
-            'écart visé ${formatNumber(input.targetSpacing)} mm',
+    final length = l10n.number(input.length);
+    final width = l10n.number(input.elementWidth);
+    final target = l10n.number(input.targetSpacing);
+    return switch ((input.mode, hasWidth)) {
+      (DistributionMode.spacing, true) => l10n.distributionSummaryCount(
+        input.count,
+        width,
+        length,
+      ),
+      (DistributionMode.spacing, false) => l10n.distributionSummaryCountMarks(
+        input.count,
+        length,
+      ),
+      (DistributionMode.count, true) => l10n.distributionSummaryTarget(
+        width,
+        length,
+        target,
+      ),
+      (DistributionMode.count, false) => l10n.distributionSummaryTargetMarks(
+        length,
+        target,
+      ),
     };
   }
 }
@@ -140,16 +155,17 @@ class DistributionEdgesGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AppDisclosure(
-      title: 'Bords et marges',
+      title: l10n.distributionEdgesGroup,
       icon: Icons.border_vertical,
-      summary: _summary(input),
+      summary: _summary(input, l10n),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LabeledField(
-            label: 'Type de répartition',
-            about: kAboutEdges,
+            label: l10n.distributionEdges,
+            about: aboutEdges(l10n),
             child: EdgeChoiceGrid(
               startEdge: input.startEdge,
               endEdge: input.endEdge,
@@ -158,14 +174,13 @@ class DistributionEdgesGroup extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           LabeledField(
-            label: 'Marges',
-            help:
-                'Réservées avant répartition — un chant, un tasseau en place.',
-            about: kAboutOffsetMode,
+            label: l10n.distributionMargins,
+            help: l10n.distributionMarginsHelp,
+            about: aboutOffsetMode(l10n),
             child: AppSegmentedButton<bool>(
-              segments: const [
-                AppSegment(value: true, label: 'Symétriques'),
-                AppSegment(value: false, label: 'Asymétriques'),
+              segments: [
+                AppSegment(value: true, label: l10n.distributionSymmetric),
+                AppSegment(value: false, label: l10n.distributionAsymmetric),
               ],
               value: input.symmetricOffsets,
               onChanged: form.setSymmetricOffsets,
@@ -174,25 +189,25 @@ class DistributionEdgesGroup extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           if (input.symmetricOffsets)
             NumberField(
-              label: 'Marge',
+              label: l10n.distributionMargin,
               suffix: 'mm',
-              about: kAboutOffset,
+              about: aboutOffset(l10n),
               value: input.startOffset,
               onChanged: form.setStartOffset,
             )
           else
             FieldPair(
               first: NumberField(
-                label: 'Marge début',
+                label: l10n.distributionMarginStart,
                 suffix: 'mm',
-                about: kAboutOffsetStart,
+                about: aboutOffsetStart(l10n),
                 value: input.startOffset,
                 onChanged: form.setStartOffset,
               ),
               second: NumberField(
-                label: 'Marge fin',
+                label: l10n.distributionMarginEnd,
                 suffix: 'mm',
-                about: kAboutOffsetEnd,
+                about: aboutOffsetEnd(l10n),
                 value: input.endOffset,
                 onChanged: form.setEndOffset,
               ),
@@ -206,12 +221,12 @@ class DistributionEdgesGroup extends StatelessWidget {
   /// sans résumé, elle cacherait la raison d'un écart inattendu. Les marges
   /// s'écrivent comme on les saisit, une valeur si elles sont symétriques,
   /// début et fin sinon.
-  static String _summary(DistributionFormState input) {
-    final edges = edgeChoiceLabel(input.startEdge, input.endEdge);
+  static String _summary(DistributionFormState input, AppLocalizations l10n) {
+    final edges = edgeChoiceLabel(input.startEdge, input.endEdge, l10n);
     final offsets = input.symmetricOffsets
-        ? formatNumber(input.startOffset)
-        : '${formatNumber(input.startOffset)} / '
-              '${formatNumber(input.endOffset)}';
-    return '$edges · marges $offsets mm';
+        ? l10n.number(input.startOffset)
+        : '${l10n.number(input.startOffset)} / '
+              '${l10n.number(input.endOffset)}';
+    return l10n.distributionSummaryEdges(edges, offsets);
   }
 }

@@ -7,6 +7,8 @@ import '../../app/theme.dart';
 import '../../core/calc/distribution.dart';
 import '../../core/format.dart';
 import '../../core/widgets/table_rows.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 
 /// Les cotes de pose en table numérotée plutôt qu'en ruban `250 · 500 · 750`.
 ///
@@ -43,6 +45,7 @@ class PositionsTable extends StatelessWidget {
   /// contenu, la colonne rend le rembourrage de la ligne visible tel quel des
   /// deux côtés.
   static double _indexColumnWidth(
+    String header,
     String widestIndex,
     TextStyle? headerStyle,
     TextStyle? cellStyle,
@@ -56,37 +59,41 @@ class PositionsTable extends StatelessWidget {
     }
 
     return math.max(
-      widthOf(_indexHeader, headerStyle),
+      widthOf(header, headerStyle),
       widthOf(widestIndex, cellStyle),
     );
   }
 
-  static const String _indexHeader = 'N°';
-
   Future<void> _copy(BuildContext context, DistributionResult r) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
     // Une position par ligne, colonnes séparées par une tabulation : ça tombe
     // dans un tableur, là où le point médian de l'affichage ne se colle nulle
     // part.
     final lines = [
       for (final (i, position) in r.positions.indexed)
         hasWidth
-            ? '${formatNumber(position)}\t${formatNumber(r.centers[i])}'
-            : formatNumber(position),
+            ? '${l10n.number(position)}\t${l10n.number(r.centers[i])}'
+            : l10n.number(position),
     ];
     await Clipboard.setData(ClipboardData(text: lines.join('\n')));
-    messenger.showSnackBar(const SnackBar(content: Text('Copié')));
+    messenger.showSnackBar(SnackBar(content: Text(l10n.commonCopied)));
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final r = result;
     final hasRows = r != null && r.positions.isNotEmpty;
+    final positionHeader = hasWidth
+        ? l10n.distributionEdgeColumn
+        : l10n.distributionPositionColumn;
 
     final headerStyle = tableHeaderStyle(theme);
     final cellStyle = tableCellStyle(theme);
     final indexWidth = _indexColumnWidth(
+      l10n.planIndex,
       '${hasRows ? r.positions.length : 0}',
       headerStyle,
       cellStyle,
@@ -107,7 +114,7 @@ class PositionsTable extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Positions depuis l’origine',
+                    l10n.distributionPositions,
                     style: theme.textTheme.labelLarge,
                   ),
                 ),
@@ -117,7 +124,7 @@ class PositionsTable extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             if (!hasRows)
               Text(
-                r == null ? kNoValue : 'Aucun élément',
+                r == null ? kNoValue : l10n.distributionNoElement,
                 style: theme.textTheme.titleLarge,
               )
             else ...[
@@ -129,7 +136,7 @@ class PositionsTable extends StatelessWidget {
                     SizedBox(
                       width: indexWidth,
                       child: Text(
-                        _indexHeader,
+                        l10n.planIndex,
                         style: headerStyle,
                         textAlign: TextAlign.end,
                       ),
@@ -137,7 +144,7 @@ class PositionsTable extends StatelessWidget {
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
-                        hasWidth ? 'Bord (mm)' : 'Position (mm)',
+                        '$positionHeader (mm)',
                         style: headerStyle,
                         textAlign: TextAlign.end,
                       ),
@@ -146,7 +153,7 @@ class PositionsTable extends StatelessWidget {
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Text(
-                          'Centre (mm)',
+                          '${l10n.distributionCenterColumn} (mm)',
                           style: headerStyle,
                           textAlign: TextAlign.end,
                         ),
@@ -171,7 +178,7 @@ class PositionsTable extends StatelessWidget {
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Text(
-                          formatNumber(position),
+                          l10n.number(position),
                           style: cellStyle,
                           textAlign: TextAlign.end,
                         ),
@@ -180,7 +187,7 @@ class PositionsTable extends StatelessWidget {
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: Text(
-                            formatNumber(r.centers[i]),
+                            l10n.number(r.centers[i]),
                             style: cellStyle,
                             textAlign: TextAlign.end,
                           ),

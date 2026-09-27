@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/distribution.dart';
-import '../../core/format.dart';
 import '../../core/painting.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/numbers.dart';
 
 /// Marge latérale, pour que les cotes d'extrémité ne butent pas sur le bord.
 const double _sideMargin = 20;
@@ -149,6 +150,7 @@ class DistributionPainter extends CustomPainter {
     required this.elementWidth,
     required this.startOffset,
     required this.endOffset,
+    required this.l10n,
   });
 
   final DistributionResult? result;
@@ -156,6 +158,7 @@ class DistributionPainter extends CustomPainter {
   final double elementWidth;
   final double startOffset;
   final double endOffset;
+  final AppLocalizations l10n;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -217,7 +220,7 @@ class DistributionPainter extends CustomPainter {
       x1: overview.x(0),
       x2: overview.x(length),
       y: _totalDimY,
-      label: formatNumber(length),
+      label: l10n.number(length),
       ticks: false,
     );
 
@@ -247,8 +250,8 @@ class DistributionPainter extends CustomPainter {
       scale: scale,
     );
 
-    _paintTitle(canvas, 'Début', start);
-    _paintTitle(canvas, 'Fin', end);
+    _paintTitle(canvas, l10n.distributionSchemaStart, start);
+    _paintTitle(canvas, l10n.distributionSchemaEnd, end);
 
     _paintPiece(canvas, r, start, clip: _brokenPane(start, breakRight: true));
     _paintPiece(canvas, r, end, clip: _brokenPane(end, breakRight: false));
@@ -502,7 +505,7 @@ class DistributionPainter extends CustomPainter {
         x1: x1,
         x2: x2,
         y: lineY,
-        label: formatNumber(to - from),
+        label: l10n.number(to - from),
         tight: true,
         labelSide: labelSide,
         ticks: false,
@@ -519,7 +522,7 @@ class DistributionPainter extends CustomPainter {
   /// le détail mesurable au lieu de seulement avertir qu'il ne l'est pas.
   void _paintLegend(Canvas canvas, double zoom) {
     final text = schemaText(
-      '$kUnitNote — Détails ×${formatNumber(zoom)}',
+      l10n.distributionSchemaLegend(l10n.number(zoom)),
       size: 9,
     );
     text.paint(canvas, Offset((_designWidth - text.width) / 2, _legendTop));
@@ -531,7 +534,8 @@ class DistributionPainter extends CustomPainter {
       old.length != length ||
       old.elementWidth != elementWidth ||
       old.startOffset != startOffset ||
-      old.endOffset != endOffset;
+      old.endOffset != endOffset ||
+      old.l10n.localeName != l10n.localeName;
 }
 
 /// Le pictogramme d'un couple de bords, pour les tuiles de choix.

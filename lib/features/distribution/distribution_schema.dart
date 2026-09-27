@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'distribution_controller.dart';
 import 'distribution_painter.dart';
 
@@ -28,6 +29,7 @@ class DistributionSchema extends ConsumerWidget {
         elementWidth: input.elementWidth,
         startOffset: input.startOffset,
         endOffset: input.endOffset,
+        l10n: AppLocalizations.of(context),
       ),
       size: Size.infinite,
     );

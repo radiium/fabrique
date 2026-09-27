@@ -947,6 +947,384 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Cet outil demande un appareil équipé d’un accéléromètre.'**
   String get levelSensorUnavailableHelp;
+
+  /// No description provided for @distributionModeLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode de calcul'**
+  String get distributionModeLabel;
+
+  /// Segment de sélecteur : 9 caractères au plus, sauf vérification sur appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Calcul écart'**
+  String get distributionModeSpacing;
+
+  /// No description provided for @distributionModeCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calcul nombre'**
+  String get distributionModeCount;
+
+  /// Un bord de rangée, dans « Élément – Écart »
+  ///
+  /// In fr, this message translates to:
+  /// **'Élément'**
+  String get distributionEdgeElement;
+
+  /// No description provided for @distributionEdgeGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart'**
+  String get distributionEdgeGap;
+
+  /// Une disposition : bord de début, bord de fin
+  ///
+  /// In fr, this message translates to:
+  /// **'{start} – {end}'**
+  String distributionEdgePair(String start, String end);
+
+  /// No description provided for @distributionGeometry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Géométrie'**
+  String get distributionGeometry;
+
+  /// No description provided for @distributionLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'Largeur totale'**
+  String get distributionLength;
+
+  /// No description provided for @distributionElementWidth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Largeur d’un élément'**
+  String get distributionElementWidth;
+
+  /// No description provided for @distributionCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre d’éléments'**
+  String get distributionCount;
+
+  /// No description provided for @distributionTargetSpacing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart souhaité'**
+  String get distributionTargetSpacing;
+
+  /// No description provided for @distributionTargetSpacingHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le nombre d’éléments s’ajuste au plus proche.'**
+  String get distributionTargetSpacingHelp;
+
+  /// No description provided for @distributionEdgesGroup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bords et marges'**
+  String get distributionEdgesGroup;
+
+  /// No description provided for @distributionEdges.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de répartition'**
+  String get distributionEdges;
+
+  /// No description provided for @distributionMargins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marges'**
+  String get distributionMargins;
+
+  /// No description provided for @distributionMarginsHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservées avant répartition — un chant, un tasseau en place.'**
+  String get distributionMarginsHelp;
+
+  /// No description provided for @distributionSymmetric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Symétriques'**
+  String get distributionSymmetric;
+
+  /// No description provided for @distributionAsymmetric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Asymétriques'**
+  String get distributionAsymmetric;
+
+  /// No description provided for @distributionMargin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge'**
+  String get distributionMargin;
+
+  /// No description provided for @distributionMarginStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge début'**
+  String get distributionMarginStart;
+
+  /// No description provided for @distributionMarginEnd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge fin'**
+  String get distributionMarginEnd;
+
+  /// Résumé du groupe replié
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, one{{count} élément} other{{count} éléments}} de {width} sur {length} mm'**
+  String distributionSummaryCount(int count, String width, String length);
+
+  /// Sans largeur d'élément, les éléments sont des repères
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, one{{count} repère} other{{count} repères}} sur {length} mm'**
+  String distributionSummaryCountMarks(int count, String length);
+
+  /// No description provided for @distributionSummaryTarget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Éléments de {width} sur {length} mm · écart visé {target} mm'**
+  String distributionSummaryTarget(String width, String length, String target);
+
+  /// No description provided for @distributionSummaryTargetMarks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repères sur {length} mm · écart visé {target} mm'**
+  String distributionSummaryTargetMarks(String length, String target);
+
+  /// No description provided for @distributionSummaryEdges.
+  ///
+  /// In fr, this message translates to:
+  /// **'{edges} · marges {margins} mm'**
+  String distributionSummaryEdges(String edges, String margins);
+
+  /// No description provided for @distributionCountNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour un écart visé de {target} mm'**
+  String distributionCountNote(String target);
+
+  /// No description provided for @distributionGapObtained.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart obtenu'**
+  String get distributionGapObtained;
+
+  /// No description provided for @distributionGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart'**
+  String get distributionGap;
+
+  /// No description provided for @distributionPitch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entraxe'**
+  String get distributionPitch;
+
+  /// No description provided for @distributionPitchNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'D’un bord d’élément au bord suivant'**
+  String get distributionPitchNote;
+
+  /// No description provided for @distributionGapRule.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, one{{count} élément} other{{count} éléments}} → {gaps, plural, one{{gaps} écart} other{{gaps} écarts}}'**
+  String distributionGapRule(int count, int gaps);
+
+  /// No description provided for @distributionCalloutExact.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, one{{count} élément} other{{count} éléments}} · {spacing} mm exact'**
+  String distributionCalloutExact(int count, String spacing);
+
+  /// No description provided for @distributionCalloutOther.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, one{{count} élément} other{{count} éléments}} → {spacing} mm réel'**
+  String distributionCalloutOther(int count, String spacing);
+
+  /// Annonce du lecteur d'écran
+  ///
+  /// In fr, this message translates to:
+  /// **'Prendre {count, plural, one{{count} élément} other{{count} éléments}}, écart de {spacing} millimètres'**
+  String distributionCalloutAdoptLabel(int count, String spacing);
+
+  /// No description provided for @distributionCalloutAdopt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prendre'**
+  String get distributionCalloutAdopt;
+
+  /// No description provided for @distributionPositions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Positions depuis l’origine'**
+  String get distributionPositions;
+
+  /// No description provided for @distributionNoElement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élément'**
+  String get distributionNoElement;
+
+  /// En-tête de colonne, suivi de « (mm) »
+  ///
+  /// In fr, this message translates to:
+  /// **'Bord'**
+  String get distributionEdgeColumn;
+
+  /// No description provided for @distributionPositionColumn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Position'**
+  String get distributionPositionColumn;
+
+  /// No description provided for @distributionCenterColumn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Centre'**
+  String get distributionCenterColumn;
+
+  /// No description provided for @distributionSchemaStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Début'**
+  String get distributionSchemaStart;
+
+  /// No description provided for @distributionSchemaEnd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fin'**
+  String get distributionSchemaEnd;
+
+  /// No description provided for @distributionSchemaLegend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cotes en mm — Détails ×{zoom}'**
+  String distributionSchemaLegend(String zoom);
+
+  /// Case du cartouche, mise en capitales
+  ///
+  /// In fr, this message translates to:
+  /// **'Éléments'**
+  String get distributionPlanElements;
+
+  /// No description provided for @distributionPlanGaps.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écarts'**
+  String get distributionPlanGaps;
+
+  /// No description provided for @distributionPlanFallback.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} positions — à copier depuis l’app'**
+  String distributionPlanFallback(int count);
+
+  /// No description provided for @distributionAboutModeBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détermine si l’écart entre les éléments ou leur nombre doit être calculé à partir des autres valeurs.'**
+  String get distributionAboutModeBody;
+
+  /// No description provided for @distributionAboutModeSpacing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calcul écart : vous donnez le nombre d’éléments, l’outil rend l’écart entre eux.'**
+  String get distributionAboutModeSpacing;
+
+  /// No description provided for @distributionAboutModeCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calcul nombre : vous donnez l’écart voulu, l’outil rend le nombre d’éléments qui s’en approche le plus.'**
+  String get distributionAboutModeCount;
+
+  /// No description provided for @distributionAboutLengthBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Largeur totale disponible pour répartir les éléments : l’intérieur du cadre, l’entre-deux poteaux.'**
+  String get distributionAboutLengthBody;
+
+  /// No description provided for @distributionAboutElementWidthBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Largeur occupée par chaque élément (barreau, lame, étagère). Saisissez 0 pour positionner des repères, traçages ou axes de perçage.'**
+  String get distributionAboutElementWidthBody;
+
+  /// No description provided for @distributionAboutCountBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre d’éléments à répartir dans la largeur disponible.\n\nUne disposition qui démarre ou finit par un élément en exige au moins un. Deux si elle fait les deux. Le champ ne descend pas en dessous, et plafonne à 500.'**
+  String get distributionAboutCountBody;
+
+  /// No description provided for @distributionAboutTargetBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distance souhaitée entre deux éléments consécutifs. Ne tombe presque jamais juste : le nombre d’éléments est entier, l’écart ne l’est pas. L’outil rend donc les deux répartitions entières qui encadrent votre cible, la plus proche en premier. Si vous avez un maximum à ne pas dépasser (un barreaudage à 110 mm) lisez la plus serrée des deux.'**
+  String get distributionAboutTargetBody;
+
+  /// No description provided for @distributionAboutEdgesBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Définit par quoi la rangée commence et finit : un élément collé au bord, ou un écart. Chaque combinaison change le nombre d’écarts, donc le résultat. Le schéma de chaque tuile le montre.'**
+  String get distributionAboutEdgesBody;
+
+  /// No description provided for @distributionAboutMarginsBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Définit si les deux marges se règlent ensemble ou séparément. Une marge réserve une bande à une extrémité (un chant, un tasseau déjà en place), retirée de la largeur totale avant le calcul.'**
+  String get distributionAboutMarginsBody;
+
+  /// No description provided for @distributionAboutMarginsSymmetric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Symétriques : une seule marge, reprise à l’identique des deux côtés.'**
+  String get distributionAboutMarginsSymmetric;
+
+  /// No description provided for @distributionAboutMarginsAsymmetric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Asymétriques : une marge par côté. C’est le cas dès qu’une extrémité est contrainte et pas l’autre.'**
+  String get distributionAboutMarginsAsymmetric;
+
+  /// No description provided for @distributionAboutMarginBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge identique au début et à la fin. Sa valeur est retirée de la largeur totale avant le calcul de la répartition.'**
+  String get distributionAboutMarginBody;
+
+  /// No description provided for @distributionAboutMarginStartBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge appliquée au début, côté gauche du schéma. Sa valeur est retirée de la largeur totale avant le calcul de la répartition.'**
+  String get distributionAboutMarginStartBody;
+
+  /// No description provided for @distributionAboutMarginEndBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marge appliquée à la fin, côté droit du schéma. Sa valeur est retirée de la largeur totale avant le calcul de la répartition.'**
+  String get distributionAboutMarginEndBody;
+
+  /// Case du cartouche, mise en capitales
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get planDate;
+
+  /// En-tête de la colonne des numéros
+  ///
+  /// In fr, this message translates to:
+  /// **'N°'**
+  String get planIndex;
 }
 
 class _AppLocalizationsDelegate

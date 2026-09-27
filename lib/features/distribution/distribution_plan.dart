@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/export/plan.dart';
 import '../../core/export/plan_export_action.dart';
-import '../../core/format.dart';
 import '../../core/models/tool.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'distribution_controller.dart';
 import 'distribution_form.dart';
 import 'distribution_painter.dart';
@@ -30,6 +30,9 @@ PlanPainter? buildDistributionPlan({
   final result = outcome.best;
   final hasWidth = input.elementWidth > 0;
   final byCount = input.mode == DistributionMode.count;
+  final positionHeader = hasWidth
+      ? l10n.distributionEdgeColumn
+      : l10n.distributionPositionColumn;
 
   return PlanPainter(
     plan: Plan(
@@ -39,40 +42,47 @@ PlanPainter? buildDistributionPlan({
       // mêmes chiffres exacts : les réécrire ici serait une redite, et chaque
       // case gagnée est une position de plus dans la table.
       fields: [
-        ('DATE', formatPlanDate(date)),
-        ('ÉLÉMENTS', '${result.count}'),
+        (l10n.planDate.toUpperCase(), formatPlanDate(date)),
+        (l10n.distributionPlanElements.toUpperCase(), '${result.count}'),
         // L'écart visé est la seule saisie que le dessin ne montre pas — il ne
         // porte que l'écart obtenu. Sans elle, rien n'explique le nombre
         // trouvé, d'où sa place juste avant sa réponse.
         if (byCount)
-          ('ÉCART SOUHAITÉ', '${formatNumber(input.targetSpacing)} mm'),
+          (
+            l10n.distributionTargetSpacing.toUpperCase(),
+            '${l10n.number(input.targetSpacing)} mm',
+          ),
         (
-          byCount ? 'ÉCART OBTENU' : 'ÉCART',
-          '${formatNumber(result.spacing)} mm',
+          (byCount ? l10n.distributionGapObtained : l10n.distributionGap)
+              .toUpperCase(),
+          '${l10n.number(result.spacing)} mm',
         ),
         // Sans épaisseur, l'entraxe *est* l'écart : deux cases identiques ne
         // diraient rien de plus, ici comme sur l'écran.
-        if (hasWidth) ('ENTRAXE', '${formatNumber(result.pitch)} mm'),
-        ('ÉCARTS', '${result.gapCount}'),
+        if (hasWidth)
+          (
+            l10n.distributionPitch.toUpperCase(),
+            '${l10n.number(result.pitch)} mm',
+          ),
+        (l10n.distributionPlanGaps.toUpperCase(), '${result.gapCount}'),
       ],
       tables: [
         PlanTable(
-          title: 'POSITIONS DEPUIS L’ORIGINE',
+          title: l10n.distributionPositions.toUpperCase(),
           headers: [
-            'N°',
-            hasWidth ? 'BORD (mm)' : 'POSITION (mm)',
-            if (hasWidth) 'CENTRE (mm)',
+            l10n.planIndex,
+            '${positionHeader.toUpperCase()} (mm)',
+            if (hasWidth) '${l10n.distributionCenterColumn.toUpperCase()} (mm)',
           ],
           rows: [
             for (final (i, position) in result.positions.indexed)
               [
                 '${i + 1}',
-                formatNumber(position),
-                if (hasWidth) formatNumber(result.centers[i]),
+                l10n.number(position),
+                if (hasWidth) l10n.number(result.centers[i]),
               ],
           ],
-          fallback:
-              '${result.positions.length} positions — à copier depuis l’app',
+          fallback: l10n.distributionPlanFallback(result.positions.length),
         ),
       ],
     ),
@@ -82,6 +92,7 @@ PlanPainter? buildDistributionPlan({
       elementWidth: input.elementWidth,
       startOffset: input.startOffset,
       endOffset: input.endOffset,
+      l10n: l10n,
     ),
   );
 }

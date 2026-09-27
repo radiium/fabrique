@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
-import '../../core/calc/distribution.dart';
 import '../../core/format.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/error_banner.dart';
@@ -12,6 +11,7 @@ import '../../core/widgets/tool_scaffold.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/calc_errors.dart';
 import '../../l10n/labels.dart';
+import '../../l10n/numbers.dart';
 import 'distribution_controller.dart';
 import 'distribution_form.dart';
 import 'distribution_input_groups.dart';
@@ -60,38 +60,32 @@ class DistributionScreen extends ConsumerWidget {
       results: [
         if (input.mode == DistributionMode.count)
           ResultTile(
-            label: 'Nombre d’éléments',
+            label: l10n.distributionCount,
             value: result == null ? kNoValue : '${result.count}',
-            note:
-                'Pour un écart visé de ${formatNumber(input.targetSpacing)} '
-                'mm',
+            note: l10n.distributionCountNote(l10n.number(input.targetSpacing)),
           ),
         ResultTile(
           label: input.mode == DistributionMode.count
-              ? 'Écart obtenu'
-              : 'Écart',
-          value: formatNumber(result?.spacing),
+              ? l10n.distributionGapObtained
+              : l10n.distributionGap,
+          value: l10n.number(result?.spacing),
           unit: 'mm',
-          note: result == null ? null : _gapRule(result),
+          note: result == null
+              ? null
+              : l10n.distributionGapRule(result.count, result.gapCount),
         ),
         // Sans épaisseur, l'entraxe *est* l'écart : deux tuiles identiques ne
         // diraient rien de plus.
         if (input.elementWidth > 0)
           ResultTile(
-            label: 'Entraxe',
-            value: formatNumber(result?.pitch),
+            label: l10n.distributionPitch,
+            value: l10n.number(result?.pitch),
             unit: 'mm',
-            note: 'D’un bord d’élément au bord suivant',
+            note: l10n.distributionPitchNote,
           ),
         PositionsTable(result: result, hasWidth: input.elementWidth > 0),
       ],
       resultsFooter: const DistributionExportAction(),
     );
   }
-
-  /// Rappelle la règle du modèle avec les chiffres en cours. Le nombre de jeux
-  /// vient du cœur : il dépend des bords, et l'écran n'a pas à le redéduire.
-  static String _gapRule(DistributionResult r) =>
-      '${r.count} élément${pluralS(r.count)} → '
-      '${r.gapCount} écart${pluralS(r.gapCount)}';
 }

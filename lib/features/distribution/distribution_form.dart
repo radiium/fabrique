@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../core/calc/distribution.dart';
+import '../../l10n/app_localizations.dart';
 
 part 'distribution_form.freezed.dart';
 part 'distribution_form.g.dart';
@@ -9,14 +10,15 @@ part 'distribution_form.g.dart';
 /// que c'est la question que l'utilisateur se pose en arrivant.
 enum DistributionMode {
   /// Le nombre d'éléments est connu, on en déduit l'écart.
-  spacing('Calcul écart'),
+  spacing,
 
   /// L'écart est voulu, on cherche combien d'éléments y répondent.
-  count('Calcul nombre');
+  count;
 
-  const DistributionMode(this.label);
-
-  final String label;
+  String label(AppLocalizations l10n) => switch (this) {
+    DistributionMode.spacing => l10n.distributionModeSpacing,
+    DistributionMode.count => l10n.distributionModeCount,
+  };
 }
 
 /// Saisie complète de l'écran.
@@ -73,33 +75,38 @@ abstract class DistributionFormState with _$DistributionFormState {
   );
 }
 
-/// Un couple de bords et son nom — la disposition telle qu'elle se choisit et
-/// telle qu'elle s'écrit.
+/// Un couple de bords : la disposition telle qu'elle se choisit.
 ///
 /// Ici et non dans l'écran : le cartouche du plan exporté doit nommer la
 /// disposition retenue, et il ne peut pas aller la chercher dans une grille de
 /// tuiles. Même logique que le libellé porté par [DistributionMode].
 class EdgeChoice {
-  const EdgeChoice(this.start, this.end, this.label);
+  const EdgeChoice(this.start, this.end);
 
   final DistributionEdge start;
   final DistributionEdge end;
-  final String label;
+
+  String label(AppLocalizations l10n) => edgeChoiceLabel(start, end, l10n);
 }
 
 /// Les quatre dispositions, dans l'ordre où elles se présentent à l'écran :
 /// la plus courante en tête.
 const List<EdgeChoice> kEdgeChoices = [
-  EdgeChoice(
-    DistributionEdge.element,
-    DistributionEdge.element,
-    'Élément – Élément',
-  ),
-  EdgeChoice(DistributionEdge.gap, DistributionEdge.gap, 'Écart – Écart'),
-  EdgeChoice(DistributionEdge.element, DistributionEdge.gap, 'Élément – Écart'),
-  EdgeChoice(DistributionEdge.gap, DistributionEdge.element, 'Écart – Élément'),
+  EdgeChoice(DistributionEdge.element, DistributionEdge.element),
+  EdgeChoice(DistributionEdge.gap, DistributionEdge.gap),
+  EdgeChoice(DistributionEdge.element, DistributionEdge.gap),
+  EdgeChoice(DistributionEdge.gap, DistributionEdge.element),
 ];
 
-/// Le nom de la disposition bornée par [start] et [end].
-String edgeChoiceLabel(DistributionEdge start, DistributionEdge end) =>
-    kEdgeChoices.firstWhere((c) => c.start == start && c.end == end).label;
+/// Le nom de la disposition bornée par [start] et [end] : « Élément – Écart ».
+String edgeChoiceLabel(
+  DistributionEdge start,
+  DistributionEdge end,
+  AppLocalizations l10n,
+) {
+  String edge(DistributionEdge e) => switch (e) {
+    DistributionEdge.element => l10n.distributionEdgeElement,
+    DistributionEdge.gap => l10n.distributionEdgeGap,
+  };
+  return l10n.distributionEdgePair(edge(start), edge(end));
+}

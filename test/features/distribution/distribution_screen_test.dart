@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/app.dart';
+import '../../support/l10n.dart';
 import '../../support/phone.dart';
 
 /// L'écran change de forme avec la saisie — le champ piloté suit le mode, le
@@ -16,13 +17,16 @@ import '../../support/phone.dart';
 /// apparaissent avec l'épaisseur. Ni `flutter analyze` ni les tests du cœur ne
 /// voient ces bascules.
 void main() {
-  Future<ProviderContainer> pumpDistribution(WidgetTester tester) async {
+  Future<ProviderContainer> pumpDistribution(
+    WidgetTester tester, {
+    Locale locale = const Locale('fr'),
+  }) async {
     final container = ProviderContainer();
     addTearDown(container.dispose);
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: testApp(home: const DistributionScreen()),
+        child: testApp(home: const DistributionScreen(), locale: locale),
       ),
     );
     return container;
@@ -163,13 +167,13 @@ void main() {
       ..setEdges(DistributionEdge.gap, DistributionEdge.element)
       ..setStartOffset(12.5);
     await tester.pump();
-    expect(find.text('Écart – Élément · marges 12.5 mm'), findsOneWidget);
+    expect(find.text('Écart – Élément · marges 12,5 mm'), findsOneWidget);
 
     form
       ..setSymmetricOffsets(false)
       ..setEndOffset(1250);
     await tester.pump();
-    final summary = find.text('Écart – Élément · marges 12.5 / 1250 mm');
+    final summary = find.text('Écart – Élément · marges 12,5 / 1250 mm');
     expect(summary, findsOneWidget);
     expect(
       tester.renderObject<RenderParagraph>(summary).didExceedMaxLines,
@@ -177,64 +181,68 @@ void main() {
     );
   });
 
-  testWidgets('aucun libellé de contrôle n’est tronqué sur un téléphone', (
-    tester,
-  ) async {
-    // Le segmented et les tuiles de bords tronquent en silence
-    // (`overflow: ellipsis`) : un libellé trop large donnerait « Élément – Élé… »
-    // sans que rien ne lève.
-    usePhone(tester);
-    await pumpDistribution(tester);
+  for (final l10n in allLocales) {
+    testWidgets('aucun libellé de contrôle n’est tronqué sur un téléphone '
+        '(${l10n.localeName})', (tester) async {
+      // Le segmented et les tuiles de bords tronquent en silence
+      // (`overflow: ellipsis`) : un libellé trop large donnerait « Élément –
+      // Élé… » sans que rien ne lève.
+      usePhone(tester);
+      await pumpDistribution(tester, locale: Locale(l10n.localeName));
 
-    const labels = [
-      'Écart – Écart',
-      'Élément – Élément',
-      'Élément – Écart',
-      'Écart – Élément',
-    ];
+      final labels = [for (final c in kEdgeChoices) c.label(l10n)];
 
-    // Ces quatre-là dépassent la mesure des tests, et c'est accepté.
-    //
-    // Un segment dispose de 164 px et la police des tests donne 18 px à
-    // *chaque* glyphe : le plafond y est de 9 caractères, soit le double de ce
-    // qu'une vraie police consomme. « Symétriques » / « Asymétriques » ont été
-    // vérifiés au rendu sur un Pixel 5 (22/09/2026) — ils passent. « Calcul
-    // écart » / « Calcul nombre », à un caractère près, sont acceptés sur la
-    // même base, par déduction et non par mesure.
-    //
-    // Cette liste se vide, elle ne s'allonge pas : chaque entrée coûte la
-    // protection du libellé qu'elle contient. Tout nouveau libellé passe
-    // d'abord par la mesure pessimiste, et n'atterrit ici qu'après vérification
-    // sur appareil.
-    const knownWiderThanTestFont = [
-      'Calcul écart',
-      'Calcul nombre',
-      'Symétriques',
-      'Asymétriques',
-    ];
+      // Ces quatre-là dépassent la mesure des tests, et c'est accepté.
+      //
+      // Un segment dispose de 164 px et la police des tests donne 18 px à
+      // *chaque* glyphe : le plafond y est de 9 caractères, soit le double
+      // de ce qu'une vraie police consomme. « Symétriques » /
+      // « Asymétriques » ont été vérifiés au rendu sur un Pixel 5
+      // (22/09/2026) — ils passent. « Calcul écart » / « Calcul nombre », à
+      // un caractère près, sont acceptés sur la même base, par déduction et
+      // non par mesure.
+      //
+      // Cette liste se vide, elle ne s'allonge pas : chaque entrée coûte la
+      // protection du libellé qu'elle contient. Tout nouveau libellé passe
+      // d'abord par la mesure pessimiste, et n'atterrit ici qu'après
+      // vérification sur appareil.
+      const knownWiderThanTestFont = [
+        'Calcul écart',
+        'Calcul nombre',
+        'Symétriques',
+        'Asymétriques',
+      ];
 
-    void expectLabels(List<String> shown) {
-      for (final label in shown) {
-        final finder = find.text(label);
-        expect(finder, findsWidgets, reason: label);
-        final expected = knownWiderThanTestFont.contains(label);
-        expect(
-          tester.renderObject<RenderParagraph>(finder.first).didExceedMaxLines,
-          expected,
-          reason: expected
-              ? '« $label » tient désormais : à retirer de la liste'
-              : '« $label » tronqué',
-        );
+      void expectLabels(List<String> shown) {
+        for (final label in shown) {
+          final finder = find.text(label);
+          expect(finder, findsWidgets, reason: label);
+          final expected = knownWiderThanTestFont.contains(label);
+          expect(
+            tester
+                .renderObject<RenderParagraph>(finder.first)
+                .didExceedMaxLines,
+            expected,
+            reason: expected
+                ? '« $label » tient désormais : à retirer de la liste'
+                : '« $label » tronqué',
+          );
+        }
       }
-    }
 
-    // Un seul groupe ouvert à la fois : chacun se mesure pendant qu'il l'est.
-    expectLabels(const ['Calcul écart', 'Calcul nombre']);
+      // Un seul groupe ouvert à la fois : chacun se mesure pendant qu'il
+      // l'est.
+      expectLabels([l10n.distributionModeSpacing, l10n.distributionModeCount]);
 
-    await tester.tap(find.text('Bords et marges'));
-    await tester.pumpAndSettle();
-    expectLabels(const [...labels, 'Symétriques', 'Asymétriques']);
-  });
+      await tester.tap(find.text(l10n.distributionEdgesGroup));
+      await tester.pumpAndSettle();
+      expectLabels([
+        ...labels,
+        l10n.distributionSymmetric,
+        l10n.distributionAsymmetric,
+      ]);
+    });
+  }
 
   testWidgets('le mode « écart voulu » propose l’autre borne', (tester) async {
     final container = await pumpDistribution(tester);
@@ -253,7 +261,7 @@ void main() {
         container.read(distributionResultProvider) as DistributionReady;
     expect(outcome.best.count, 16);
     expect(outcome.other?.count, 15);
-    expect(find.text('15 éléments → 105.31 mm réel'), findsOneWidget);
+    expect(find.text('15 éléments → 105,31 mm réel'), findsOneWidget);
     expect(find.text('Nombre d’éléments'), findsWidgets);
   });
 

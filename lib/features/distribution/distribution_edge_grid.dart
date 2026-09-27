@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/calc/distribution.dart';
 import '../../core/widgets/choice_tiles.dart';
+import '../../l10n/app_localizations.dart';
 import 'distribution_form.dart';
 import 'distribution_painter.dart';
 
@@ -24,12 +25,13 @@ class EdgeChoiceGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ChoiceTiles<EdgeChoice>(
       tiles: [
         for (final choice in kEdgeChoices)
           ChoiceTile(
             value: choice,
-            label: choice.label,
+            label: choice.label(l10n),
             preview: ({required selected}) => EdgePreviewPainter(
               startEdge: choice.start,
               endEdge: choice.end,

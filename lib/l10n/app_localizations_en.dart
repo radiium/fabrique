@@ -502,4 +502,277 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get levelSensorUnavailableHelp =>
       'This tool needs a device with an accelerometer.';
+
+  @override
+  String get distributionModeLabel => 'Solve for';
+
+  @override
+  String get distributionModeSpacing => 'Gap';
+
+  @override
+  String get distributionModeCount => 'Count';
+
+  @override
+  String get distributionEdgeElement => 'Piece';
+
+  @override
+  String get distributionEdgeGap => 'Gap';
+
+  @override
+  String distributionEdgePair(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get distributionGeometry => 'Layout';
+
+  @override
+  String get distributionLength => 'Total width';
+
+  @override
+  String get distributionElementWidth => 'Piece width';
+
+  @override
+  String get distributionCount => 'Number of pieces';
+
+  @override
+  String get distributionTargetSpacing => 'Target gap';
+
+  @override
+  String get distributionTargetSpacingHelp =>
+      'The number of pieces adjusts to the closest match.';
+
+  @override
+  String get distributionEdgesGroup => 'Ends and margins';
+
+  @override
+  String get distributionEdges => 'Arrangement';
+
+  @override
+  String get distributionMargins => 'Margins';
+
+  @override
+  String get distributionMarginsHelp =>
+      'Set aside before spacing — an edge band, a cleat already in place.';
+
+  @override
+  String get distributionSymmetric => 'Equal';
+
+  @override
+  String get distributionAsymmetric => 'Separate';
+
+  @override
+  String get distributionMargin => 'Margin';
+
+  @override
+  String get distributionMarginStart => 'Start margin';
+
+  @override
+  String get distributionMarginEnd => 'End margin';
+
+  @override
+  String distributionSummaryCount(int count, String width, String length) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pieces',
+      one: '$count piece',
+    );
+    return '$_temp0 of $width over $length mm';
+  }
+
+  @override
+  String distributionSummaryCountMarks(int count, String length) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count marks',
+      one: '$count mark',
+    );
+    return '$_temp0 over $length mm';
+  }
+
+  @override
+  String distributionSummaryTarget(String width, String length, String target) {
+    return 'Pieces of $width over $length mm · target gap $target mm';
+  }
+
+  @override
+  String distributionSummaryTargetMarks(String length, String target) {
+    return 'Marks over $length mm · target gap $target mm';
+  }
+
+  @override
+  String distributionSummaryEdges(String edges, String margins) {
+    return '$edges · margins $margins mm';
+  }
+
+  @override
+  String distributionCountNote(String target) {
+    return 'For a target gap of $target mm';
+  }
+
+  @override
+  String get distributionGapObtained => 'Resulting gap';
+
+  @override
+  String get distributionGap => 'Gap';
+
+  @override
+  String get distributionPitch => 'Pitch';
+
+  @override
+  String get distributionPitchNote => 'From one piece edge to the next';
+
+  @override
+  String distributionGapRule(int count, int gaps) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pieces',
+      one: '$count piece',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      gaps,
+      locale: localeName,
+      other: '$gaps gaps',
+      one: '$gaps gap',
+    );
+    return '$_temp0 → $_temp1';
+  }
+
+  @override
+  String distributionCalloutExact(int count, String spacing) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pieces',
+      one: '$count piece',
+    );
+    return '$_temp0 · $spacing mm exactly';
+  }
+
+  @override
+  String distributionCalloutOther(int count, String spacing) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pieces',
+      one: '$count piece',
+    );
+    return '$_temp0 → $spacing mm actual';
+  }
+
+  @override
+  String distributionCalloutAdoptLabel(int count, String spacing) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pieces',
+      one: '$count piece',
+    );
+    return 'Use $_temp0, $spacing millimeter gap';
+  }
+
+  @override
+  String get distributionCalloutAdopt => 'Use';
+
+  @override
+  String get distributionPositions => 'Positions from origin';
+
+  @override
+  String get distributionNoElement => 'No pieces';
+
+  @override
+  String get distributionEdgeColumn => 'Edge';
+
+  @override
+  String get distributionPositionColumn => 'Position';
+
+  @override
+  String get distributionCenterColumn => 'Center';
+
+  @override
+  String get distributionSchemaStart => 'Start';
+
+  @override
+  String get distributionSchemaEnd => 'End';
+
+  @override
+  String distributionSchemaLegend(String zoom) {
+    return 'Dimensions in mm — Details ×$zoom';
+  }
+
+  @override
+  String get distributionPlanElements => 'Pieces';
+
+  @override
+  String get distributionPlanGaps => 'Gaps';
+
+  @override
+  String distributionPlanFallback(int count) {
+    return '$count positions — copy them from the app';
+  }
+
+  @override
+  String get distributionAboutModeBody =>
+      'Chooses whether the gap between pieces or their number is worked out from the other values.';
+
+  @override
+  String get distributionAboutModeSpacing =>
+      'Gap: you give the number of pieces, the tool returns the gap between them.';
+
+  @override
+  String get distributionAboutModeCount =>
+      'Count: you give the gap you want, the tool returns the number of pieces that comes closest.';
+
+  @override
+  String get distributionAboutLengthBody =>
+      'The full width available for the pieces: inside the frame, between two posts.';
+
+  @override
+  String get distributionAboutElementWidthBody =>
+      'The width each piece takes up (baluster, slat, shelf). Enter 0 to place marks, layout lines or drilling centers.';
+
+  @override
+  String get distributionAboutCountBody =>
+      'How many pieces to space across the available width.\n\nAn arrangement that starts or ends with a piece needs at least one. Two if it does both. The field won’t go lower, and stops at 500.';
+
+  @override
+  String get distributionAboutTargetBody =>
+      'The distance you want between two neighboring pieces. It almost never comes out even: the number of pieces is whole, the gap isn’t. So the tool returns the two whole-number layouts on either side of your target, closest first. If you have a maximum not to exceed (balusters at 4 inches) read the tighter of the two.';
+
+  @override
+  String get distributionAboutEdgesBody =>
+      'Sets what the row starts and ends with: a piece against the edge, or a gap. Each combination changes the number of gaps, and so the result. Each tile’s drawing shows it.';
+
+  @override
+  String get distributionAboutMarginsBody =>
+      'Sets whether both margins move together or separately. A margin reserves a strip at one end (an edge band, a cleat already in place), taken off the total width before the calculation.';
+
+  @override
+  String get distributionAboutMarginsSymmetric =>
+      'Equal: a single margin, the same on both sides.';
+
+  @override
+  String get distributionAboutMarginsAsymmetric =>
+      'Separate: one margin per side. Use it as soon as one end is constrained and the other isn’t.';
+
+  @override
+  String get distributionAboutMarginBody =>
+      'The same margin at the start and the end. It is taken off the total width before the spacing is worked out.';
+
+  @override
+  String get distributionAboutMarginStartBody =>
+      'The margin at the start, on the left of the drawing. It is taken off the total width before the spacing is worked out.';
+
+  @override
+  String get distributionAboutMarginEndBody =>
+      'The margin at the end, on the right of the drawing. It is taken off the total width before the spacing is worked out.';
+
+  @override
+  String get planDate => 'Date';
+
+  @override
+  String get planIndex => 'No.';
 }
