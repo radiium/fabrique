@@ -39,7 +39,7 @@
 
 `computeDrawers(DrawersInput)` → `DrawersResult`. `slideSpecFor` donne ce que la glissière impose.
 
-- **Façades.** En applique, la colonne va du bas au haut du caisson, chant compris, moins un demi-jeu à chaque bout (le jeu avec le voisin) : largeur = ouverture + 2 × caisson − jeu. Encastrée, un jeu tout autour : largeur = ouverture − 2 × jeu. Les hauteurs fixées sont retirées, le reste se partage. Toutes fixées, elles doivent faire la hauteur exacte.
+- **Façades.** En applique, la colonne couvre le caisson d'un bord à l'autre, chants compris : largeur = ouverture + 2 × caisson, et le jeu n'est qu'entre deux façades. Encastrée, un jeu tout autour : largeur = ouverture − 2 × jeu. Les hauteurs fixées sont retirées, le reste se partage. Toutes fixées, elles doivent faire la hauteur exacte.
 - **Compartiment.** Chaque tiroir a la part de l'ouverture derrière sa façade, coupée au milieu du jeu entre deux façades. En applique, le tiroir du milieu a donc un compartiment plus haut que ceux des bouts, qui perdent le recouvrement du caisson.
 - **Caisse.** La plus haute qui tient dans le compartiment, moins les **dégagements** de la glissière (dessous / dessus) :
 

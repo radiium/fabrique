@@ -34,7 +34,8 @@ const kAboutFrontMount = FieldHelp(
   title: 'Pose de la façade',
   body: 'Où se pose la façade par rapport au caisson.',
   bullets: [
-    'Applique : devant le caisson. La façade recouvre le chant des flancs.',
+    'Applique : devant le caisson. La façade recouvre le chant des flancs, '
+        'à fleur de leurs bords.',
     'Encastrée : dans l’ouverture. La façade affleure le chant, avec un jeu '
         'tout autour.',
   ],

@@ -436,8 +436,7 @@ DrawersResult computeDrawers(DrawersInput input) {
 
   final fronts = _fronts(input);
   final frontWidth = switch (input.frontMount) {
-    FrontMount.overlay =>
-      input.openingWidth + 2 * input.carcassThickness - input.frontGap,
+    FrontMount.overlay => input.openingWidth + 2 * input.carcassThickness,
     FrontMount.inset => input.openingWidth - 2 * input.frontGap,
   };
   if (frontWidth <= 0) {
@@ -857,8 +856,8 @@ void _validateSlide(DrawersInput input, SlideSpec spec) {
 /// Les façades de haut en bas : les hauteurs fixées, et les autres à parts
 /// égales de ce qui reste.
 ///
-/// En applique, la colonne couvre le chant du caisson, moins un demi-jeu en
-/// haut et en bas (le jeu avec le voisin). Encastrée, elle a un jeu tout
+/// En applique, la colonne couvre le caisson d'un bord à l'autre, chants
+/// compris : le jeu n'est qu'entre deux façades. Encastrée, elle a un jeu tout
 /// autour.
 List<DrawerFrontSlot> _fronts(DrawersInput input) {
   final count = input.drawerCount;
@@ -867,8 +866,8 @@ List<DrawerFrontSlot> _fronts(DrawersInput input) {
   final height = input.openingHeight;
   final (top, span) = switch (input.frontMount) {
     FrontMount.overlay => (
-      height + carcass - gap / 2,
-      height + 2 * carcass - count * gap,
+      height + carcass,
+      height + 2 * carcass - (count - 1) * gap,
     ),
     FrontMount.inset => (height - gap, height - (count + 1) * gap),
   };
