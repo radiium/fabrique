@@ -15,6 +15,7 @@ Cinq outils de calcul pour l'atelier, sur Android et Web. Le cœur de calcul est
 | un contrôle, une couleur, une hauteur | [ui/design-system.md](ui/design-system.md) |
 | la structure d'un écran-outil | [ui/tool-screen.md](ui/tool-screen.md) |
 | un libellé, une aide, un message d'erreur | [ui/writing.md](ui/writing.md) |
+| la version, la signature, la publication | [release.md](release.md) |
 | une idée de fonctionnalité | [roadmap.md](roadmap.md) |
 
 Les fiches d'outils portent le nom de leur dossier : `tools/layout.md` ↔ `lib/features/layout/` ↔ `lib/core/calc/layout.dart`. Elles suivent toutes le même ordre : règles métier, calcul, écran, schéma, plan exporté, décidé / écarté. Une section vide saute.

@@ -12,6 +12,7 @@
 - un contrôle, un écran → `docs/ui/`
 - un texte lu dans l'app (libellé, aide, message d'erreur) → `docs/ui/writing.md`
 - la structure, la persistance → `docs/architecture.md`
+- la version, la signature → `docs/release.md`
 
 ## Commandes
 
