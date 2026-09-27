@@ -74,8 +74,8 @@ String planFileName(Tool tool, DateTime date) {
 ///
 /// **Le premier des deux gestes, et le seul qui ne dépende de personne.** Le
 /// sélecteur de partage d'Android ne liste que des applications : il n'y a
-/// aucune action « enregistrer » dedans, contrairement à celui d'iOS. Un plan
-/// qu'on ne peut que partager est un plan qu'on ne peut pas simplement garder.
+/// aucune action « enregistrer » dedans. Un plan qu'on ne peut que partager est
+/// un plan qu'on ne peut pas simplement garder.
 ///
 /// **Dans les photos, sans rien demander.** C'est le seul endroit que tout le
 /// monde sait rouvrir, et d'où le téléphone sait déjà imprimer et envoyer. Un
@@ -84,9 +84,8 @@ String planFileName(Tool tool, DateTime date) {
 /// — donc un paquet de plus, et un chemin qui périme quand le dossier
 /// disparaît. Qui veut ranger ailleurs passe par « Partager ».
 ///
-/// **Sans album.** Un album demanderait l'accès complet à la photothèque sur
-/// iOS, là où l'enregistrement seul se contente d'un droit d'ajout — et une
-/// app de bricolage n'a rien à faire à lire les photos de qui que ce soit.
+/// **Sans album, ni droit de lecture.** Une app de bricolage n'a rien à faire à
+/// lire les photos de qui que ce soit.
 ///
 /// Rend `true` si l'image est enregistrée.
 Future<bool> savePlan(
@@ -164,9 +163,6 @@ Future<bool> sharePlan(
   required DateTime date,
 }) async {
   final messenger = ScaffoldMessenger.of(context);
-  // L'ancre de la feuille de partage sur iPad et sur Mac, mesurée avant
-  // l'attente : après, le widget qui l'a déclenchée peut avoir disparu.
-  final origin = _originOf(context);
   final name = planFileName(tool, date);
 
   try {
@@ -177,7 +173,6 @@ Future<bool> sharePlan(
         // `XFile.fromData` perd son nom partout sauf sur le web : sans cette
         // reprise, le fichier partagé s'appelle comme le fichier temporaire.
         fileNameOverrides: [name],
-        sharePositionOrigin: origin,
       ),
     );
     return result.status != ShareResultStatus.unavailable;
@@ -188,11 +183,4 @@ Future<bool> sharePlan(
     messenger.showSnackBar(const SnackBar(content: Text('Export impossible')));
     return false;
   }
-}
-
-/// La place du widget à l'écran, ou `null` s'il n'en a pas encore.
-Rect? _originOf(BuildContext context) {
-  final box = context.findRenderObject();
-  if (box is! RenderBox || !box.hasSize) return null;
-  return box.localToGlobal(Offset.zero) & box.size;
 }

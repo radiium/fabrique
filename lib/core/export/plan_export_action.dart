@@ -11,8 +11,8 @@ import 'plan_export.dart';
 /// Les deux gestes du plan d'un outil : l'enregistrer, ou l'envoyer.
 ///
 /// **Enregistrer d'abord.** Le sélecteur de partage d'Android ne liste que des
-/// applications — il n'y a pas d'action « enregistrer » dedans, contrairement à
-/// iOS. Sans ce premier bouton, on ne pourrait pas simplement garder son plan.
+/// applications — il n'y a pas d'action « enregistrer » dedans. Sans ce
+/// premier bouton, on ne pourrait pas simplement garder son plan.
 ///
 /// En pied de la carte de résultats, et en icône dans l'`AppBar` de la page
 /// plein écran, qui n'a pas de carte de résultats. Là-bas une seule action,

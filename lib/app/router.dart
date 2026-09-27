@@ -71,8 +71,8 @@ const Duration _riseDuration = Duration(milliseconds: 300);
 ///
 /// Le schéma s'ouvre depuis sa vignette et se referme pour y revenir : un
 /// glissement latéral le lirait comme une étape de plus dans l'outil, pas
-/// comme une vue posée par-dessus. `MaterialPage(fullscreenDialog: true)` ne
-/// monte que sur iOS : Android garde la transition du thème.
+/// comme une vue posée par-dessus. `MaterialPage(fullscreenDialog: true)`
+/// garderait la transition du thème, qui glisse.
 class _RisingPage extends CustomTransitionPage<void> {
   _RisingPage({required super.child, super.key})
     : super(

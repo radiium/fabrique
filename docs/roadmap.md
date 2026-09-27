@@ -18,7 +18,7 @@
 - **Hypothèse : le plan en PDF multipage, à la place du PNG.** Seul gain : une table longue continuerait page suivante au lieu de céder à son `fallback`. Piste évaluée :
   - pages rastérisées (`renderPlanPng` à 200 dpi) posées en pleine page par le paquet `pdf`, en pur Dart donc valable sur le web : l'aperçu reste le fichier et aucun painter ne change. Le vectoriel demanderait une abstraction de dessin sous tous les painters, et la même TTF des deux côtés pour que le cartouche tombe juste
   - la pagination, qui est le vrai travail : capacité calculée depuis `_tableRowHeight`, en-têtes répétés, pages de suite avec un cartouche réduit (outil, « page 2/3 »), note gardée en page 1, et un aperçu plein écran qui montre toutes les pages
-  - le prix : `gal` ne prend que des images, donc « Exporter » perd les photos. iOS : dossier Documents visible dans Fichiers (`UIFileSharingEnabled`, `LSSupportsOpeningDocumentsInPlace`, `path_provider`). Android : Téléchargements via MediaStore (canal natif ou paquet). « Voir » demanderait d'ouvrir un fichier (`open_filex` ou intention maison)
+  - le prix : `gal` ne prend que des images, donc « Exporter » perd les photos. Il faudrait écrire dans Téléchargements via MediaStore (canal natif ou paquet). « Voir » demanderait d'ouvrir un fichier (`open_filex` ou intention maison)
   - si elle est retenue, `docs/drawing/export.md` se réécrit : « Écarté », « Enregistrer et partager », la règle « tout ou rien »
 
 ## Plus tard

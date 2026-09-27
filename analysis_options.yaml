@@ -4,7 +4,6 @@ analyzer:
   exclude:
     - build/**
     - android/**
-    - ios/**
     - web/**
     # Code généré : ni relu ni corrigé à la main, il n'a pas à passer ces règles.
     - "**/*.g.dart"

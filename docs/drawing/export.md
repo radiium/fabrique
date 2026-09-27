@@ -39,9 +39,9 @@ Câblé pour la Répartition, le Calepinage et les Tiroirs. Le Niveau en est exc
 Deux boutons en pied de la carte de résultats (`resultsFooter`), « Exporter » en premier. Sur la page plein écran, une seule action, l'enregistrement.
 
 - **« Exporter » enregistre dans les photos** (`gal`), en un tap, sans dialogue. **« Partager »** ouvre la feuille du système.
-- **Pourquoi deux boutons** : le sélecteur de partage d'Android ne liste que des applications, sans action « enregistrer » (celui d'iOS en a). Sans le premier bouton, on ne pourrait pas simplement garder son plan.
-- **Pourquoi les photos** : c'est le seul endroit que tout le monde sait rouvrir, d'où le téléphone sait déjà imprimer et envoyer, et la seule destination identique sur Android et iOS avec un petit paquet. Qui veut ranger ailleurs passe par « Partager ».
-- **Sans album** : un album demanderait l'accès complet à la photothèque sur iOS, là où l'ajout seul se contente de `NSPhotoLibraryAddUsageDescription`. Sur Android, `WRITE_EXTERNAL_STORAGE` est déclaré avec `maxSdkVersion="29"` : au-delà, rien n'est demandé.
+- **Pourquoi deux boutons** : le sélecteur de partage d'Android ne liste que des applications, sans action « enregistrer ». Sans le premier bouton, on ne pourrait pas simplement garder son plan.
+- **Pourquoi les photos** : c'est le seul endroit que tout le monde sait rouvrir, d'où le téléphone sait déjà imprimer et envoyer, et un petit paquet suffit à y écrire. Qui veut ranger ailleurs passe par « Partager ».
+- **Sans album**, ni droit de lecture : une app de bricolage n'a rien à faire à lire les photos de qui que ce soit. `WRITE_EXTERNAL_STORAGE` est déclaré avec `maxSdkVersion="29"` : au-delà, rien n'est demandé.
 - **Le SnackBar porte « Voir »** (`Gal.open`) : un enregistrement invérifiable envoie chercher hors de l'app. La galerie s'ouvre sur son dernier élément, qui vient d'être écrit.
 - ⚠️ **`SnackBar` pose `persist = action != null` par défaut** : un SnackBar avec action ne se ferme jamais seul. Celui-ci force `persist: false`.
 - **Sur le web, « Exporter » télécharge** (`plan_download_web.dart`, import conditionnel sur `dart.library.js_interop`, souche qui lève ailleurs). L'API Web Share ne prend les fichiers que sur quelques navigateurs. Deux pièges : le lien doit être **dans** le document avant le clic (Firefox), et l'URL objet ne se libère pas tout de suite (Safari abandonne le téléchargement).
@@ -51,5 +51,5 @@ Deux boutons en pied de la carte de résultats (`resultsFooter`), « Exporter »
 ## Écarté
 
 - **PDF.** N'apporterait que l'impression, que le PNG assure déjà, pour une dépendance de plus et un dessin qui resterait rastérisé (pas de pont entre un `Canvas` et la toile du paquet `pdf`).
-- **Dossier au choix, ou mémorisé dans les Réglages.** *Écarté après chiffrage.* Une boîte « enregistrer sous » coûte trois taps par export. Un chemin mémorisé demanderait sur Android une autorisation d'arbre persistante (SAF, `saf_util`, `android_intent_plus`, écriture par `DocumentsContract`), sur iOS des signets à portée de sécurité, plus un réglage et des cas d'erreur (dossier supprimé, autorisation révoquée). Il n'existe pas en Flutter de « dossier parcourable » qui se comporte pareil des deux côtés.
-- **Ouvrir le fichier exact depuis « Voir ».** Demanderait `saver_gallery` et `open_filex`, et ne marcherait que sur Android : sur iOS, l'URI rendue est un `ph://` qu'aucune API publique n'ouvre.
+- **Dossier au choix, ou mémorisé dans les Réglages.** *Écarté après chiffrage.* Une boîte « enregistrer sous » coûte trois taps par export. Un chemin mémorisé demanderait une autorisation d'arbre persistante (SAF, `saf_util`, `android_intent_plus`, écriture par `DocumentsContract`), plus un réglage et des cas d'erreur (dossier supprimé, autorisation révoquée).
+- **Ouvrir le fichier exact depuis « Voir ».** Demanderait `saver_gallery` et `open_filex`, deux dépendances pour un tap de moins : la galerie s'ouvre déjà sur le plan qui vient d'être écrit.

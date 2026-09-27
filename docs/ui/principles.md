@@ -13,7 +13,7 @@ L'app se lit dans un atelier : debout, à bout de bras, en pleine lumière, parf
 
 ## Plateformes
 
-iOS, Android et Web. Pas de desktop dédié : le web est un mobile élargi, en deux colonnes au-delà de 800 px.
+Android et Web. Pas d'iOS : sans équivalent de F-Droid, l'app n'y serait distribuable que par l'App Store. Pas de desktop dédié : le web est un mobile élargi, en deux colonnes au-delà de 800 px.
 
 ## Accueil et Réglages
 
