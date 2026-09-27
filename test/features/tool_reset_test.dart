@@ -5,8 +5,6 @@ import 'package:fabrique/features/distribution/distribution_controller.dart';
 import 'package:fabrique/features/distribution/distribution_screen.dart';
 import 'package:fabrique/features/drawers/drawers_controller.dart';
 import 'package:fabrique/features/drawers/drawers_screen.dart';
-import 'package:fabrique/features/fasteners/fasteners_controller.dart';
-import 'package:fabrique/features/fasteners/fasteners_screen.dart';
 import 'package:fabrique/features/layout/layout_controller.dart';
 import 'package:fabrique/features/layout/layout_screen.dart';
 import 'package:flutter/material.dart';
@@ -67,13 +65,6 @@ void main() {
           screen: const DrawersScreen(),
           dirty: (c) => c.read(drawersFormProvider.notifier).setDrawerCount(4),
           isPristine: (c) => c.read(drawersFormProvider) == kDrawersDefaults,
-        ),
-        (
-          name: 'Avant-trous',
-          screen: const FastenersScreen(),
-          dirty: (c) =>
-              c.read(fastenerFormProvider.notifier).setScrewDiameter(6),
-          isPristine: (c) => c.read(fastenerFormProvider) == kFastenerDefaults,
         ),
         (
           name: 'Calepinage',

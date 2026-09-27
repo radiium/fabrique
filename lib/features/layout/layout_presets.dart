@@ -6,8 +6,7 @@ import '../../core/models/enums.dart';
 /// Un preset **pré-remplit** une saisie, il ne branche aucun calcul : le
 /// calepinage est le même pour du carrelage et pour une plaque de plâtre, et
 /// c'est ce qui autorise un outil unique. Il vit donc ici, côté feature, et
-/// jamais dans `core/calc` — contrairement à la table des Avant-trous, que le
-/// calcul applique.
+/// jamais dans `core/calc`.
 class LayoutPreset {
   const LayoutPreset({
     required this.label,

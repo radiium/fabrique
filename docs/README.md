@@ -1,6 +1,6 @@
 # Menuiserie — documentation
 
-Six outils de calcul pour l'atelier, sur iOS, Android et Web. Le cœur de calcul est en Dart pur, testé sans appareil. Les écrans le branchent en temps réel.
+Cinq outils de calcul pour l'atelier, sur iOS, Android et Web. Le cœur de calcul est en Dart pur, testé sans appareil. Les écrans le branchent en temps réel.
 
 ## Quoi lire, et quand
 

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-`fabrique` est l'app **« Menuiserie »** : six outils de calcul pour l'atelier (Calepinage, Répartition, Tiroirs, Avant-trous & vis, Niveau, Convertisseur), sur iOS, Android et Web.
+`fabrique` est l'app **« Menuiserie »** : cinq outils de calcul pour l'atelier (Calepinage, Répartition, Tiroirs, Niveau, Convertisseur), sur iOS, Android et Web.
 
 ## Documentation
 
@@ -30,7 +30,6 @@ Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/
 
 - `riverpod_lint` / `custom_lint` sont absents exprès : ils ne résolvent pas avec Riverpod 3.4 + `freezed_annotation` 3.x.
 - Riverpod 3 : un provider-fonction généré prend un `Ref` simple, et `AsyncValue` expose `.value` (plus de `valueOrNull`).
-- L'enum matériau est `MaterialKind`, pas `Material` (collision avec le widget).
 
 ## Conventions non négociables
 

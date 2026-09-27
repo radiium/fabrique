@@ -16,7 +16,7 @@ Les écrans passent leur contenu nu, c'est `ToolScaffold` qui pose les cartes.
 
 ## Saisie en groupes (`AppDisclosure`)
 
-Un outil dont la saisie ne tient pas sur un écran (Calepinage, Répartition, Tiroirs) la découpe en groupes repliables : `inputGroups`, à la place d'`input`. Le Convertisseur, le Niveau et les Avant-trous gardent un seul bloc.
+Un outil dont la saisie ne tient pas sur un écran (Calepinage, Répartition, Tiroirs) la découpe en groupes repliables : `inputGroups`, à la place d'`input`. Le Convertisseur et le Niveau gardent un seul bloc.
 
 - La carte passe en `padding: zero` + `Clip.antiAlias`, et les groupes s'empilent **de bord à bord**. Chacun porte lui-même la marge horizontale et le filet au-dessus de son en-tête. Celui du premier se confond avec le bord de la carte. Un panneau bordé *et* marginé ferait une carte dans la carte.
 - **Seul le premier groupe est déplié à l'arrivée** : celui de ce qu'on vient de mesurer (la surface, la largeur, l'ouverture).

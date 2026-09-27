@@ -8,7 +8,7 @@
 - **Toute la carte est la cible du tap.** Un bouton d'agrandissement se viserait, et viser avec un gant, c'est rater.
 - **L'indice ⤢ en bas à droite** dit que la carte est tapable : sans lui, un schéma ressemble à une image. En bas, parce que c'est le coin que les cotes laissent libre.
 - **Une feuille blanche dans une carte teintée** (`SchemaSheet`) : la teinte n'est plus qu'un encadrement.
-- **Paramètre `compact`** : fait tomber les annotations secondaires, déjà reprises dans les tuiles juste en dessous. Seuls le Calepinage (les deux cotes de surface) et les Avant-trous (les trois Ø et la colonne de hauteurs) en ont un. Les autres n'ont rien à faire tomber.
+- **Paramètre `compact`** : fait tomber les annotations secondaires, déjà reprises dans les tuiles juste en dessous. Seul le Calepinage (les deux cotes de surface) en a un. Les autres n'ont rien à faire tomber.
 - Le **Niveau** est le seul outil dont la carte n'est pas tapable : sa bulle n'a pas de détail à aller chercher, et une page par-dessus couperait des yeux le flux du capteur.
 
 ## La page plein écran

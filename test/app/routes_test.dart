@@ -3,7 +3,6 @@ import 'package:fabrique/core/models/tool.dart';
 import 'package:fabrique/features/converter/converter_screen.dart';
 import 'package:fabrique/features/distribution/distribution_screen.dart';
 import 'package:fabrique/features/drawers/drawers_screen.dart';
-import 'package:fabrique/features/fasteners/fasteners_screen.dart';
 import 'package:fabrique/features/home/home_screen.dart';
 import 'package:fabrique/features/layout/layout_screen.dart';
 import 'package:fabrique/features/level/level_screen.dart';
@@ -37,7 +36,6 @@ void main() {
         Tool.layout => LayoutScreen,
         Tool.distribution => DistributionScreen,
         Tool.drawers => DrawersScreen,
-        Tool.fasteners => FastenersScreen,
         Tool.level => LevelScreen,
         Tool.converter => ConverterScreen,
       };

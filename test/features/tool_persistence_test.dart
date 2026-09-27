@@ -1,10 +1,8 @@
-import 'package:fabrique/core/models/enums.dart';
 import 'package:fabrique/core/models/tool.dart';
 import 'package:fabrique/core/persistence/preferences_store.dart';
 import 'package:fabrique/core/persistence/settings_controller.dart';
 import 'package:fabrique/features/distribution/distribution_controller.dart';
 import 'package:fabrique/features/drawers/drawers_controller.dart';
-import 'package:fabrique/features/fasteners/fasteners_controller.dart';
 import 'package:fabrique/features/layout/layout_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,10 +55,8 @@ void main() {
       () => container.read(layoutFormProvider.notifier).setElementX(999),
     );
     await visit(
-      () => container.listen(fastenerFormProvider, (_, _) {}),
-      () => container
-          .read(fastenerFormProvider.notifier)
-          .setMaterial(MaterialKind.hardwood),
+      () => container.listen(distributionFormProvider, (_, _) {}),
+      () => container.read(distributionFormProvider.notifier).setCount(9),
     );
 
     // Les Tiroirs gardent une liste à trous : les hauteurs non fixées.
@@ -76,7 +72,7 @@ void main() {
       200,
       null,
     ]);
-    expect(reopened.read(fastenerFormProvider).material, MaterialKind.hardwood);
+    expect(reopened.read(distributionFormProvider).count, 9);
   });
 
   test('« réinitialiser » s’enregistre aussi — la prochaine ouverture est '

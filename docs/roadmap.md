@@ -3,7 +3,7 @@
 ## À faire
 
 - **Vérifier sur appareil le cartouche des Tiroirs** : la police de test est trop pessimiste pour dire si `Personnalisée`, `Encastrée, jeu 3` ou une cote à deux décimales tiennent dans leur case.
-- **Le plan du Convertisseur et des Avant-trous.** `core/export/` est générique, boutons compris : il manque un `*_plan.dart` par outil (le cartouche, et une enveloppe de `PlanExportAction`), branché dans `resultsFooter` et dans le `switch` sur `Tool` de `schema_screen.dart`. La note du cartouche des Avant-trous devra porter l'« indicatif » des coefficients. Un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous.
+- **Le plan du Convertisseur.** `core/export/` est générique, boutons compris : il manque un `converter_plan.dart` (le cartouche, et une enveloppe de `PlanExportAction`), branché dans `resultsFooter` et dans le `switch` sur `Tool` de `schema_screen.dart`. Un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous.
 - **Vérifier sur appareil le libellé du sélecteur de matériau** du Calepinage. Un nom de produit et deux cotes ne peuvent pas passer la mesure pessimiste de la police de test, donc son test garde le rapport au lieu du seuil. À confirmer à l'œil, comme l'ont été « Symétriques » et « Calcul écart ».
 
 ## Si l'usage le demande
@@ -20,7 +20,6 @@
 
 - **Réglage métrique / impérial.** *Décidé puis reporté* : la saisie reste en mm partout, donc le réglage n'aurait rien à gouverner. Le jour où il revient :
   - les painters cotent en dur eux aussi, et divergeraient des tuiles
-  - **les Avant-trous en sont exclus** : une vis de 4 mm n'est pas `0,157 po`, c'est un gauge, une autre table
   - la saisie resterait en mm, donc l'impérial serait en lecture seule
   - `core/calc/units/units.dart` (`toMm`, `fromMm`, `LengthUnit`) est gardé pour lui : aucun écran ne s'en sert d'ici là
 - **Calepinage v3** : réemploi des chutes et trait de scie, pour une perte juste (voir [tools/layout.md](tools/layout.md)).

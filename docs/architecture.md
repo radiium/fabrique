@@ -1,6 +1,6 @@
 # Architecture
 
-App portfolio de six outils : ni sur-ingénierie, ni tout dans les widgets. La vitrine technique est un **cœur de calcul en Dart pur, sans Flutter, couvert par des tests unitaires**. Les conventions de code sont dans `CLAUDE.md`, à la racine.
+App portfolio de cinq outils : ni sur-ingénierie, ni tout dans les widgets. La vitrine technique est un **cœur de calcul en Dart pur, sans Flutter, couvert par des tests unitaires**. Les conventions de code sont dans `CLAUDE.md`, à la racine.
 
 ## Couches
 
@@ -11,8 +11,8 @@ lib/
 ├── core/
 │   ├── calc/            ★ Dart pur, aucun import Flutter
 │   │   ├── units/       longueurs, impérial composé, les cinq grandeurs
-│   │   └── distribution.dart · layout.dart · fasteners.dart · tilt.dart
-│   ├── models/          value objects partagés (LengthUnit, MeasureUnit, MaterialKind, JointOffset, Tool)
+│   │   └── distribution.dart · layout.dart · tilt.dart
+│   ├── models/          value objects partagés (LengthUnit, MeasureUnit, JointOffset, Tool)
 │   ├── format.dart      rendu des nombres (formatNumber, formatDegrees, kNoValue)
 │   ├── painting.dart    primitives de cotation, SchemaViewport
 │   ├── persistence/     PreferencesStore, PersistedForm, réglages
@@ -94,5 +94,4 @@ Les versions font foi dans `pubspec.yaml`.
 | units | `mmToImperial`, `convert` | arrondi, fractions, allers-retours |
 | distribution | `computeDistribution`, `computeDistributionForSpacing` | logique métier, mode inverse |
 | layout | `computeLayout`, `summarizeCuts` | algorithme non trivial, géométrie testable |
-| fasteners | `computeFastener` | table de règles appliquée proprement |
 | tilt | `computeTilt` | math de capteur isolée |

@@ -93,8 +93,7 @@ class LayoutPainter extends CustomPainter {
   }
 
   /// Le fond de la surface — ce qui reste visible là où aucun élément ne
-  /// tombe, donc un vide : il prend la couleur de la feuille, comme les
-  /// perçages des Avant-trous.
+  /// tombe, donc un vide : il prend la couleur de la feuille.
   void _paintSurface(
     Canvas canvas,
     Offset origin,

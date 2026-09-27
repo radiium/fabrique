@@ -6,7 +6,6 @@ import '../core/models/tool.dart';
 import '../features/converter/converter_screen.dart';
 import '../features/distribution/distribution_screen.dart';
 import '../features/drawers/drawers_screen.dart';
-import '../features/fasteners/fasteners_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/layout/layout_screen.dart';
 import '../features/level/level_screen.dart';
@@ -34,7 +33,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               final tool = Tool.fromId(state.pathParameters['id'] ?? '');
               return switch (tool) {
                 Tool.converter => const ConverterScreen(),
-                Tool.fasteners => const FastenersScreen(),
                 Tool.distribution => const DistributionScreen(),
                 Tool.drawers => const DrawersScreen(),
                 Tool.layout => const LayoutScreen(),

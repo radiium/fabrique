@@ -75,7 +75,7 @@ class Plan {
   final List<PlanTable> tables;
 
   /// L'avertissement de l'outil, en pleine largeur au bas du cartouche — le
-  /// `%` de perte pessimiste du Calepinage, l'« indicatif » des avant-trous.
+  /// `%` de perte pessimiste du Calepinage.
   final String? note;
 }
 
