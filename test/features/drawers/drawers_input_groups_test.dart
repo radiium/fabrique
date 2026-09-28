@@ -66,10 +66,10 @@ void main() {
     // L'anglais n'a pas la longueur du français : ses résumés se mesurent à
     // part.
     const englishSummaries = [
-      '564 × 684 × 540 mm · carcass 18 mm',
-      '3 drawers · equal heights · overlay, front 18 · gap 3 mm',
+      '564 × 684 × 540 mm · cabinet 18 mm',
+      '3 drawers · equal heights · overlay, front 18 · reveal 3 mm',
       'Ball-bearing · automatic length',
-      'sides 15, bottom 8 mm · sides overlap · bottom in a 6 mm groove',
+      'sides 15, bottom 8 mm · sides run through · bottom in a 6 mm groove',
     ];
     await pumpDrawers(tester, locale: const Locale('en'));
     await tester.tap(find.text('Opening'));

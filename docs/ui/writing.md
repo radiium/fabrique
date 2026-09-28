@@ -15,14 +15,21 @@ Anglais d'atelier américain, un seul mot par chose, comme en français :
 | Français | Anglais |
 |---|---|
 | élément (Répartition, Calepinage) | piece |
-| écart | gap |
-| jeu (entre éléments, périphérique, entre façades) | gap |
+| calepinage | surface layout |
+| répartition | even spacing |
+| écart (Répartition) | gap |
+| jeu entre éléments (Calepinage) | joint |
+| jeu périphérique | perimeter gap |
+| jeu entre façades | reveal |
 | jeu par côté (glissière) | side clearance |
-| entraxe | pitch |
+| réduction de longueur (glissière) | box shorter by |
+| entraxe | on center |
 | repère | mark |
 | façade | front (drawer front dans la fiche de débit) |
+| devant (de la caisse) | box front : « front » seul désigne la façade |
+| côtés / devant et dos recouvrants | sides / front and back run through |
 | caisse | box |
-| caisson | carcass (cabinet dans une phrase) |
+| caisson | cabinet (« cabinet sides » pour les flancs, « sides » seul pour les côtés de caisse) |
 | glissière | slide |
 | axe de glissière | slide centerline |
 | fiche de débit | cut list |

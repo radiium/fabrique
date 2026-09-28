@@ -47,13 +47,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLoadFailed => 'Settings unreadable';
 
   @override
-  String get toolLayout => 'Tile layout';
+  String get toolLayout => 'Surface layout';
 
   @override
-  String get toolLayoutSubtitle => 'Surface layout, % waste';
+  String get toolLayoutSubtitle => 'Pieces to cut, % waste';
 
   @override
-  String get toolDistribution => 'Spacing';
+  String get toolDistribution => 'Even spacing';
 
   @override
   String get toolDistributionSubtitle => 'Gap or number of pieces';
@@ -258,7 +258,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calcPositiveCarcassThickness =>
-      'Carcass thickness must be greater than 0';
+      'Cabinet thickness must be greater than 0';
 
   @override
   String get calcPositiveFrontThickness =>
@@ -296,17 +296,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calcNonNegativeHorizontalGap =>
-      'Horizontal gap cannot be negative';
+      'Horizontal joint cannot be negative';
 
   @override
-  String get calcNonNegativeVerticalGap => 'Vertical gap cannot be negative';
+  String get calcNonNegativeVerticalGap => 'Vertical joint cannot be negative';
 
   @override
   String get calcNonNegativePerimeterGap => 'Perimeter gap cannot be negative';
 
   @override
   String get calcNonNegativeFrontGap =>
-      'The gap between fronts cannot be negative';
+      'The reveal between fronts cannot be negative';
 
   @override
   String get calcNonNegativeSideClearance =>
@@ -314,7 +314,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calcNonNegativeLengthReduction =>
-      'Length reduction cannot be negative';
+      'The box cannot be longer than the slide';
 
   @override
   String get calcMarginsFillWidth =>
@@ -383,11 +383,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calcFrontGapsFillWidth =>
-      'The gaps around the front take up the full inside width';
+      'The reveals around the front take up the full inside width';
 
   @override
   String get calcFrontGapsFillHeight =>
-      'The gaps between fronts take up the full inside height';
+      'The reveals between fronts take up the full inside height';
 
   @override
   String get calcInsetFrontFillsDepth =>
@@ -472,7 +472,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get levelState => 'Status';
 
   @override
-  String get levelFlat => 'Level';
+  String get levelFlat => 'On level';
 
   @override
   String get levelOff => 'Off level';
@@ -524,7 +524,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get distributionGeometry => 'Layout';
+  String get distributionGeometry => 'Dimensions';
 
   @override
   String get distributionLength => 'Total width';
@@ -619,10 +619,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get distributionGap => 'Gap';
 
   @override
-  String get distributionPitch => 'Pitch';
+  String get distributionPitch => 'On center';
 
   @override
-  String get distributionPitchNote => 'From one piece edge to the next';
+  String get distributionPitchNote => 'Center to center, same as edge to edge';
 
   @override
   String distributionGapRule(int count, int gaps) {
@@ -740,7 +740,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get distributionAboutTargetBody =>
-      'The distance you want between two neighboring pieces. It almost never comes out even: the number of pieces is whole, the gap isn’t. So the tool returns the two whole-number layouts on either side of your target, closest first. If you have a maximum not to exceed (balusters at 110 mm) read the tighter of the two.';
+      'The distance you want between two neighboring pieces. It almost never comes out even: the number of pieces is whole, the gap isn’t. So the tool returns the two whole-number solutions on either side of your target, closest first. If you have a maximum not to exceed (balusters at 110 mm) read the tighter of the two.';
 
   @override
   String get distributionAboutEdgesBody =>
@@ -843,13 +843,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get layoutSummaryBalanced => 'balanced rows';
 
   @override
-  String get layoutGapsGroup => 'Gaps';
+  String get layoutGapsGroup => 'Joints and gaps';
 
   @override
-  String get layoutGapX => 'Horizontal gap';
+  String get layoutGapX => 'Horizontal joint';
 
   @override
-  String get layoutGapY => 'Vertical gap';
+  String get layoutGapY => 'Vertical joint';
 
   @override
   String get layoutPerimeterGap => 'Perimeter gap';
@@ -863,7 +863,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String layoutSummaryGaps(String x, String y, String perimeter) {
-    return 'between pieces $x × $y · perimeter $perimeter mm';
+    return 'joints $x × $y · perimeter $perimeter mm';
   }
 
   @override
@@ -913,7 +913,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get layoutPlanOffset => 'Offset';
 
   @override
-  String get layoutPlanGap => 'Gap';
+  String get layoutPlanGap => 'Joint';
 
   @override
   String get layoutPlanPerimeterGap => 'Perim. gap';
@@ -988,7 +988,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get layoutAboutOffsetThird =>
-      '⅓: the rule for tiles and boards longer than 60 cm, where a half offset makes the middle of the piece lip.';
+      '⅓: the rule for tiles and boards longer than 60 cm, where a half offset lines up each piece’s high middle with its neighbor’s edges and causes lippage.';
 
   @override
   String get layoutAboutOffsetSquare =>
@@ -998,7 +998,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerPartSide => 'Side';
 
   @override
-  String get drawerPartFront => 'Front';
+  String get drawerPartFront => 'Box front';
 
   @override
   String get drawerPartBack => 'Back';
@@ -1028,10 +1028,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get frontMountInset => 'Inset';
 
   @override
-  String get boxJointSidesOverlap => 'Sides overlap';
+  String get boxJointSidesOverlap => 'Sides run through';
 
   @override
-  String get boxJointFrontBackOverlap => 'Front and back overlap';
+  String get boxJointFrontBackOverlap => 'Front and back run through';
 
   @override
   String get bottomMountGroove => 'In a groove';
@@ -1055,7 +1055,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawersOpeningDepth => 'Inside depth';
 
   @override
-  String get drawersCarcassThickness => 'Carcass thickness';
+  String get drawersCarcassThickness => 'Cabinet thickness';
 
   @override
   String drawersSummaryOpening(
@@ -1064,7 +1064,7 @@ class AppLocalizationsEn extends AppLocalizations {
     String depth,
     String carcass,
   ) {
-    return '$width × $height × $depth mm · carcass $carcass mm';
+    return '$width × $height × $depth mm · cabinet $carcass mm';
   }
 
   @override
@@ -1089,7 +1089,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawersFrontThickness => 'Front thickness';
 
   @override
-  String get drawersFrontGap => 'Gap between fronts';
+  String get drawersFrontGap => 'Reveal between fronts';
 
   @override
   String drawersSummaryFronts(
@@ -1105,7 +1105,7 @@ class AppLocalizationsEn extends AppLocalizations {
       other: '$count drawers',
       one: '$count drawer',
     );
-    return '$_temp0 · $heights heights · $mount, front $thickness · gap $gap mm';
+    return '$_temp0 · $heights heights · $mount, front $thickness · reveal $gap mm';
   }
 
   @override
@@ -1115,7 +1115,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawersSideClearance => 'Side clearance';
 
   @override
-  String get drawersLengthReduction => 'Length reduction';
+  String get drawersLengthReduction => 'Box shorter by';
 
   @override
   String get drawersSlideLength => 'Slide length';
@@ -1125,7 +1125,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String drawersSummaryCustomSlide(String clearance, String reduction) {
-    return 'clearance $clearance, reduction $reduction mm';
+    return 'clearance $clearance, box −$reduction mm';
   }
 
   @override
@@ -1143,7 +1143,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawersSideThickness => 'Side thickness';
 
   @override
-  String get drawersSideThicknessHelp => 'Also the front and back.';
+  String get drawersSideThicknessHelp => 'Also the box front and back.';
 
   @override
   String get drawersBottomThickness => 'Bottom thickness';
@@ -1238,7 +1238,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String drawersFrontsResultNote(String gap) {
-    return '$gap mm gap between fronts';
+    return '$gap mm reveal between fronts';
   }
 
   @override
@@ -1267,7 +1267,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String drawersPlanFrontsValue(String mount, String gap) {
-    return '$mount, gap $gap';
+    return '$mount, reveal $gap';
   }
 
   @override
@@ -1313,7 +1313,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get drawersAboutOpeningBody =>
-      'Inside dimensions of the cabinet, where the drawers go: between the sides, between the bottom and the top, from the front edge to the back panel.';
+      'Inside dimensions of the cabinet, where the drawers go: between the cabinet sides, between the bottom and the top, from the front edge to the back panel.';
 
   @override
   String get drawersAboutFrontHeightsBody =>
@@ -1349,11 +1349,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get drawersAboutFrontMountInset =>
-      'Inset: inside the opening. The front sits flush with the edges, with a gap all around.';
+      'Inset: inside the opening. The front sits flush with the edges, with a reveal all around.';
 
   @override
   String get drawersAboutBoxJointBody =>
-      'Which parts run the full length. It changes the length of the front, back and sides, not the kind of joint.';
+      'Which parts run the full length. It changes the length of the box front, back and sides, not the kind of joint.';
 
   @override
   String get drawersAboutBottomBody => 'How the bottom is held in the box.';
