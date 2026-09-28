@@ -1,11 +1,12 @@
 # Publication
 
-L'app se publie sur Android, visée F-Droid, et sur le web. Pas d'iOS : sans équivalent de F-Droid, l'app n'y serait distribuable que par l'App Store. Pas de desktop dédié : le web en tient lieu.
+L'app se publie sur Android, visée F-Droid, et sur le web. Pas d'app iOS : sans équivalent de F-Droid, elle n'y serait distribuable que par l'App Store. Sur iPhone comme sur ordinateur, le web s'installe (« Sur l'écran d'accueil », « Installer l'app ») et marche hors ligne.
 
 - [Version](#version)
 - [Signature](#signature)
 - [Vérifier un APK](#vérifier-un-apk)
 - [Fiche F-Droid](#fiche-f-droid)
+- [Web](#web)
 
 ## Version
 
@@ -54,3 +55,17 @@ apksigner verify --print-certs build/app/outputs/flutter-apk/app-release.apk
 - **Un changelog par version**, `changelogs/<versionCode>.txt`, 500 caractères au plus, écrit dans le commit qui monte la version.
 - **« Aucun accès à Internet » est une promesse** : l'APK ne demande pas la permission `INTERNET`. Une dépendance qui l'ajouterait oblige à réécrire la description.
 - Captures, s'il y en a : `images/phoneScreenshots/1.png`, `2.png`… L'icône, F-Droid la tire de l'APK.
+
+## Web
+
+```bash
+flutter build web --no-web-resources-cdn
+```
+
+- **`--no-web-resources-cdn` est obligatoire.** Sans lui, CanvasKit vient de `www.gstatic.com`, que le service worker ne met pas en cache : l'app ne démarre plus hors ligne.
+- **Le service worker est le nôtre** (`web/sw.js`). Celui de Flutter est déprécié et se désinscrit lui-même : `web/flutter_bootstrap.js` ne le charge pas.
+- **Réseau d'abord, cache en repli.** En ligne, l'app est toujours la dernière version, d'un seul tenant. Le cache d'abord ferait tourner l'ancienne un lancement de plus.
+- **Au premier lancement, tout ce qu'un écran peut charger est mis en cache** : les fichiers déjà chargés, les assets du `pubspec` et les fichiers du moteur chargés à la demande (licences, shaders), listés dans `sw.js`.
+- **Le hors ligne suppose un premier lancement en ligne.** Une police de glyphe rare (Noto) n'est en cache que si elle a déjà servi.
+- **Pas d'orientation imposée dans le manifeste** : installée, l'app bloquerait le paysage du schéma plein écran.
+- Vérifier, et refaire après chaque montée de Flutter (la liste du moteur le suit) : servir `build/web` en local, DevTools › Application (manifeste sans erreur, `sw.js` actif), puis **arrêter le serveur** et ouvrir chaque écran, « À propos » et ses licences compris. La case « Offline » du panneau Network ne coupe pas les requêtes du service worker : elle masque un fichier manquant.

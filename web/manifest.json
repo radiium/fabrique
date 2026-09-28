@@ -1,12 +1,14 @@
 {
     "name": "Fabrique",
     "short_name": "Fabrique",
+    "id": "./",
+    "lang": "fr",
     "start_url": ".",
+    "scope": "./",
     "display": "standalone",
     "background_color": "#F7EACF",
     "theme_color": "#B4741E",
     "description": "Cinq outils de calcul pour l'atelier de menuiserie.",
-    "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {
