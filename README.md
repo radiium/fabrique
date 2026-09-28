@@ -1,29 +1,29 @@
 # Fabrique
 
-Cinq outils de calcul pour l'atelier de menuiserie, sur Android et le web. Les résultats se mettent à jour pendant la saisie, avec un schéma coté exportable en image.
+Five calculation tools for the woodworking shop, on Android and the web. Results update as you type, with a dimensioned drawing that can be exported as an image.
 
-- **Calepinage** : poser des éléments identiques sur une surface, coupes et % de perte.
-- **Répartition** : répartir des éléments sur une largeur, par nombre ou par écart.
-- **Tiroirs** : fiche de débit des caisses et des façades, pose des glissières.
-- **Niveau** : niveau à bulle et inclinomètre.
-- **Convertisseur** : longueurs, surfaces, volumes, masses et pressions, en unités d'atelier.
+- **Calepinage** (layout): lay identical pieces on a surface, with cuts and waste %.
+- **Répartition** (spacing): distribute pieces across a width, by count or by gap.
+- **Tiroirs** (drawers): cut list for boxes and fronts, slide mounting.
+- **Niveau** (level): spirit level and inclinometer.
+- **Convertisseur** (converter): lengths, areas, volumes, masses and pressures, in shop units.
 
-Tout est en millimètres. Pas de publicité, pas de compte, aucun accès à Internet.
+Everything is in millimetres. No ads, no account, no Internet access.
 
-## Commandes
+## Commands
 
 ```bash
-flutter run                   # -d chrome pour le web
+flutter run                   # -d chrome for the web
 flutter test
 flutter analyze
-dart run build_runner build   # après une modif @freezed / @riverpod
-flutter gen-l10n              # après une modif de lib/l10n/app_fr.arb
-flutter build apk --release   # signé si android/key.properties existe
+dart run build_runner build   # after changing @freezed / @riverpod
+flutter gen-l10n              # after changing lib/l10n/app_fr.arb
+flutter build apk --release   # signed if android/key.properties exists
 flutter build web
 ```
 
-La documentation est dans [`docs/`](docs/README.md), la publication dans [`docs/release.md`](docs/release.md).
+The documentation is in [`docs/`](docs/README.md) (in French), publishing in [`docs/release.md`](docs/release.md).
 
-## Licence
+## License
 
-Distribué sous licence [GNU GPL v3 ou ultérieure](LICENSE) (`GPL-3.0-or-later`).
+Distributed under the [GNU GPL v3 or later](LICENSE) (`GPL-3.0-or-later`).
