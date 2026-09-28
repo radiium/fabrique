@@ -35,5 +35,14 @@ Dans l'ordre. La signature, la version et la fiche sont en place (voir [release.
   - `core/calc/units/units.dart` (`toMm`, `fromMm`, `LengthUnit`) est gardé pour lui : aucun écran ne s'en sert d'ici là
 - **Calepinage v3** : réemploi des chutes et trait de scie, pour une perte juste (voir [tools/layout.md](tools/layout.md)).
 - **Répartition avec trait de scie** : débiter une planche en N morceaux égaux, où les traits mangent la longueur. C'est le dernier cas manquant, et celui où un menuisier se fait avoir.
+- **Le calcul dans les champs** : `600-2*18` retient `564`. En atelier, on déduit sans cesse épaisseurs, jeux et feuillures.
+  - analyseur pur Dart dans `core/calc` : quatre opérations et parenthèses
+  - une expression invalide est un `CalcError` comme un autre
+  - évaluée à la perte du focus, la valeur retenue reste affichée
+- **Les cotes d'atelier partagées** : épaisseur de panneau (18 ou 19), trait de scie, jeu de coulisse, réglés une fois dans les Réglages et repris comme défauts par chaque outil. Prépare la Répartition avec trait de scie et le Calepinage v3.
+- **L'écran qui reste allumé** sur un écran d'outil, le Niveau surtout : on lit une cote, on coupe, on revient les mains pleines de sciure. Dépendance `wakelock_plus` à justifier, option dans les Réglages.
+- **Les modèles enregistrés** : une saisie nommée (« Caisson cuisine 600 »), rappelée d'un appui. Quelques entrées par outil tiennent en JSON dans le stockage actuel : l'essentiel des Projets sans base locale.
 - **Projets** (sauvegarder plusieurs saisies) : il faudrait une vraie base locale (Drift ou Isar), isolée derrière un repository.
+- **Partager un calcul par lien** : la saisie encodée dans l'URL, ouverte sur le web ou dans l'app (lien profond Android) avec les mêmes cotes. Le destinataire reçoit un calcul modifiable, pas une image.
+- **Les raccourcis de l'icône** : appui long sur l'icône Android, et `shortcuts` du manifeste web, un par outil. Piège : le manifeste n'a qu'une langue, les noms d'outils n'y seraient qu'en français.
 - **Équerrage de caisson** : en réserve, candidat naturel pour un sixième outil.
