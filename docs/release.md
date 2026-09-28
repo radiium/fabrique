@@ -7,6 +7,7 @@ L'app se publie sur Android, visée F-Droid, et sur le web. Pas d'app iOS : sans
 - [Vérifier un APK](#vérifier-un-apk)
 - [Fiche F-Droid](#fiche-f-droid)
 - [Web](#web)
+- [Intégration continue](#intégration-continue)
 
 ## Version
 
@@ -70,3 +71,11 @@ flutter build web --no-web-resources-cdn
 - **Le hors ligne suppose un premier lancement en ligne.** Une police de glyphe rare (Noto) n'est en cache que si elle a déjà servi.
 - **Pas d'orientation imposée dans le manifeste** : installée, l'app bloquerait le paysage du schéma plein écran.
 - Vérifier, et refaire après chaque montée de Flutter (la liste du moteur le suit) : servir `build/web` en local, DevTools › Application (manifeste sans erreur, `sw.js` actif), puis **arrêter le serveur** et ouvrir chaque écran, « À propos » et ses licences compris. La case « Offline » du panneau Network ne coupe pas les requêtes du service worker : elle masque un fichier manquant.
+
+## Intégration continue
+
+`.github/workflows/ci.yml`, à chaque push et pull request : `flutter analyze`, `flutter test`, puis le build web. Sur `main`, ce build part sur GitHub Pages.
+
+- **Servi sous `/fabrique/`**, d'où `--base-href /fabrique/`. Les routes vivent dans le fragment (`#/…`) : pas de `404.html` à prévoir.
+- **Flutter figé à la version locale** dans le workflow, à monter avec elle : la liste du moteur dans `sw.js` en dépend.
+- Une seule fois, dans le dépôt : Settings › Pages › Source : « GitHub Actions ».

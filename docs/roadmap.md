@@ -14,7 +14,6 @@ Dans l'ordre. La signature, la version et la fiche sont en place (voir [release.
 - **Le workflow de release**, sur un tag `v*` : analyse et tests, APK signé (la clé en secret du dépôt, réécrite en `key.properties`), Release avec l'APK joint.
 - **IzzyOnDroid** : demande d'inclusion une fois la première Release publiée. Il reprend l'APK de la Release, signé par notre clé, et publie en un jour.
 - **F-Droid officiel** : merge request sur `fdroiddata`, avec Flutter figé en sous-module git, `UpdateCheckMode: Tags` et le `versionCode` lu dans le `pubspec`. Revue de quelques semaines. F-Droid signe alors avec sa propre clé : passer d'IzzyOnDroid à F-Droid demandera de réinstaller, sauf build reproductible.
-- **Le web** : `flutter build web --no-web-resources-cdn` (voir [release.md](release.md#web)), hébergé sur les Pages de l'hébergeur git.
 
 ## Si l'usage le demande
 
