@@ -21,7 +21,7 @@ La structure, les couches et le flux saisie → résultat → painter sont dans 
 
 Français et anglais, le français sert de gabarit (`app_fr.arb`).
 
-- **Par défaut, l'app suit le téléphone** : sa première langue prise en charge l'emporte, région ignorée, et l'anglais sert de repli pour toute autre langue. Le réglage Langue peut imposer l'une ou l'autre.
+- **Par défaut, l'app suit le téléphone** : sa première langue prise en charge l'emporte, région ignorée, et le français sert de repli pour toute autre langue. Le réglage Langue peut imposer l'une ou l'autre.
 - **Tant que les réglages chargent, l'app suit le téléphone** plutôt que d'attendre le disque.
 - **Sur Android 13 et plus**, la langue se choisit aussi dans les réglages système de l'app (`res/xml/locales_config.xml`, même liste que les ARB) : l'app la reçoit comme langue du téléphone.
 - **Les cotes restent en millimètres dans les deux langues** : seuls le séparateur décimal et les symboles impériaux changent.

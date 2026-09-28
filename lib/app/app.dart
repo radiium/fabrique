@@ -25,7 +25,7 @@ class FabriqueApp extends ConsumerWidget {
         theme: buildAppTheme(),
         themeMode: ThemeMode.light,
         routerConfig: ref.watch(routerProvider),
-        // `null` suit le téléphone, avec l'anglais en repli.
+        // `null` suit le téléphone, avec le français en repli.
         locale: ref.watch(appLocaleProvider),
         localeListResolutionCallback: resolveAppLocale,
         supportedLocales: AppLocalizations.supportedLocales,

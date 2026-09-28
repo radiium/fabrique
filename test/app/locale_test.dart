@@ -19,8 +19,8 @@ void main() {
     );
   });
 
-  test('sans langue prise en charge, l’app parle anglais', () {
-    expect(resolve(const [Locale('de'), Locale('ja')]), kFallbackLocale);
-    expect(resolve(null), kFallbackLocale);
+  test('sans langue prise en charge, l’app parle français', () {
+    expect(resolve(const [Locale('de'), Locale('ja')]), const Locale('fr'));
+    expect(resolve(null), const Locale('fr'));
   });
 }

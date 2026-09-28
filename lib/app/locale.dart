@@ -1,10 +1,7 @@
 import 'dart:ui';
 
 /// Langue de repli quand le téléphone n'en préfère aucune que l'app parle.
-///
-/// L'anglais : le plus probablement lu par un téléphone réglé dans une
-/// troisième langue.
-const Locale kFallbackLocale = Locale('en');
+const Locale kFallbackLocale = Locale('fr');
 
 /// Choisit la langue de l'app parmi les langues préférées du téléphone.
 ///

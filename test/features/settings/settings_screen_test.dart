@@ -42,7 +42,7 @@ void main() {
     expect(find.text('English'), findsWidgets);
   });
 
-  testWidgets('en « système », un téléphone en allemand lit l’anglais', (
+  testWidgets('en « système », un téléphone en allemand lit le français', (
     tester,
   ) async {
     tester.platformDispatcher.localesTestValue = const [Locale('de')];
@@ -64,6 +64,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Settings'), findsOneWidget);
+    expect(find.text('Réglages'), findsOneWidget);
   });
 }
