@@ -17,48 +17,74 @@ IconData iconFor(Tool tool) => switch (tool) {
   Tool.level => Icons.architecture_outlined,
 };
 
-/// Une ligne de la liste d'accueil : icône, titre et sous-titre, chevron.
+const double _kIconSize = 32;
+
+/// Une carte d'outil de l'accueil : icône, titre et sous-titre.
+///
+/// En ligne avec un chevron dans la liste, en tuile verticale dans la grille
+/// ([isTile]), où le sous-titre passe à la ligne au lieu d'être tronqué.
 class ToolCard extends StatelessWidget {
-  const ToolCard({required this.tool, super.key});
+  const ToolCard({required this.tool, this.isTile = false, super.key});
 
   final Tool tool;
+  final bool isTile;
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = Icon(iconFor(tool), size: _kIconSize, color: AppColors.accent);
+    return AppCard(
+      onTap: () => context.go(AppRoutes.tool(tool)),
+      child: isTile
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                icon,
+                const SizedBox(height: AppSpacing.sm),
+                _ToolTexts(tool: tool, subtitleMaxLines: null),
+              ],
+            )
+          : Row(
+              children: [
+                icon,
+                const SizedBox(width: AppSpacing.md),
+                Expanded(child: _ToolTexts(tool: tool, subtitleMaxLines: 1)),
+                const SizedBox(width: AppSpacing.sm),
+                const Icon(Icons.chevron_right, color: AppColors.label),
+              ],
+            ),
+    );
+  }
+}
+
+class _ToolTexts extends StatelessWidget {
+  const _ToolTexts({required this.tool, required this.subtitleMaxLines});
+
+  final Tool tool;
+
+  /// `null` : le sous-titre passe à la ligne autant qu'il le faut.
+  final int? subtitleMaxLines;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    return AppCard(
-      onTap: () => context.go(AppRoutes.tool(tool)),
-      child: Row(
-        children: [
-          Icon(iconFor(tool), size: 32, color: AppColors.accent),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  tool.label(l10n),
-                  // En `titleLarge`, au-dessus des contrôles : on le lit téléphone posé.
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  tool.subtitle(l10n),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.label,
-                  ),
-                ),
-              ],
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          tool.label(l10n),
+          // En `titleLarge`, au-dessus des contrôles : on le lit téléphone posé.
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
           ),
-          const SizedBox(width: AppSpacing.sm),
-          const Icon(Icons.chevron_right, color: AppColors.label),
-        ],
-      ),
+        ),
+        Text(
+          tool.subtitle(l10n),
+          maxLines: subtitleMaxLines,
+          overflow: subtitleMaxLines == null ? null : TextOverflow.ellipsis,
+          style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.label),
+        ),
+      ],
     );
   }
 }
