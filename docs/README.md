@@ -1,27 +1,29 @@
 # Fabrique — documentation
 
-Cinq outils de calcul pour l'atelier, sur Android et Web. Le cœur de calcul est en Dart pur, testé sans appareil. Les écrans le branchent en temps réel.
+Cinq outils de calcul pour l'atelier, sur Android et Web. Les conventions de code sont dans `CLAUDE.md`, à la racine.
+
+- [Quoi lire, et quand](#quoi-lire-et-quand)
+- [Écrire ici](#écrire-ici)
 
 ## Quoi lire, et quand
 
 | Avant de toucher… | Lire |
 |---|---|
-| la structure, un provider, la persistance | [architecture.md](architecture.md) |
-| un outil (calcul, écran, schéma, plan) | [tools/](tools/), un fichier par outil |
-| un painter ou une cote | [drawing/conventions.md](drawing/conventions.md) |
-| la vignette ou la page plein écran | [drawing/schema-viewer.md](drawing/schema-viewer.md) |
-| l'export PNG ou un cartouche | [drawing/export.md](drawing/export.md) |
-| un choix d'ergonomie | [ui/principles.md](ui/principles.md) |
-| un contrôle, une couleur, une hauteur | [ui/design-system.md](ui/design-system.md) |
-| la structure d'un écran-outil | [ui/tool-screen.md](ui/tool-screen.md) |
-| un libellé, une aide, un message d'erreur | [ui/writing.md](ui/writing.md) |
+| la persistance, une dépendance, la langue | [architecture.md](architecture.md) |
+| un outil (règles métier, calcul, schéma) | [tools/](tools/), un fichier par outil |
+| un écran, un contrôle, la page du schéma | [ui.md](ui.md) |
+| un painter, l'export du plan | [drawing.md](drawing.md) |
 | la version, la signature, la publication | [release.md](release.md) |
 | une idée de fonctionnalité | [roadmap.md](roadmap.md) |
 
-Les fiches d'outils portent le nom de leur dossier : `tools/layout.md` ↔ `lib/features/layout/` ↔ `lib/core/calc/layout.dart`. Elles suivent toutes le même ordre : règles métier, calcul, écran, schéma, plan exporté, décidé / écarté. Une section vide saute.
+Les fiches d'outils portent le nom de leur dossier : `tools/layout.md` ↔ `lib/features/layout/` ↔ `lib/core/calc/layout.dart`.
 
 ## Écrire ici
 
-- On documente **la décision et sa raison**. Ce que le code dit déjà (signatures, champs, noms des tests) reste dans le code.
+`docs/` ne garde que ce que le code ne peut pas dire : une règle métier, un algorithme non trivial, un choix écarté et sa raison, une procédure hors code.
+
+- **Pas ce qui se lit dans le code** : fichiers, signatures, champs, défauts, libellés, exemples de tests. Un piège vérifié va en commentaire, à côté du code qu'il protège.
+- **Pas ce qui s'applique à toute l'app** : une règle générale va dans `CLAUDE.md`, ou dans le widget partagé qui l'impose.
+- **Un sommaire en tête de chaque fichier**, une ligne par section.
 - Un chiffre recopié d'une constante se vérifie contre le code avant d'être écrit.
 - Pas d'historique (« avant on faisait… ») : c'est le rôle de git.

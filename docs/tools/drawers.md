@@ -2,120 +2,66 @@
 
 « J'ai une ouverture de caisson. Qu'est-ce que je débite pour mes tiroirs et leurs façades, et où je visse les glissières ? »
 
-| Couche | Fichiers |
-|---|---|
-| Calcul | `lib/core/calc/drawers.dart` · `test/core/calc/drawers_test.dart` |
-| Écran | `lib/features/drawers/` : `_screen`, `_controller`, `_help`, et ses composants `_front_heights` (bouton et feuille des hauteurs), `_cut_list` (fiche de débit) · `test/features/drawers/drawers_screen_test.dart`, `drawers_input_groups_test.dart`, `drawers_cut_list_test.dart` |
-| Schéma | `_schema`, `_painter` (dont les pictogrammes d'assemblage et de fond) · `test/features/drawers/drawers_painter_test.dart` |
-| Plan | `_plan` · `test/features/drawers/drawers_plan_test.dart` |
-
----
+- [Règles métier](#règles-métier)
+- [Glissières](#glissières)
+- [Calcul](#calcul)
+- [Écran](#écran)
+- [Schéma](#schéma)
+- [Plan exporté](#plan-exporté)
+- [Décidé / écarté](#décidé--écarté)
 
 ## Règles métier
 
-- **Le caisson est une donnée d'entrée**, pas un résultat : on saisit son ouverture intérieure. Son débit est hors de l'outil.
+- **Le caisson est une donnée d'entrée**, pas un résultat : on saisit son ouverture intérieure, la cote que demande la glissière. Son débit est hors de l'outil.
 - **Une ouverture, une colonne de N tiroirs** de même largeur et même profondeur. Avec des traverses entre les tiroirs, chacun a sa propre ouverture : un calcul par tiroir, avec N = 1.
 - **Caisse bois et façade rapportée** : côtés, devant, dos, fond, plus la façade.
-- **Une glissière est un jeu de paramètres, pas une marque** (`SlideSpec`) : jeu latéral par côté, réduction de longueur, longueurs nominales vendues, retrait de fond imposé. Trois préréglages et « Personnalisée », qui recopie une fiche fabricant.
-
-  | Glissière | Jeu par côté | Longueur de caisse | Fond |
-  |---|---|---|---|
-  | À billes | 12,7 | nominale | libre |
-  | Sous tiroir | 5 (largeur int. = ouverture − 42 avec des côtés de 16) | nominale − 10 | en retrait de 13, dos posé dessus |
-  | Bois sur bois | 1 | profondeur utile | libre |
-  | Personnalisée | saisi | nominale − saisie | libre |
-
-  ⚠️ Les valeurs sous tiroir sont **indicatives** : elles varient d'une gamme à l'autre.
-- **Longueur de glissière automatique** : la plus grande longueur nominale qui tient dans la profondeur utile (profondeur, moins l'épaisseur de façade en pose encastrée). On peut l'imposer.
-- **Pose de la façade** : en applique, la façade recouvre le chant des flancs, et c'est l'**épaisseur du caisson** qui compte. Encastrée, elle entre dans l'ouverture et mange la profondeur, et c'est l'**épaisseur de façade** qui compte. Les deux épaisseurs restent toujours affichées, quelle que soit la pose : le schéma dessine le caisson et la façade dans les deux cas.
-- **Hauteurs des façades** : égales par défaut. Une hauteur saisie devient fixe, et les façades non fixées se partagent le reste à parts égales. Changer le nombre de tiroirs garde les hauteurs fixées des tiroirs qui restent.
+- **Pose de la façade** : en applique, la façade recouvre le chant des flancs, et c'est l'**épaisseur du caisson** qui compte. Encastrée, elle entre dans l'ouverture et mange la profondeur, et c'est l'**épaisseur de façade** qui compte. Les deux restent toujours saisissables : le schéma dessine le caisson et la façade dans les deux cas.
+- **Hauteurs des façades** : égales par défaut. Une hauteur saisie devient fixe, et les façades non fixées se partagent le reste. Changer le nombre de tiroirs garde les hauteurs fixées des tiroirs qui restent.
 - **Assemblage** : seule compte la question de savoir quelles pièces courent d'un bout à l'autre (côtés, ou devant et dos). Queue d'aronde, tourillons ou vis ne changent pas les cotes.
-- **Fond** : en rainure (profondeur de rainure, la largeur est l'épaisseur du fond), entre les côtés sans rainure (cotes intérieures de la caisse), ou sous la caisse. La feuillure revient au même calcul que la rainure : pas d'option pour elle. Une glissière sous tiroir impose le sien, et le choix se verrouille.
-- **Une épaisseur pour les côtés, le devant et le dos**, une pour le fond.
+- **Fond** : en rainure, entre les côtés, ou sous la caisse. La feuillure revient au même calcul que la rainure : pas d'option pour elle.
 
----
+## Glissières
+
+**Une glissière est un jeu de paramètres, pas une marque** : jeu latéral par côté, réduction de longueur, longueurs nominales vendues, retrait de fond imposé. Trois préréglages et « Personnalisée », qui recopie une fiche fabricant.
+
+| Glissière | Jeu par côté | Longueur de caisse | Fond | Axe tracé sur le flanc |
+|---|---|---|---|---|
+| À billes | 12,7 | nominale | libre | milieu de la caisse |
+| Sous tiroir | 5 | nominale − 10 | en retrait de 13, dos posé dessus | dessous de la glissière, au bas de la caisse |
+| Bois sur bois | 1 | profondeur utile | libre | dessus du coulisseau, au bas de la caisse |
+| Personnalisée | saisi | nominale − saisie | libre | milieu de la caisse |
+
+- Les valeurs sous tiroir sont **indicatives** : elles varient d'une gamme à l'autre. Le plan le note.
+- **Longueur automatique** : la plus grande longueur nominale qui tient dans la profondeur utile. On peut l'imposer.
+- **Une glissière sous tiroir impose son fond**, et le choix se verrouille.
 
 ## Calcul
 
-`computeDrawers(DrawersInput)` → `DrawersResult`. `slideSpecFor` donne ce que la glissière impose.
-
-- **Façades.** En applique, la colonne couvre le caisson d'un bord à l'autre, chants compris : largeur = ouverture + 2 × caisson, et le jeu n'est qu'entre deux façades. Encastrée, un jeu tout autour : largeur = ouverture − 2 × jeu. Les hauteurs fixées sont retirées, le reste se partage. Toutes fixées, elles doivent faire la hauteur exacte.
+- **Façades.** En applique, la colonne couvre le caisson d'un bord à l'autre, chants compris, et le jeu n'est qu'entre deux façades. Encastrée, un jeu tout autour.
 - **Compartiment.** Chaque tiroir a la part de l'ouverture derrière sa façade, coupée au milieu du jeu entre deux façades. En applique, le tiroir du milieu a donc un compartiment plus haut que ceux des bouts, qui perdent le recouvrement du caisson.
-- **Caisse.** La plus haute qui tient dans le compartiment, moins les **dégagements** de la glissière (dessous / dessus) :
-
-  | Glissière | Dessous | Dessus | Axe tracé sur le flanc |
-  |---|---|---|---|
-  | À billes, Personnalisée | 10 | 20 | milieu de la caisse |
-  | Sous tiroir | 3 | 20 | dessous de la glissière = bas de la caisse |
-  | Bois sur bois | 0 | 20 (le coulisseau du tiroir du dessus) | dessus du coulisseau = bas de la caisse |
-
-  Largeur hors tout = ouverture − 2 × jeu par côté. Longueur = longueur de glissière − réduction, ou la profondeur utile en bois sur bois.
-- **Fond.** En rainure, 10 mm au-dessus du bas de la caisse (`kGrooveLift`), cotes intérieures + 2 × profondeur de rainure. Entre les côtés, cotes intérieures. Dessous, cotes hors tout, et les parois perdent son épaisseur. Sous tiroir, 13 mm de retrait, entre les côtés et sous le dos, qui perd retrait + fond.
-- **Fiche de débit** : côtés, devants, dos, fonds, façades. Les pièces identiques sont regroupées, et les tiroirs de hauteurs différentes donnent plusieurs lignes. Le fil du fond court d'un côté à l'autre.
-
-### Refus
-
-Cote nulle ou négative, jeu négatif · jeux de façade qui prennent toute l'ouverture · ouverture trop étroite pour la glissière et les côtés · profondeur plus courte que la plus petite glissière, ou glissière imposée trop longue · caisse sous 40 mm (`kMinBoxHeight`) · hauteurs fixées qui ne tiennent pas · rainure aussi profonde que le côté.
-
----
+- **Caisse.** La plus haute qui tient dans le compartiment, moins les dégagements de la glissière dessous et dessus. En bois sur bois, le dégagement du dessus est le coulisseau du tiroir du dessus.
+- **Fiche de débit.** Les pièces identiques sont regroupées, et des tiroirs de hauteurs différentes donnent plusieurs lignes. Le fil du fond court d'un côté à l'autre.
 
 ## Écran
 
-### Saisie
-
-En **quatre groupes repliables**, chacun résumé sous son titre (voir [ui/tool-screen.md](../ui/tool-screen.md)). Seule l'ouverture est dépliée à l'arrivée : c'est ce qu'on vient de mesurer.
-
-| Groupe | Contenu | Résumé par défaut |
-|---|---|---|
-| `Ouverture` | `Largeur intérieure` · `Hauteur intérieure`, puis `Profondeur intérieure` · `Épaisseur du caisson` : l'ordre dans lequel on mesure le caisson | `564 × 684 × 540 mm · caisson 18 mm` |
-| `Tiroirs et façades` | `Nombre de tiroirs` · `Hauteurs`, pose de la façade (`Applique` · `Encastrée`), épaisseur de façade et jeu entre façades | `3 tiroirs · hauteurs égales · applique, façade 18 · jeu 3 mm` |
-| `Glissière` | le type, ses jeux si `Personnalisée`, la longueur (sauf bois sur bois) | `À billes · longueur automatique` |
-| `Caisse` | épaisseurs des côtés et du fond, assemblage, fond (et profondeur de rainure) | `côtés 15, fond 8 mm · côtés recouvrants · fond en rainure de 6 mm` |
-
-- `Hauteurs` : le bouton dit l'état (`Égales` ou `Ajustées`) et ouvre une feuille basse, un champ par tiroir et `Remettre à égales`. Quand les hauteurs sont ajustées, le détail s'affiche sous la ligne.
-- `Glissière` : une **liste déroulante**. Une grille de tuiles prenait une centaine de pixels pour un choix qu'on fait une fois, et en segments « Bois sur bois » et « Personnalisée » seraient tronqués. « Personnalisée » ajoute `Jeu par côté` et `Réduction de longueur` sous le menu, et le résumé les reprend.
-- Le résumé de `Caisse` dit le fond **même imposé** par une glissière sous tiroir (`fond en retrait de 13 mm`) : c'est là qu'on chercherait pourquoi ses tuiles ont disparu.
-
-**Assemblage et fond en tuiles pictogramme + texte** (`ChoiceTiles`), deux par ligne pour l'assemblage, trois pour le fond. « Devant et dos recouvrants » ne tient pas dans un segment, et le dessin (la caisse vue de dessus, la caisse en coupe) répond à la question mieux que le mot. Avec une glissière sous tiroir, les tuiles du fond laissent place à la valeur verrouillée : deux choix dont aucun ne s'applique ne se montrent pas.
-
-**Défauts** (`kDrawersDefaults`) : un caisson de 600 × 720 hors tout (564 × 684 × 540 intérieur), trois tiroirs à billes, façades en applique, côtés de 15, fond de 8 en rainure de 6, caisson et façade de 18, jeu de 3.
-
-### Résultats
-
-Un refus s'affiche en `ErrorBanner` sous le dernier groupe (`DrawersOutcome`, comme le Calepinage) : trois groupes sur quatre sont repliés, un tiret muet laisserait chercher le champ fautif. La saisie est persistée.
-
-
-- `Façades — largeur × hauteur`
-- `Caisse — largeur × longueur`, hors tout, avec le jeu par côté
-- `Longueur de glissière` (absente en bois sur bois)
-- `Axes de glissière`, depuis le bas de l'ouverture : ce qu'on trace sur le flanc
-- la fiche de débit, en deux colonnes : `Pièce` (`Côté ×6`) et `L × l × ép (mm)`. Cinq colonnes ne tiendraient pas sur un téléphone. Un tap la copie pour un tableur : une pièce par ligne, pièce, quantité et cotes séparées par des tabulations.
-
----
+- **La glissière se choisit en liste déroulante.** Une grille de tuiles prenait une centaine de pixels pour un choix qu'on fait une fois, et en segments « Bois sur bois » et « Personnalisée » seraient tronqués.
+- **Assemblage et fond en tuiles pictogramme + texte.** « Devant et dos recouvrants » ne tient pas dans un segment, et le dessin répond à la question mieux que le mot. Avec une glissière sous tiroir, les tuiles du fond laissent place à la valeur verrouillée : deux choix dont aucun ne s'applique ne se montrent pas.
+- **Le résumé de `Caisse` dit le fond même imposé** : c'est là qu'on chercherait pourquoi ses tuiles ont disparu.
+- **La fiche de débit tient en deux colonnes**, pièce et cotes : cinq ne tiendraient pas sur un téléphone. Un tap la copie pour un tableur.
 
 ## Schéma
 
 **Coupe de face** de la colonne et **coupe de dessus** d'un tiroir, côte à côte, **à la même échelle** : une profondeur tracée plus grande qu'une hauteur mentirait.
 
-- Coupe de face : un plan vertical au milieu de la profondeur, vu vers l'avant. En coupe, le caisson, les côtés et le fond de chaque caisse (en rainure, entre les côtés ou dessous, tel que monté), et les glissières en gris : latérales dans le jeu, sous tiroir en L d'un seul tenant : sous le côté, dans le dégagement du dessous, puis sous le fond, dans son retrait. Derrière le plan, les façades en contour fin. Largeur de façade au-dessus, chaque hauteur de façade à droite. Le caisson hors tout (ouverture + 2 × caisson, `carcassWidth`, `carcassHeight`) en dessous et à gauche : la saisie reste l'ouverture intérieure, la cote que demande la glissière, et une épaisseur de panneau mesurée à côté ne s'y reporterait pas. Pas de profondeur hors tout : elle dépend de la pose du dos.
-- La hauteur de profil d'une glissière latérale (35 mm, `kSideSlideProfile`) et ce qu'une glissière sous tiroir avance sous le fond (30 mm, `kUndermountSlideReach`) sont des ordres de grandeur pour la reconnaître, pas des cotes.
-- Coupe de dessus : un plan horizontal à mi-hauteur de la caisse. Flancs du caisson, glissières latérales en gris dans le jeu, côtés, devant et dos tels que l'assemblage les coupe, façade devant. Une glissière sous tiroir est cachée sous le fond : elle n'y figure pas. Largeur de caisse au-dessus, longueur à droite.
-- **Le cœur rend les coupes toutes faites** (`faceSections`, `topSection`, des `SectionRect` en mm, et `frontLeft`) : le painter ne fait que les poser à l'échelle. Les pièces ne se chevauchent jamais : en rainure, le côté est un `SectionPolygon` entaillé à la place exacte du fond. C'est ce qui permet de dessiner la coupe en deux passes, aplats puis contours (voir [drawing/conventions.md](../drawing/conventions.md)).
-
----
+- **Le caisson hors tout est coté** en plus de la saisie intérieure : une épaisseur de panneau mesurée à côté ne s'y reporterait pas. Pas de profondeur hors tout : elle dépend de la pose du dos.
+- **Le profil d'une glissière est un ordre de grandeur** pour la reconnaître, pas une cote.
+- **Une glissière sous tiroir n'apparaît pas en coupe de dessus** : elle est cachée sous le fond.
+- **Le cœur rend les coupes toutes faites**, pièces qui ne se chevauchent jamais : en rainure, le côté est entaillé à la place exacte du fond.
 
 ## Plan exporté
 
-Les deux vues dans la zone de dessin, cotes hors tout comprises. Le cartouche porte ce que le dessin ne cote pas : ouverture, profondeur, pose et jeu des façades, épaisseurs, glissière et sa longueur (absente en bois sur bois).
-
-Deux tables, la plus importante d'abord, chacune en tout ou rien :
-
-- **Fiche de débit** : `N°`, `PIÈCE`, `NB`, `L`, `l`. L'épaisseur est dans les cases : une cinquième colonne ne laisserait plus la place d'écrire `203.67`.
-- **Axes de glissière**, tiroir 1 en haut, depuis le bas de l'ouverture. Avec beaucoup de tiroirs de hauteurs différentes, la fiche remplit le cartouche et les axes passent à leur repli.
-
-Note « indicatif » en glissière sous tiroir.
-
----
+- **Deux tables, la fiche de débit d'abord**, puis les axes de glissière. Avec beaucoup de tiroirs de hauteurs différentes, la fiche remplit le cartouche et les axes passent à leur repli.
+- **L'épaisseur des pièces va dans les cases**, pas dans la fiche : une cinquième colonne ne laisserait plus la place d'écrire `203.67`.
 
 ## Décidé / écarté
 

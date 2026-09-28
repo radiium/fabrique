@@ -7,12 +7,12 @@
 `docs/` est la référence : la suivre plutôt qu'inventer une structure, et la mettre à jour dans le même commit qu'une décision qui change. [`docs/README.md`](docs/README.md) dit quoi lire avant de toucher à quoi. En bref :
 
 - un outil → `docs/tools/<outil>.md` (même nom que `lib/features/<outil>/`)
-- un painter, une cote → `docs/drawing/conventions.md`
-- l'export PNG → `docs/drawing/export.md`
-- un contrôle, un écran → `docs/ui/`
-- un texte lu dans l'app (libellé, aide, message d'erreur) → `docs/ui/writing.md`
-- la structure, la persistance → `docs/architecture.md`
+- un painter, l'export du plan → `docs/drawing.md`
+- un contrôle, un écran → `docs/ui.md`
+- la persistance, une dépendance, la langue → `docs/architecture.md`
 - la version, la signature → `docs/release.md`
+
+`docs/` ne garde que ce que le code ne peut pas dire (règle métier, choix écarté, procédure) : ni ce qui se lit dans le code, ni ce qui vaut pour toute l'app. Chaque fichier ouvre sur un sommaire.
 
 ## Commandes
 
@@ -42,6 +42,7 @@ Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/
 - **Une feature-outil** : `*_screen`, `*_controller`, `*_schema` (seul point de construction du painter), `*_painter`. Le reste seulement si besoin.
 - **Atelier** : cibles ≥ 48 px (`kFieldHeight`), aucun libellé tronqué en silence. Le schéma peut passer sous la ligne de flottaison : un outil riche ne tient pas dans un écran.
 - **Tout texte lu passe par `AppLocalizations`**, en français et en anglais, painters et plan exporté compris. Une clé ajoutée l'est dans les deux ARB (un test compare). Un nombre affiché passe par `l10n.number`, pour le séparateur décimal. `core/` ne porte aucun texte : ses enums se nomment par une extension côté UI.
+- **Un texte lu emploie le mot de l'écran** : une cote porte le même nom dans son champ, son aide et ses refus. Dans une explication (aide, refus), ni tiret cadratin ni point-virgule : deux phrases, un deux-points ou une parenthèse. Le tiret reste là où il sépare visuellement (`Surface — largeur`, légende de schéma).
 
 ## Règles de code
 

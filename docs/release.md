@@ -1,6 +1,11 @@
 # Publication
 
-L'app se publie sur Android, visée F-Droid, et sur le web. Pas d'iOS : voir [ui/principles.md](ui/principles.md).
+L'app se publie sur Android, visée F-Droid, et sur le web. Pas d'iOS : sans équivalent de F-Droid, l'app n'y serait distribuable que par l'App Store. Pas de desktop dédié : le web en tient lieu.
+
+- [Version](#version)
+- [Signature](#signature)
+- [Vérifier un APK](#vérifier-un-apk)
+- [Fiche F-Droid](#fiche-f-droid)
 
 ## Version
 

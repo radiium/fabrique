@@ -6,6 +6,8 @@ import 'haptics.dart';
 /// `DropdownMenu` du design system : pleine largeur, non éditable.
 ///
 /// L'habillage vient du `dropdownMenuTheme`, le texte de [controlTextStyle].
+/// Sans nom pour un lecteur d'écran : `DropdownMenu` enferme son champ dans son
+/// propre `Semantics`, sans point d'accroche.
 class AppDropdown<T> extends StatelessWidget {
   const AppDropdown({
     required this.value,
