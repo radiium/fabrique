@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/tool.dart';
@@ -76,9 +77,10 @@ mixin PersistedForm<T extends Object> on AnyNotifier<T, T> {
     try {
       final json = store.readJson(key);
       return json == null ? null : decode(json);
-    } on Object {
+    } on Object catch (error) {
       // JSON tronqué ou d'un ancien modèle : on repart des défauts et on
       // efface, pour ne pas rejouer l'échec.
+      debugPrint('Saisie enregistrée illisible ($key), effacée : $error');
       unawaited(store.remove(key));
       return null;
     }
