@@ -27,9 +27,7 @@ enum AppLanguage {
 abstract class Settings with _$Settings {
   const factory Settings({
     @Default(true) bool haptics,
-    // Une langue inconnue (réglage écrit par une version plus récente) se
-    // relit comme « système » plutôt que de rendre tous les réglages
-    // illisibles.
+    // Une langue inconnue (version plus récente) se relit « système ».
     @JsonKey(unknownEnumValue: AppLanguage.system)
     @Default(AppLanguage.system)
     AppLanguage language,
@@ -68,16 +66,14 @@ class SettingsController extends _$SettingsController {
 
 /// Le réglage haptique prêt à consommer, sans `AsyncValue` à déballer.
 ///
-/// `true` tant que les réglages chargent : le premier appui doit répondre
-/// comme les suivants, pas attendre le disque.
+/// `true` tant que les réglages chargent, pour que le premier appui vibre.
 @riverpod
 bool hapticsEnabled(Ref ref) =>
     ref.watch(settingsControllerProvider).value?.haptics ?? true;
 
 /// La locale imposée par le réglage, `null` pour suivre le téléphone.
 ///
-/// `null` aussi tant que les réglages chargent : le premier écran s'affiche
-/// dans la langue du téléphone plutôt que d'attendre le disque.
+/// `null` aussi pendant le chargement : langue du téléphone d'abord.
 @riverpod
 Locale? appLocale(Ref ref) =>
     ref.watch(settingsControllerProvider).value?.language.locale;

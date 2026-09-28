@@ -27,8 +27,7 @@ const double _hDimOffset = 10;
 
 /// Coupe de face de la colonne, et coupe de dessus d'un tiroir, côte à côte.
 ///
-/// Une seule échelle pour les deux vues : la coupe se lit à côté de la face,
-/// et une profondeur tracée plus grande qu'une hauteur mentirait.
+/// Une seule échelle pour les deux vues, pour comparer profondeur et hauteur.
 ///
 /// Ordre de tracé : ce qui est derrière le plan de coupe d'abord, puis la
 /// coupe en deux passes ([_Section]), les cotes en dernier.
@@ -287,13 +286,10 @@ class DrawersPainter extends CustomPainter {
       oldDelegate.l10n.localeName != l10n.localeName;
 }
 
-/// Une coupe, dessinée en deux passes : tous les aplats, puis tous les
-/// contours.
+/// Une coupe, en deux passes : aplats, puis contours.
 ///
-/// Deux pièces assemblées partagent une arête, et leurs traits, centrés
-/// dessus, se confondent en un seul. Dessinées pièce par pièce, l'aplat de la
-/// suivante mangerait la moitié du contour de la précédente. Ce qui suppose
-/// des pièces qui ne se chevauchent pas : le cœur les rend ainsi.
+/// Pièce par pièce, un aplat rognerait le contour de la voisine. Suppose des
+/// pièces qui ne se chevauchent pas.
 class _Section {
   final _cuts = <Path>[];
   final _hardware = <Path>[];
@@ -301,8 +297,7 @@ class _Section {
   /// Une pièce coupée : matière et contour.
   void cut(Path piece) => _cuts.add(piece);
 
-  /// Une glissière : un aplat gris, et le même contour que la matière. Sans
-  /// lui, son bout s'arrêterait au milieu du trait de la pièce voisine.
+  /// Une glissière : aplat gris, contour comme la matière.
   void hardware(Path piece) => _hardware.add(piece);
 
   void paint(Canvas canvas) {
@@ -326,10 +321,8 @@ class _Section {
 
 /// Le remplissage et le contour d'une pièce de pictogramme.
 ///
-/// Pièces blanches dans les deux états : ce que le dessin montre, ce sont les
-/// jonctions, et un aplat teinté les noyait sous le contour. La sélection se
-/// lit par la tuile (fond et bordure) et par un contour plus foncé et plus
-/// épais.
+/// Pièces blanches, pour que les jonctions se lisent. La sélection se voit au
+/// contour plus foncé et plus épais.
 (Paint, Paint) _pictogramPaints({required bool selected}) => (
   Paint()..color = AppColors.cardSurface,
   Paint()

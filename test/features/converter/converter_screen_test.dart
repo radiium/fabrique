@@ -11,8 +11,6 @@ import '../../support/app.dart';
 import '../../support/l10n.dart';
 import '../../support/phone.dart';
 
-/// Le seul écran dont la forme change avec la saisie : les unités, le schéma
-/// et les tuiles dépendent tous de la grandeur choisie.
 void main() {
   Future<ProviderContainer> pumpConverter(
     WidgetTester tester, {
@@ -82,9 +80,7 @@ void main() {
   for (final l10n in allLocales) {
     testWidgets('aucun symbole d’unité n’est tronqué sur un téléphone '
         '(${l10n.localeName})', (tester) async {
-      // Le segmented tronque en silence (`overflow: ellipsis`) : un symbole
-      // trop large donnerait « mba… » sans que rien ne lève, et c'est la
-      // seule façon de s'en apercevoir sans regarder.
+      // Le segmented tronque en silence (`overflow: ellipsis`).
       usePhone(tester);
 
       final container = await pumpConverter(

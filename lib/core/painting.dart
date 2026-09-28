@@ -1,12 +1,6 @@
 /// Primitives de cotation partagées par les painters.
 ///
-/// Les cinq schémas dessinent tous les mêmes choses — du texte tabulaire, des
-/// flèches, des lignes de cote détourées. Sans ce fichier, chaque painter
-/// recopierait sa propre version et les schémas finiraient par ne plus se
-/// ressembler.
-///
-/// Rien ici ne calcule : ce sont des primitives de rendu, elles reçoivent des
-/// pixels déjà mis à l'échelle.
+/// Elles reçoivent des pixels déjà mis à l'échelle et ne calculent rien.
 library;
 
 import 'dart:math' as math;
@@ -16,21 +10,11 @@ import 'package:flutter/material.dart';
 import '../app/theme.dart';
 import 'format.dart';
 
-/// Une fenêtre : une portion de l'objet coté, posée à une échelle sur la
+/// Une fenêtre : une portion de l'objet coté, posée à son échelle sur la
 /// feuille.
 ///
-/// C'est la séparation espace objet / espace papier du dessin technique. Les
-/// millimètres de la pièce vivent d'un côté, la feuille de l'autre, et une
-/// fenêtre est le seul point de passage — avec **son** échelle, qui n'est pas
-/// forcément celle de la fenêtre d'à côté. Un schéma peut ainsi porter une vue
-/// d'ensemble et un détail agrandi sans que l'un impose sa réduction à l'autre.
-///
-/// Ce qui se lit (chiffres, flèches, épaisseurs de trait) reste en unités de
-/// feuille et ne traverse jamais une fenêtre : un chiffre garde sa taille quelle
-/// que soit l'échelle de la vue qu'il cote, exactement comme sur un plan.
-///
-/// Seul l'axe des X porte aujourd'hui des millimètres, faute d'un schéma qui en
-/// ait deux — [rect] donne la hauteur, en unités de feuille.
+/// Les chiffres, flèches et traits restent en unités de feuille. Seul l'axe X
+/// porte des millimètres : [rect] donne la hauteur.
 class SchemaViewport {
   const SchemaViewport({
     required this.rect,
@@ -68,37 +52,24 @@ class SchemaViewport {
 
 /// Longueur d'une pointe de flèche de cote, et sa demi-largeur à la base.
 ///
-/// Une pointe pleine, et courte : c'est ce que trace un plan. Une flèche
-/// ouverte et longue mange la cote qu'elle borne, et sur une cote serrée elle
-/// couvre le chiffre voisin.
+/// Courte et pleine : longue, elle couvre le chiffre d'une cote serrée.
 const double kArrowArm = 4;
 const double _arrowHalfWidth = 1.5;
 
 /// Demi-longueur d'un tiret d'extrémité de cote.
 const double kDimTick = 4;
 
-/// Les deux épaisseurs du dessin technique, dans le rapport 1:2 qu'impose la
-/// norme : [kOutlineStroke] pour un contour vu, [kDimStroke] pour tout
-/// l'appareil de cotation — trait de cote, flèche, attache, rupture, hachure.
+/// Les deux épaisseurs du dessin technique, dans le rapport normé 1:2.
 ///
-/// Deux groupes et pas trois : c'est le rapport entre les deux qui porte la
-/// hiérarchie, pas leurs valeurs absolues. À épaisseur unique, un dessin se lit
-/// comme un diagramme et l'œil y tombe sur les cotes avant la pièce.
-///
-/// Réglées bas : c'est l'encre ([kSchemaInk]) qui porte le contraste, et un
-/// contour gras finit par cerner la pièce au lieu de la délimiter. Les deux se
-/// déplacent **ensemble**, sinon le rapport se perd.
+/// [kOutlineStroke] pour un contour vu, [kDimStroke] pour toute la cotation.
+/// Les deux se déplacent ensemble, sinon le rapport se perd.
 const double kDimStroke = 0.5;
 const double kOutlineStroke = 1;
 
 /// L'encre d'un schéma : contours vus et cotation.
 ///
-/// Du noir franc sur la feuille blanche, comme sur un plan. C'est **l'encre et
-/// non l'épaisseur** qui tient le contraste que demande l'atelier : un trait
-/// fin et noir se lit à bout de bras mieux qu'un trait gras et gris, et c'est
-/// ce qui permet de descendre à [kDimStroke] sans rien perdre. Le gris reste
-/// aux lignes de construction ([kExtensionLine]) et aux hachures, qui doivent
-/// s'effacer devant ce qu'elles accompagnent.
+/// Noir franc : c'est l'encre qui porte le contraste, ce qui permet un trait
+/// fin. Le gris reste aux lignes de construction ([kExtensionLine]).
 const Color kSchemaInk = Color(0xFF000000);
 
 /// Texte de schéma : chiffres tabulaires, comme partout ailleurs dans l'app.
@@ -120,12 +91,10 @@ TextPainter schemaText(
   textDirection: TextDirection.ltr,
 )..layout();
 
-/// Pose [text] centré sur [center], sur un fond plein qui « coupe » ce qu'il y
-/// a dessous — sinon le libellé se lit par-dessus sa propre ligne de cote.
+/// Pose [text] centré sur [center], sur un fond plein qui masque le trait
+/// dessous.
 ///
-/// [knockout] doit valoir la couleur du fond sur lequel le schéma est dessiné,
-/// sinon le détourage laisse un pavé visible. Les schémas vivent tous sur la
-/// feuille blanche de `SchemaSheet`, d'où ce défaut.
+/// [knockout] doit valoir la couleur du fond du schéma, blanc par défaut.
 void drawSchemaLabel(
   Canvas canvas,
   TextPainter text,
@@ -148,12 +117,9 @@ void drawSchemaLabel(
 }
 
 /// Flèche de cote, pleine. [along] est le vecteur unitaire qui va de la pointe
-/// vers l'intérieur du segment ; la base s'ouvre perpendiculairement.
+/// vers l'intérieur du segment.
 ///
-/// Un trapèze et non un triangle : une pointe qui s'affine jusqu'à zéro n'a
-/// plus d'encre sur son dernier tiers, et la cote semble alors ne pas partir du
-/// trait qu'elle vise. Son extrémité fait donc l'épaisseur d'un trait, ce qui
-/// la raccorde franchement au tiret — sans rien arrondir.
+/// Un trapèze : sa pointe garde l'épaisseur d'un trait et se raccorde au tiret.
 void drawSchemaArrow(Canvas canvas, Offset tip, Offset along, Paint paint) {
   final perpendicular = Offset(-along.dy, along.dx);
   final nib = perpendicular * (kDimStroke / 2);
@@ -180,13 +146,10 @@ const double kLabelPadding = 4;
 /// Ce qui sépare un chiffre de cote de la ligne qu'il cote.
 const double kLabelLift = 2;
 
-/// Pose un chiffre de cote **au-dessus** de la ligne qui passe par [y], centré
+/// Pose un chiffre de cote au-dessus de la ligne qui passe par [y], centré
 /// sur [cx].
 ///
-/// Au-dessus et non dedans : un plan écrit son nombre sur une ligne de cote
-/// **continue**. Le pavé détouré qui la perce est une habitude de diagramme, et
-/// sur un peigne de cotes il en troue tous les étages — la Répartition en
-/// alignait trois, et le peigne cessait de se lire comme une seule chose.
+/// Au-dessus et non détouré dedans : la ligne de cote reste continue.
 void drawDimensionLabel(Canvas canvas, TextPainter text, double cx, double y) {
   text.paint(
     canvas,
@@ -194,31 +157,13 @@ void drawDimensionLabel(Canvas canvas, TextPainter text, double cx, double y) {
   );
 }
 
-/// Cote horizontale : ligne de [x1] à [x2] à la hauteur [y], tirets aux bouts,
-/// flèches vers l'intérieur, libellé détouré au milieu.
+/// Cote horizontale : ligne de [x1] à [x2] à la hauteur [y], flèches vers
+/// l'intérieur, libellé au-dessus. Rend `true` si le libellé a été posé.
 ///
-/// Le libellé est omis s'il ne tient pas dans la cote — mieux vaut une cote
-/// muette qu'un chiffre qui déborde sur le voisin. Rend `true` s'il a été posé.
-/// Il se pose au-dessus de la ligne ([drawDimensionLabel]), donc il ne mesure
-/// que contre l'espace coté : les pointes sont en dessous de lui.
-///
-/// [tight] renverse ce choix, selon la convention du dessin technique pour les
-/// petites cotes : les flèches se retournent vers l'extérieur et le chiffre va
-/// se poser **hors** de l'espace mesuré, au-delà du trait de rappel, du côté
-/// que dit [labelSide] (+1 à droite, −1 à gauche). [bounds] est la feuille : un
-/// chiffre sorti s'y recale plutôt que de déborder, quand le côté demandé n'a
-/// pas la place de le prendre. C'est le seul moyen de coter
-/// une marge de 40 mm et un élément de 18 mm côte à côte, et une cote ainsi
-/// posée rend toujours `true`.
-///
-/// Dehors et non au-dessus du trait : un chiffre posé sur une cote de 6 px en
-/// détoure la ligne, ses flèches et parfois le trait de rappel voisin. Sorti,
-/// il ne recouvre plus rien.
-///
-/// [ticks] pose un tiret à chaque extrémité. À couper dès qu'une ligne
-/// d'attache arrive au même point : le tiret n'y ajoute rien et trois traits
-/// convergents font un pâté. Un plan marque le bout d'une cote par un tiret
-/// **ou** par une flèche, jamais par les deux.
+/// Le libellé est omis s'il ne tient pas dans la cote. [tight] applique la
+/// convention des petites cotes : flèches retournées, chiffre posé hors de la
+/// cote du côté de [labelSide] (+1 à droite, −1 à gauche), recalé dans
+/// [bounds]. [ticks] se coupe quand une ligne d'attache arrive au même point.
 bool drawHDimension(
   Canvas canvas, {
   required double x1,
@@ -266,10 +211,8 @@ bool drawHDimension(
   }
   if (!tight) return false;
 
-  // Sorti, le chiffre se pose juste après ce qui borne la cote : le bras de
-  // prolongement quand elle était trop étroite pour ses flèches, le bout de la
-  // cote quand elles ont tenu dedans. Son détourage compte dans le retrait,
-  // sinon il efface ce qu'il vient de contourner.
+  // Sorti, le chiffre se pose après le bras de prolongement ou le bout de la
+  // cote, détourage compris.
   final reach =
       (inward ? 0.0 : _outsideArm) + kLabelPadding + 2 + text.width / 2;
   var cx = labelSide >= 0 ? right + reach : left - reach;
@@ -281,13 +224,11 @@ bool drawHDimension(
   return true;
 }
 
-/// Cote verticale : ligne de [y1] à [y2] à l'abscisse [x], libellé posé **à
-/// côté** et non pivoté — un chiffre tourné à 90° ne se lit pas d'un coup
-/// d'œil, et c'est un schéma d'atelier.
+/// Cote verticale : ligne de [y1] à [y2] à l'abscisse [x], libellé posé à
+/// côté, non pivoté.
 ///
-/// [labelSide] vaut +1 pour poser le libellé à droite du trait, −1 à gauche.
-/// [ticks] se coupe là où une ligne d'attache arrive déjà au bout de la cote,
-/// comme dans [drawHDimension].
+/// [labelSide] vaut +1 pour la droite, −1 pour la gauche. [ticks] comme dans
+/// [drawHDimension].
 void drawVDimension(
   Canvas canvas, {
   required double y1,
@@ -323,10 +264,8 @@ void drawVDimension(
 
 /// Les sommets d'un trait de rupture, de `(x, y1)` à `(x, y2)`.
 ///
-/// Rendus plutôt que dessinés directement : la matière doit être **détourée**
-/// par la même ligne brisée qui la barre, sinon elle déborde de part et
-/// d'autre des dents et le trait ne coupe rien. L'appelant en fait un chemin
-/// de découpe, [drawBreakLine] en fait un trait.
+/// L'appelant en fait un chemin de découpe, [drawBreakLine] en fait un trait :
+/// la matière est détourée par la ligne qui la barre.
 List<Offset> schemaBreakPoints({
   required double x,
   required double y1,
@@ -335,15 +274,12 @@ List<Offset> schemaBreakPoints({
   const double amplitude = 3;
   const double targetStep = 14;
 
-  // Le pas se déduit d'un nombre entier de dents plutôt que l'inverse : à pas
-  // fixe, la dernière dent prend ce qui reste et le zigzag boite.
+  // Un nombre entier de dents, sinon la dernière prend le reste.
   final count = math.max(2, ((y2 - y1).abs() / targetStep).round());
   final step = (y2 - y1) / count;
 
-  // Les deux dents des bouts ne font qu'une demi-hauteur. Les extrémités sont
-  // sur l'axe et les dents intérieures vont d'un bord à l'autre : à hauteur
-  // égale, elles parcourraient la moitié du chemin, et la première et la
-  // dernière pencheraient deux fois moins que les autres.
+  // Les dents des bouts font une demi-hauteur : elles partent de l'axe, et
+  // penchent ainsi comme les autres.
   return [
     Offset(x, y1),
     for (var i = 0; i < count; i++)
@@ -352,11 +288,7 @@ List<Offset> schemaBreakPoints({
   ];
 }
 
-/// Trait de rupture : le zigzag qui dit « la pièce continue, on a coupé ».
-///
-/// C'est la convention qui autorise un panneau de détail à ne montrer qu'un
-/// bout de la pièce sans laisser croire qu'elle s'arrête là. Le zigzag court
-/// sur toute la hauteur : un trait droit se lirait comme une arête.
+/// Trait de rupture : le zigzag qui indique que la pièce continue.
 void drawBreakLine(
   Canvas canvas, {
   required double x,
@@ -381,22 +313,15 @@ void drawBreakLine(
 }
 
 /// Gris d'un trait d'attache : [AppColors.label] à 45 % sur la feuille, mais
-/// **opaque**.
+/// opaque.
 ///
-/// Le même gris obtenu par transparence noircirait à chaque recouvrement, et
-/// deux cotes voisines partagent presque toujours un bord — la fin d'une marge
-/// est le début d'un élément. Une teinte fixe se superpose à elle-même sans
-/// rien changer.
+/// Par transparence, il foncerait là où deux cotes partagent un bord.
 const Color kExtensionLine = Color(0xFFBCB8B5);
 
 /// Ce qu'une ligne d'attache laisse à la pièce, et ce qu'elle dépasse de la
 /// ligne de cote.
 ///
-/// Elle ne part pas de la matière — un trait qui la touche se lit comme une
-/// arête — et elle **traverse** la ligne de cote au lieu de s'arrêter dessus.
-/// C'est ce dépassement qui marque le point coté, maintenant qu'aucun tiret ne
-/// borne la cote : une attache qui s'arrête au ras laisse un trou si elle
-/// tombe court, et rien du tout si elle tombe juste.
+/// Le dépassement marque le point coté, en l'absence de tiret.
 const double kExtensionGap = 2;
 const double kExtensionOvershoot = 3;
 
@@ -411,8 +336,7 @@ void drawExtensionLine(Canvas canvas, Offset from, Offset to, {Color? color}) {
   );
 }
 
-/// Le tiret des tuiles de résultat, au centre du canvas — une carte vide
-/// passerait pour un bug.
+/// Le tiret des tuiles de résultat, au centre du canvas.
 void drawSchemaPlaceholder(Canvas canvas, Size size) {
   final text = schemaText(kNoValue, size: 22);
   text.paint(

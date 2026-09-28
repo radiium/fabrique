@@ -9,19 +9,12 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support/app.dart';
 import '../support/l10n.dart';
 
-/// Le schéma d'un outil se regarde en plein écran, et c'est la vignette qui y
-/// mène. Deux choses que ni `flutter analyze` ni les tests du cœur ne voient :
-/// un painter qui lève une fois sorti de sa vignette (il n'y dessine pas les
-/// mêmes annotations), et une route qui ne mène nulle part.
 void main() {
   for (final tool in Tool.values.where((t) => t != Tool.level)) {
     testWidgets('${tool.label(fr)} — la vignette ouvre le schéma, qui pivote', (
       tester,
     ) async {
-      // Pivoter donne au painter une boîte à l'autre proportion : c'est le
-      // seul endroit où un schéma large se dessine dans un cadre haut, et
-      // une division par une largeur devenue minuscule ne se verrait pas
-      // ailleurs.
+      // Pivoter donne au painter une boîte haute : le seul cas de ce format.
       await pumpApp(tester, AppRoutes.tool(tool));
       await tester.tap(find.byType(SchemaCard));
       await tester.pumpAndSettle();
@@ -41,9 +34,7 @@ void main() {
   }
 
   testWidgets('le schéma se réduit en deçà de son ajustement', (tester) async {
-    // `InteractiveViewer` plafonne la réduction à `viewport / cadre` : sans
-    // débord de cadrage, ce plancher vaut 1 et `minScale` ne sert à rien. Rien
-    // dans le code ne le dit, seul un vrai pincement le montre.
+    // Sans débord de cadrage, `InteractiveViewer` ignore `minScale`.
     await pumpApp(tester, AppRoutes.tool(Tool.layout));
     await tester.tap(find.byType(SchemaCard));
     await tester.pumpAndSettle();
@@ -77,8 +68,6 @@ void main() {
   });
 
   testWidgets('le Niveau n’a rien à agrandir', (tester) async {
-    // Une bulle n'a pas de détail à aller chercher, et une page par-dessus
-    // couperait des yeux le flux du capteur.
     await pumpApp(tester, AppRoutes.tool(Tool.level));
 
     await tester.tap(find.byType(SchemaCard));

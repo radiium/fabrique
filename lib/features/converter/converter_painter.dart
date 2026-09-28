@@ -16,8 +16,7 @@ const double _sideMargin = 24;
 const double _majorTick = 13;
 const double _minorTick = 7;
 
-/// Millimètres dans un pouce — les deux règles partagent la même échelle
-/// physique, c'est ce qui rend la conversion visible.
+/// Millimètres dans un pouce : les deux règles partagent la même échelle.
 const double _mmPerInch = 25.4;
 
 /// Échelons « ronds » pour la règle métrique, en mm.
@@ -69,12 +68,8 @@ const int _targetTicks = 7;
 /// Double règle graduée (métrique en haut, impérial en bas) avec curseur sur
 /// la valeur courante.
 ///
-/// Les deux règles couvrent **la même longueur physique** : le curseur les
-/// traverse d'un seul trait, et c'est ce trait qui montre la conversion — une
-/// même position, deux lectures.
-///
-/// Réservé aux longueurs : une règle graduée ne veut rien dire pour une masse
-/// ou une pression. Les autres grandeurs passent par `ComparisonPainter`.
+/// Les deux règles couvrent la même longueur : le curseur relie les deux
+/// lectures d'une même position. Longueurs seulement.
 class RulerPainter extends CustomPainter {
   const RulerPainter({required this.result, required this.l10n});
 
@@ -99,8 +94,7 @@ class RulerPainter extends CustomPainter {
     final usable = size.width - 2 * _sideMargin;
     if (usable <= 0) return;
 
-    // La plage affichée : un cran rond au-dessus de la valeur, pour que le
-    // curseur ne colle jamais au bord droit.
+    // Un cran rond au-dessus de la valeur, pour que le curseur quitte le bord.
     final span = _niceCeil(math.max(r.base, 1) * 1.25);
     double dx(double mm) => _sideMargin + usable * (mm / span);
 
@@ -134,8 +128,8 @@ class RulerPainter extends CustomPainter {
     );
   }
 
-  /// Règle impériale : graduations vers le bas, libellés en dessous, écrits en
-  /// impérial composé par `core/calc` — pas de formatage maison ici.
+  /// Règle impériale : graduations vers le bas, libellés en dessous, en
+  /// impérial composé.
   void _paintImperial(
     Canvas canvas,
     double Function(double) dx,
@@ -200,8 +194,7 @@ class RulerPainter extends CustomPainter {
 
       final text = schemaText(label(mm), size: 10);
       final start = x - text.width / 2;
-      // Un libellé qui chevaucherait le précédent est sauté : la graduation
-      // reste, seul le chiffre disparaît.
+      // Un libellé qui chevaucherait le précédent est sauté, pas la graduation.
       if (start < previousLabelEnd + 6) continue;
       previousLabelEnd = start + text.width;
 
@@ -252,19 +245,15 @@ class RulerPainter extends CustomPainter {
       weight: FontWeight.w700,
     );
 
-    // Les deux valeurs se posent entre les règles, de part et d'autre du trait,
-    // en restant dans le canvas quand le curseur approche d'un bord.
+    // Les deux valeurs entre les règles, de part et d'autre du trait.
     drawSchemaLabel(canvas, metric, Offset(x, metricBaseline + 14));
     drawSchemaLabel(canvas, imperialText, Offset(x, imperialBaseline - 14));
   }
 
-  /// Le plus petit échelon de [ladder] qui tient le compte de graduations sous
-  /// [_targetTicks] — et qui laisse au moins 24 px entre deux traits.
+  /// Le plus petit échelon de [ladder] qui reste sous [_targetTicks]
+  /// graduations, à 24 px d'écart au moins.
   ///
-  /// Si aucun échelon rond ne convient — une valeur démesurée sort de
-  /// l'échelle — on retombe sur une division brute. Les chiffres sont moins
-  /// jolis, mais le nombre de graduations reste borné : sans ça, une saisie en
-  /// pieds à six chiffres ferait tracer des milliers de traits.
+  /// Sinon, une division brute, pour borner le nombre de traits.
   double _pickStep(List<double> ladder, double span, double usable) {
     for (final step in ladder) {
       if (span / step <= _targetTicks && usable * step / span >= 24) {

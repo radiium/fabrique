@@ -44,8 +44,7 @@ ImperialParts mmToImperial(double mm, {int denominator = 16}) {
     throw const CalcException(InvalidDenominator());
   }
 
-  // Tout se joue en nombre de crans de 1/denominator de pouce : l'arrondi fait
-  // remonter les retenues tout seul (16/16 → 1", 12" → 1').
+  // En crans de 1/denominator de pouce : l'arrondi propage les retenues.
   final ticks = (mm / _mmPerInch * denominator).round();
   final ticksPerFoot = _inchesPerFoot * denominator;
 
@@ -82,8 +81,8 @@ String formatImperial(ImperialParts p) {
 
   final fraction = p.num > 0 ? '${p.num}/${p.den}' : '';
 
-  // Les pouces ne s'effacent que s'il reste quelque chose à afficher :
-  // `1' 0"` garde son zéro, `5/8"` n'en invente pas.
+  // Les pouces s'affichent s'il y a des pieds ou pas de fraction : `1' 0"`,
+  // `5/8"`.
   final showInches = p.inches > 0 || p.feet > 0 || fraction.isEmpty;
   final inchPart = [
     if (showInches) '${p.inches}',

@@ -1,19 +1,6 @@
-/// Conversions entre unités d'une même grandeur.
+/// Conversions entre unités d'une même grandeur, par une unité pivot.
 ///
-/// Même principe que `units.dart` pour les longueurs, généralisé : chaque
-/// grandeur a une unité pivot, et toute conversion passe par elle. Les pivots
-/// prolongent la convention de l'app (« l'unité interne est le millimètre ») :
-///
-/// | Grandeur | Pivot |
-/// |----------|-------|
-/// | Longueur | mm    |
-/// | Surface  | mm²   |
-/// | Volume   | mm³   |
-/// | Masse    | g     |
-/// | Pression | Pa    |
-///
-/// Les pivots de volume et de surface ne sont pas des unités proposées à
-/// l'écran — personne ne commande du bois en mm³. Ils ne servent qu'ici.
+/// Pivots : mm, mm², mm³, g, Pa. Le mm³ et le mm² ne s'affichent pas.
 library;
 
 import '../../models/measure_unit.dart';
@@ -21,13 +8,7 @@ import '../calc_exception.dart';
 
 /// Combien de pivots vaut une unité.
 ///
-/// Les facteurs impériaux sont exacts, pas arrondis : le pouce vaut 25,4 mm
-/// par définition, donc le pouce carré vaut 25,4² et le pied-planche
-/// 144 po³. Les écrire en toutes lettres plutôt qu'en produit garderait des
-/// décimales fausses à la dernière place.
-///
-/// Un `switch` et non une `Map` : une unité ajoutée sans son facteur ne
-/// compile pas.
+/// Facteurs impériaux exacts : le pouce vaut 25,4 mm par définition.
 double baseFactor(MeasureUnit unit) => switch (unit) {
   // Longueur → mm
   MeasureUnit.mm => 1,
@@ -83,9 +64,7 @@ double fromBase(double base, MeasureUnit unit) {
 
 /// Convertit [value] de [from] vers [to].
 ///
-/// Convertir d'une grandeur à l'autre n'a pas de sens et lève : c'est
-/// l'invariant de la table, et le seul moyen de le faire respecter par l'UI
-/// est de refuser franchement plutôt que de rendre un nombre.
+/// Lève [CalcException] entre deux grandeurs différentes.
 double convert(double value, MeasureUnit from, MeasureUnit to) {
   if (from.quantity != to.quantity) {
     throw CalcException(IncompatibleUnits(from, to));
@@ -94,8 +73,6 @@ double convert(double value, MeasureUnit from, MeasureUnit to) {
 }
 
 /// [value], exprimée en [unit], rendue dans toutes les unités de sa grandeur.
-///
-/// C'est ce que l'écran affiche : la valeur dans toutes les unités à la fois.
 Map<MeasureUnit, double> convertAll(double value, MeasureUnit unit) {
   final base = toBase(value, unit);
   return {

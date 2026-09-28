@@ -8,12 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// La persistance de la dernière saisie par outil.
-///
-/// Ce qui se teste ici ne se voit ni dans `analyze` ni dans le cœur : que le
-/// store surchargé soit lisible **en synchrone** — tout le design en dépend,
-/// les `build()` des notifiers ne peuvent pas attendre — et qu'un aller-retour
-/// complet (saisie → dispose → nouveau container) rende bien la saisie.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -33,9 +27,8 @@ void main() {
     return container;
   }
 
-  /// Ouvre un écran-outil, le laisse vivre le temps de [use], puis le referme
-  /// comme le ferait une navigation : le provider est `autoDispose`, donc son
-  /// dispose est ce qui vide la dernière frappe sur disque.
+  /// Ouvre un écran-outil le temps de [use], puis le referme : le dispose
+  /// vide la dernière frappe sur disque.
   Future<void> visit(
     ProviderSubscription<Object?> Function() listen,
     void Function() use,
@@ -46,34 +39,37 @@ void main() {
     await pumpEventQueue();
   }
 
-  test('chaque outil retrouve sa saisie, sans écraser celle d’un autre', () async {
-    // Le store doit être lisible en synchrone : le notifier construit son état
-    // bien avant qu'un `Future` ne se résolve, et ne verrait jamais le disque.
-    final container = open();
-    await visit(
-      () => container.listen(layoutFormProvider, (_, _) {}),
-      () => container.read(layoutFormProvider.notifier).setElementX(999),
-    );
-    await visit(
-      () => container.listen(distributionFormProvider, (_, _) {}),
-      () => container.read(distributionFormProvider.notifier).setCount(9),
-    );
+  test(
+    'chaque outil retrouve sa saisie, sans écraser celle d’un autre',
+    () async {
+      // Le notifier se construit avant qu'un `Future` ne se résolve.
+      final container = open();
+      await visit(
+        () => container.listen(layoutFormProvider, (_, _) {}),
+        () => container.read(layoutFormProvider.notifier).setElementX(999),
+      );
+      await visit(
+        () => container.listen(distributionFormProvider, (_, _) {}),
+        () => container.read(distributionFormProvider.notifier).setCount(9),
+      );
 
-    // Les Tiroirs gardent une liste à trous : les hauteurs non fixées.
-    await visit(
-      () => container.listen(drawersFormProvider, (_, _) {}),
-      () => container.read(drawersFormProvider.notifier).setFrontHeight(1, 200),
-    );
+      // Les Tiroirs gardent une liste à trous : les hauteurs non fixées.
+      await visit(
+        () => container.listen(drawersFormProvider, (_, _) {}),
+        () =>
+            container.read(drawersFormProvider.notifier).setFrontHeight(1, 200),
+      );
 
-    final reopened = open();
-    expect(reopened.read(layoutFormProvider).elementX, 999);
-    expect(reopened.read(drawersFormProvider).fixedFrontHeights, [
-      null,
-      200,
-      null,
-    ]);
-    expect(reopened.read(distributionFormProvider).count, 9);
-  });
+      final reopened = open();
+      expect(reopened.read(layoutFormProvider).elementX, 999);
+      expect(reopened.read(drawersFormProvider).fixedFrontHeights, [
+        null,
+        200,
+        null,
+      ]);
+      expect(reopened.read(distributionFormProvider).count, 9);
+    },
+  );
 
   test('« réinitialiser » s’enregistre aussi — la prochaine ouverture est '
       'neuve', () async {
@@ -97,8 +93,7 @@ void main() {
     'une saisie illisible ne bloque pas l’outil, et ne se rejoue pas',
     () async {
       final key = PreferencesStore.toolInputKey(Tool.distribution.id);
-      // Ce qu'écrirait une version précédente du modèle : du JSON valide, mais
-      // pas celui qu'attend `DistributionFormState`.
+      // JSON valide, mais pas celui qu'attend `DistributionFormState`.
       await store.writeJson(key, {'mode': 'inconnu', 'length': 'beaucoup'});
 
       expect(open().read(distributionFormProvider), kDistributionDefaults);
@@ -113,8 +108,6 @@ void main() {
   );
 
   test('sans store, l’outil part de ses défauts', () {
-    // Le cas des tests d'écran et d'un `shared_preferences` indisponible : pas
-    // de surcharge, donc pas de disque, et surtout pas de plantage.
     final container = ProviderContainer();
     addTearDown(container.dispose);
 

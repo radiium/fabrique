@@ -13,10 +13,8 @@ import 'drawers_labels.dart';
 import 'drawers_painter.dart';
 import 'drawers_schema.dart';
 
-/// Point de construction unique du plan des Tiroirs, pour l'aperçu comme pour
-/// l'export.
-///
-/// `null` quand la saisie est refusée : l'écran de l'outil dit déjà pourquoi.
+/// Point de construction unique du plan des Tiroirs, pour la page plein
+/// écran et l'export. `null` quand la saisie est refusée.
 PlanPainter? buildDrawersPlan({
   required AppLocalizations l10n,
   required DrawersInput input,
@@ -28,9 +26,7 @@ PlanPainter? buildDrawersPlan({
       plan: Plan(
         title: Tool.drawers.label(l10n),
         // Ce que le dessin ne cote pas : l'ouverture, les épaisseurs, la
-        // glissière. Les façades et la caisse sont cotées sur les deux vues.
-        // Bois sur bois, la glissière reste seule sur sa rangée, en pleine
-        // largeur.
+        // glissière.
         fields: [
           (l10n.planDate.toUpperCase(), formatPlanDate(date, l10n)),
           (
@@ -62,14 +58,12 @@ PlanPainter? buildDrawersPlan({
           if (result.slideLength case final length?)
             (l10n.drawersPlanLength.toUpperCase(), '${l10n.number(length)} mm'),
         ],
-        // La fiche de débit d'abord : c'est ce qu'on emporte à la scie. Les
-        // axes ensuite, pour le traçage au montage.
+        // La fiche de débit, puis les axes pour le traçage.
         tables: [
           PlanTable(
             title: l10n.drawersCutList.toUpperCase(),
-            // La première colonne est celle des numéros, étroite et fixe.
-            // L'épaisseur est dans les cases : une cinquième colonne ne
-            // laisserait plus la place d'écrire `203.67`.
+            // Numéros d'abord. L'épaisseur reste dans les cases : une cinquième
+            // colonne ne laisserait pas la place d'écrire `203.67`.
             headers: [
               l10n.planIndex,
               l10n.drawersCutListPart.toUpperCase(),
@@ -115,10 +109,8 @@ PlanPainter? buildDrawersPlan({
   return null;
 }
 
-/// Le plan des Tiroirs, branché sur les providers : ce que montre la page
-/// plein écran, cartouche compris.
-///
-/// Saisie refusée : on retombe sur le schéma seul, qui pose son tiret.
+/// Le plan des Tiroirs, branché sur les providers : schéma et cartouche.
+/// Saisie refusée : le schéma seul.
 class DrawersPlanView extends ConsumerWidget {
   const DrawersPlanView({super.key});
 

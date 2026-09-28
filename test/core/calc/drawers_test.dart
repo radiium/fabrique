@@ -48,8 +48,7 @@ void main() {
       expect(r.boxSetback, 0);
       expect(r.bottomLift, kGrooveLift);
 
-      // Le tiroir du milieu a un jeu entier au-dessus et au-dessous, ceux des
-      // bouts perdent le recouvrement du caisson.
+      // Jeu entier au milieu ; les bouts perdent le recouvrement du caisson.
       expect(r.boxHeights[0], near(203.5));
       expect(r.boxHeights[1], near(223));
       expect(r.boxHeights[2], near(203.5));
@@ -223,8 +222,7 @@ void main() {
       final r = computeDrawers(base.copyWith(slide: SlideKind.undermount));
       final face = r.faceSections.first;
 
-      // Le L descend dans le dégagement de 3 sous la caisse et remonte
-      // jusque sous le fond.
+      // Le L descend dans le dégagement de 3 et remonte sous le fond.
       expect(
         face.slides.map((s) => s.bounds.y0),
         everyElement(near(r.boxBottoms.first - 3)),
@@ -490,9 +488,8 @@ bool _isInside(List<SectionPoint> polygon, double x, double y) {
   return isInside;
 }
 
-/// Échantillonne l'intersection des boîtes de chaque paire : aucun point ne
-/// doit tomber dans les deux pièces. Le pas décalé évite de tomber pile sur
-/// une arête commune, où « dedans » ne veut rien dire.
+/// Échantillonne l'intersection des boîtes de chaque paire. Le pas décalé
+/// évite les arêtes communes.
 void expectNoOverlap(
   List<List<SectionPoint>> pieces, {
   required String reason,

@@ -12,14 +12,8 @@ import 'distribution_form.dart';
 import 'distribution_painter.dart';
 import 'distribution_schema.dart';
 
-/// Point de construction unique du plan de la Répartition.
-///
-/// La page plein écran et l'export le traversent tous les deux, comme la
-/// vignette et le plein écran traversent [DistributionSchema] : c'est ce qui
-/// garantit que le fichier exporté est exactement ce que l'aperçu montre.
-///
-/// `null` quand la saisie est refusée. Il n'y a alors pas de plan à faire — le
-/// cartouche n'aurait que des tirets, et l'écran de l'outil dit déjà pourquoi.
+/// Point de construction unique du plan de la Répartition, pour la page plein
+/// écran et l'export. `null` quand la saisie est refusée.
 PlanPainter? buildDistributionPlan({
   required AppLocalizations l10n,
   required DistributionFormState input,
@@ -37,16 +31,11 @@ PlanPainter? buildDistributionPlan({
   return PlanPainter(
     plan: Plan(
       title: Tool.distribution.label(l10n),
-      // Le cartouche ne porte **que ce que le dessin ne cote pas**. La largeur
-      // totale, la largeur d'élément et les marges sont sur le schéma, aux
-      // mêmes chiffres exacts : les réécrire ici serait une redite, et chaque
-      // case gagnée est une position de plus dans la table.
+      // Seulement ce que le dessin ne cote pas.
       fields: [
         (l10n.planDate.toUpperCase(), formatPlanDate(date, l10n)),
         (l10n.distributionPlanElements.toUpperCase(), '${result.count}'),
-        // L'écart visé est la seule saisie que le dessin ne montre pas — il ne
-        // porte que l'écart obtenu. Sans elle, rien n'explique le nombre
-        // trouvé, d'où sa place juste avant sa réponse.
+        // L'écart visé, que le dessin ne montre pas, juste avant sa réponse.
         if (byCount)
           (
             l10n.distributionTargetSpacing.toUpperCase(),
@@ -57,8 +46,7 @@ PlanPainter? buildDistributionPlan({
               .toUpperCase(),
           '${l10n.number(result.spacing)} mm',
         ),
-        // Sans épaisseur, l'entraxe *est* l'écart : deux cases identiques ne
-        // diraient rien de plus, ici comme sur l'écran.
+        // Sans épaisseur, l'entraxe est l'écart.
         if (hasWidth)
           (
             l10n.distributionPitch.toUpperCase(),
@@ -97,14 +85,8 @@ PlanPainter? buildDistributionPlan({
   );
 }
 
-/// Le plan de la Répartition, branché sur les providers.
-///
-/// C'est ce que montre la page plein écran : le schéma **et** son cartouche,
-/// c'est-à-dire l'image qui sortira. Un aperçu qui ne montrerait que le dessin
-/// laisserait découvrir le cartouche après coup, dans le fichier.
-///
-/// Saisie refusée : on retombe sur le schéma seul, qui pose son tiret. Il n'y a
-/// pas de plan à montrer, et un cartouche vide en serait un mauvais.
+/// Le plan de la Répartition, branché sur les providers : schéma et
+/// cartouche. Saisie refusée : le schéma seul.
 class DistributionPlanView extends ConsumerWidget {
   const DistributionPlanView({super.key});
 

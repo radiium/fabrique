@@ -12,8 +12,8 @@ import 'drawers_controller.dart';
 
 /// Le bouton qui ouvre l'édition des hauteurs, à côté du nombre de tiroirs.
 ///
-/// Il dit l'état en un mot (« Égales » ou « Ajustées ») : sans lui, des
-/// hauteurs fixées resteraient cachées derrière la feuille.
+/// Il affiche l'état (« Égales » ou « Ajustées »), pour que des hauteurs
+/// fixées ne restent pas cachées.
 class FrontHeightsButton extends ConsumerWidget {
   const FrontHeightsButton({super.key});
 
@@ -90,8 +90,7 @@ class FrontHeightsSummary extends ConsumerWidget {
 
 /// Ouvre l'édition des hauteurs dans une feuille basse.
 ///
-/// Une feuille plutôt qu'une page : la saisie reste derrière, et on revient
-/// d'un glissement.
+/// Une feuille : la saisie reste derrière.
 Future<void> showFrontHeightsSheet(BuildContext context) {
   return showModalBottomSheet<void>(
     context: context,

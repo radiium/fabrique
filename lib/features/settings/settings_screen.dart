@@ -9,14 +9,10 @@ import '../../core/widgets/app_switch_field.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../l10n/app_localizations.dart';
 
-/// Au-delà, le formulaire cesse de s'étirer et se centre *horizontalement* :
-/// une ligne de switch large de 1400 px n'a pas de sens, et les écrans-outils
-/// passent eux aussi en colonnes plutôt qu'en pleine largeur. Verticalement il
-/// reste collé en haut, comme toutes les autres pages.
+/// Largeur maximale du formulaire, centré horizontalement au-delà.
 const double _maxFormWidth = 560;
 
-/// Liste courte : haptique et langue, plus le thème, arrêté pour cette
-/// version.
+/// Haptique et langue, plus le thème, verrouillé pour cette version.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -68,8 +64,7 @@ class _SettingsForm extends ConsumerWidget {
                       onChanged: controller.setHaptics,
                     ),
                     const SizedBox(height: AppSpacing.md),
-                    // En liste déroulante : « Langue du téléphone » ne tient
-                    // pas dans un segment sur trois.
+                    // Liste déroulante : « Langue du téléphone » ne tient pas en segment.
                     LabeledField(
                       label: l10n.language,
                       child: AppDropdown<AppLanguage>(
@@ -89,8 +84,7 @@ class _SettingsForm extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
-              // Ce qui ne se règle pas vit à part, et le dit. Une ListTile
-              // d'apparence cliquable qui ne répond pas est pire que rien.
+              // Ce qui ne se règle pas vit à part, sans apparence cliquable.
               AppCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -113,8 +107,7 @@ class _SettingsForm extends ConsumerWidget {
   }
 }
 
-/// Un réglage arrêté pour cette version : affiché, expliqué par son cadenas,
-/// jamais présenté comme actionnable.
+/// Un réglage verrouillé : affiché, avec son cadenas, jamais actionnable.
 class _LockedRow extends StatelessWidget {
   const _LockedRow({required this.label, required this.value});
 
@@ -148,8 +141,7 @@ class _LockedRow extends StatelessWidget {
   }
 }
 
-/// `shared_preferences` indisponible : on le dit franchement plutôt que
-/// d'afficher un formulaire dont rien ne serait enregistré.
+/// `shared_preferences` indisponible : rien ne serait enregistré.
 class _LoadFailure extends StatelessWidget {
   const _LoadFailure({required this.message});
 

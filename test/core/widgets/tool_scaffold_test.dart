@@ -33,8 +33,7 @@ void main() {
   testWidgets('les groupes de saisie vont de bord à bord de la carte', (
     tester,
   ) async {
-    // Une marge de carte revenue ferait des groupes une carte dans la carte,
-    // et ça ne se voit qu'au rendu.
+    // Une marge de carte revenue ne se verrait qu'au rendu.
     await pumpScaffold(
       tester,
       inputGroups: const [

@@ -8,9 +8,7 @@ import 'distribution_painter.dart';
 
 /// Les quatre dispositions, en grille 2 × 2.
 ///
-/// Quatre segments sur une ligne donneraient 90 px par libellé : « Élément –
-/// Élément » y serait tronqué en silence. La grille laisse la place au
-/// pictogramme, qui est de toute façon plus lisible que la phrase.
+/// En segments, « Élément – Élément » serait tronqué.
 class EdgeChoiceGrid extends StatelessWidget {
   const EdgeChoiceGrid({
     required this.startEdge,
@@ -39,8 +37,7 @@ class EdgeChoiceGrid extends StatelessWidget {
             ),
           ),
       ],
-      // Les instances de [kEdgeChoices] sont constantes : l'égalité par
-      // identité suffit à retrouver la tuile sélectionnée.
+      // Instances constantes : l'identité suffit.
       value: kEdgeChoices.firstWhere(
         (c) => c.start == startEdge && c.end == endEdge,
       ),

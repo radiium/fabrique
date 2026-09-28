@@ -8,23 +8,8 @@ import '../../l10n/numbers.dart';
 
 /// Ce que l'écart demandé donne vraiment, et l'autre borne s'il y en a une.
 ///
-/// **Toujours présent en mode « Calcul nombre »**, seul son costume change :
-/// teinté et brun quand il porte une action, vide et gris quand il ne fait que
-/// confirmer. Le beige ne veut dire qu'une chose dans cet écran — il y a
-/// quelque chose à faire ici — et un encart rempli en permanence le dirait
-/// pour rien neuf fois sur dix. Le filet, lui, reste dans les deux états :
-/// c'est lui qui tient le cadre à sa place, et sans lui la confirmation
-/// flotterait au milieu de la carte.
-///
-/// Il porte la borne **écartée**, jamais celle que l'outil a retenue : cette
-/// dernière remplit déjà le schéma, la tuile « Écart obtenu » et la table des
-/// positions. Celui qui a un maximum à ne pas dépasser — un barreaudage à
-/// 110 mm — veut justement la plus serrée, et le tri du cœur ne connaît que la
-/// distance à la cible, pas sa contrainte.
-///
-/// **Toute la surface est la cible**, le bouton n'est qu'un repère visuel :
-/// viser 90 px de large avec un gant, c'est rater. D'où un `Container` et non
-/// un `FilledButton`, qui mettrait deux détecteurs de gestes en concurrence.
+/// Toujours présent en mode « Calcul nombre » : teinté quand il propose la
+/// borne écartée, vide quand il confirme. Toute sa surface est la cible.
 class TargetCallout extends StatelessWidget {
   const TargetCallout({
     required this.best,
@@ -50,10 +35,7 @@ class TargetCallout extends StatelessWidget {
         ? l10n.distributionCalloutExact(shown.count, spacing)
         : l10n.distributionCalloutOther(shown.count, spacing);
 
-    // Le beige ne veut dire qu'une chose : il y a quelque chose à faire ici.
-    // Teinté en permanence, on cesserait de le voir, et l'offre passerait
-    // inaperçue le jour où elle arrive. Même grammaire que le bandeau
-    // d'erreur, coloré parce qu'il appelle une correction.
+    // Teinté seulement quand il y a une action, pour que l'offre se remarque.
     final tint = exact ? Colors.transparent : AppColors.callout;
     final ink = exact ? AppColors.label : AppColors.accentDeep;
 
@@ -64,8 +46,7 @@ class TargetCallout extends StatelessWidget {
         border: Border.all(color: AppColors.calloutBorder),
         borderRadius: BorderRadius.circular(AppRadii.field),
       ),
-      // Rembourrage identique dans les deux états : la ligne garde sa place
-      // dans le rythme vertical de la carte quand le fond s'en va.
+      // Même rembourrage dans les deux états : la carte ne saute pas.
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
@@ -112,11 +93,8 @@ class TargetCallout extends StatelessWidget {
   }
 }
 
-/// Le repère d'action de [TargetCallout] — pastille brune, texte blanc.
-///
-/// Muet par construction : c'est l'encart entier qui reçoit le tap, et un
-/// bouton qui en capterait sa part laisserait au doigt une cible de 90 px là
-/// où l'encart en offre 300.
+/// Le repère d'action de [TargetCallout], sans geste propre : l'encart
+/// entier reçoit le tap.
 class _AdoptButton extends StatelessWidget {
   const _AdoptButton();
 

@@ -3,9 +3,6 @@ import 'dart:ui';
 import 'package:fabrique/core/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Les primitives de cotation portent deux choses qu'aucun autre test ne peut
-/// attraper : le passage des millimètres à la feuille, et le fait qu'une cote
-/// trop étroite pour son chiffre le dise au lieu de le taire.
 void main() {
   Canvas fresh() => Canvas(PictureRecorder());
 

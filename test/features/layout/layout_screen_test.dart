@@ -15,9 +15,6 @@ import '../../support/app.dart';
 import '../../support/l10n.dart';
 import '../../support/phone.dart';
 
-/// Le Calepinage a huit contrôles, en trois groupes repliables. Un contrôle
-/// sorti de son groupe, un résumé qui ment, un refus qui se lit loin du champ :
-/// ni `flutter analyze` ni les tests du cœur ne peuvent l'attraper.
 void main() {
   Future<ProviderContainer> pumpLayout(
     WidgetTester tester, {
@@ -60,7 +57,7 @@ void main() {
   ) async {
     usePhone(tester);
     await pumpLayout(tester);
-    // Ouvert, un groupe tait son résumé : on replie celui de l'arrivée.
+    // Ouvert, un groupe masque son résumé.
     await tester.tap(find.text('Surface').first);
     await tester.pumpAndSettle();
 
@@ -93,8 +90,6 @@ void main() {
       ..setBalanceRows(true);
     await tester.pump();
 
-    // Le preset remplit aussi les jeux, repliés : c'est leur résumé qui le
-    // dit sans déplier.
     final input = container.read(layoutFormProvider);
     expect(
       find.text(
@@ -164,8 +159,6 @@ void main() {
   testWidgets('le refus se lit dans la carte de saisie, pas sous le schéma', (
     tester,
   ) async {
-    // Sur mobile les résultats sont sous le schéma : un message posé là se
-    // lirait deux écrans plus bas que le champ à corriger.
     usePhone(tester);
     final container = await pumpLayout(tester);
     container.read(layoutFormProvider.notifier).setElementX(9000);
@@ -192,13 +185,11 @@ void main() {
       final input = container.read(layoutFormProvider);
       expect(input.elementX, 4000);
       expect(input.elementY, 145);
-      // 3 mm en bout le long de la lame, 5 mm entre lames : le seul preset de
-      // la table dont les deux jeux diffèrent.
+      // Le seul preset dont les deux jeux diffèrent.
       expect(input.gapX, 3);
       expect(input.gapY, 5);
       expect(input.perimeterGap, 10);
       expect(input.offset, JointOffset.straight);
-      // La surface vient de la pièce, pas du matériau.
       expect(input.surfaceX, kLayoutDefaults.surfaceX);
       expect(input.surfaceY, kLayoutDefaults.surfaceY);
     });
@@ -214,9 +205,7 @@ void main() {
       await tester.tap(find.text('Terrasse 4000×145').last);
       await tester.pumpAndSettle();
 
-      // Inversé, l'axe de pose est Y : le jeu en bout y passe, et celui entre
-      // lames revient à X. La convention « les jeux restent définis à l'écran »
-      // ne bouge pas, c'est le remplissage qui traduit.
+      // Inversé, le jeu en bout passe en Y.
       final input = container.read(layoutFormProvider);
       expect(input.gapX, 5);
       expect(input.gapY, 3);
@@ -235,8 +224,6 @@ void main() {
       expect(find.text('Placo 1200×2500'), findsOneWidget);
       expect(find.text('Personnalisé'), findsNothing);
 
-      // Une cote touchée à la main, et le sélecteur le dit — sans que rien
-      // n'ait été stocké à côté de la saisie.
       form.setElementX(1201);
       await tester.pumpAndSettle();
       expect(find.text('Placo 1200×2500'), findsNothing);
@@ -256,8 +243,6 @@ void main() {
       await tester.tap(find.byType(AppDropdown<LayoutPreset?>));
       await tester.pumpAndSettle();
 
-      // Une entrée qui ne fait rien quand on la choisit n'a rien à faire dans
-      // la liste.
       expect(find.text('Personnalisé'), findsNothing);
       expect(find.text('Carrelage 600×600'), findsWidgets);
     });
@@ -275,16 +260,8 @@ void main() {
           final available = closed.width;
           final style = controlTextStyle(tester.element(field));
 
-          // ⚠️ Mesure divisée par deux, et c'est assumé. La police des tests
-          // donne à chaque glyphe la largeur de la taille de police, soit
-          // environ le double d'une vraie police — et un nom de produit suivi
-          // de deux cotes ne tient jamais dans les 14 caractères que cette
-          // mesure autorise ici. Le seuil brut est donc inatteignable par
-          // construction pour ce contrôle, là où il reste tenable pour un
-          // segment.
-          //
-          // Ce qui est gardé, c'est le rapport : un libellé qui grossirait
-          // d'un tiers tomberait quand même.
+          // La police des tests double la largeur des glyphes : on garde le rapport,
+          // pas le seuil brut.
           const testFontFactor = 2;
           for (final preset in kLayoutPresets) {
             final label = preset.label(l10n);

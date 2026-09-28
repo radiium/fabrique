@@ -46,8 +46,7 @@ void main() {
   ];
 
   test('chaque refus se rédige dans chaque langue, sans nom de code', () {
-    // « Surface X » enverrait chercher un champ qui n'existe pas : un refus
-    // nomme les cotes comme l'écran.
+    // Un refus nomme les cotes comme l'écran, pas « Surface X ».
     for (final l10n in allLocales) {
       for (final error in samples) {
         final message = l10n.calcError(error);

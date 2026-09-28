@@ -2,9 +2,8 @@ import '../core/models/tool.dart';
 
 /// Les chemins de l'app, construits en un seul endroit.
 ///
-/// À part de `router.dart`, qui importe tous les écrans : un widget de `core/`
-/// doit pouvoir construire un chemin sans tirer les features derrière lui.
-/// `test/app/routes_test.dart` vérifie que chaque chemin mène bien à son écran.
+/// À part de `router.dart`, pour qu'un widget de `core/` construise un chemin
+/// sans importer les features.
 abstract final class AppRoutes {
   static const String home = '/';
   static const String settings = '/settings';

@@ -11,12 +11,9 @@ import 'numeric_input.dart';
 
 /// Nombre d'éléments, entier et borné, encadré de boutons − / +.
 ///
-/// Les boutons sont d'office : un nombre d'éléments s'essaie (« et avec un de
-/// plus ? ») sans ouvrir le clavier, appui maintenu pour défiler. Les bornes
-/// sont obligatoires, elles désactivent le bouton qui en sortirait.
-///
-/// Toujours seul sur sa ligne : trois cibles de [kFieldHeight] ne tiennent pas
-/// dans une demi-largeur de téléphone.
+/// Les boutons permettent d'essayer un nombre sans clavier ; appui maintenu
+/// pour défiler. Toujours seul sur sa ligne : trois cibles de [kFieldHeight]
+/// ne tiennent pas en demi-largeur.
 class CountField extends StatelessWidget {
   const CountField({
     required this.label,
@@ -38,7 +35,7 @@ class CountField extends StatelessWidget {
   /// Précision courte affichée sous le champ.
   final String? help;
 
-  /// Explication ouverte à la demande — cf. [LabeledField.about].
+  /// Explication ouverte à la demande, comme [LabeledField.about].
   final FieldHelp? about;
 
   void _bump(BuildContext context, int delta) {
@@ -51,8 +48,7 @@ class CountField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    // Une frappe hors bornes passe telle quelle : c'est au calcul de la
-    // refuser avec un message, pas au champ de la corriger en silence.
+    // Une frappe hors bornes passe : le calcul la refuse avec un message.
     return LabeledField(
       label: label,
       help: help,
@@ -88,11 +84,8 @@ class CountField extends StatelessWidget {
 
 /// Bouton − / + : un appui = un pas, un appui maintenu fait défiler.
 ///
-/// Tous les gestes sont portés par un seul `GestureDetector` — imbriquer un
-/// `IconButton` mettrait deux détecteurs en concurrence dans l'arène.
-///
-/// Tabulable et activable au clavier (Espace / Entrée), comme les segments :
-/// sur le Web, un bouton seulement tactile serait inatteignable.
+/// Un seul `GestureDetector` porte les gestes. Activable au clavier (Espace,
+/// Entrée), pour le web.
 class _StepButton extends StatefulWidget {
   const _StepButton({
     required this.icon,
@@ -142,8 +135,7 @@ class _StepButtonState extends State<_StepButton> {
     if (_pressed) setState(() => _pressed = false);
   }
 
-  // Un appui maintenu a déjà incrémenté via le timer : ne pas compter en plus
-  // le tap de relâchement.
+  // Un appui maintenu a déjà compté via le timer : ignorer le relâchement.
   void _onTap() {
     if (!_repeated) widget.onStep?.call();
   }
@@ -183,11 +175,9 @@ class _StepButtonState extends State<_StepButton> {
             onTap: enabled ? _onTap : null,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 80),
-              // Aligné sur la hauteur du champ qu'il encadre.
               height: kFieldHeight,
               width: kFieldHeight,
-              // Le fond et le filet d'un champ ; le focus, le filet accent de
-              // 2 px d'un champ qui prend la main.
+              // Fond et filet d'un champ ; au focus, filet accent de 2 px.
               decoration: BoxDecoration(
                 color: _pressed ? AppColors.accentWash : AppColors.field,
                 borderRadius: BorderRadius.circular(AppRadii.field),

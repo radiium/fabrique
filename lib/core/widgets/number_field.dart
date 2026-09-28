@@ -4,12 +4,9 @@ import 'field_help.dart';
 import 'labeled_field.dart';
 import 'numeric_input.dart';
 
-/// Champ de cote, en millimètres : clavier numérique, gros texte, hauteur fixe
-/// [kFieldHeight] — au-dessus de la cible tactile minimale.
+/// Champ de cote, en millimètres : clavier numérique, hauteur [kFieldHeight].
 ///
-/// Jamais de boutons − / + : une cote se mesure au mètre puis se tape, la
-/// faire défiler millimètre par millimètre n'apporte rien. Un nombre
-/// d'éléments, lui, s'ajuste au pouce : c'est `CountField`.
+/// Sans boutons − / + : une cote se mesure puis se tape.
 class NumberField extends StatelessWidget {
   const NumberField({
     required this.label,
@@ -29,7 +26,7 @@ class NumberField extends StatelessWidget {
   /// Précision courte affichée sous le champ.
   final String? help;
 
-  /// Explication ouverte à la demande — cf. [LabeledField.about].
+  /// Explication ouverte à la demande, comme [LabeledField.about].
   final FieldHelp? about;
 
   @override

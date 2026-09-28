@@ -8,7 +8,7 @@ import '../../core/widgets/app_card.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
 
-/// Icône ligne + nom + sous-titre une ligne.
+/// L'icône d'un outil, en trait.
 IconData iconFor(Tool tool) => switch (tool) {
   Tool.converter => Icons.straighten_outlined,
   Tool.distribution => Icons.more_horiz_outlined,
@@ -17,8 +17,7 @@ IconData iconFor(Tool tool) => switch (tool) {
   Tool.level => Icons.architecture_outlined,
 };
 
-/// Une ligne de la liste d'accueil : icône à gauche, titre + sous-titre au
-/// centre, chevron de navigation à droite. Carte claire, sans élévation.
+/// Une ligne de la liste d'accueil : icône, titre et sous-titre, chevron.
 class ToolCard extends StatelessWidget {
   const ToolCard({required this.tool, super.key});
 
@@ -40,9 +39,7 @@ class ToolCard extends StatelessWidget {
               children: [
                 Text(
                   tool.label(l10n),
-                  // Le nom de l'outil est le texte qu'on vise depuis l'établi,
-                  // téléphone posé : il se lit en `titleLarge`, un cran
-                  // au-dessus des contrôles (18 px), pas en dessous.
+                  // En `titleLarge`, au-dessus des contrôles : on le lit téléphone posé.
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),

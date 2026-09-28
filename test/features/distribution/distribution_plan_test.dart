@@ -18,11 +18,6 @@ import '../../support/app.dart';
 import '../../support/l10n.dart';
 import '../../support/phone.dart';
 
-/// Le plan est la seule image qui sorte de l'app : une fois partie, personne
-/// ne peut plus la corriger. Ce qui se vérifie ici, c'est ce qu'aucune autre
-/// couche ne voit — un cartouche qui lève sur une combinaison de saisie, une
-/// liste de positions tronquée en silence, et le bouton qui resterait actif
-/// sur une saisie refusée.
 void main() {
   ProviderContainer container() {
     final c = ProviderContainer();
@@ -39,10 +34,6 @@ void main() {
 
   group('le contenu du cartouche', () {
     test('reprend toutes les positions, jamais une partie', () {
-      // La troncature est impossible par construction : le plan passe la liste
-      // entière, et c'est le painter qui choisit entre la poser en entier ou
-      // la remplacer par son repli. Une liste coupée sur un plan d'atelier,
-      // c'est une pièce percée en moins, et rien sur la feuille ne le dirait.
       final c = container();
       c.read(distributionFormProvider.notifier)
         ..setLength(20000)
@@ -57,9 +48,6 @@ void main() {
     });
 
     test('ne répète pas ce que le dessin cote déjà', () {
-      // La largeur totale, la largeur d'élément et les marges sont sur le
-      // schéma, aux mêmes chiffres. Les réécrire dans le cartouche serait une
-      // redite, et chaque case coûte une position dans la table.
       final labels = planOf(container())!.plan.fields
           .map((f) => f.$1)
           .join(' ');
@@ -70,8 +58,6 @@ void main() {
     });
 
     test('garde l’écart visé, la seule saisie absente du dessin', () {
-      // Le schéma ne porte que l'écart obtenu. Sans la cible, rien n'explique
-      // le nombre d'éléments trouvé.
       final c = container();
       c.read(distributionFormProvider.notifier)
         ..setMode(DistributionMode.count)
@@ -154,8 +140,6 @@ void main() {
     c.read(distributionFormProvider.notifier).setElementWidth(1000);
     await tester.pumpAndSettle();
 
-    // Éteints, jamais masqués : un bouton gris se lit, une chrome qui s'efface
-    // se cherche.
     expect(footer, findsOneWidget);
     expect(actions().every((a) => a.onTap == null), isTrue);
   });
@@ -163,10 +147,8 @@ void main() {
   testWidgets('aucun libellé d’action n’est tronqué sur un téléphone', (
     tester,
   ) async {
-    // Deux boutons se partagent la largeur de la carte. La police des tests
-    // donne à chaque glyphe la largeur de la taille de police, soit environ le
-    // double d'une vraie : un libellé qui passe ici passe partout, et une
-    // troncature ne se verrait nulle part ailleurs.
+    // La police des tests double la largeur des glyphes : ce qui passe ici
+    // passe partout.
     usePhone(tester);
 
     await tester.pumpWidget(
@@ -194,9 +176,6 @@ void main() {
   testWidgets('la page plein écran montre le plan, cartouche compris', (
     tester,
   ) async {
-    // L'aperçu et le fichier sont le même dessin. Une page qui montrerait le
-    // schéma seul laisserait découvrir le cartouche dans le fichier, une fois
-    // parti.
     await pumpApp(tester, AppRoutes.tool(Tool.distribution));
 
     await tester.tap(find.byType(SchemaCard));

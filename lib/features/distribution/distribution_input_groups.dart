@@ -17,7 +17,7 @@ import 'distribution_help.dart';
 import 'distribution_target_callout.dart';
 
 /// La largeur, les éléments, et ce qu'on cherche : seul groupe ouvert à
-/// l'arrivée, c'est ce qu'on vient de mesurer.
+/// l'arrivée.
 class DistributionGeometryGroup extends StatelessWidget {
   const DistributionGeometryGroup({
     required this.input,
@@ -73,8 +73,7 @@ class DistributionGeometryGroup extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          // Le champ qui reste est celui que l'on connaît : le mode ne change
-          // pas seulement le résultat, il échange la saisie et la réponse.
+          // Le mode échange la saisie et la réponse.
           if (input.mode == DistributionMode.spacing)
             CountField(
               label: l10n.distributionCount,
@@ -93,9 +92,7 @@ class DistributionGeometryGroup extends StatelessWidget {
               value: input.targetSpacing,
               onChanged: form.setTargetSpacing,
             ),
-            // L'arbitrage se pose là où la question est posée. En tuile de
-            // résultat, il se lirait sous le schéma sur mobile — deux écrans
-            // plus bas que le champ qu'il concerne.
+            // L'arbitrage près du champ : en tuile, il tomberait sous le schéma.
             if (ready case final ready?) ...[
               const SizedBox(height: AppSpacing.sm),
               TargetCallout(
@@ -110,9 +107,8 @@ class DistributionGeometryGroup extends StatelessWidget {
     );
   }
 
-  /// Ce qu'on connaît, dit comme on le dirait : le nombre en « Calcul écart »,
-  /// l'écart visé en « Calcul nombre ». Sans largeur, les éléments sont des
-  /// repères.
+  /// Ce qu'on connaît : le nombre en « Calcul écart », l'écart visé en
+  /// « Calcul nombre ». Sans largeur, les éléments sont des repères.
   static String _summary(DistributionFormState input, AppLocalizations l10n) {
     final hasWidth = input.elementWidth > 0;
     final length = l10n.number(input.length);
@@ -141,8 +137,7 @@ class DistributionGeometryGroup extends StatelessWidget {
   }
 }
 
-/// Les bords et les marges, laissés par défaut sur le cas le plus courant :
-/// bords aux éléments, marges nulles.
+/// Les bords et les marges : par défaut, bords aux éléments, marges nulles.
 class DistributionEdgesGroup extends StatelessWidget {
   const DistributionEdgesGroup({
     required this.input,
@@ -217,10 +212,8 @@ class DistributionEdgesGroup extends StatelessWidget {
     );
   }
 
-  /// La disposition change le nombre de jeux, donc l'écart obtenu : repliée
-  /// sans résumé, elle cacherait la raison d'un écart inattendu. Les marges
-  /// s'écrivent comme on les saisit, une valeur si elles sont symétriques,
-  /// début et fin sinon.
+  /// La disposition change l'écart obtenu, d'où sa place dans le résumé. Une
+  /// marge si elles sont symétriques, début et fin sinon.
   static String _summary(DistributionFormState input, AppLocalizations l10n) {
     final edges = edgeChoiceLabel(input.startEdge, input.endEdge, l10n);
     final offsets = input.symmetricOffsets

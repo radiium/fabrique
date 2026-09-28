@@ -5,10 +5,8 @@ import 'package:web/web.dart' as web;
 
 /// Télécharge le plan par le navigateur — le geste « enregistrer » du web.
 ///
-/// Un lien de téléchargement et non la feuille de partage : l'API Web Share ne
-/// prend les fichiers que sur une poignée de navigateurs, et là où elle manque
-/// l'utilisateur ne voit rien se produire. Le téléchargement, lui, atterrit
-/// toujours quelque part que l'utilisateur sait retrouver.
+/// Un lien de téléchargement : l'API Web Share ne prend les fichiers que sur
+/// peu de navigateurs.
 Future<void> downloadPlan(Uint8List bytes, String fileName) async {
   final blob = web.Blob(
     <JSAny>[bytes.toJS].toJS,

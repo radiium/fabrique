@@ -13,9 +13,7 @@ import 'converter_controller.dart';
 /// Marge intérieure du canvas.
 const double _margin = 22;
 
-/// Taille minimale d'une forme : en dessous, elle disparaîtrait purement et
-/// simplement. On la maintient visible et on le signale plutôt que de laisser
-/// croire à un bug d'affichage.
+/// Taille minimale d'une forme, signalée comme hors échelle.
 const double _minExtent = 3;
 
 /// Profondeur du cube, en fraction du côté (projection oblique).
@@ -23,14 +21,7 @@ const double _cubeDepth = 0.34;
 
 /// La valeur courante comparée à un repère rond de sa famille.
 ///
-/// Hors longueur, aucune règle graduée n'a de sens : une masse ne se pose pas
-/// sur un ruban. Le seul visuel honnête est un rapport de grandeur — « ta
-/// valeur, à côté de 1 m² » — et c'est ce que dessine ce painter, sous la
-/// forme qui convient à la grandeur : carrés pour une surface, cubes pour un
-/// volume, barres pour ce qui n'a pas de géométrie.
-///
-/// Assumé : c'est plus pauvre que la double règle des longueurs. Une pression
-/// n'a pas de forme, et lui en inventer une mentirait.
+/// Carrés pour une surface, cubes pour un volume, barres sinon.
 class ComparisonPainter extends CustomPainter {
   const ComparisonPainter({
     required this.result,
@@ -40,13 +31,12 @@ class ComparisonPainter extends CustomPainter {
 
   final ConverterResult? result;
 
-  /// L'unité saisie : la forme est cotée dans l'unité que l'utilisateur a
-  /// sous les yeux, pas dans le repère.
+  /// L'unité saisie, dans laquelle la forme est cotée.
   final MeasureUnit unit;
 
   final AppLocalizations l10n;
 
-  /// Le repère de chaque famille : une quantité que tout le monde se figure.
+  /// Le repère de chaque famille, une quantité familière.
   static const Map<Quantity, MeasureUnit> _reference = {
     Quantity.area: MeasureUnit.m2,
     Quantity.volume: MeasureUnit.liter,
@@ -66,9 +56,7 @@ class ComparisonPainter extends CustomPainter {
       return;
     }
 
-    // Le rapport d'échelle linéaire : une surface double a un côté √2 fois
-    // plus grand, un volume double une arête ∛2 fois plus grande. C'est tout
-    // l'intérêt du dessin — montrer que 10 m² n'est pas « 10 fois plus long ».
+    // Rapport linéaire : √ pour une surface, ∛ pour un volume.
     final k = switch (r.quantity) {
       Quantity.area => math.sqrt(value),
       Quantity.volume => math.pow(value, 1 / 3).toDouble(),
@@ -121,8 +109,7 @@ class ComparisonPainter extends CustomPainter {
   /// Répartit [maxExtent] entre la valeur et le repère : la plus grande des
   /// deux remplit la place, l'autre suit le rapport [k].
   ///
-  /// Sous [_minExtent] la petite forme serait invisible : on la relève et on
-  /// rend `true` pour que l'écran le dise.
+  /// Sous [_minExtent], la petite forme est relevée et le retour vaut `true`.
   (double, double, bool) _extents(double k, double maxExtent) {
     if (!k.isFinite || k <= 0) return (0, maxExtent, false);
 
@@ -136,8 +123,7 @@ class ComparisonPainter extends CustomPainter {
     return (math.max(value, _minExtent), math.max(reference, _minExtent), true);
   }
 
-  /// Surfaces : deux carrés posés sur la même ligne de sol, côte à côte plutôt
-  /// qu'imbriqués — imbriqués, le petit se perdrait dans le grand.
+  /// Surfaces : deux carrés côte à côte sur la même ligne de sol.
   void _paintSquares(
     Canvas canvas,
     Rect box,
@@ -167,9 +153,7 @@ class ComparisonPainter extends CustomPainter {
     _legend(canvas, refLabel, x + reference / 2, ground + 4, accent: false);
   }
 
-  /// Volumes : même principe, en projection oblique. Le cube dit ce que le
-  /// carré ne dit pas — qu'un facteur 1000 sur le volume ne fait que 10 sur
-  /// l'arête.
+  /// Volumes : deux cubes en projection oblique.
   void _paintCubes(
     Canvas canvas,
     Rect box,
@@ -191,8 +175,7 @@ class ComparisonPainter extends CustomPainter {
     _legend(canvas, refLabel, x + reference / 2, ground + 4, accent: false);
   }
 
-  /// Masses et pressions : pas de géométrie, donc deux barres. La longueur est
-  /// proportionnelle à la valeur, sans artifice.
+  /// Masses et pressions : deux barres proportionnelles.
   void _paintBars(
     Canvas canvas,
     Rect box,
@@ -245,8 +228,7 @@ class ComparisonPainter extends CustomPainter {
     final depth = side * _cubeDepth;
     final front = Rect.fromLTWH(left, ground - side, side, side);
 
-    // Les deux faces vues se dessinent avant la face avant : elles passent
-    // derrière, et l'ordre de tracé suffit à le dire.
+    // Les faces vues avant la face avant, qui les recouvre.
     final top = Path()
       ..moveTo(front.left, front.top)
       ..lineTo(front.left + depth, front.top - depth)
@@ -302,8 +284,7 @@ class ComparisonPainter extends CustomPainter {
     canvas.drawRRect(rect, _stroke(filled));
   }
 
-  /// La valeur est à l'accent, le repère au gris des libellés : lequel des
-  /// deux on regarde doit se voir sans lire.
+  /// La valeur à l'accent, le repère en gris.
   Paint _stroke(bool isValue) => Paint()
     ..color = isValue ? AppColors.accent : AppColors.label
     ..style = PaintingStyle.stroke

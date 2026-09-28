@@ -10,13 +10,8 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/app.dart';
 import '../../support/phone.dart';
 
-/// Tout ce qui se saisit ou se choisit fait [kFieldHeight] de haut et
-/// [kControlFontSize] de police. Cette règle ne se lit dans aucun de ces
-/// widgets : chacun y arrive par un chemin différent —
-/// `SizedBox` pour le champ, `contentPadding` pour le `DropdownMenu`, cible
-/// tactile dégonflée plus marge pour la ligne de switch. Un seul de ces
-/// chemins qui bouge, et les contrôles cessent de s'aligner sans que rien ne
-/// lève.
+/// Chaque contrôle atteint [kFieldHeight] et [kControlFontSize] par un chemin
+/// différent : ce test garde leur alignement.
 void main() {
   Future<void> pumpControls(WidgetTester tester) async {
     usePhone(tester);
@@ -77,9 +72,7 @@ void main() {
       }
     }
 
-    // Les trois `TextField` : le champ de cote, le compteur, plus celui que le
-    // `DropdownMenu` porte en propre — il n'hérite pas de notre décoration,
-    // sa hauteur vient du `contentPadding` du thème.
+    // Trois `TextField`, dont celui du `DropdownMenu`, réglé par le thème.
     expectFieldHeight('champ', find.byType(TextField));
     expectFieldHeight('sélecteur', find.byType(AppSegmentedButton<int>));
     expectFieldHeight('dropdown', find.byType(DropdownMenu<int>));
@@ -110,8 +103,7 @@ void main() {
       expect(editable.style.fontSize, kControlFontSize);
     }
 
-    // Libellés de segments : posés par un `AnimatedDefaultTextStyle`, donc
-    // invisibles depuis le `Text` lui-même.
+    // Posés par un `AnimatedDefaultTextStyle`, invisible depuis le `Text`.
     for (final label in ['Un', 'Deux']) {
       final style = tester
           .widget<DefaultTextStyle>(

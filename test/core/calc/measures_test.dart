@@ -8,9 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('table des unités', () {
     test('au plus 5 unités par grandeur', () {
-      // Contrainte d'UI, pas de calcul : au-delà, l'AppSegmentedButton ne tient
-      // plus sur un téléphone. Elle se vérifie ici parce que c'est ici qu'on
-      // ajoute une unité, et que rien à l'écran ne préviendrait.
+      // Contrainte d'UI (un `AppSegmentedButton` par téléphone), vérifiée là où
+      // l'on ajoute une unité.
       for (final q in Quantity.values) {
         expect(
           q.units.length,
@@ -34,9 +33,7 @@ void main() {
   });
 
   group('cohérence avec la table des longueurs', () {
-    // `units.dart` garde sa propre table pour les outils, qui sont tous en
-    // longueur. Deux tables, donc un risque de dérive : ce test est le seul
-    // garde-fou.
+    // `units.dart` a sa propre table : ce test empêche la dérive.
     test('mêmes facteurs que mmPerUnit', () {
       const pairs = {
         LengthUnit.mm: MeasureUnit.mm,

@@ -12,33 +12,19 @@ import '../drawers/drawers_plan.dart';
 import '../layout/layout_plan.dart';
 import '../level/level_schema.dart';
 
-/// Jusqu'où le schéma se laisse réduire, en fraction de la taille d'ajustement.
-///
-/// Un tiers : assez pour reprendre d'un coup d'œil un schéma qu'on vient de
-/// pivoter ou de parcourir au zoom, pas assez pour en faire une vignette
-/// perdue au milieu du blanc.
+/// Réduction minimale du schéma, en fraction de la taille d'ajustement.
 const double _minScale = 1 / 3;
 
-/// Débord de cadrage — sans lui, `InteractiveViewer` plafonne la réduction à
-/// la taille d'ajustement.
+/// Débord de cadrage infini, sans lequel `InteractiveViewer` plafonne la
+/// réduction à la taille d'ajustement.
 ///
-/// Son plancher d'échelle vaut `viewport / cadre` : tant que le cadre est le
-/// dessin lui-même, ce plancher est 1 et [_minScale] n'a jamais la parole. Un
-/// débord infini le ramène à zéro et rend la main à [_minScale]. En échange,
-/// le déplacement n'est plus borné non plus — d'où le bouton « ajuster », qui
-/// est la seule façon de revenir d'un schéma poussé hors de l'écran.
+/// Le déplacement n'est plus borné : le bouton « ajuster » ramène le schéma.
 const EdgeInsets _panBoundary = EdgeInsets.all(double.infinity);
 
 /// Le schéma d'un outil, seul à l'écran, zoomable et déplaçable.
 ///
-/// Une page et non une boîte de dialogue. Le geste de retour du système la
-/// ferme, là où une croix se vise — et viser, avec un gant, c'est rater. La
-/// rotation en paysage donne au Calepinage la largeur qui lui manque, ce
-/// qu'une boîte de dialogue, contrainte par la page qui la porte, ne peut pas
-/// offrir. Et sur le web, la page a une URL et un bouton « précédent ».
-///
-/// Le schéma reste vivant : il lit les mêmes providers que l'écran de l'outil,
-/// donc une saisie modifiée avant l'ouverture s'y retrouve telle quelle.
+/// Une page, pour le geste retour et la rotation en paysage. Elle lit les
+/// mêmes providers que l'écran de l'outil.
 class SchemaScreen extends ConsumerStatefulWidget {
   const SchemaScreen({required this.tool, super.key});
 
@@ -65,17 +51,8 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
 
   /// Pivote d'un quart de tour et remet la vue à plat.
   ///
-  /// **Le bouton est là pour le téléphone dont la rotation est verrouillée.**
-  /// Sans verrou, tourner l'appareil fait mieux : la barre suit et les cotes
-  /// restent droites. Ici la chrome ne pivote pas, donc les chiffres partent à
-  /// 90° et ne se redressent que si la main tourne aussi le téléphone — c'est
-  /// le geste visé. Ne jamais « corriger » ça en contre-pivotant les libellés
-  /// dans les painters : ils seraient alors de travers dans le seul cas où le
-  /// bouton sert à quelque chose.
-  ///
-  /// Le zoom est remis à zéro avec la rotation : le dessin change de forme, et
-  /// un déplacement hérité de l'orientation précédente laisserait l'écran sur
-  /// une zone vide, sans rien dire de ce qui s'est passé.
+  /// Pour un téléphone à rotation verrouillée. Ne pas contre-pivoter les
+  /// libellés : ils seraient de travers dans ce seul cas utile.
   void _rotate() {
     hapticSelection(context);
     setState(() {
@@ -87,16 +64,13 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // La feuille est l'écran entier : ni rembourrage ni coin arrondi, donc
-      // pas de `SchemaSheet` ici. Tout pixel rendu au dessin en est un de plus
-      // à déplacer sous le doigt, et c'est pour ça qu'on est venu.
+      // Pas de `SchemaSheet` : la feuille est l'écran entier.
       backgroundColor: AppColors.cardSurface,
       appBar: AppBar(
         title: Text(widget.tool.label(AppLocalizations.of(context))),
         actions: [
-          // Grisé tant que rien n'a bougé, jamais masqué : c'est le seul
-          // retour possible d'un schéma réduit ou poussé hors de l'écran, et
-          // une chrome qui s'efface se cherche.
+          // Grisé tant que rien n'a bougé, jamais masqué : c'est le seul retour d'un
+          // schéma poussé hors de l'écran.
           ValueListenableBuilder<Matrix4>(
             valueListenable: _view,
             builder: (context, view, child) => IconButton(
@@ -110,8 +84,7 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
             tooltip: AppLocalizations.of(context).schemaRotate,
             onPressed: _rotate,
           ),
-          // L'export en dernier : « ajuster » et « pivoter » règlent la vue,
-          // celui-ci fait quelque chose de ce qu'on regarde.
+          // L'export en dernier, après les réglages de vue.
           ..._exportActionsFor(widget.tool),
         ],
       ),
@@ -120,10 +93,8 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
         boundaryMargin: _panBoundary,
         minScale: _minScale,
         maxScale: 6,
-        // `RotatedBox` et non `Transform.rotate` : il pivote aussi les
-        // contraintes, donc un schéma large se redessine dans une boîte haute
-        // au lieu d'y être posé en biais et rogné. Le painter n'a rien à
-        // savoir de l'orientation, il reçoit une taille, c'est tout.
+        // `RotatedBox` pivote aussi les contraintes : le painter reçoit une boîte
+        // haute au lieu d'être rogné.
         child: RotatedBox(
           quarterTurns: _quarterTurns,
           child: _schemaFor(widget.tool),
@@ -133,12 +104,8 @@ class _SchemaScreenState extends ConsumerState<SchemaScreen> {
   }
 }
 
-/// Le schéma de chaque outil, en pleine densité — c'est la page qui a la place.
-///
-/// La Répartition, le Calepinage et les Tiroirs y montrent leur **plan** et
-/// non leur seul schéma : la feuille A4, le dessin et le cartouche,
-/// c'est-à-dire exactement l'image qu'exporte le bouton d'à côté. Un aperçu qui montrerait autre chose
-/// que le fichier n'en serait pas un.
+/// Le schéma de chaque outil. Ceux qui exportent montrent leur plan, l'image
+/// même du fichier.
 Widget _schemaFor(Tool tool) => switch (tool) {
   Tool.layout => const LayoutPlanView(),
   Tool.distribution => const DistributionPlanView(),
@@ -147,9 +114,8 @@ Widget _schemaFor(Tool tool) => switch (tool) {
   Tool.converter => const ConverterSchema(),
 };
 
-/// L'export, pour les outils qui ont un plan. Les autres n'ont pas encore de
-/// cartouche, et un schéma sans cartouche ne se lit pas une fois sorti de
-/// l'app.
+/// L'export, pour les outils qui ont un plan : sans cartouche, un schéma ne
+/// se lit pas hors de l'app.
 List<Widget> _exportActionsFor(Tool tool) => switch (tool) {
   Tool.distribution => const [DistributionExportAction(compact: true)],
   Tool.layout => const [LayoutExportAction(compact: true)],

@@ -1,8 +1,7 @@
 /// Les outils de l'app. L'`id` sert de segment de route (`/tool/:id`).
 ///
-/// L'ordre est celui de l'accueil, et il pitche l'app : le calepinage ouvre la
-/// liste parce que c'est l'outil signature, le convertisseur la ferme parce
-/// que c'est un service qu'on ouvre en passant, pas une destination.
+/// L'ordre est celui de l'accueil : l'outil signature d'abord, le
+/// convertisseur en dernier.
 enum Tool {
   layout('layout'),
   distribution('distribution'),

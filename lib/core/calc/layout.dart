@@ -10,17 +10,12 @@ part 'layout.g.dart';
 
 /// Borne de volume, en éléments posés.
 ///
-/// Sans elle, un élément de 1 mm saisi par mégarde sur une surface d'atelier
-/// demande plusieurs millions de rectangles : l'app fige avant d'avoir dessiné.
-/// C'est le pendant de `kMaxDistributionCount`, que la Répartition a depuis
-/// toujours et que le Calepinage n'avait pas.
+/// Un élément de 1 mm sur une surface d'atelier demanderait des millions de
+/// rectangles et figerait l'app.
 const int kMaxLayoutElements = 5000;
 
-/// Convention d'axes : les éléments s'alignent le long d'un **axe de pose**,
-/// les rangées s'empilent perpendiculairement, et le décalage de joints décale
-/// le départ de chaque rangée le long de l'axe de pose.
-///
-/// Sans inversion, l'axe de pose est X et les rangées montent selon Y.
+/// Convention d'axes : les éléments s'alignent le long d'un axe de pose, les
+/// rangées s'empilent perpendiculairement. Sans inversion, l'axe de pose est X.
 @freezed
 abstract class LayoutInput with _$LayoutInput {
   const factory LayoutInput({
@@ -31,32 +26,20 @@ abstract class LayoutInput with _$LayoutInput {
     @Default(0.0) double gapX,
     @Default(0.0) double gapY,
 
-    /// Retrait sur les **quatre bords** avant de poser, en mm.
+    /// Retrait sur les quatre bords avant de poser, en mm.
     ///
-    /// Joint de dilatation d'un parquet, joint au mur d'un carrelage, jeu au
-    /// sol d'une plaque : la pose recule, mais la pièce ne rétrécit pas —
     /// [LayoutResult.surfaceArea] reste l'aire de la surface entière.
     @Default(0.0) double perimeterGap,
 
     /// Ne jamais finir sur un filet.
     ///
-    /// Quand la dernière bande tombe sous un demi-élément, on sacrifie une
-    /// bande pleine et on partage son épaisseur avec le reliquat entre la
-    /// première et la dernière, qui deviennent identiques.
-    ///
-    /// ⚠️ Cela ne consomme **pas** un élément de plus : même nombre de bandes,
-    /// même aire couverte, donc [LayoutResult.totalCount] et la perte sont
-    /// inchangés. Seul [LayoutResult.cutCount] monte — deux bandes de bord à
-    /// couper au lieu d'une. Le coût matière n'apparaîtrait qu'avec le
-    /// réemploi des chutes, où deux petites chutes valent moins qu'une grande.
+    /// Sous un demi-élément, la dernière bande partage son épaisseur avec la
+    /// première. Seul [LayoutResult.cutCount] change : deux bandes à couper.
     @Default(false) bool balanceRows,
 
-    /// Pivote le motif d'un quart de tour : l'élément se pose le long de Y et
-    /// les rangées s'empilent selon X.
+    /// Pivote le motif d'un quart de tour : l'élément se pose le long de Y.
     ///
-    /// Le décalage des joints **suit** la rotation — c'est tout l'intérêt :
-    /// décaler les joints d'un bardage vertical n'a de sens que le long des
-    /// lames, pas en travers.
+    /// Le décalage des joints suit la rotation, le long des lames.
     @Default(false) bool flip,
     @Default(JointOffset.half) JointOffset offset,
   }) = _LayoutInput;
@@ -89,16 +72,14 @@ abstract class LayoutResult with _$LayoutResult {
     required int fullCount,
     required int cutCount,
 
-    /// `fullCount + cutCount` — stock sans réemploi des chutes.
+    /// `fullCount + cutCount` : stock sans réemploi des chutes.
     required int totalCount,
     required double surfaceArea,
     required double coveredArea,
     required double wastePercent,
 
-    /// Épaisseur commune des deux rangées de bord, si l'équilibrage a joué.
-    ///
-    /// Nul quand la règle ne s'est pas appliquée — c'est ce qui permet à
-    /// l'écran de ne montrer sa tuile que lorsqu'il y a quelque chose à dire.
+    /// Épaisseur commune des deux rangées de bord, si l'équilibrage a joué ;
+    /// sinon `null`.
     double? balancedRow,
 
     /// Longueur commune des deux pièces de bout, si l'équilibrage a joué sur
@@ -117,18 +98,10 @@ abstract class CutPiece with _$CutPiece {
   }) = _CutPiece;
 }
 
-/// Les pièces à couper, groupées par cote.
+/// Les pièces à couper, groupées par cote : la liste de débit.
 ///
-/// C'est la liste de débit : ce qu'on emporte à la scie. Un calepinage produit
-/// deux à cinq cotes distinctes selon le décalage, pas une par pièce — c'est le
-/// groupement qui la rend lisible, et imprimable.
-///
-/// Ici et non dans le painter : c'est une dérivation du résultat, et le painter
-/// peint. Ici et non dans l'écran non plus, pour rester testable sans appareil.
-///
-/// Les cotes se regroupent à l'arrondi d'affichage : deux coupes que la feuille
-/// écrira pareil sont la même coupe pour celui qui débite, quels que soient
-/// leurs derniers chiffres flottants.
+/// Les cotes se regroupent à l'arrondi d'affichage : deux coupes écrites
+/// pareil sont la même coupe.
 List<CutPiece> summarizeCuts(LayoutResult result) {
   final counts = <(double, double), int>{};
   for (final element in result.elements) {
@@ -141,40 +114,33 @@ List<CutPiece> summarizeCuts(LayoutResult result) {
     for (final entry in counts.entries)
       CutPiece(w: entry.key.$1, h: entry.key.$2, count: entry.value),
   ];
-  // De la plus grande à la plus petite : une liste de débit se lit dans cet
-  // ordre, et les chutes minuscules finissent là où on les cherche.
+  // De la plus grande à la plus petite, l'ordre d'une liste de débit.
   pieces.sort((a, b) => (b.w * b.h).compareTo(a.w * a.h));
   return List.unmodifiable(pieces);
 }
 
-/// Arrondi de regroupement, au dixième de millimètre — la précision à laquelle
-/// une cote s'écrit sur un plan.
+/// Arrondi de regroupement, au dixième de millimètre.
 double _roundCut(double mm) => (mm * 10).roundToDouble() / 10;
 
 /// Pose des éléments rectangulaires identiques sur une surface rectangulaire.
 ///
-/// Sans réemploi des chutes : chaque pièce partielle consomme un élément, donc
-/// `wastePercent` est volontairement pessimiste.
+/// Sans réemploi des chutes : chaque pièce partielle consomme un élément.
 LayoutResult computeLayout(LayoutInput input) {
   _validate(input);
 
-  // Repère de pose. `u` est l'axe le long duquel les éléments s'alignent et le
-  // long duquel joue le décalage ; `v` est l'axe d'empilement des rangées.
-  // L'inversion échange les deux : tout le motif pivote, décalage compris, et
-  // l'algorithme ci-dessous n'a pas à le savoir.
+  // Repère de pose : `u` est l'axe de pose, `v` l'axe d'empilement.
+  // L'inversion les échange, décalage compris.
   final flip = input.flip;
   final margin = input.perimeterGap;
 
-  // Zone de pose, et non surface : le jeu périphérique se retire des quatre
-  // bords. Tout ce qui suit travaille dedans, et l'origine revient au repère
-  // de la surface au moment de poser le rectangle.
+  // Zone de pose : la surface moins le jeu périphérique. L'origine revient
+  // au repère de la surface au moment de poser.
   final su = (flip ? input.surfaceY : input.surfaceX) - 2 * margin;
   final sv = (flip ? input.surfaceX : input.surfaceY) - 2 * margin;
   final eu = input.elementX;
   final ev = input.elementY;
 
-  // Les jeux, eux, restent définis à l'écran : `gapX` reste horizontal et
-  // `gapY` vertical, quel que soit le sens de pose.
+  // Les jeux restent définis à l'écran : `gapX` horizontal, `gapY` vertical.
   final gapU = flip ? input.gapY : input.gapX;
   final gapV = flip ? input.gapX : input.gapY;
 
@@ -191,11 +157,8 @@ LayoutResult computeLayout(LayoutInput input) {
 
   _guardVolume(su: su, sv: sv, eu: eu, ev: ev, gapU: gapU, gapV: gapV);
 
-  // L'axe d'empilement s'équilibre toujours ; l'axe de pose seulement en
-  // décalage droit. Deux raisons qui pointent au même endroit : sous un
-  // décalage, chaque rangée démarre ailleurs, donc il n'existe plus de pièce
-  // de bout commune à équilibrer — et l'équilibrage s'exprime de toute façon
-  // par le départ de rangée, que le décalage occupe déjà.
+  // L'axe de pose ne s'équilibre qu'en décalage droit : le décalage occupe
+  // déjà le départ de rangée.
   final balance = input.balanceRows;
   final balancedRow = balance ? _balancedEdge(sv, ev, gapV) : null;
   final balancedEnd = balance && input.offset == JointOffset.straight
@@ -208,10 +171,8 @@ LayoutResult computeLayout(LayoutInput input) {
     JointOffset.third => eu / 3,
   };
 
-  // Équilibrer un bord revient à démarrer en arrière de ce bord : la première
-  // bande est rognée à l'épaisseur voulue, et la dernière déborde d'autant,
-  // donc tombe à la même. C'est le mécanisme du décalage de joints, et c'est
-  // pourquoi les deux ne peuvent pas jouer sur le même axe.
+  // Équilibrer un bord revient à démarrer en arrière : la première bande est
+  // rognée, la dernière déborde d'autant.
   final startV = balancedRow == null ? 0.0 : -(ev - balancedRow);
   final baseU = balancedEnd == null ? 0.0 : -(eu - balancedEnd);
 
@@ -220,9 +181,8 @@ LayoutResult computeLayout(LayoutInput input) {
   var cutCount = 0;
   var coveredArea = 0.0;
 
-  // Une rangée peut être rabotée par l'un ou l'autre bord de la zone de pose :
-  // par le bord opposé quand elle tombe en dernier, par le bord de départ
-  // quand l'équilibrage l'a fait commencer en arrière.
+  // Une rangée peut être rabotée par le bord opposé ou, sous équilibrage, par
+  // le bord de départ.
   var rowIndex = 0;
   for (var v = startV; v < sv - _eps; v += ev + gapV, rowIndex++) {
     final vNear = math.max(v, 0.0);
@@ -267,8 +227,7 @@ LayoutResult computeLayout(LayoutInput input) {
     }
   }
 
-  // Une coupe = un élément consommé, sans réemploi de chute : la perte est
-  // volontairement pessimiste.
+  // Une coupe consomme un élément, sans réemploi de chute.
   final totalCount = fullCount + cutCount;
   final stockArea = totalCount * eu * ev;
   final wastePercent = stockArea <= 0
@@ -288,23 +247,13 @@ LayoutResult computeLayout(LayoutInput input) {
   );
 }
 
-/// Tolérance de comparaison, en mm — absorbe les résidus de virgule flottante
-/// du cumul des rangées et du modulo de décalage.
+/// Tolérance de comparaison, en mm, contre les résidus de virgule flottante.
 const double _eps = 1e-6;
 
 /// Épaisseur commune des deux bandes de bord, ou `null` si la règle « ne
 /// jamais finir sur un filet » ne s'applique pas.
 ///
-/// Sur une portée [s], pour un élément [e] séparé d'un jeu [g] : `n` bandes
-/// pleines, et un reliquat `r` qui est l'épaisseur de la bande rabotée.
-///
-/// Trois sorties qui ne touchent à rien, et c'est ce qui en fait une règle
-/// plutôt qu'un recentrage systématique : ça tombe juste (`r ≤ 0`), la bande
-/// de bord est une bande normale et non un filet (`r ≥ e / 2`), ou il n'y a
-/// pas deux bandes pleines à sacrifier.
-///
-/// Invariant : le résultat tient dans `[e / 2, 3e / 4[`, donc la règle garantit
-/// exactement ce que son seuil énonce.
+/// Portée [s], élément [e], jeu [g]. Le résultat tient dans `[e / 2, 3e / 4[`.
 double? _balancedEdge(double s, double e, double g) {
   final pitch = e + g;
   final n = ((s - e + _eps) / pitch).floor() + 1;
@@ -318,9 +267,7 @@ double? _balancedEdge(double s, double e, double g) {
 
 /// Refuse une saisie qui demanderait plus de [kMaxLayoutElements] rectangles.
 ///
-/// Estimation volontairement haute et calculée en `double` : un `ceil()` sur
-/// un quotient énorme déborde l'entier 64 bits, et c'est précisément la saisie
-/// qu'on cherche à attraper.
+/// Estimation haute en `double` : un `ceil()` entier déborderait sur 64 bits.
 void _guardVolume({
   required double su,
   required double sv,
@@ -330,12 +277,10 @@ void _guardVolume({
   required double gapV,
 }) {
   final rows = (sv / (ev + gapV)).ceilToDouble();
-  // Un départ de rangée négatif — décalage ou équilibrage — ajoute au plus une
-  // pièce à la rangée.
+  // Un départ de rangée négatif ajoute au plus une pièce.
   final cols = ((su + eu) / (eu + gapU)).ceilToDouble();
   if (rows * cols > kMaxLayoutElements) {
-    // L'ordre de grandeur plutôt que le seul plafond : sur une faute de frappe
-    // il y a deux zéros d'écart, et c'est ça qui dit où chercher.
+    // Le compte estimé, pas seulement le plafond, montre l'ordre de grandeur.
     throw CalcException(
       TooManyTiles(count: rows * cols, maxCount: kMaxLayoutElements),
     );

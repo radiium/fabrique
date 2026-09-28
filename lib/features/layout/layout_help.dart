@@ -1,9 +1,5 @@
-/// Les explications des champs du Calepinage, groupées pour se relire d'un
-/// bloc — c'est un texte, il se corrige comme un texte.
-///
-/// Deux entrées seulement : ce sont les deux notions que le libellé ne peut
-/// pas porter. Le reste de l'écran demande des cotes, et une cote s'explique
-/// toute seule.
+/// Les explications des champs du Calepinage : les deux notions que les
+/// libellés ne peuvent pas porter.
 library;
 
 import '../../core/widgets/field_help.dart';

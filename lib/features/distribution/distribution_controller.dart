@@ -8,13 +8,7 @@ import 'distribution_form.dart';
 
 part 'distribution_controller.g.dart';
 
-/// Ce que l'écran a à afficher : une répartition, ou la raison de son absence.
-///
-/// **Écart assumé à la convention `CalcException` → `null`.** Le tiret suffit
-/// tant qu'une saisie invalide n'est qu'une frappe en cours ; ici les refus
-/// sont métier — « les 11 éléments occupent 110 mm pour 100 disponibles » — et
-/// c'est l'information la plus utile que l'outil puisse rendre. La taire
-/// laisserait l'utilisateur chercher lequel des huit contrôles est fautif.
+/// Ce que l'écran a à afficher : une répartition, ou le motif de son refus.
 sealed class DistributionOutcome {
   const DistributionOutcome();
 }
@@ -25,8 +19,8 @@ final class DistributionReady extends DistributionOutcome {
 
   final DistributionResult best;
 
-  /// L'autre solution entière qui encadre l'écart visé. Toujours `null` en
-  /// mode « je connais le nombre » : il n'y a alors rien à arbitrer.
+  /// L'autre solution entière qui encadre l'écart visé. `null` en mode
+  /// « je connais le nombre ».
   final DistributionResult? other;
 }
 
@@ -61,8 +55,7 @@ class DistributionForm extends _$DistributionForm
   @override
   DistributionFormState build() => restore();
 
-  /// Le mode revient lui aussi au départ : c'est une saisie comme une autre,
-  /// et laisser l'écran sur « Nombre » après un reset ferait mentir le neuf.
+  /// Le mode revient aussi au départ.
   void reset() => state = kDistributionDefaults;
 
   void setMode(DistributionMode mode) => state = state.copyWith(mode: mode);
@@ -76,20 +69,16 @@ class DistributionForm extends _$DistributionForm
   void setTargetSpacing(double mm) => state = state.copyWith(targetSpacing: mm);
 
   /// Adopte une des deux répartitions qui encadrent l'écart visé : son nombre
-  /// d'éléments devient la saisie, et l'écran passe en « Calcul écart ».
+  /// devient la saisie, en mode « Calcul écart ».
   ///
-  /// Changer de mode plutôt que recopier l'écart obtenu dans [setTargetSpacing]
-  /// n'est pas un détail : recopié, l'écart reposerait la même question, et
-  /// l'inversion retomberait rarement sur un entier exact — l'écran rendrait
-  /// alors une alternative de plus, sans fin. Le nombre, lui, est la réponse.
+  /// Recopier l'écart obtenu reposerait la question sans fin.
   void adopt(int count) =>
       state = state.copyWith(mode: DistributionMode.spacing, count: count);
 
   void setEdges(DistributionEdge start, DistributionEdge end) =>
       state = state.copyWith(startEdge: start, endEdge: end);
 
-  /// Repasser en symétrique réaligne la fin sur le début : laisser traîner un
-  /// marge de fin devenue invisible ferait mentir le schéma.
+  /// Repasser en symétrique réaligne la fin sur le début.
   void setSymmetricOffsets(bool symmetric) => state = state.copyWith(
     symmetricOffsets: symmetric,
     endOffset: symmetric ? state.startOffset : state.endOffset,
@@ -103,7 +92,7 @@ class DistributionForm extends _$DistributionForm
   void setEndOffset(double mm) => state = state.copyWith(endOffset: mm);
 }
 
-/// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
+/// Le résultat, dérivé de la saisie.
 @riverpod
 DistributionOutcome distributionResult(Ref ref) {
   final form = ref.watch(distributionFormProvider);

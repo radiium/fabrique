@@ -1,11 +1,5 @@
 /// Les explications des champs de la Répartition, groupées pour se relire
-/// d'un bloc — c'est un texte, il se corrige comme un texte.
-///
-/// Ce qu'elles disent et ce qu'elles taisent :
-/// - jamais la paraphrase du libellé (« entrez le nombre d'éléments ») ;
-/// - la conséquence sur le résultat quand il y en a une (le nombre de jeux,
-///   les deux bornes entières) ;
-/// - le vocabulaire de l'atelier, pas celui du code.
+/// d'un bloc. Elles disent la conséquence sur le résultat, jamais le libellé.
 library;
 
 import '../../core/widgets/field_help.dart';

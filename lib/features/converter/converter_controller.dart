@@ -19,9 +19,7 @@ abstract class ConverterInput with _$ConverterInput {
 
     /// Affiche l'impérial en composé (pied + pouce + fraction).
     ///
-    /// N'a de sens qu'en longueur : on ne décompose pas une pression en
-    /// fractions de pouce. Le réglage est conservé au changement de catégorie
-    /// pour qu'un aller-retour ne le perde pas, mais l'écran le masque ailleurs.
+    /// Longueurs seulement. Conservé au changement de catégorie.
     @Default(true) bool compoundImperial,
   }) = _ConverterInput;
 
@@ -30,9 +28,7 @@ abstract class ConverterInput with _$ConverterInput {
   factory ConverterInput.fromJson(Map<String, dynamic> json) =>
       _$ConverterInputFromJson(json);
 
-  /// La catégorie se déduit de l'unité plutôt que d'être stockée à côté : deux
-  /// champs pourraient se contredire (une unité de masse dans une catégorie
-  /// « Longueur »), un seul ne le peut pas.
+  /// Déduite de l'unité plutôt que stockée : elle ne peut pas la contredire.
   Quantity get quantity => unit.quantity;
 }
 
@@ -81,9 +77,7 @@ class ConverterForm extends _$ConverterForm with PersistedForm<ConverterInput> {
 
   void setUnit(MeasureUnit u) => state = state.copyWith(unit: u);
 
-  /// Changer de catégorie garde la valeur saisie et retombe sur l'unité
-  /// courante de la nouvelle famille : on vient souvent convertir le même
-  /// nombre d'une grandeur à l'autre, et retaper « 2400 » serait une punition.
+  /// Garde la valeur et prend l'unité courante de la nouvelle famille.
   void setQuantity(Quantity q) {
     if (q == state.quantity) return;
     state = state.copyWith(unit: q.defaultUnit);
@@ -102,8 +96,7 @@ ConverterResult? converterResult(Ref ref) {
       quantity: input.quantity,
       base: base,
       perUnit: convertAll(input.value, input.unit),
-      // Le pivot des longueurs est le millimètre : `base` est directement ce
-      // qu'attend `mmToImperial`.
+      // `base` est en mm, ce qu'attend `mmToImperial`.
       imperial: input.quantity == Quantity.length ? mmToImperial(base) : null,
     );
   } on CalcException {

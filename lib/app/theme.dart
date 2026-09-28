@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 abstract final class AppColors {
   static const Color accent = Color(0xFFB4741E);
 
-  /// Brun profond — fond des éléments sélectionnés (pastille du sélecteur),
-  /// toujours avec du texte blanc dessus.
+  /// Brun profond : fond des éléments sélectionnés, toujours sous du blanc.
   static const Color accentDeep = Color(0xFF734C27);
 
   /// Texte, icône ou témoin posé sur [accentDeep].
@@ -18,40 +17,33 @@ abstract final class AppColors {
   static const Color background = Color(0xFFF7F5F2);
   static const Color surface = Colors.white;
 
-  /// Cartes — deux variantes seulement, sans élévation, cernées de
-  /// [cardBorder] : claire pour la saisie et les résultats, teintée pour les
-  /// schémas.
+  /// Cartes sans élévation, cernées de [cardBorder] : claires pour la saisie
+  /// et les résultats, teintées pour les schémas.
   static const Color cardSurface = surface;
   static const Color cardTinted = Color(0xFFEFE7D8);
   static const Color cardBorder = Color(0xFFE2DACA);
 
-  /// Remplissage des champs de saisie — beige chaud, contrasté sur la carte
-  /// blanche qui les porte.
+  /// Remplissage des champs de saisie, contrasté sur la carte blanche.
   static const Color field = Color(0xFFF6F3EE);
 
-  /// Ambre lavé — fond d'une option retenue qui porte un dessin plutôt qu'un
-  /// libellé (tuiles de bords de la Répartition). La pastille [accentDeep] y
-  /// noierait le pictogramme, qui est justement ce qu'on vient lire ; ce lavis
-  /// se voit à bout de bras en laissant passer le croquis et le texte en
-  /// [accentDeep].
+  /// Ambre lavé : fond d'une option retenue qui porte un dessin (tuiles de
+  /// bords). [accentDeep] y masquerait le pictogramme.
   static const Color accentWash = Color(0xFFEEE0CE);
 
-  /// Même trait pour les champs et les cartes : un seul filet dans l'app.
+  /// Un seul filet pour les champs et les cartes.
   static const Color border = cardBorder;
 
   /// Libellés au-dessus des champs, et unités en suffixe.
   static const Color label = Color(0xFF6B625A);
 
-  /// Encart posé dans une carte claire — l'arbitrage de la Répartition.
+  /// Encart posé dans une carte claire (arbitrage de la Répartition).
   ///
-  /// Une teinte de plus que [cardTinted], et le seul filet de l'app qui ne
-  /// soit pas [border] : un encart doit se détacher **sur** une carte blanche,
-  /// là où la carte teintée se détache sur le fond de l'écran.
+  /// Seul filet autre que [border] : l'encart se détache sur une carte blanche.
   static const Color callout = Color(0xFFEFE7D5);
   static const Color calloutBorder = Color(0xFFDCCFB4);
 }
 
-/// Espacement généreux, aéré.
+/// Espacements.
 abstract final class AppSpacing {
   static const double xs = 4;
   static const double sm = 8;
@@ -64,59 +56,39 @@ abstract final class AppSpacing {
 abstract final class AppRadii {
   static const double card = 10;
 
-  /// Champs, boutons − / +, panneau du `DropdownMenu`, tuiles de résultat,
-  /// piste d'`AppSegmentedButton` (dont la pastille reprend ce rayon moins
-  /// son jeu, pour rester concentrique).
+  /// Champs, boutons − / +, menus, tuiles de résultat, piste
+  /// d'`AppSegmentedButton`.
   static const double field = 9;
 
   /// Feuille blanche d'un schéma, posée dans sa carte teintée.
   ///
-  /// Le rembourrage de la carte ([AppSpacing.md]) est plus large que [card],
-  /// donc la concentricité ne contraint plus rien : le coin de la feuille est
-  /// libre. 8 px, soit juste en dessous de la carte qui la porte — une feuille
-  /// plus arrondie que son cadre se décollerait du coin.
+  /// Juste sous [card] : plus arrondie, la feuille se décollerait du coin.
   static const double schemaSheet = 8;
 }
 
-/// Hauteur fixe d'un champ de saisie (et des boutons − / + qui l'encadrent).
-///
-/// Exactement la cible tactile minimale : tout ce qui se
-/// saisit ou se choisit tient cette hauteur — champ, sélecteur segmenté,
-/// dropdown, ligne de switch, boutons de pas.
+/// Hauteur de tout ce qui se saisit ou se choisit : la cible tactile minimale.
 const double kFieldHeight = 48;
 
 /// Taille du texte des contrôles, et son interligne.
 ///
-/// L'interligne est figé plutôt qu'hérité du thème : c'est lui qui rend la
-/// hauteur d'un contrôle calculable, donc [_dropdownVerticalPadding] dérivable.
+/// Interligne figé, pour que [_dropdownVerticalPadding] se calcule.
 const double kControlFontSize = 18;
 const double _controlHeightFactor = 1.3;
 
-/// Hauteur réellement occupée par une ligne de [controlTextStyle].
+/// Hauteur rendue d'une ligne de [controlTextStyle], mesurée.
 ///
-/// Mesurée, pas calculée : le moteur de texte arrondit la boîte de ligne, donc
-/// `kControlFontSize * _controlHeightFactor` (23.4) ne correspond pas à ce qui
-/// est rendu (23). Prendre le calcul pour argent comptant décalerait le
-/// dropdown de quelques dixièmes sous les autres contrôles.
+/// Le moteur arrondit la boîte de ligne : 23 et non les 23,4 calculés.
 const double _controlLineHeight = 23;
 
-/// Marge verticale qui amène un `DropdownMenu` à exactement [kFieldHeight].
+/// Marge verticale qui amène un `DropdownMenu` à [kFieldHeight].
 ///
-/// Le champ du `DropdownMenu` n'est pas le nôtre : on ne peut pas lui imposer
-/// de conteneur, sa hauteur vient du padding. À revérifier si la taille de
-/// police change — c'est une mesure, elle ne suit pas toute seule.
+/// Sa hauteur ne vient que du padding. À remesurer si la police change.
 const double _dropdownVerticalPadding = (kFieldHeight - _controlLineHeight) / 2;
 
-/// Le style de **tout ce qui se saisit ou se choisit** : champ numérique,
-/// valeur fermée d'un `DropdownMenu`, libellé d'[AppSegmentedButton], entrée de
-/// panneau déroulant. Une seule taille pour tous les contrôles.
+/// Le style de tout ce qui se saisit ou se choisit : une seule taille pour
+/// tous les contrôles.
 ///
-/// Fonction partagée plutôt qu'un `titleLarge` recopié dans chaque widget :
-/// un style recopié dérive, et des contrôles qui dérivent cessent de se lire
-/// comme un seul jeu.
-///
-/// [emphasized] ne joue que sur la graisse, pour l'option retenue d'une liste
-/// de choix — en appui de la pastille brune, qui reste le vrai indicateur.
+/// [emphasized] ne joue que sur la graisse, pour l'option retenue.
 TextStyle? controlTextStyle(BuildContext context, {bool emphasized = false}) =>
     Theme.of(context).textTheme.titleLarge?.copyWith(
       fontSize: kControlFontSize,
@@ -141,16 +113,13 @@ ThemeData buildAppTheme() {
 
   final base = ThemeData(colorScheme: scheme, useMaterial3: true);
 
-  // Le libellé vit AU-DESSUS du champ (cf. LabeledField), jamais flottant :
-  // il reste lisible en permanence, ce que le label flottant Material ne
-  // garantit pas une fois la saisie commencée.
+  // Libellé au-dessus du champ, jamais flottant : il reste lisible pendant la
+  // saisie.
   final inputTheme = InputDecorationTheme(
     filled: true,
     fillColor: AppColors.field,
     floatingLabelBehavior: FloatingLabelBehavior.never,
-    // Padding horizontal seul : la hauteur d'un champ est fixée à
-    // [kFieldHeight] par son conteneur (cf. NumberField), pas déduite du
-    // padding — elle ne bouge donc pas avec le style de texte.
+    // Padding horizontal seul : la hauteur vient du conteneur du champ.
     contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
     hintStyle: const TextStyle(color: AppColors.label),
     suffixStyle: const TextStyle(color: AppColors.label),
@@ -174,33 +143,26 @@ ThemeData buildAppTheme() {
       ),
     ),
     inputDecorationTheme: inputTheme,
-    // Un seul filet dans l'app : le séparateur entre tuiles de résultat est le
-    // même trait que la bordure des cartes. `space: 1` pour qu'il n'occupe que
-    // sa propre épaisseur — le rythme vertical vient des tuiles, pas de lui.
+    // Même trait que la bordure des cartes. `space: 1` : le rythme vertical
+    // vient des tuiles.
     dividerTheme: const DividerThemeData(
       color: AppColors.cardBorder,
       thickness: 1,
       space: 1,
     ),
-    // `DropdownMenu` n'hérite PAS de `inputDecorationTheme` : son champ part
-    // des défauts Material (sans remplissage, rayon 4). On le rebranche ici
-    // pour qu'il ait le fond, le filet et le rayon d'un champ de saisie.
+    // `DropdownMenu` n'hérite pas de `inputDecorationTheme` : on le rebranche.
     dropdownMenuTheme: DropdownMenuThemeData(
       inputDecorationTheme: inputTheme.copyWith(
-        // La valeur fermée est en [controlTextStyle] : la marge s'en déduit
-        // pour retomber sur [kFieldHeight].
+        // Déduite de [controlTextStyle] pour retomber sur [kFieldHeight].
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: _dropdownVerticalPadding,
         ),
-        // Sans ça, c'est le chevron qui fixe la hauteur : Material l'enveloppe
-        // dans un IconButton à cible tactile de 48, plus 4 de marge — 56 au
-        // total, soit 4 de trop. Bridé à 48, il repasse sous le texte.
+        // Sinon le chevron, en IconButton de 48 plus 4 de marge, fixe la hauteur
+        // à 56.
         suffixIconConstraints: const BoxConstraints(maxHeight: 48),
       ),
-      // Le panneau déroulant reprend le champ trait pour trait : même fond,
-      // même filet, même rayon. Sans élévation ni teinte de surface, sinon
-      // Material le grise en le superposant.
+      // Le panneau reprend le champ. Sans élévation ni teinte, que Material grise.
       menuStyle: MenuStyle(
         backgroundColor: const WidgetStatePropertyAll(AppColors.field),
         surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
@@ -214,13 +176,8 @@ ThemeData buildAppTheme() {
         ),
       ),
     ),
-    // Entrées du panneau déroulant : l'option courante reprend la pastille du
-    // sélecteur (brun profond, texte blanc), le survol un voile d'accent.
-    //
-    // `DropdownMenu` ne relaie que ces quatre propriétés-là depuis le thème —
-    // vérifié à la mesure : un `textStyle` posé ici n'a aucun effet, les
-    // entrées restent au défaut Material. La taille du texte se règle donc
-    // entrée par entrée, via `DropdownMenuEntry.style`.
+    // L'option courante reprend la pastille du sélecteur. Un `textStyle` posé
+    // ici est ignoré (mesuré) : la taille passe par `DropdownMenuEntry.style`.
     menuButtonTheme: MenuButtonThemeData(
       style: ButtonStyle(
         foregroundColor: WidgetStateProperty.resolveWith(
@@ -243,9 +200,8 @@ ThemeData buildAppTheme() {
         ),
       ),
     ),
-    // Interrupteurs : la piste active reprend la pastille du sélecteur (brun
-    // profond, pouce blanc), l'état inactif le fond et le filet d'un champ.
-    // Sans ça, le Switch M3 part sur le violet dérivé du seed.
+    // La piste active reprend la pastille du sélecteur ; sinon le Switch M3
+    // prend le violet dérivé du seed.
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith(
         (states) => states.contains(WidgetState.selected)

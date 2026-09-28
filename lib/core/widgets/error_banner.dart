@@ -2,24 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 
-/// Le motif d'un refus de calcul, affiché tel quel.
+/// Le motif d'un refus de calcul.
 ///
-/// **Écart assumé à la convention `CalcException` → `null`.** Le tiret suffit
-/// tant qu'une saisie invalide n'est qu'une frappe en cours. Mais sur un outil
-/// à huit contrôles, un refus métier — « l'élément fait 1200 mm pour une zone
-/// de 980 » — est l'information la plus utile que l'outil puisse rendre : la
-/// taire laisserait chercher lequel des huit champs est fautif.
-///
-/// Se pose **dans la carte de saisie**, en bas, et non près des résultats : sur
-/// mobile les résultats sont sous le schéma, donc un message posé là se lirait
-/// deux écrans plus bas que le champ à corriger.
+/// Dans la carte de saisie, en bas, près des champs : sur mobile, les
+/// résultats sont sous le schéma.
 class ErrorBanner extends StatelessWidget {
   const ErrorBanner({required this.message, super.key});
 
   final String message;
 
-  /// Un lavis de la couleur d'erreur : le message se détache de la carte sans
-  /// crier plus fort que le champ à corriger.
+  /// Lavis de la couleur d'erreur, discret.
   static const double _washOpacity = 0.08;
   static const double _borderOpacity = 0.4;
 

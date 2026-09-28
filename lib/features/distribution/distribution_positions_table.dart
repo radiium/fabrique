@@ -10,21 +10,11 @@ import '../../core/widgets/table_rows.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/numbers.dart';
 
-/// Les cotes de pose en table numérotée plutôt qu'en ruban `250 · 500 · 750`.
+/// Les cotes de pose en table numérotée, pour ne pas perdre sa place en
+/// traçant.
 ///
-/// Le geste réel, c'est lire une position, tracer, lire la suivante, tracer —
-/// sur un ruban qui passe à la ligne, on perd sa place et on recompte à chaque
-/// trait. Numérotées, les positions se retrouvent : « l'élément 7 ».
-///
-/// Deux colonnes dès qu'il y a une épaisseur : on trace au bord quand on pose
-/// à la règle, au centre quand on perce. La colonne centre disparaît pour des
-/// points purs, où les deux se confondent.
-///
-/// Chiffres tabulaires **alignés à droite** : unités sous unités, centaines
-/// sous centaines, donc un entraxe irrégulier se verrait à l'œil. En
-/// `titleMedium` et non en [controlTextStyle] — ici on a le nez sur l'écran avec
-/// un crayon, c'est le repérage qui compte, pas la lecture à bout de bras, et
-/// quinze lignes à 22 px ne tiendraient nulle part.
+/// Colonnes bord et centre, fusionnées pour des points purs. Chiffres
+/// alignés à droite, en `titleMedium` : on lit la table de près.
 class PositionsTable extends StatelessWidget {
   const PositionsTable({
     required this.result,
@@ -37,13 +27,8 @@ class PositionsTable extends StatelessWidget {
 
   final bool hasWidth;
 
-  /// Largeur de la colonne N°, **mesurée** sur le plus large de ses contenus
-  /// (l'en-tête ou le dernier numéro) plutôt que fixée. Une largeur ronde y
-  /// laisserait du mou : les numéros sont cadrés à droite, donc ce mou tombe
-  /// entièrement à gauche du chiffre et s'ajoute à [kTableCellPadding] — la première
-  /// cellule aurait alors trois fois le blanc de la dernière. Collée au
-  /// contenu, la colonne rend le rembourrage de la ligne visible tel quel des
-  /// deux côtés.
+  /// Largeur de la colonne N°, mesurée sur son plus large contenu : arrondie,
+  /// elle ajouterait du blanc à gauche des numéros cadrés à droite.
   static double _indexColumnWidth(
     String header,
     String widestIndex,
@@ -67,9 +52,8 @@ class PositionsTable extends StatelessWidget {
   Future<void> _copy(BuildContext context, DistributionResult r) async {
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
-    // Une position par ligne, colonnes séparées par une tabulation : ça tombe
-    // dans un tableur, là où le point médian de l'affichage ne se colle nulle
-    // part.
+    // Une ligne par position, colonnes séparées par une tabulation, pour
+    // coller dans un tableur.
     final lines = [
       for (final (i, position) in r.positions.indexed)
         hasWidth
@@ -100,7 +84,7 @@ class PositionsTable extends StatelessWidget {
     );
 
     return InkWell(
-      // Même geste que sur une ResultTile : un tap copie tout.
+      // Comme une ResultTile : un tap copie tout.
       onTap: hasRows ? () => _copy(context, r) : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -128,8 +112,7 @@ class PositionsTable extends StatelessWidget {
                 style: theme.textTheme.titleLarge,
               )
             else ...[
-              // L'unité va dans l'en-tête : elle qualifie la colonne entière,
-              // pas chaque ligne — la répéter quinze fois serait du bruit.
+              // L'unité dans l'en-tête, une fois pour la colonne.
               TableHeaderRow(
                 child: Row(
                   children: [

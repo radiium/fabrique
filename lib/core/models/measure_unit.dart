@@ -1,16 +1,10 @@
 /// Les grandeurs que le Convertisseur sait traiter, et leurs unités.
 ///
-/// Le tri est volontairement sévère : une unité n'entre ici que si on la
-/// croise dans un vrai chantier **et** qu'elle est pénible sans outil. C'est ce
-/// qui sépare cet écran d'un convertisseur générique — celui-là, le téléphone
-/// le fait déjà mieux.
-///
-/// Corollaire : pas de préfixes SI purs pour le plaisir (mg, dL, hPa…). Un
-/// décalage de virgule se fait de tête et ne mérite pas une tuile.
+/// Une unité n'entre que si on la croise sur un chantier et qu'elle est
+/// pénible sans outil. Pas de préfixes SI de simple virgule (mg, dL, hPa).
 library;
 
-/// Une famille d'unités. Chaque grandeur a sa propre table, et on ne convertit
-/// jamais d'une famille à l'autre.
+/// Une famille d'unités. On ne convertit jamais d'une famille à l'autre.
 enum Quantity {
   length,
   area,
@@ -21,16 +15,12 @@ enum Quantity {
   /// Les unités de cette grandeur, dans l'ordre d'affichage : métrique du plus
   /// petit au plus grand, puis impérial.
   ///
-  /// **Cinq au maximum** — c'est la largeur que tient un `AppSegmentedButton`
-  /// sur un téléphone, et c'est déjà la limite atteinte par les longueurs.
-  ///
-  /// Groupé une fois pour toutes : ce getter est lu à chaque `build` de
-  /// l'écran, il n'a pas à refiltrer les 24 unités à chaque fois. Le `!` est
-  /// sûr : la table est bâtie à partir de `Quantity.values`.
+  /// Cinq au plus : la largeur d'un `AppSegmentedButton` sur un téléphone.
+  /// Le `!` est sûr : la table est bâtie sur `Quantity.values`.
   List<MeasureUnit> get units => _unitsByQuantity[this]!;
 
-  /// L'unité proposée à l'ouverture, et celle sur laquelle on retombe quand on
-  /// change de catégorie : la plus courante de la famille, pas la plus petite.
+  /// L'unité proposée à l'ouverture et au changement de grandeur : la plus
+  /// courante.
   MeasureUnit get defaultUnit => switch (this) {
     Quantity.length => MeasureUnit.mm,
     Quantity.area => MeasureUnit.m2,
@@ -42,8 +32,7 @@ enum Quantity {
 
 /// Une unité, rattachée à sa grandeur.
 ///
-/// Le facteur de conversion ne vit pas ici mais dans `core/calc/units/` : même
-/// découpe que `LengthUnit` et `mmPerUnit` — l'enum décrit, le cœur calcule.
+/// Le facteur de conversion est dans `core/calc/units/`.
 enum MeasureUnit {
   // Longueur — base mm.
   mm(Quantity.length),
@@ -59,16 +48,13 @@ enum MeasureUnit {
   inch2(Quantity.area),
   foot2(Quantity.area),
 
-  // Volume — base mm³. Le mm³ ne figure pas dans la liste : aucune cote
-  // d'atelier ne s'exprime ainsi, il ne sert que de pivot interne.
+  // Volume — base mm³, qui ne s'affiche pas.
   cm3(Quantity.volume),
   liter(Quantity.volume),
   m3(Quantity.volume),
   inch3(Quantity.volume),
 
-  /// Le pied-planche (PMP) : l'unité d'achat du bois dur. Conversion pénible,
-  /// propre au bois, et absente de tous les convertisseurs génériques — c'est
-  /// elle qui justifie à elle seule que cet outil existe.
+  /// Le pied-planche (PMP) : l'unité d'achat du bois dur.
   boardFoot(Quantity.volume),
 
   // Masse — base g.
@@ -78,10 +64,8 @@ enum MeasureUnit {
   ounce(Quantity.mass),
   pound(Quantity.mass),
 
-  // Pression — base Pa. bar et PSI pour le compresseur et la cloueuse, MPa
-  // pour les résistances de matériaux (béton, bois). Pas de mbar : c'est un
-  // décalage de virgule depuis le bar, et son symbole est le seul de toute la
-  // table qui ne tienne pas dans un segment sur un téléphone de 400 px.
+  // Pression — base Pa. Pas de mbar : son symbole ne tient pas dans un
+  // segment de téléphone.
   bar(Quantity.pressure),
   kilopascal(Quantity.pressure),
   megapascal(Quantity.pressure),

@@ -94,8 +94,7 @@ void main() {
 
       expect(r.cutCount, 2);
       expect(r.totalCount, 21);
-      // Surface entièrement couverte, mais 21 éléments consommés : la perte v1
-      // est volontairement pessimiste (pas de réemploi des chutes).
+      // Surface couverte, mais 21 éléments consommés : pas de réemploi.
       expect(r.coveredArea, closeTo(r.surfaceArea, 1e-6));
       expect(r.wastePercent, closeTo(10000 / 210000 * 100, 1e-6));
     });
@@ -123,8 +122,7 @@ void main() {
 
   group('computeLayout — options', () {
     test('le décalage pivote avec l’inversion', () {
-      // Élément allongé posé verticalement : les rangées deviennent des
-      // colonnes, et le décalage joue le long des lames — donc en Y.
+      // Élément debout : le décalage joue en Y.
       final r = computeLayout(
         const LayoutInput(
           surfaceX: 400,
@@ -155,8 +153,6 @@ void main() {
     });
 
     test('sur une surface carrée, inverser transpose le motif', () {
-      // Sur une surface carrée et un élément carré, la rotation d'un quart de
-      // tour doit rendre exactement les mêmes comptes.
       const base = LayoutInput(
         surfaceX: 900,
         surfaceY: 900,
@@ -251,16 +247,14 @@ void main() {
       expect(r.elements.first.y, closeTo(10, 1e-9));
       expect(r.elements.last.x + r.elements.last.w, closeTo(1010, 1e-9));
 
-      // L'aire reste celle de la pièce entière : le jeu recule la pose, il ne
-      // rogne pas la surface à couvrir.
       expect(r.surfaceArea, closeTo(1020 * 1000, 1e-6));
       expect(r.coveredArea, closeTo(1000 * 980, 1e-6));
     });
   });
 
   group('computeLayout — dessin', () {
-    // Le schéma pose tous les aplats avant tous les joints : deux éléments
-    // qui se chevauchent y seraient dessinés l'un sous l'autre sans le dire.
+    // Le schéma pose les aplats avant les joints : un chevauchement y serait
+    // invisible.
     test('les éléments ne se chevauchent jamais, dans la pose', () {
       const inputs = [
         LayoutInput(surfaceX: 1050, surfaceY: 730, elementX: 300, elementY: 90),
@@ -433,8 +427,6 @@ void main() {
         ),
       );
 
-      // Le décalage occupe le départ de rangée, et sous lui il n'existe plus
-      // de pièce de bout commune à équilibrer.
       expect(r.balancedEnd, isNull);
       expect(r.balancedRow, closeTo(105, 1e-9));
     });
@@ -450,11 +442,7 @@ void main() {
       final plain = computeLayout(base);
       final balanced = computeLayout(base.copyWith(balanceRows: true));
 
-      // Contre-intuitif, et c'est pour ça que c'est épinglé : la règle déplace
-      // une rangée du plein vers la coupe, elle n'ajoute pas de rangée. Sans
-      // réemploi des chutes, le stock et la perte sont donc inchangés — le
-      // coût n'apparaîtra qu'avec le réemploi, où deux petites chutes valent
-      // moins qu'une grande.
+      // La règle déplace une rangée du plein vers la coupe, sans en ajouter.
       expect(balanced.totalCount, plain.totalCount);
       expect(balanced.coveredArea, closeTo(plain.coveredArea, 1e-6));
       expect(balanced.wastePercent, closeTo(plain.wastePercent, 1e-9));
@@ -464,9 +452,7 @@ void main() {
 
   group('summarizeCuts', () {
     test('groupe les coupes par cote et les compte', () {
-      // Décalage ½ sur trois rangées : le motif revient à zéro une rangée
-      // sur deux, donc seule celle du milieu est décalée — une demi-pièce à
-      // chacun de ses deux bouts.
+      // Décalage ½ sur trois rangées : seule celle du milieu est décalée.
       final r = computeLayout(
         const LayoutInput(
           surfaceX: 1000,
@@ -636,8 +622,6 @@ void main() {
     });
 
     test('chaque refus dit quelle cote corriger', () {
-      // Le motif désigne le champ : l'écran le rédige avec le libellé qu'il
-      // affiche, jamais avec un nom de code.
       CalcError reasonOf(LayoutInput bad) {
         try {
           computeLayout(bad);
@@ -697,8 +681,6 @@ void main() {
     });
 
     test('un refus de volume donne l’ordre de grandeur', () {
-      // Sur une faute de frappe il y a deux zéros d'écart, et c'est ça qui dit
-      // où chercher.
       expect(
         () => computeLayout(
           const LayoutInput(

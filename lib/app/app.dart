@@ -15,9 +15,8 @@ class FabriqueApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Le seul point où le réglage haptique est lu : la portée le descend
-    // jusqu'aux contrôles, overlays et feuilles modales compris, qui vivent
-    // tous sous le `Navigator` de l'app.
+    // Le seul point de lecture du réglage haptique : la portée couvre tout le
+    // `Navigator`, feuilles modales comprises.
     return HapticsScope(
       enabled: ref.watch(hapticsEnabledProvider),
       child: MaterialApp.router(
@@ -26,8 +25,7 @@ class FabriqueApp extends ConsumerWidget {
         theme: buildAppTheme(),
         themeMode: ThemeMode.light,
         routerConfig: ref.watch(routerProvider),
-        // `null` suit le téléphone : la résolution choisit alors parmi ses
-        // langues préférées, et retombe sur l'anglais.
+        // `null` suit le téléphone, avec l'anglais en repli.
         locale: ref.watch(appLocaleProvider),
         localeListResolutionCallback: resolveAppLocale,
         supportedLocales: AppLocalizations.supportedLocales,

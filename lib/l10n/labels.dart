@@ -1,8 +1,6 @@
 /// Les libellés des modèles partagés, dans la langue de l'app.
 ///
-/// Les enums de `core/models` ne portent aucun texte : c'est ce qui les garde
-/// lisibles par `core/calc`, sans Flutter. Chaque table est un `switch`, pour
-/// qu'une valeur ajoutée casse la compilation plutôt que d'afficher un vide.
+/// Chaque table est un `switch` : une valeur ajoutée casse la compilation.
 library;
 
 import '../core/models/enums.dart';
@@ -19,12 +17,8 @@ extension ToolLabels on Tool {
     Tool.converter => l10n.toolConverter,
   };
 
-  /// Une ligne de gloss sous le nom, sur la carte d'accueil.
-  ///
-  /// Rendu sur une seule ligne, tronqué en silence : à 14 px il reste environ
-  /// 250 px sur un écran de 400, soit ~34 caractères. Une énumération de cinq
-  /// termes n'y tient pas : d'où le sous-titre du convertisseur, qui nomme le
-  /// tri des unités plutôt que les grandeurs une à une.
+  /// Une ligne sous le nom, sur la carte d'accueil, tronquée au-delà de ~34
+  /// caractères.
   String subtitle(AppLocalizations l10n) => switch (this) {
     Tool.layout => l10n.toolLayoutSubtitle,
     Tool.distribution => l10n.toolDistributionSubtitle,
@@ -46,11 +40,8 @@ extension QuantityLabels on Quantity {
 }
 
 extension MeasureUnitLabels on MeasureUnit {
-  /// Symbole court, tel qu'il s'écrit à côté d'un chiffre, et assez étroit
-  /// pour tenir dans un segment de sélecteur sur un téléphone.
-  ///
-  /// Seuls les symboles impériaux changent avec la langue (`po` / `in`) : les
-  /// symboles SI, `oz`, `lb` et `PSI` s'écrivent pareil partout.
+  /// Symbole court, assez étroit pour un segment. Seuls les symboles impériaux
+  /// changent avec la langue (`po` / `in`).
   String symbol(AppLocalizations l10n) => switch (this) {
     MeasureUnit.mm => 'mm',
     MeasureUnit.cm => 'cm',

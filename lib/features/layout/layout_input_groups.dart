@@ -17,8 +17,7 @@ import 'layout_controller.dart';
 import 'layout_help.dart';
 import 'layout_presets.dart';
 
-/// La surface à couvrir, seul groupe ouvert à l'arrivée : elle vient de la
-/// pièce, et c'est elle qu'on vient de mesurer.
+/// La surface à couvrir, seul groupe ouvert à l'arrivée.
 class LayoutSurfaceGroup extends StatelessWidget {
   const LayoutSurfaceGroup({
     required this.input,
@@ -39,8 +38,6 @@ class LayoutSurfaceGroup extends StatelessWidget {
       summary:
           '${l10n.number(input.surfaceX)} × '
           '${l10n.number(input.surfaceY)} mm',
-      // Les cotes vont par paires : une largeur et une longueur se lisent
-      // ensemble.
       child: FieldPair(
         first: NumberField(
           label: l10n.layoutSurfaceWidth,
@@ -80,10 +77,7 @@ class LayoutElementGroup extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Le sélecteur se pose au-dessus de ce qu'il remplit : l'élément, le
-          // décalage, et les jeux du groupe suivant. Un contrôle qui
-          // réécrirait des champs situés au-dessus de lui se lirait comme un
-          // bug.
+          // Au-dessus de ce qu'il remplit : l'élément, le décalage et les jeux.
           LabeledField(
             label: l10n.layoutMaterial,
             child: _PresetDropdown(input: input, form: form),
@@ -124,10 +118,7 @@ class LayoutElementGroup extends StatelessWidget {
             onChanged: form.setFlip,
           ),
           const SizedBox(height: AppSpacing.md),
-          // Pas de ⓘ ici : toute la ligne d'un [AppSwitchField] bascule
-          // l'interrupteur, y compris le libellé, et une cible d'aide posée
-          // dedans changerait le réglage une fois sur deux. L'explication tient
-          // donc dans la ligne d'aide.
+          // Pas de ⓘ : toute la ligne bascule l'interrupteur.
           AppSwitchField(
             label: l10n.layoutBalance,
             help: l10n.layoutBalanceHelp,
@@ -139,8 +130,8 @@ class LayoutElementGroup extends StatelessWidget {
     );
   }
 
-  /// Le nom du produit s'il correspond, le format sinon : le nom porte déjà
-  /// ses cotes. Un interrupteur ne s'y lit qu'allumé, éteint il ne change rien.
+  /// Le nom du produit s'il correspond, sinon le format. Un interrupteur n'y
+  /// figure qu'allumé.
   static String _summary(LayoutInput input, AppLocalizations l10n) {
     final preset = matchLayoutPreset(input);
     return [
@@ -212,15 +203,9 @@ class LayoutGapsGroup extends StatelessWidget {
   }
 }
 
-/// Le sélecteur de produit. Sa valeur se **dérive** de la saisie courante.
+/// Le sélecteur de produit, dont la valeur dérive de la saisie.
 ///
-/// Rien de neuf à persister, donc aucune dérive possible entre le formulaire
-/// restauré au lancement et ce que le sélecteur affiche : c'est la saisie qui
-/// dit quel preset est en cours, jamais l'inverse.
-///
-/// « Personnalisé » n'est proposé que lorsqu'il est la valeur courante. Le
-/// laisser en permanence donnerait une entrée qui ne fait rien quand on la
-/// choisit, et une liste de sept lignes pour six produits.
+/// « Personnalisé » n'apparaît que s'il est la valeur courante.
 class _PresetDropdown extends StatelessWidget {
   const _PresetDropdown({required this.input, required this.form});
 
@@ -232,9 +217,7 @@ class _PresetDropdown extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final current = matchLayoutPreset(input);
     return AppDropdown<LayoutPreset?>(
-      // `DropdownMenu` ne lit `initialSelection` qu'à la construction : sans
-      // cette clé, taper une cote ferait passer la saisie en « Personnalisé »
-      // sans que la valeur fermée bouge.
+      // `DropdownMenu` ne lit `initialSelection` qu'à la construction.
       key: ValueKey(current),
       value: current,
       onSelected: (preset) {

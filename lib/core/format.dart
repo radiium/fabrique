@@ -1,24 +1,13 @@
-/// Rendu des nombres côté UI.
-///
-/// Le cœur de calcul travaille en `double` bruts ; c'est ici que l'on décide
-/// combien de décimales une cote mérite à l'écran. Partagé par tous les écrans
-/// pour que « 0.1 » s'écrive pareil partout.
+/// Rendu des nombres côté UI : combien de décimales une cote mérite.
 library;
 
-/// Ce qu'affiche une valeur indisponible — saisie invalide, calcul qui a levé.
-///
-/// Convention de `core/calc` : une entrée incohérente rend `null`, jamais une
-/// valeur fausse. L'UI la matérialise par ce tiret.
+/// Ce qu'affiche une valeur indisponible : saisie refusée.
 const String kNoValue = '—';
 
 /// Formate une cote sans zéros inutiles : `100`, `2.5`, `0.0394`.
 ///
-/// La précision suit la magnitude — une cote en mètres a besoin de plus de
-/// décimales qu'une cote en millimètres pour rester exploitable.
-/// `null` ou valeur non finie → [kNoValue].
-///
-/// [decimalSeparator] est celui de la langue affichée : l'UI le prend dans
-/// `AppLocalizations` (`l10n.number`), le cœur reste sans Flutter.
+/// La précision suit la magnitude. `null` ou valeur non finie → [kNoValue].
+/// [decimalSeparator] vient de la langue (`l10n.number`).
 String formatNumber(double? value, {String decimalSeparator = '.'}) {
   if (value == null || !value.isFinite) return kNoValue;
 
@@ -32,21 +21,15 @@ String formatNumber(double? value, {String decimalSeparator = '.'}) {
 
   final text = value.toStringAsFixed(decimals);
   if (!text.contains('.')) return text;
-  // Rogne la queue de zéros, et le point s'il ne reste plus rien derrière.
+  // Rogne les zéros de queue, et le point s'il reste seul.
   return text
       .replaceFirst(RegExp(r'\.?0+$'), '')
       .replaceFirst('.', decimalSeparator);
 }
 
-/// Formate un angle au dixième de degré, sans le symbole — l'appelant le pose
-/// lui-même (`unit: '°'` sur une tuile, accolé dans un schéma).
+/// Formate un angle au dixième de degré, sans le symbole.
 ///
-/// Contrairement à [formatNumber], la précision est fixe : un angle de niveau
-/// se lit au dixième, et une décimale qui danse au gré de la magnitude serait
-/// illisible sur une valeur qui bouge en continu.
-///
-/// `-0.0` est ramené à `0.0` : le signe laisserait croire à une inclinaison là
-/// où il n'y en a pas.
+/// Précision fixe, pour une valeur qui bouge en continu. `-0.0` devient `0.0`.
 String formatDegrees(double? value, {String decimalSeparator = '.'}) {
   if (value == null || !value.isFinite) return kNoValue;
   final text = value.toStringAsFixed(1);

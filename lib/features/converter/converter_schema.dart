@@ -9,12 +9,8 @@ import 'converter_painter.dart';
 
 /// Le schéma du Convertisseur, branché sur les providers.
 ///
-/// Deux painters derrière une seule vue : la double règle ne vaut que pour des
-/// longueurs, les autres grandeurs passent par la comparaison à un repère.
-///
-/// Sans paramètre de densité : ces deux painters se régulent déjà seuls — les
-/// graduations secondaires ne s'affichent qu'au-dessus de 5 px, et un libellé
-/// qui chevaucherait le précédent est sauté.
+/// Double règle pour les longueurs, comparaison à un repère sinon. Les deux
+/// painters règlent seuls leur densité.
 class ConverterSchema extends ConsumerWidget {
   const ConverterSchema({super.key});
 

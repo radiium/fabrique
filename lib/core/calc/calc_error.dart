@@ -1,10 +1,7 @@
 /// Le motif d'un refus de calcul, sans texte.
 ///
-/// Le cœur dit **pourquoi** il refuse et avec quels chiffres ; l'UI en fait
-/// une phrase dans la langue de l'app. Un motif ajouté casse la compilation
-/// de la traduction, qui fait un `switch` sans joker sur cette classe.
-///
-/// Les cotes portées sont en millimètres, bruts : l'UI les formate.
+/// L'UI en fait une phrase par un `switch` sans joker. Les cotes portées sont
+/// en millimètres bruts.
 library;
 
 import '../models/measure_unit.dart';
@@ -153,9 +150,8 @@ final class GapTooSmall extends CalcError {
 
 /// L'élément est plus grand que la zone à couvrir.
 ///
-/// Cotes dans le sens de pose, orientation inversée comprise. La zone à
-/// couvrir est la surface moins le jeu périphérique : le message porte donc
-/// les deux cotes, puisque l'écart ne se voit nulle part à l'écran.
+/// Cotes dans le sens de pose. La zone est la surface moins le jeu
+/// périphérique : les deux cotes figurent dans le message.
 final class TileLargerThanSurface extends CalcError {
   const TileLargerThanSurface({
     required this.tileWidth,
@@ -172,8 +168,7 @@ final class TileLargerThanSurface extends CalcError {
 
 /// Plus d'éléments que le plafond du dessin.
 ///
-/// [count] reste un `double` : sur une faute de frappe il peut dépasser ce
-/// qu'un entier représente, et c'est son ordre de grandeur qui compte.
+/// [count] reste un `double` : une faute de frappe peut dépasser un entier.
 final class TooManyTiles extends CalcError {
   const TooManyTiles({required this.count, required this.maxCount});
 

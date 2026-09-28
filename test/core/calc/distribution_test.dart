@@ -422,9 +422,8 @@ void main() {
     test(
       'cible inatteignable : on rend le plus proche possible, sans lever',
       () {
-        // 500 mm d'écart ne tiennent pas dans 100 mm. Le minimum imposé par les
-        // bords (2 éléments) donne 80 : c'est la réponse la plus proche, et la
-        // rendre vaut mieux qu'un tiret.
+        // 500 mm d'écart ne tiennent pas dans 100 : le minimum des bords (2
+        // éléments, 80 mm) est la réponse la plus proche.
         final r = computeDistributionForSpacing(
           const DistributionTargetInput(
             length: 100,

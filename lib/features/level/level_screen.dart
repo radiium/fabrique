@@ -56,14 +56,12 @@ class LevelScreen extends ConsumerWidget {
   }
 }
 
-/// Le calibrage : poser un zéro sur une surface de référence, et pouvoir le
-/// reprendre. Sans le retour au zéro absolu, un calibrage malheureux ne se
-/// rattrape qu'en redémarrant l'app.
+/// Le calibrage : poser un zéro sur une surface de référence, ou revenir au
+/// zéro absolu.
 class _Calibration extends ConsumerWidget {
   const _Calibration({required this.reading, required this.zero});
 
-  /// `null` tant que le capteur n'a rien livré — le bouton reste inerte
-  /// plutôt que de poser un zéro sur du vide.
+  /// `null` tant que le capteur n'a rien livré : le bouton reste inerte.
   final AccelReading? reading;
   final AccelReading? zero;
 
@@ -113,9 +111,8 @@ class _Calibration extends ConsumerWidget {
   }
 }
 
-/// Pas d'accéléromètre — un navigateur de bureau, un émulateur, un appareil qui
-/// refuse la permission. On le dit, plutôt que de laisser une bulle figée au
-/// centre passer pour un niveau parfait.
+/// Pas d'accéléromètre (navigateur, émulateur, permission refusée) : une
+/// bulle figée passerait pour un niveau parfait.
 class _SensorUnavailable extends StatelessWidget {
   const _SensorUnavailable();
 

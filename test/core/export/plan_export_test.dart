@@ -15,8 +15,7 @@ class _BlankDrawing extends CustomPainter {
 
 void main() {
   testWidgets('le PNG sort aux proportions d’une A4', (tester) async {
-    // Le painter se rejoue hors de l'arbre de widgets : c'est le seul endroit
-    // où un encodage qui échoue se verrait.
+    // Hors de l'arbre de widgets : le seul endroit où un encodage raté se voit.
     await tester.runAsync(() async {
       final bytes = await renderPlanPng(
         PlanPainter(
@@ -33,8 +32,7 @@ void main() {
 
       expect(image.width, 600);
       expect(image.height, (600 / kPlanAspectRatio).round());
-      // Signature PNG — l'encodeur peut rendre un buffer non vide dans un autre
-      // format si `ImageByteFormat` change sous nos pieds.
+      // Signature PNG.
       expect(bytes.take(4), [0x89, 0x50, 0x4E, 0x47]);
     });
   });

@@ -6,8 +6,7 @@ import '../../l10n/app_localizations.dart';
 part 'distribution_form.freezed.dart';
 part 'distribution_form.g.dart';
 
-/// Ce que l'écran cherche — nommé par le résultat, pas par la saisie, parce
-/// que c'est la question que l'utilisateur se pose en arrivant.
+/// Ce que l'écran cherche, nommé par le résultat.
 enum DistributionMode {
   /// Le nombre d'éléments est connu, on en déduit l'écart.
   spacing,
@@ -23,10 +22,8 @@ enum DistributionMode {
 
 /// Saisie complète de l'écran.
 ///
-/// Sur-ensemble des deux modèles de `core/calc` : le nombre d'éléments et
-/// l'écart visé y coexistent, sinon basculer de mode effacerait la valeur du
-/// mode qu'on quitte. C'est de l'état d'écran, pas de la donnée de calcul —
-/// d'où sa place ici et non dans `core/calc`.
+/// Réunit le nombre et l'écart visé, pour qu'un changement de mode n'efface
+/// rien. État d'écran, donc hors de `core/calc`.
 @freezed
 abstract class DistributionFormState with _$DistributionFormState {
   const factory DistributionFormState({
@@ -40,8 +37,7 @@ abstract class DistributionFormState with _$DistributionFormState {
     @Default(DistributionEdge.element) DistributionEdge startEdge,
     @Default(DistributionEdge.element) DistributionEdge endEdge,
 
-    /// Les deux marges sont-elles liées ? N'a d'effet que sur la saisie : le
-    /// calcul ne voit jamais que [startOffset] et [endOffset].
+    /// Marges liées. Le calcul ne voit que [startOffset] et [endOffset].
     @Default(true) bool symmetricOffsets,
     @Default(0) double startOffset,
     @Default(0) double endOffset,
@@ -77,9 +73,7 @@ abstract class DistributionFormState with _$DistributionFormState {
 
 /// Un couple de bords : la disposition telle qu'elle se choisit.
 ///
-/// Ici et non dans l'écran : le cartouche du plan exporté doit nommer la
-/// disposition retenue, et il ne peut pas aller la chercher dans une grille de
-/// tuiles. Même logique que le libellé porté par [DistributionMode].
+/// Ici pour que le cartouche du plan puisse nommer la disposition.
 class EdgeChoice {
   const EdgeChoice(this.start, this.end);
 
@@ -89,8 +83,7 @@ class EdgeChoice {
   String label(AppLocalizations l10n) => edgeChoiceLabel(start, end, l10n);
 }
 
-/// Les quatre dispositions, dans l'ordre où elles se présentent à l'écran :
-/// la plus courante en tête.
+/// Les quatre dispositions, la plus courante en tête.
 const List<EdgeChoice> kEdgeChoices = [
   EdgeChoice(DistributionEdge.element, DistributionEdge.element),
   EdgeChoice(DistributionEdge.gap, DistributionEdge.gap),

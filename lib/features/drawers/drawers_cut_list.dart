@@ -12,18 +12,16 @@ import 'drawers_labels.dart';
 
 /// La fiche de débit : une ligne par groupe de pièces identiques.
 ///
-/// Deux colonnes et non cinq : sur un téléphone, pièce, quantité, longueur,
-/// largeur et épaisseur côte à côte tomberaient à 60 px chacune. Les trois
-/// cotes se lisent d'un bloc (`500 × 180 × 15`), dans l'ordre de l'en-tête.
+/// Deux colonnes : les trois cotes se lisent d'un bloc (`500 × 180 × 15`),
+/// cinq colonnes seraient trop étroites sur un téléphone.
 class CutListTable extends StatelessWidget {
   const CutListTable({required this.pieces, super.key});
 
   /// `null` = saisie refusée.
   final List<CutPiece>? pieces;
 
-  /// Une pièce par ligne, colonnes séparées par une tabulation : ça tombe dans
-  /// un tableur, avec la quantité dans sa propre colonne pour qu'on puisse la
-  /// multiplier.
+  /// Une pièce par ligne, séparée par des tabulations, quantité à part : pour
+  /// un tableur.
   Future<void> _copy(BuildContext context, List<CutPiece> pieces) async {
     hapticSelection(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -53,7 +51,7 @@ class CutListTable extends StatelessWidget {
     final pieces = this.pieces;
 
     return InkWell(
-      // Même geste que sur une ResultTile : un tap copie tout.
+      // Comme une ResultTile : un tap copie tout.
       onTap: pieces == null ? null : () => _copy(context, pieces),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -103,9 +101,7 @@ class CutListTable extends StatelessWidget {
                         style: cellStyle,
                       ),
                       const SizedBox(width: AppSpacing.md),
-                      // Les cotes cèdent la place, pas la pièce : trop longues,
-                      // elles passent à la ligne plutôt que de pousser le nom
-                      // hors de la carte.
+                      // Les cotes passent à la ligne plutôt que de pousser le nom.
                       Expanded(
                         child: Text(
                           '${l10n.number(piece.length)} × '

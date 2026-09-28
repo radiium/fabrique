@@ -40,10 +40,8 @@ class ConverterScreen extends ConsumerWidget {
       input: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // La grandeur commande tout le reste de la carte — unités, schéma,
-          // tuiles — donc elle vient en premier. En liste déroulante et non en
-          // segments : « Pression » écrit en toutes lettres ne tient pas dans
-          // un segment de téléphone, là où « kPa » tient.
+          // La grandeur d'abord : elle commande le reste. En liste : « Pression » ne
+          // tient pas dans un segment.
           LabeledField(
             label: l10n.converterQuantity,
             child: AppDropdown<Quantity>(
@@ -55,8 +53,7 @@ class ConverterScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.md),
           NumberField(
             label: l10n.converterValue,
-            // Le suffixe suit l'unité source : la saisie se lit d'un coup
-            // d'œil sans remonter au sélecteur.
+            // Le suffixe suit l'unité source.
             suffix: input.unit.symbol(l10n),
             value: input.value,
             onChanged: form.setValue,
@@ -73,9 +70,7 @@ class ConverterScreen extends ConsumerWidget {
               ],
             ),
           ),
-          // Décomposer en fractions de pouce n'a de sens que pour une
-          // longueur. Masqué et non grisé ailleurs : un contrôle mort est pire
-          // qu'un contrôle absent.
+          // Longueurs seulement ; masqué plutôt que grisé ailleurs.
           if (isLength) ...[
             const SizedBox(height: AppSpacing.md),
             AppSwitchField(
@@ -87,8 +82,7 @@ class ConverterScreen extends ConsumerWidget {
           ],
         ],
       ),
-      // La double règle ne vaut que pour des longueurs ; les autres grandeurs
-      // se lisent en rapport à un repère.
+      // Double règle pour les longueurs, comparaison à un repère sinon.
       visualization: const SchemaCard(
         expandFor: Tool.converter,
         child: ConverterSchema(),

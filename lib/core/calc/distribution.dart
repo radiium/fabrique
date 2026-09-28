@@ -5,23 +5,19 @@ import 'calc_exception.dart';
 part 'distribution.freezed.dart';
 part 'distribution.g.dart';
 
-/// Garde-fou : au-delà, la table de positions n'est plus lisible et le schéma
-/// n'est plus qu'une trame grise — mais surtout un `1 / 0.001` saisi par
-/// mégarde génèrerait un million de positions et figerait l'écran.
+/// Borne du nombre d'éléments : un `1 / 0.001` saisi par mégarde donnerait
+/// un million de positions et figerait l'écran.
 const int kMaxDistributionCount = 500;
 
 /// Ce qui borne la répartition à chaque extrémité.
 ///
-/// C'est ce choix, et lui seul, qui fixe le nombre de jeux : une rangée bordée
-/// de deux écarts en a un de plus que d'éléments, une rangée bordée de deux
-/// éléments un de moins.
+/// Fixe le nombre de jeux : `N + 1` entre deux écarts, `N - 1` entre deux
+/// éléments.
 enum DistributionEdge {
-  /// La rangée commence (ou finit) par un jeu : aucun élément ne touche le
-  /// bord. Le barreaudage entre deux montants.
+  /// Un jeu contre le bord, comme un barreaudage entre deux montants.
   gap,
 
-  /// La rangée commence (ou finit) par un élément collé au bord. Un rang de
-  /// lames pleine largeur, une série d'étagères affleurantes.
+  /// Un élément collé au bord, comme des étagères affleurantes.
   element,
 }
 
@@ -44,13 +40,10 @@ abstract class DistributionInput with _$DistributionInput {
     /// Bord d'arrivée.
     @Default(DistributionEdge.gap) DistributionEdge endEdge,
 
-    /// « Marge » de début : une bande de largeur soustraite avant toute
-    /// répartition. Sert à réserver une largeur imposée — un chant, un tasseau
-    /// existant — que le calcul n'a pas à redistribuer.
+    /// Bande soustraite au début avant de répartir : un chant, un tasseau.
     @Default(0) double startOffset,
 
-    /// « Marge » de fin. Distinct de [startOffset] : une répartition
-    /// asymétrique est un cas courant dès qu'un bord est contraint.
+    /// Bande soustraite à la fin.
     @Default(0) double endOffset,
   }) = _DistributionInput;
 
@@ -66,8 +59,7 @@ abstract class DistributionTargetInput with _$DistributionTargetInput {
     /// Largeur totale à garnir, en mm.
     required double length,
 
-    /// Écart visé entre deux éléments, en mm. Presque jamais atteignable
-    /// exactement — voir [computeDistributionForSpacing].
+    /// Écart visé entre deux éléments, en mm, rarement atteignable exactement.
     required double targetSpacing,
 
     /// Largeur d'un élément, en mm.
@@ -86,48 +78,42 @@ abstract class DistributionTargetInput with _$DistributionTargetInput {
 @freezed
 abstract class DistributionResult with _$DistributionResult {
   const factory DistributionResult({
-    /// Nombre d'éléments effectivement répartis. Redondant avec la saisie dans
-    /// le premier mode, mais c'est *le* résultat cherché dans le second.
+    /// Nombre d'éléments répartis : le résultat cherché en mode écart visé.
     required int count,
 
-    /// Nombre de jeux. C'est la règle de l'outil, rendue explicite : `N + 1`
-    /// bordé de deux écarts, `N - 1` bordé de deux éléments.
+    /// Nombre de jeux : `N + 1` entre deux écarts, `N - 1` entre deux éléments.
     required int gapCount,
 
     /// Jeu libre entre deux éléments voisins, en mm.
     required double spacing,
 
-    /// Entraxe : `spacing + elementWidth`. C'est lui que l'on reporte au
-    /// crayon — le jeu, on ne le mesure jamais directement.
+    /// Entraxe : `spacing + elementWidth`, la cote que l'on reporte.
     required double pitch,
 
     /// Largeur réellement répartie : `length` moins les deux marges.
     required double span,
 
     /// Bord d'attaque de chaque élément depuis l'origine, en mm. Pour une
-    /// largeur nulle, c'est la position du point.
+    /// largeur nulle, la position du point.
     required List<double> positions,
 
-    /// Centre de chaque élément, en mm — l'axe de perçage ou de vissage.
+    /// Centre de chaque élément, en mm : l'axe de perçage ou de vissage.
     required List<double> centers,
   }) = _DistributionResult;
 }
 
-/// Les deux seules réponses entières qui encadrent un écart visé.
+/// Les deux répartitions entières qui encadrent un écart visé.
 ///
-/// Le nombre d'éléments est entier, l'écart visé ne l'est presque jamais : il
-/// existe toujours une solution qui serre un peu plus et une qui relâche un
-/// peu. Plutôt qu'un réglage d'arrondi, on rend les deux — celui qui a une
-/// contrainte de maximum (barreaudage) lit la plus serrée, celui qui cherche
-/// une allure lit [best].
+/// La plus serrée sert une contrainte de maximum (barreaudage), [best] une
+/// allure.
 @freezed
 abstract class DistributionTargetResult with _$DistributionTargetResult {
   const factory DistributionTargetResult({
     /// Celle dont l'écart réel est le plus proche de la cible.
     required DistributionResult best,
 
-    /// L'autre borne, de l'autre côté de la cible. `null` quand la cible tombe
-    /// juste, ou quand ce voisin n'est pas réalisable.
+    /// La borne de l'autre côté de la cible. `null` si la cible tombe juste ou si
+    /// ce voisin est irréalisable.
     required DistributionResult? other,
   }) = _DistributionTargetResult;
 }
@@ -137,24 +123,17 @@ abstract class DistributionTargetResult with _$DistributionTargetResult {
 int _gapCount(int count, DistributionEdge start, DistributionEdge end) =>
     count + 1 - _edgeElements(start, end);
 
-/// Combien d'extrémités sont occupées par un élément (0, 1 ou 2).
-///
-/// C'est aussi, tel quel, le nombre minimal d'éléments que la disposition
-/// admet : un seul élément ne peut pas toucher les deux bords, et une rangée
-/// qui doit commencer par un élément en compte au moins un.
+/// Nombre d'extrémités occupées par un élément (0, 1 ou 2), qui est aussi le
+/// nombre minimal d'éléments.
 int _edgeElements(DistributionEdge start, DistributionEdge end) =>
     (start == DistributionEdge.element ? 1 : 0) +
     (end == DistributionEdge.element ? 1 : 0);
 
-/// Nombre minimal d'éléments qu'admet une disposition — de quoi borner le
-/// champ de saisie sans que l'écran ait à refaire le raisonnement.
+/// Nombre minimal d'éléments qu'admet une disposition, pour borner le champ.
 int minDistributionCount(DistributionEdge start, DistributionEdge end) =>
     _edgeElements(start, end);
 
 /// Valide la géométrie commune aux deux modes et rend la longueur utile.
-///
-/// Les messages sont rédigés pour être affichés tels quels : c'est la seule
-/// chose que l'utilisateur puisse lire quand le schéma reste vide.
 double _validatedSpan({
   required double length,
   required double elementWidth,
@@ -186,8 +165,7 @@ double _validatedSpan({
 
 /// Répartit [DistributionInput.count] éléments sur la longueur utile.
 ///
-/// Le jeu vaut `(utile − éléments) / nombre de jeux` ; tout le reste — les
-/// positions, les centres — en découle par addition de l'entraxe.
+/// Le jeu vaut `(utile − éléments) / nombre de jeux`.
 DistributionResult computeDistribution(DistributionInput input) {
   final span = _validatedSpan(
     length: input.length,
@@ -251,10 +229,8 @@ DistributionResult computeDistribution(DistributionInput input) {
 /// Cherche le nombre d'éléments qui approche au plus près
 /// [DistributionTargetInput.targetSpacing].
 ///
-/// En inversant `utile = N × largeur + (N + c) × écart`, avec `c` le décalage
-/// de comptage des jeux, on obtient `N = (utile − c × écart) / (largeur +
-/// écart)` — généralement fractionnaire. On évalue les deux entiers qui
-/// l'encadrent et on rend les deux répartitions complètes.
+/// Inverse `utile = N × largeur + (N + c) × écart` et rend les répartitions
+/// des deux entiers qui encadrent `N`.
 DistributionTargetResult computeDistributionForSpacing(
   DistributionTargetInput input,
 ) {
@@ -284,8 +260,7 @@ DistributionTargetResult computeDistributionForSpacing(
   if (!exact.isFinite) {
     throw const CalcException(NoDistributionForGap());
   }
-  // Dit franchement que l'écart est trop petit, plutôt que de laisser les deux
-  // bornes échouer plus bas sur un message vague.
+  // Un message clair plutôt que deux bornes qui échouent plus bas.
   if (exact.floor() > kMaxDistributionCount) {
     throw const CalcException(GapTooSmall(kMaxDistributionCount));
   }
@@ -305,13 +280,12 @@ DistributionTargetResult computeDistributionForSpacing(
         ),
       );
     } on CalcException {
-      // Une borne peut être irréalisable — un élément de trop ne rentre plus,
-      // un élément de moins viole le bord demandé. L'autre reste valable.
+      // Une borne peut être irréalisable ; l'autre reste valable.
       return null;
     }
   }
 
-  // Le `Set` dédoublonne le cas où la cible tombe juste : une seule réponse.
+  // Le `Set` dédoublonne une cible qui tombe juste.
   final candidates = <int>{
     exact.floor(),
     exact.ceil(),

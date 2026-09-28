@@ -39,19 +39,15 @@ class DistributionScreen extends ConsumerWidget {
       inputGroups: [
         DistributionGeometryGroup(input: input, ready: ready, form: form),
         DistributionEdgesGroup(input: input, form: form),
-        // Le refus s'affiche dans la carte de saisie. Sur mobile, les
-        // résultats sont sous le schéma : un message posé là serait lu deux
-        // écrans plus bas que le champ fautif.
+        // Le refus dans la carte de saisie, près du champ fautif.
         if (outcome case DistributionFailure(:final reason))
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: ErrorBanner(message: l10n.calcError(reason)),
           ),
       ],
-      // Plus haute que le 16/10 commun : la vue d'ensemble et les deux
-      // panneaux de détail s'empilent, et ils s'empilent en hauteur de texte.
-      // Le rapport est calé pour que la boîte de référence du painter tienne
-      // au facteur 1 sur un téléphone — ni agrandie, ni réduite.
+      // Plus haute que 16/10, pour que la boîte de référence du painter tienne
+      // à l'échelle 1 sur un téléphone.
       visualizationAspectRatio: 5 / 4,
       visualization: const SchemaCard(
         expandFor: Tool.distribution,
@@ -74,8 +70,7 @@ class DistributionScreen extends ConsumerWidget {
               ? null
               : l10n.distributionGapRule(result.count, result.gapCount),
         ),
-        // Sans épaisseur, l'entraxe *est* l'écart : deux tuiles identiques ne
-        // diraient rien de plus.
+        // Sans épaisseur, l'entraxe est l'écart.
         if (input.elementWidth > 0)
           ResultTile(
             label: l10n.distributionPitch,

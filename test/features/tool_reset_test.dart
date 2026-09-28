@@ -12,12 +12,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../support/app.dart';
 
-/// Le bouton « réinitialiser » de l'`AppBar`.
-///
-/// Deux choses qu'aucun test de cœur ne peut attraper : que l'icône soit bien
-/// éteinte tant que la saisie est neuve — c'est elle qui porte le signal
-/// « rien n'a été restauré » — et qu'un reset redescende jusque dans le texte
-/// des champs, dont le `TextEditingController` vit à part de l'état.
 void main() {
   final resetButton = find.widgetWithIcon(IconButton, Icons.restart_alt);
 

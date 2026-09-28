@@ -5,16 +5,8 @@ import 'haptics.dart';
 
 /// Réglage booléen d'un formulaire : libellé à gauche, interrupteur à droite.
 ///
-/// Contrairement à [LabeledField], le libellé ne surplombe pas le contrôle — il
-/// en fait partie. **Toute la ligne bascule l'interrupteur**, libellé et aide
-/// compris : en atelier, viser une pastille de 32 px avec un gant est perdu
-/// d'avance, alors que la ligne entière fait [kFieldHeight] de haut sur toute
-/// la largeur de la carte.
-///
-/// Le `Switch` reste un enfant interactif à part entière : il garde son propre
-/// focus clavier et son animation. Un tap dessus lui revient (l'arène des
-/// gestes donne la main au plus profond), un tap ailleurs sur la ligne passe
-/// par l'[InkWell] — dans les deux cas un seul aller-retour vers [onChanged].
+/// Toute la ligne bascule l'interrupteur. Le `Switch` garde son focus et son
+/// tap ; ailleurs, l'[InkWell] prend le relais.
 class AppSwitchField extends StatelessWidget {
   const AppSwitchField({
     required this.label,
@@ -40,22 +32,18 @@ class AppSwitchField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Le libellé et l'interrupteur ne forment qu'un seul nœud d'accessibilité :
-    // un lecteur d'écran annonce « Impérial composé, activé », pas deux
-    // éléments sans rapport.
+    // Un seul nœud d'accessibilité pour le libellé et l'interrupteur.
     return MergeSemantics(
       child: InkWell(
         onTap: () => _toggle(context),
-        // Le focus clavier reste au seul `Switch` : sinon la ligne et lui
-        // feraient deux arrêts Tab pour un même réglage.
+        // Le focus clavier au seul `Switch` : un seul arrêt Tab.
         canRequestFocus: false,
         borderRadius: BorderRadius.circular(AppRadii.field),
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: kFieldHeight),
           child: Padding(
-            // 4 px, pas 8 : le `Switch` mesure 40 de haut une fois sa cible
-            // tactile dégonflée, et la colonne libellé + aide tombe sur les
-            // mêmes 40. Les deux variantes retombent donc sur [kFieldHeight].
+            // 4 px : `Switch` et colonne libellé + aide font 40, soit [kFieldHeight]
+            // avec la marge.
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
             child: Row(
               children: [
@@ -64,8 +52,7 @@ class AppSwitchField extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Même style que le libellé d'un [LabeledField] : dans la
-                      // carte de saisie, tous les libellés se lisent pareil.
+                      // Même style que le libellé d'un [LabeledField].
                       Text(
                         label,
                         style: theme.textTheme.titleSmall?.copyWith(
@@ -85,11 +72,7 @@ class AppSwitchField extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
-                // `shrinkWrap` : sans lui, Material ajoute au `Switch` sa
-                // propre cible tactile de 48 px, qui s'empile sur la marge de
-                // la ligne et la pousse à 64 — le contrôle déborderait de
-                // [kFieldHeight] sans que rien ne le dise. La cible, ici,
-                // c'est la ligne entière.
+                // `shrinkWrap` : sinon la cible de 48 px du `Switch` pousse la ligne à 64.
                 Switch(
                   value: value,
                   onChanged: (_) => _toggle(context),

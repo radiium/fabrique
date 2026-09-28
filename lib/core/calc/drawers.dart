@@ -7,11 +7,10 @@ import 'calc_exception.dart';
 part 'drawers.freezed.dart';
 part 'drawers.g.dart';
 
-/// La famille de glissière, qui fixe les jeux de la caisse.
+/// La famille de glissière, qui fixe les jeux de la caisse ([SlideSpec]).
 ///
-/// Une glissière n'est pas une marque : c'est un jeu latéral, une réduction de
-/// longueur et une contrainte sur le fond ([SlideSpec]). Suivre les catalogues
-/// serait sans fin, et « Personnalisée » recopie une fiche fabricant.
+/// Des familles et non des marques : [SlideKind.custom] recopie une fiche
+/// fabricant.
 enum SlideKind {
   /// Glissière latérale à billes, vissée sur le flanc et sur le côté.
   ballBearing,
@@ -376,7 +375,7 @@ const double _epsilon = 1e-6;
 
 /// Calcule les façades, les caisses, la glissière et la fiche de débit.
 ///
-/// Chaque tiroir a son **compartiment** : la part de l'ouverture derrière sa
+/// Chaque tiroir a son compartiment : la part de l'ouverture derrière sa
 /// façade, limitée au milieu du jeu entre deux façades. Sa caisse est la plus
 /// haute qui y tient, dégagements de la glissière déduits
 /// ([SlideSpec.clearanceBelow], [SlideSpec.clearanceAbove]).

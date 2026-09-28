@@ -7,8 +7,7 @@ import '../../l10n/app_localizations.dart';
 /// Saisie numérique nue, sans libellé : le socle commun de `NumberField` et de
 /// `CountField`.
 ///
-/// Hauteur fixe [kFieldHeight], clavier numérique, notifie à chaque frappe —
-/// le calcul est temps réel, il n'y a pas de bouton « calculer ».
+/// Hauteur [kFieldHeight], clavier numérique, notifie à chaque frappe.
 class NumericInput extends StatefulWidget {
   const NumericInput({
     required this.value,
@@ -26,9 +25,8 @@ class NumericInput extends StatefulWidget {
   final bool decimal;
   final TextAlign textAlign;
 
-  /// Le nom du champ pour un lecteur d'écran : le libellé visible au-dessus
-  /// est un nœud à part, et un champ atteint au Tab ou au doigt s'annoncerait
-  /// « champ de texte, 250 » sans dire lequel.
+  /// Le nom du champ pour un lecteur d'écran, le libellé visible étant un
+  /// autre nœud.
   final String? semanticLabel;
 
   @override
@@ -36,8 +34,7 @@ class NumericInput extends StatefulWidget {
 }
 
 class _NumericInputState extends State<NumericInput> {
-  // Tardif : le premier accès a lieu dans `build`, où le séparateur décimal de
-  // la langue se lit dans le contexte.
+  // Tardif : le séparateur décimal se lit dans le contexte, au `build`.
   late final TextEditingController _controller = TextEditingController(
     text: _format(widget.value),
   );
@@ -45,8 +42,8 @@ class _NumericInputState extends State<NumericInput> {
   @override
   void didUpdateWidget(NumericInput oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Ne réécrit le texte que si la valeur a changé hors frappe (boutons,
-    // restauration) — sinon le curseur sauterait à chaque caractère saisi.
+    // Réécrit seulement si la valeur a changé hors frappe, sinon le curseur
+    // saute.
     if (widget.value != oldWidget.value &&
         _parse(_controller.text) != widget.value) {
       _controller.text = _format(widget.value);
@@ -61,14 +58,10 @@ class _NumericInputState extends State<NumericInput> {
 
   @override
   Widget build(BuildContext context) {
-    // Hauteur fixe : le champ occupe exactement [kFieldHeight], quel que soit
-    // le style de texte. `expands` fait remplir la boîte à la décoration, et
-    // le texte reste centré dedans.
+    // `expands` remplit la boîte de [kFieldHeight], texte centré.
     return SizedBox(
       height: kFieldHeight,
-      // Un `Semantics` simple, pas un `MergeSemantics` : l'annotation se fond
-      // d'elle-même dans le nœud du champ, alors qu'une fusion forcée fait
-      // lever le `RenderEditable`.
+      // `Semantics` simple : un `MergeSemantics` fait lever `RenderEditable`.
       child: Semantics(
         label: widget.semanticLabel,
         child: TextField(

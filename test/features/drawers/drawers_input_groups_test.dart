@@ -45,7 +45,7 @@ void main() {
     tester,
   ) async {
     await pumpDrawers(tester);
-    // Ouvert, un groupe tait son résumé : on replie celui de l'arrivée.
+    // Ouvert, un groupe masque son résumé.
     await tester.tap(find.text('Ouverture'));
     await tester.pumpAndSettle();
 
@@ -63,8 +63,7 @@ void main() {
   testWidgets('les résumés anglais tiennent aussi sans tronquer', (
     tester,
   ) async {
-    // L'anglais n'a pas la longueur du français : ses résumés se mesurent à
-    // part.
+    // Les résumés anglais, de longueur différente, se mesurent à part.
     const englishSummaries = [
       '564 × 684 × 540 mm · cabinet 18 mm',
       '3 drawers · equal heights · overlay, front 18 · reveal 3 mm',
@@ -100,8 +99,6 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Sous tiroir · longueur 450 mm'), findsOneWidget);
-    // La glissière impose le fond : le résumé de la caisse le dit, puisque
-    // c'est là qu'on chercherait pourquoi le choix du fond a disparu.
     expect(
       find.text(
         'côtés 15, fond 8 mm · côtés recouvrants · fond en retrait de 13 mm',

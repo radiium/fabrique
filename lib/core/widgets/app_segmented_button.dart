@@ -14,15 +14,8 @@ class AppSegment<T> {
 /// Sélecteur à choix unique : une piste beige, et une pastille brune qui
 /// glisse sous l'option choisie.
 ///
-/// Écrit à la main plutôt que dérivé de `SegmentedButton` : Material force un
-/// `RoundedRectangleBorder` carré sur chaque segment (le `shape` du style
-/// n'est lu que pour le contour général) et détoure les segments sur ce
-/// contour. La pastille arrondie posée *dans* la piste y est donc hors
-/// d'atteinte, quel que soit le `ButtonStyle`.
-///
-/// Chaque segment est tabulable et activable au clavier (Espace / Entrée) :
-/// l'app tourne aussi sur le Web, où un contrôle uniquement tactile serait
-/// inatteignable.
+/// Écrit à la main : `SegmentedButton` détoure ses segments en carré.
+/// Chaque segment se tabule et s'active au clavier, pour le web.
 class AppSegmentedButton<T> extends StatefulWidget {
   const AppSegmentedButton({
     required this.segments,
@@ -45,9 +38,7 @@ class AppSegmentedButton<T> extends StatefulWidget {
   /// Jeu entre la pastille et le bord de la piste.
   static const double _inset = 4;
 
-  /// Rayon de la pastille : concentrique à la piste, donc le rayon de celle-ci
-  /// moins le jeu qui l'en sépare. Sans cette soustraction, deux arrondis de
-  /// même rayon séparés par une marge ne paraissent pas parallèles.
+  /// Rayon de la pastille, concentrique à la piste : son rayon moins le jeu.
   static const double _thumbRadius = AppRadii.field - _inset;
 
   static const Duration _duration = Duration(milliseconds: 180);
@@ -70,8 +61,6 @@ class _AppSegmentedButtonState<T> extends State<AppSegmentedButton<T>> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: AppColors.field,
-          // Même rayon qu'un champ ou un bouton : les contrôles d'une carte
-          // partagent leur arrondi.
           borderRadius: BorderRadius.circular(AppRadii.field),
           border: Border.all(color: AppColors.border),
         ),
@@ -102,9 +91,7 @@ class _AppSegmentedButtonState<T> extends State<AppSegmentedButton<T>> {
                   ),
                 ),
               ),
-            // Les libellés portent la même marge horizontale que la pastille
-            // pour rester centrés dessus, mais occupent toute la hauteur :
-            // la cible tactile est la piste entière, pas la pastille.
+            // Toute la hauteur : la cible tactile est la piste entière.
             Positioned.fill(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -212,8 +199,6 @@ class _Segment extends StatelessWidget {
           child: Center(
             child: AnimatedDefaultTextStyle(
               duration: AppSegmentedButton._duration,
-              // Le style de contrôle du design system, partagé avec les
-              // champs et les entrées de panneau déroulant.
               style:
                   (controlTextStyle(context, emphasized: selected) ??
                           const TextStyle())

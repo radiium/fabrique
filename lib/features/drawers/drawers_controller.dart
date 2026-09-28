@@ -17,8 +17,7 @@ const DrawersInput kDrawersDefaults = DrawersInput(
   drawerCount: 3,
 );
 
-/// Borne haute du nombre de tiroirs : au-delà, une colonne n'est plus une
-/// colonne de tiroirs mais un casier.
+/// Borne haute du nombre de tiroirs : au-delà, c'est un casier.
 const int kMaxDrawerCount = 10;
 
 /// Tient la saisie. Une méthode par champ, qui fait `copyWith`.
@@ -97,12 +96,7 @@ class DrawersForm extends _$DrawersForm with PersistedForm<DrawersInput> {
   void setGrooveDepth(double mm) => state = state.copyWith(grooveDepth: mm);
 }
 
-/// Ce que l'écran a à afficher : un résultat, ou la raison de son absence.
-///
-/// **Écart assumé à la convention `CalcException` → `null`**, le même que le
-/// Calepinage. L'outil a quatre groupes de contrôles, dont trois repliés : un
-/// tiret muet sur « ouverture trop étroite » laisserait chercher le champ
-/// fautif dans un groupe fermé.
+/// Ce que l'écran a à afficher : un résultat, ou le motif de son refus.
 sealed class DrawersOutcome {
   const DrawersOutcome();
 }
@@ -121,8 +115,7 @@ final class DrawersFailure extends DrawersOutcome {
   final CalcError reason;
 }
 
-/// Le résultat, ou `null` sur un refus : ce que lisent le schéma et les
-/// tuiles.
+/// Le résultat, ou `null` sur un refus.
 extension DrawersOutcomeResult on DrawersOutcome {
   DrawersResult? get result => switch (this) {
     DrawersReady(:final result) => result,
@@ -130,7 +123,7 @@ extension DrawersOutcomeResult on DrawersOutcome {
   };
 }
 
-/// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
+/// Le résultat, dérivé de la saisie.
 @riverpod
 DrawersOutcome drawersResult(Ref ref) {
   final input = ref.watch(drawersFormProvider);

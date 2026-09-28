@@ -8,9 +8,6 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/app.dart';
 import '../../support/phone.dart';
 
-/// L'aide de champ ne se vérifie qu'au rendu : qu'elle s'ouvre, qu'elle se
-/// referme, et surtout qu'elle ne coûte rien au champ qui n'en a pas — c'est
-/// la seule raison pour laquelle elle tient dans une carte déjà pleine.
 void main() {
   const about = FieldHelp(
     title: 'Longueur totale',
@@ -37,13 +34,12 @@ void main() {
 
     expect(find.text('La longueur de l’espace à garnir.'), findsNothing);
 
-    // C'est le libellé qu'on tape, pas l'icône : la cible est la ligne.
+    // Le libellé, pas l'icône : la cible est la ligne.
     await tester.tap(find.text('Longueur totale'));
     await tester.pumpAndSettle();
 
     expect(find.text('La longueur de l’espace à garnir.'), findsOneWidget);
     expect(find.text('Un point détaché'), findsOneWidget);
-    // Le titre reprend le libellé : on doit reconnaître d'où ça s'est ouvert.
     expect(find.text('Longueur totale'), findsNWidgets(2));
   });
 
@@ -79,16 +75,13 @@ void main() {
     final sans = tester.getSize(find.byType(NumberField).at(0)).height;
     final avec = tester.getSize(find.byType(NumberField).at(1)).height;
 
-    // 20 px de libellé nu contre 32 de ligne tappable : le surcoût est de 12,
-    // et il ne frappe que les champs qui portent une explication.
+    // 20 px de libellé nu contre 32 de ligne tapable.
     expect(sans, 76);
     expect(avec, sans + 12);
   });
 
   testWidgets('deux champs appariés restent alignés', (tester) async {
-    // La feuille a été retenue contre le dépliant en place pour ce cas
-    // précis : deux champs sur une ligne. Encore faut-il que le ⓘ ne
-    // désaligne pas la paire à lui seul.
+    // Le ⓘ ne doit pas désaligner une paire de champs.
     await pump(
       tester,
       Row(

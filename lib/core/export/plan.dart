@@ -1,21 +1,7 @@
 /// Le plan : le schéma d'un outil posé sur une feuille A4, avec son cartouche.
 ///
-/// C'est ce que l'app exporte, et c'est aussi ce que montre la page plein
-/// écran. Les deux traversent le même painter, donc l'aperçu et le fichier
-/// sont le même dessin au pixel près — un aperçu qui montrerait autre chose
-/// que ce qui sort ne serait pas un aperçu.
-///
-/// Le cartouche est un **tableau réglé**, pas une liste de valeurs : encre
-/// noire, une case par champ, cadre gras et refends fins. C'est la forme qu'a
-/// le cartouche de n'importe quel plan, donc elle se lit sans qu'on l'explique
-/// — là où un panneau typographique se lit comme une capture d'app.
-///
-/// Il ne porte **que ce que le dessin ne dit pas**. Les cotes de la pièce sont
-/// sur le schéma, aux mêmes chiffres exacts : les répéter en texte remplirait
-/// le cartouche de redites, et chaque ligne gagnée est une position de plus
-/// dans la table.
-///
-/// Rien ici ne calcule : le plan reçoit des chaînes déjà formatées.
+/// Même painter pour l'export et la page plein écran. Le cartouche ne porte
+/// que ce que le dessin ne dit pas, et reçoit des chaînes déjà formatées.
 library;
 
 import 'dart:math' as math;
@@ -28,12 +14,10 @@ import '../../l10n/app_localizations.dart';
 /// Une case du cartouche : son intitulé en petites capitales, sa valeur.
 typedef PlanField = (String label, String value);
 
-/// La table du cartouche — les cotes de pose, une par ligne.
+/// La table du cartouche : les cotes de pose, une par ligne.
 ///
-/// **Tout ou rien** : [fallback] remplace la table entière dès qu'elle ne tient
-/// pas dans la place restante. Une liste de positions tronquée sur un plan
-/// d'atelier, c'est une pièce percée en moins, et rien sur la feuille ne dirait
-/// qu'il en manque.
+/// Tout ou rien : [fallback] remplace la table entière si elle ne tient pas,
+/// car une liste tronquée ferait oublier une pièce.
 class PlanTable {
   const PlanTable({
     required this.title,
@@ -70,34 +54,24 @@ class Plan {
   /// fin de liste prend toute la largeur.
   final List<PlanField> fields;
 
-  /// Les tables, l'une sous l'autre, la plus importante d'abord : chacune
-  /// cède sa place à son repli si elle ne tient plus, sans toucher aux
-  /// précédentes.
+  /// Les tables, la plus importante d'abord. Chacune cède la place à son repli
+  /// si elle ne tient plus, sans toucher aux précédentes.
   final List<PlanTable> tables;
 
-  /// L'avertissement de l'outil, en pleine largeur au bas du cartouche — le
-  /// `%` de perte pessimiste du Calepinage.
+  /// L'avertissement de l'outil, en pleine largeur au bas du cartouche.
   final String? note;
 }
 
-/// `23/09/2026` — la date telle qu'on l'écrit sur un plan, dans l'ordre de la
-/// langue (`09/23/2026` en anglais).
+/// La date d'un plan, dans l'ordre de la langue : `23/09/2026`, `09/23/2026`.
 String formatPlanDate(DateTime date, AppLocalizations l10n) {
   String two(int v) => v.toString().padLeft(2, '0');
   return l10n.planDateValue(two(date.day), two(date.month), '${date.year}');
 }
 
-/// Les proportions d'une A4 à l'italienne, et la boîte dans laquelle le plan
-/// est coté.
+/// Boîte de référence du plan, aux proportions d'une A4 à l'italienne.
 ///
-/// **Le plan ne se recompose pas avec le canvas, il s'y pose en entier** — même
-/// règle que les schémas : tout est coté dans cette boîte, qu'une seule mise à
-/// l'échelle uniforme amène à la taille disponible. Sans ça, le cartouche
-/// s'étirerait d'un appareil à l'autre et l'aperçu cesserait de valoir pour le
-/// fichier.
-///
-/// À l'italienne parce que les cinq schémas sont tous plus larges que hauts, et
-/// parce qu'une image large se regarde mieux dans une conversation.
+/// Mise à l'échelle uniformément dans le canvas, comme les schémas, pour que
+/// l'aperçu vaille pour le fichier.
 const double kPlanWidth = 594;
 const double kPlanHeight = 420;
 const double kPlanAspectRatio = kPlanWidth / kPlanHeight;
@@ -107,14 +81,11 @@ const double _sheetMargin = 14;
 
 /// Largeur du cartouche, en colonne le long du bord droit.
 ///
-/// En colonne et non en bandeau bas : une table de positions veut de la
-/// hauteur, et la zone de tracé y garde des proportions proches de celles des
-/// schémas, qui s'y posent donc en occupant vraiment la place. En bandeau, un
-/// schéma en 5/4 se retrouvait cerné de blanc sur ses deux flancs.
+/// En colonne : une table de positions veut de la hauteur, et la zone de
+/// tracé garde les proportions des schémas.
 const double _cartoucheWidth = 196;
 
-/// Retrait de la zone de tracé par rapport au cadre — sans lui, un schéma qui
-/// remplit sa boîte vient toucher le trait.
+/// Retrait de la zone de tracé par rapport au cadre.
 const double _drawingInset = 8;
 
 /// Marge intérieure d'une case.
@@ -122,10 +93,7 @@ const double _cellPad = 4;
 
 /// Interligne de tout le cartouche.
 ///
-/// Figé, et c'est ce qui rend les hauteurs de case calculables : la boîte de
-/// ligne vaut exactement `taille × ce facteur`, donc un intitulé et sa valeur
-/// tiennent dans une case dont la hauteur se déduit, au lieu de se chevaucher
-/// dès qu'une police un peu large passe par là.
+/// Figé, pour que la hauteur d'une case se calcule : `taille × facteur`.
 const double _lineHeight = 1.15;
 
 const double _titleSize = 14;
@@ -135,9 +103,8 @@ const double _tableHeaderSize = 6.5;
 const double _tableSize = 8;
 const double _noteSize = 7;
 
-/// Hauteur des cases, par nature — dérivées de [_lineHeight] et [_cellPad],
-/// jamais posées à l'œil : une case trop basse fait passer la valeur sous son
-/// intitulé, et ça ne se voit qu'au rendu.
+/// Hauteur des cases, dérivée de [_lineHeight] et [_cellPad] : trop basse,
+/// la valeur passe sous l'intitulé.
 const double _titleCellHeight = 2 * _cellPad + _titleSize * _lineHeight;
 const double _fieldCellHeight =
     2 * _cellPad + _labelSize * _lineHeight + _valueSize * _lineHeight + 2;
@@ -145,34 +112,26 @@ const double _tableTitleHeight = 2 * _cellPad + _tableHeaderSize * _lineHeight;
 const double _tableHeaderHeight = _tableHeaderSize * _lineHeight + 5;
 const double _tableRowHeight = _tableSize * _lineHeight + 2;
 
-/// Interlettrage des intitulés — c'est lui qui fait lire une petite capitale
-/// comme une étiquette de cartouche et non comme un mot tassé.
+/// Interlettrage des intitulés en petites capitales.
 const double _labelTracking = 0.8;
 
 /// Écart entre deux colonnes d'une table.
 const double _columnGap = 4;
 
-/// Largeur de la colonne des numéros.
+/// Largeur de la colonne des numéros, fixe d'un plan à l'autre.
 ///
-/// Fixée et non mesurée : une largeur mesurée ferait danser les colonnes d'un
-/// plan à l'autre. Mais assez large pour le plus grand numéro possible
-/// ([kMaxDistributionCount] en donne trois chiffres) — sous-dimensionnée, la
-/// cellule ne tronque pas, elle **n'écrit rien**, et la colonne se vide en
-/// silence à partir de 10.
+/// Prévue pour trois chiffres ([kMaxDistributionCount]) : trop étroite, la
+/// cellule n'écrit rien.
 const double _indexWidth = 26;
 
-/// L'encre du plan.
-///
-/// Du noir franc : le cartouche est un tableau réglé, et c'est le contraste
-/// maximal qui le fait tenir comme de l'encre une fois la feuille imprimée.
+/// L'encre du plan : noir franc, pour l'impression.
 const Color _planInk = Color(0xFF000000);
 
-/// Les intitulés de case — le même gris pour tous, pour que les valeurs
-/// ressortent seules.
+/// Les intitulés de case, en gris pour que les valeurs ressortent.
 const Color _planLabel = Color(0xFF6E6E6E);
 
-/// Les refends du cartouche. Le cadre de la feuille, lui, fait le double :
-/// c'est la convention des deux épaisseurs du dessin technique.
+/// Les refends du cartouche, et le cadre au double (les deux épaisseurs du
+/// dessin technique).
 const double _ruleWidth = 0.5;
 const double _frameWidth = 1;
 
@@ -200,9 +159,8 @@ Rect get _drawing => Rect.fromLTRB(
 
 /// Un plan complet : la feuille, le schéma, le cartouche.
 ///
-/// [drawing] est le painter de l'outil, pris tel quel — le plan ne lui impose
-/// que sa place. Il se fixe lui-même à sa boîte de référence, comme il le fait
-/// dans sa vignette, donc rien ici n'a à savoir ce qu'il dessine.
+/// [drawing] est le painter de l'outil, pris tel quel : il se fixe lui-même à
+/// sa boîte de référence.
 class PlanPainter extends CustomPainter {
   const PlanPainter({required this.plan, required this.drawing});
 
@@ -226,9 +184,8 @@ class PlanPainter extends CustomPainter {
   }
 
   void _paintSheet(Canvas canvas) {
-    // La feuille peint son propre blanc : c'est la couleur sur laquelle les
-    // libellés de cote se détourent ([drawSchemaLabel]), et un PNG au fond
-    // transparent les laisserait traîner un pavé blanc dans le vide.
+    // La feuille peint son blanc : les libellés de cote s'y détourent, et un
+    // PNG transparent laisserait des pavés blancs.
     canvas.drawRect(
       const Rect.fromLTWH(0, 0, kPlanWidth, kPlanHeight),
       Paint()..color = AppColors.cardSurface,
@@ -244,9 +201,7 @@ class PlanPainter extends CustomPainter {
 
     _paintCartouche(canvas);
 
-    // Le cadre en dernier, donc jamais mordu. Ce qui l'en tient à distance,
-    // c'est [_drawingInset] d'un côté et les cases du cartouche de l'autre :
-    // un schéma qui remplit sa boîte s'arrête net avant le trait.
+    // Le cadre en dernier, pour qu'il ne soit jamais recouvert.
     final frame = Paint()
       ..color = _planInk
       ..style = PaintingStyle.stroke
@@ -265,9 +220,8 @@ class PlanPainter extends CustomPainter {
     var y = _paintTitleCell(canvas, column);
 
     final note = plan.note;
-    // Le pied est réservé avant le reste : c'est lui qui borne la table, et une
-    // table qui déborderait dessus recouvrirait l'avertissement de l'outil — la
-    // seule ligne du cartouche qu'on n'a pas le droit de perdre.
+    // Le pied est réservé d'abord : il borne la table, qui ne doit jamais
+    // recouvrir l'avertissement.
     final noteText = note == null
         ? null
         : _text(
@@ -315,8 +269,8 @@ class PlanPainter extends CustomPainter {
     return rect.bottom;
   }
 
-  /// Les cases, deux par rangée. Une case seule en fin de liste prend la
-  /// largeur entière plutôt que de laisser un trou dans la grille.
+  /// Les cases, deux par rangée. Une case seule en fin de liste prend toute la
+  /// largeur.
   double _paintFields(Canvas canvas, Rect column, double top) {
     var y = top;
     for (var i = 0; i < plan.fields.length; i += 2) {
@@ -342,8 +296,7 @@ class PlanPainter extends CustomPainter {
 
   /// Une case : intitulé en petites capitales en haut, valeur en bas.
   ///
-  /// La valeur ne se tronque jamais — c'est l'intitulé qui cède la place. Un
-  /// intitulé raccourci se devine encore, un nombre amputé se lit faux.
+  /// Seul l'intitulé se tronque : un nombre amputé se lit faux.
   void _paintFieldCell(Canvas canvas, Rect rect, PlanField field) {
     _rect(canvas, rect);
     final inner = rect.width - 2 * _cellPad;
@@ -440,9 +393,8 @@ class PlanPainter extends CustomPainter {
     return y;
   }
 
-  /// Une ligne de table : sa case de bord à bord, ses refends verticaux, et
-  /// chaque cellule cadrée à droite — unités sous unités, centaines sous
-  /// centaines.
+  /// Une ligne de table, chaque cellule cadrée à droite pour aligner les
+  /// chiffres.
   void _paintCells(
     Canvas canvas,
     Rect rect,
@@ -483,8 +435,7 @@ class PlanPainter extends CustomPainter {
     return [_indexWidth, for (var i = 1; i < count; i++) rest];
   }
 
-  /// Le contour d'une case. Les cases voisines partagent leurs bords, donc le
-  /// trait se pose deux fois — sans conséquence, l'encre étant opaque.
+  /// Le contour d'une case. Les cases voisines partagent leurs bords.
   void _rect(Canvas canvas, Rect rect) => canvas.drawRect(rect, _rule);
 
   static final Paint _rule = Paint()
@@ -492,19 +443,16 @@ class PlanPainter extends CustomPainter {
     ..style = PaintingStyle.stroke
     ..strokeWidth = _ruleWidth;
 
-  /// Un plan se redessine dès que son widget se reconstruit, c'est-à-dire quand
-  /// une saisie change — et alors tout change à la fois, le schéma comme le
-  /// cartouche. Comparer case à case coûterait plus cher que de redessiner une
-  /// feuille de quelques centaines de traits.
+  /// Toujours : une saisie change le schéma et le cartouche à la fois, et
+  /// comparer coûterait plus que redessiner.
   @override
   bool shouldRepaint(PlanPainter old) => true;
 }
 
 /// Texte de cartouche : chiffres tabulaires, et jamais de débord.
 ///
-/// [maxWidth] est obligatoire par construction — toute chaîne posée ici vient
-/// d'une saisie, donc rien ne borne sa longueur, et une ligne qui déborde de sa
-/// case va se poser sur la voisine.
+/// [maxWidth] est obligatoire : les chaînes viennent d'une saisie, sans
+/// longueur bornée.
 TextPainter _text(
   String value, {
   required double size,

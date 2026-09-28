@@ -8,28 +8,10 @@ const Curve _kCurve = Curves.easeInOut;
 
 /// Panneau repliable : un en-tête cliquable, un contenu qui se déplie.
 ///
-/// Un groupe de la saisie ([ToolScaffold.inputGroups]) : il découpe une
-/// saisie qui ne tient pas sur un écran, et fermé, il dit ses valeurs dans
-/// son [summary].
-///
-/// Règle d'emploi : **ce qui est replié garde par défaut une valeur qui ne
-/// surprend pas** — neutre (un jeu nul) ou le cas le plus courant (des bords
-/// aux éléments) — ou se lit dans le résumé. Sinon on cache à l'utilisateur
-/// la raison d'un résultat qui le surprend, et le repli devient un piège au
-/// lieu d'un rangement.
-///
-/// Se pose **de bord à bord** dans la carte, un filet collé au-dessus de
-/// l'en-tête : un panneau bordé et encore marginé ferait une carte dans la
-/// carte. Il porte donc lui-même la marge horizontale de la carte, pour que
-/// son titre reste aligné sur les libellés de ses champs.
-///
-/// L'état ouvert survit à un changement de mise en page (rotation, fenêtre
-/// élargie au-delà de `kWideBreakpoint`) : [ToolScaffold] y reconstruit la
-/// carte dans un autre sous-arbre, où le panneau repartirait fermé.
-/// Il est rangé dans le [PageStorage] de la route, sous son [title] : deux
-/// panneaux d'un même écran ne partagent donc pas un titre.
-///
-/// Sous un [AppDisclosureGroup], ouvrir un panneau referme les autres.
+/// Replié, il garde une valeur neutre ou courante, ou l'affiche dans son
+/// [summary]. Il se pose de bord à bord dans la carte et porte sa marge.
+/// L'état ouvert est rangé dans le [PageStorage] sous [title], unique par
+/// écran. Sous un [AppDisclosureGroup], ouvrir un panneau referme les autres.
 class AppDisclosure extends StatefulWidget {
   const AppDisclosure({
     required this.title,
@@ -45,19 +27,13 @@ class AppDisclosure extends StatefulWidget {
   final IconData icon;
   final bool initiallyExpanded;
 
-  /// Les valeurs du contenu, lues d'un coup d'œil sous le titre.
+  /// Les valeurs du contenu, sous le titre, panneau fermé seulement.
   ///
-  /// Panneau fermé seulement : ouvert, les champs disent déjà ces valeurs, et
-  /// les répéter au-dessus d'eux alourdit la carte. Passe à la ligne plutôt
-  /// que de tronquer, une valeur coupée ment.
+  /// Passe à la ligne plutôt que de tronquer.
   final String? summary;
 
-  /// Marge du contenu, sur les quatre côtés.
-  ///
-  /// Le côté est celui de la carte qui le porte ([AppCard.padding]), puisqu'il
-  /// en remplace le rembourrage sur toute sa hauteur. Le bas est à la charge
-  /// du panneau : la carte n'a plus de rembourrage à lui prêter. Le haut
-  /// détache le premier libellé de l'en-tête.
+  /// Marge du contenu : côtés de la carte ([AppCard.padding]), et le bas que la
+  /// carte ne fournit plus.
   static const EdgeInsets _bodyInset = EdgeInsets.all(AppSpacing.md);
 
   @override
@@ -124,15 +100,13 @@ class _AppDisclosureState extends State<AppDisclosure> {
           isExpanded: _expanded,
           onTap: _toggle,
         ),
-        // Une seule animation, la hauteur : celle du contenu, et celle du
-        // résumé qui se replie dans l'en-tête au même rythme.
+        // Une seule animation de hauteur, pour le contenu et le résumé.
         AnimatedSize(
           duration: _kDuration,
           curve: _kCurve,
           alignment: AlignmentDirectional.topStart,
-          // Démonté une fois replié, et non seulement réduit : replié à l'œil
-          // seulement, le contenu resterait focusable au clavier et lu par un
-          // lecteur d'écran.
+          // Démonté une fois replié : sinon il reste focusable et lu par un lecteur
+          // d'écran.
           child: _expanded
               ? Padding(padding: AppDisclosure._bodyInset, child: widget.child)
               : const SizedBox.shrink(),
@@ -144,10 +118,7 @@ class _AppDisclosureState extends State<AppDisclosure> {
 
 /// Accordéon : sous lui, un seul [AppDisclosure] ouvert à la fois.
 ///
-/// Un panneau qu'on ouvre referme les autres, pour que la saisie reste courte
-/// et que le schéma, en dessous, reste à portée. Chaque panneau garde son
-/// propre état ouvert dans le [PageStorage] : le groupe ne fait que diffuser
-/// le dernier ouvert, il ne restaure rien.
+/// Le groupe diffuse le dernier ouvert ; chaque panneau garde son état.
 class AppDisclosureGroup extends StatefulWidget {
   const AppDisclosureGroup({required this.child, super.key});
 
@@ -198,21 +169,16 @@ class _DisclosureHeader extends StatelessWidget {
   final bool isExpanded;
   final VoidCallback onTap;
 
-  /// L'icône d'un groupe, à la taille standard de Material.
-  ///
-  /// Le titre qu'elle accompagne fait [kControlFontSize], la taille des
-  /// valeurs saisies : plus grand, en `titleLarge` (22), il parlerait plus
-  /// fort que les données et égalerait les résultats et le titre de page.
+  /// Icône à la taille standard de Material. Le titre reste à
+  /// [kControlFontSize] pour ne pas dominer les données.
   static const double _iconSize = 24;
 
-  /// Seul, l'en-tête ne porte que la marge de la carte : c'est sa ligne de
-  /// titre qui fait la hauteur.
+  /// Sans résumé, la ligne de titre fait la hauteur.
   static const EdgeInsets _inset = EdgeInsets.symmetric(
     horizontal: AppSpacing.md,
   );
 
-  /// Avec un résumé, une même marge au-dessus du titre et sous le résumé :
-  /// le bloc se lit centré dans l'en-tête.
+  /// Avec résumé, même marge au-dessus du titre et sous le résumé.
   static const EdgeInsets _insetWithSummary = EdgeInsets.symmetric(
     horizontal: AppSpacing.md,
     vertical: 12,
@@ -222,29 +188,23 @@ class _DisclosureHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final summary = this.summary;
-    // Encre foncée pour l'icône et le titre : c'est elle, et non la taille,
-    // qui détache un groupe des libellés gris de ses champs.
+    // Encre foncée : c'est elle qui détache le titre des libellés gris.
     final ink = theme.colorScheme.onSurface;
 
     return Semantics(
       button: true,
       expanded: isExpanded,
       child: DecoratedBox(
-        // Le filet de la carte, collé à l'en-tête : c'est lui qui dit que ce
-        // qui suit est un pied, et non le contrôle suivant. Peint devant :
-        // derrière, l'encre du tap le recouvre.
+        // Filet de la carte, peint devant : derrière, l'encre du tap le recouvre.
         position: DecorationPosition.foreground,
         decoration: const BoxDecoration(
           border: Border(top: BorderSide(color: AppColors.cardBorder)),
         ),
-        // Pas de fond : sur la carte blanche, une teinte légère ne se
-        // distinguerait pas du fond de page, et une plus marquée ferait une
-        // carte dans la carte. Le contenu déplié dit assez « ouvert ». Le
-        // `Material` transparent ne sert qu'à porter l'encre de l'`InkWell`.
+        // Sans fond : une teinte ne se distinguerait pas du fond de page. Le
+        // `Material` transparent porte l'encre de l'`InkWell`.
         child: Material(
           type: MaterialType.transparency,
-          // Pas de `borderRadius` sur l'encre : l'en-tête va de bord à bord,
-          // c'est la carte qui détoure ses coins.
+          // Sans `borderRadius` : la carte détoure les coins.
           child: InkWell(
             onTap: onTap,
             child: Padding(
@@ -252,11 +212,8 @@ class _DisclosureHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Ligne à part du résumé : le titre reste en face de l'icône
-                  // et du chevron. Seule, elle fait la cible tactile
-                  // d'atelier. Avec un résumé, c'est l'en-tête entier qui la
-                  // fait, marges comprises : il la garde une fois le résumé
-                  // replié.
+                  // Seule, la ligne de titre fait la cible tactile ; avec un résumé,
+                  // l'en-tête entier la fait, marges comprises.
                   ConstrainedBox(
                     constraints: BoxConstraints(
                       minHeight: summary == null
@@ -289,11 +246,8 @@ class _DisclosureHeader extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Aligné sur l'icône, pas sur le titre : toute la largeur de
-                  // la carte pour des valeurs qui s'allongent vite. Replié
-                  // au rythme du contenu, et les marges de l'en-tête ne
-                  // bougent pas : sinon l'en-tête saute d'un coup pendant que
-                  // le contenu glisse.
+                  // Aligné sur l'icône, pour toute la largeur. Replié au rythme du
+                  // contenu, marges fixes, pour que l'en-tête ne saute pas.
                   if (summary != null)
                     AnimatedSize(
                       duration: _kDuration,

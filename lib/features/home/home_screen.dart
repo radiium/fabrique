@@ -9,8 +9,7 @@ import 'tool_card.dart';
 
 /// Accueil : titre, bouton Réglages, liste de cartes d'outils.
 ///
-/// Liste simple en colonne — une carte claire par outil, espacées de
-/// [AppSpacing.md] ; jamais de grille.
+/// Une carte claire par outil, en colonne.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 

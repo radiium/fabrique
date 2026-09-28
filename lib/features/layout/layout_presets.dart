@@ -21,10 +21,8 @@ enum LayoutMaterial {
 
 /// Un produit courant et les règles de pose qui vont avec.
 ///
-/// Un preset **pré-remplit** une saisie, il ne branche aucun calcul : le
-/// calepinage est le même pour du carrelage et pour une plaque de plâtre, et
-/// c'est ce qui autorise un outil unique. Il vit donc ici, côté feature, et
-/// jamais dans `core/calc`.
+/// Pré-remplit une saisie sans changer le calcul, d'où sa place hors de
+/// `core/calc`.
 class LayoutPreset {
   const LayoutPreset({
     required this.material,
@@ -39,8 +37,7 @@ class LayoutPreset {
 
   final LayoutMaterial material;
 
-  /// Le format tel que le vend le fournisseur, qui n'est pas toujours l'ordre
-  /// des champs (le 600×1200 se pose en long).
+  /// Le format du fournisseur, pas forcément dans l'ordre des champs.
   final String size;
 
   /// Court : la valeur fermée d'un `DropdownMenu` tronque en silence.
@@ -49,8 +46,8 @@ class LayoutPreset {
   final double elementX;
   final double elementY;
 
-  /// Jeu en bout, le long de l'élément. Se traduit en jeu d'écran au moment du
-  /// remplissage, selon l'inversion en cours.
+  /// Jeu en bout, le long de l'élément, traduit en jeu d'écran selon
+  /// l'inversion.
   final double gapAlong;
 
   /// Jeu entre lames, en travers de l'élément.
@@ -59,11 +56,8 @@ class LayoutPreset {
   final double perimeterGap;
   final JointOffset offset;
 
-  /// La saisie que ce preset produit, sans toucher à la surface.
-  ///
-  /// La surface vient de la pièce et n'appartient pas au matériau — c'est
-  /// aussi ce qui fixe la place du sélecteur dans le formulaire, au-dessus de
-  /// tout ce qu'il remplit et en dessous de ce qu'il laisse tranquille.
+  /// La saisie que ce preset produit, sans toucher à la surface, qui vient de
+  /// la pièce.
   LayoutInput applyTo(LayoutInput input) => input.copyWith(
     elementX: elementX,
     elementY: elementY,
@@ -75,28 +69,13 @@ class LayoutPreset {
 
   /// La saisie courante est exactement celle de ce preset.
   ///
-  /// C'est ce qui rend la valeur du sélecteur **dérivée** : rien de neuf à
-  /// persister, et aucune dérive possible entre le formulaire restauré au
-  /// lancement et ce que le sélecteur affiche.
+  /// Le sélecteur en dérive : rien de plus à persister.
   bool matches(LayoutInput input) => applyTo(input) == input;
 }
 
-/// Les six produits retenus.
+/// Les six produits retenus : chacun porte au moins une règle hors défaut.
 ///
-/// Une entrée n'entre que si elle porte **au moins une règle hors défaut** :
-/// celle qui ne transporterait qu'un format remplit deux champs qu'on tape en
-/// quatre secondes, et allonge une liste qu'on relit à chaque ouverture. Même
-/// tri que les unités du Convertisseur.
-///
-/// Ce qui a été écarté à ce titre : les autres longueurs de plaque, les quatre
-/// autres formats de carreau, le parquet contrecollé, les deux autres lames de
-/// terrasse et la dalle de faux plafond, dont toutes les règles valent le
-/// défaut. Un format absent se tape par-dessus le preset le plus proche, qui
-/// garde ses jeux et son décalage.
-///
-/// Le bardage à clin n'y est pas et ne peut pas y être : un clin se recouvre,
-/// donc son jeu serait négatif et la zone de recouvrement se compterait deux
-/// fois. Seule la claire-voie est représentable.
+/// Le bardage à clin est exclu : son recouvrement demanderait un jeu négatif.
 const List<LayoutPreset> kLayoutPresets = [
   LayoutPreset(
     material: LayoutMaterial.drywall,
@@ -116,9 +95,7 @@ const List<LayoutPreset> kLayoutPresets = [
     perimeterGap: 5,
     offset: JointOffset.straight,
   ),
-  // Au-delà de ~60 cm de long côté, le demi-décalage fait tuiler le milieu du
-  // carreau : la règle passe au tiers. C'est le seul produit doublé de la
-  // table, et c'est ce qui le justifie.
+  // Au-delà de ~60 cm, le demi-décalage fait tuiler le carreau : tiers.
   LayoutPreset(
     material: LayoutMaterial.tile,
     size: '600×1200',

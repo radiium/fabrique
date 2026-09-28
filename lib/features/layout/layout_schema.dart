@@ -7,9 +7,8 @@ import 'layout_painter.dart';
 
 /// Le schéma du Calepinage, branché sur les providers.
 ///
-/// Point de construction unique du [LayoutPainter] : la vignette de l'écran et
-/// la page plein écran le traversent toutes les deux, donc un seul endroit sait
-/// de quoi le painter a besoin.
+/// Point de construction unique du [LayoutPainter], pour la vignette et le
+/// plein écran.
 class LayoutSchema extends ConsumerWidget {
   const LayoutSchema({this.compact = false, super.key});
 

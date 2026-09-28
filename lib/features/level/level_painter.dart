@@ -18,16 +18,9 @@ const List<double> _rings = [2.5, 5, 7.5, 10];
 const double _readoutBand = 44;
 const double _stateBand = 24;
 
-/// La vedette de l'écran : niveau à bulle dessiné, bulle mobile selon les
-/// angles déjà calculés.
+/// Niveau à bulle circulaire, qui montre les deux axes de [TiltResult].
 ///
-/// Fiole circulaire plutôt que tubulaire : [TiltResult] porte deux axes, un
-/// tube n'en montrerait qu'un et il faudrait deux dessins pour dire la même
-/// chose.
-///
-/// **Convention** : la bulle monte du côté **haut**, comme dans un vrai niveau
-/// à bulle — pas comme une bille qui roulerait dans la pente. C'est ce qui rend
-/// la lecture transposable à l'outil que le menuisier a déjà en main.
+/// La bulle monte du côté haut, comme dans un vrai niveau.
 class LevelPainter extends CustomPainter {
   const LevelPainter({required this.result, required this.l10n});
 
@@ -59,12 +52,10 @@ class LevelPainter extends CustomPainter {
     _paintState(canvas, size, r);
   }
 
-  /// La fiole : fond clair, graduations concentriques, réticule. Son contour
-  /// s'épaissit et prend l'accent dès que l'aplomb est atteint — le signal se
-  /// voit du coin de l'œil, sans lire le texte.
+  /// La fiole : fond clair, graduations, réticule. Le contour prend l'accent
+  /// d'aplomb.
   void _paintVial(Canvas canvas, Offset center, double radius, bool isLevel) {
-    // Le beige des champs : la feuille du schéma est blanche, une fiole
-    // blanche n'y tiendrait que par son contour.
+    // Beige : blanche, la fiole se confondrait avec la feuille.
     canvas.drawCircle(center, radius, Paint()..color = AppColors.field);
 
     final ring = Paint()
@@ -79,8 +70,7 @@ class LevelPainter extends CustomPainter {
       if (angle >= _maxAngle) continue;
       final ringRadius = radius * angle / _maxAngle;
       canvas.drawCircle(center, ringRadius, ring);
-      // Une graduation sur deux est chiffrée : quatre nombres dans une fiole
-      // de la taille d'une pièce de monnaie, ce serait illisible.
+      // Une graduation sur deux est chiffrée, faute de place.
       if (angle % 5 != 0) continue;
       schemaText(
         '${l10n.degrees(angle)}°',
@@ -133,13 +123,11 @@ class LevelPainter extends CustomPainter {
     double bubbleRadius,
     TiltResult r,
   ) {
-    // La bulle va du côté haut : incliner la droite vers le bas la renvoie à
-    // gauche. D'où le signe inversé sur le roulis.
+    // La bulle va du côté haut : signe inversé sur le roulis.
     final travel = radius - bubbleRadius - 2;
     final raw = Offset(-r.rollDeg / _maxAngle, r.pitchDeg / _maxAngle) * travel;
 
-    // Bridage d'affichage, pas un calcul : au-delà de la plage de la fiole la
-    // bulle se colle au bord plutôt que de sortir du dessin.
+    // Au-delà de la plage de la fiole, la bulle reste au bord.
     final offset = raw.distance > travel && raw.distance > 0
         ? raw * (travel / raw.distance)
         : raw;
@@ -157,9 +145,8 @@ class LevelPainter extends CustomPainter {
       );
   }
 
-  /// Les deux inclinaisons, en gros, au-dessus de la fiole. Les flèches disent
-  /// quel axe est lu — un libellé de plus n'apprendrait rien de mieux, et le
-  /// dessin les explique déjà.
+  /// Les deux inclinaisons, en gros, au-dessus de la fiole. Les flèches
+  /// indiquent l'axe.
   void _paintReadouts(Canvas canvas, Size size, TiltResult r) {
     final readouts = [('↔', r.rollDeg), ('↕', r.pitchDeg)];
 

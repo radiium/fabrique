@@ -8,8 +8,7 @@ import '../../core/painting.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/numbers.dart';
 
-/// Marges autour de la surface : de la place pour les cotes, à gauche et en
-/// haut, et un filet ailleurs.
+/// Marges autour de la surface : les cotes à gauche et en haut.
 const double _leftMargin = 46;
 const double _topMargin = 32;
 const double _rightMargin = 14;
@@ -17,20 +16,15 @@ const double _rightMargin = 14;
 /// Le bas porte la note d'unité, sous le dessin.
 const double _bottomMargin = 28;
 
-/// Marge de la vignette, où il n'y a plus de cote à loger : juste de quoi ne
-/// pas coller le contour de la surface au bord de la feuille.
+/// Marge de la vignette, sans cotes.
 const double _compactMargin = 8;
 
-/// Au-delà, on cesse de cerner chaque élément : à cette densité les filets se
-/// touchent et forment un aplat, et le dessin coûte cher pour rien.
+/// Au-delà, les éléments ne sont plus cernés : les filets formeraient un
+/// aplat.
 const int _strokeBudget = 1500;
 
-/// Vue de dessus : grille d'éléments, décalage de joints visible d'une rangée
-/// à l'autre, éléments de bord dessinés comme des coupes (orange).
-///
-/// Toute la géométrie vient de [LayoutResult.elements] — aucun calcul ici.
-/// Le painter ne fait que mettre la surface à l'échelle du canvas et recopier
-/// les rectangles que le cœur a posés, `isCut` compris.
+/// Vue de dessus : grille d'éléments, décalage de joints, éléments de bord
+/// en coupe (orange).
 class LayoutPainter extends CustomPainter {
   const LayoutPainter({
     required this.result,
@@ -41,13 +35,10 @@ class LayoutPainter extends CustomPainter {
 
   final LayoutResult? result;
 
-  /// Vignette : sans les deux cotes, la surface récupère les 46 px de marge
-  /// gauche et les 26 du haut. À 200 px de haut, c'est un quart du dessin —
-  /// et les cotes sont déjà dans les champs, juste au-dessus.
+  /// Vignette : sans cotes, déjà lisibles dans les champs.
   final bool compact;
 
-  /// Les cotes de la surface : [LayoutResult] n'expose que son aire, dont X et
-  /// Y ne se déduisent pas.
+  /// Les cotes de la surface, que [LayoutResult] n'expose pas.
   final LayoutInput input;
 
   final AppLocalizations l10n;
@@ -71,8 +62,7 @@ class LayoutPainter extends CustomPainter {
     final availableHeight = size.height - topMargin - bottomMargin;
     if (availableWidth <= 0 || availableHeight <= 0) return;
 
-    // Échelle uniforme : un calepinage déformé ne veut rien dire, on doit
-    // pouvoir juger la proportion des lames à l'œil.
+    // Échelle uniforme, pour juger la proportion des lames.
     final scale = math.min(
       availableWidth / input.surfaceX,
       availableHeight / input.surfaceY,
@@ -96,8 +86,7 @@ class LayoutPainter extends CustomPainter {
     }
   }
 
-  /// Le fond de la surface — ce qui reste visible là où aucun élément ne
-  /// tombe, donc un vide : il prend la couleur de la feuille.
+  /// Le fond de la surface, couleur de la feuille : un vide.
   void _paintSurface(
     Canvas canvas,
     Offset origin,
@@ -110,10 +99,7 @@ class LayoutPainter extends CustomPainter {
     );
   }
 
-  /// Le jeu périphérique, hachuré : réservé, jamais garni.
-  ///
-  /// Même hachure que les marges de la Répartition, et pour la même raison —
-  /// c'est de la surface qu'on a décidé de ne pas couvrir, pas de la matière.
+  /// Le jeu périphérique, hachuré comme les marges de la Répartition.
   void _paintPerimeter(
     Canvas canvas,
     Offset origin,
@@ -160,17 +146,12 @@ class LayoutPainter extends CustomPainter {
   ) {
     final stroked = r.elements.length <= _strokeBudget;
 
-    // Beige et non blanc : c'est de la matière posée sur la surface, et sur
-    // une feuille blanche un élément blanc ne se lirait plus que par ses
-    // joints — le découvert et le couvert se confondraient.
+    // Beige : en blanc, couvert et découvert se confondraient.
     final fullFill = Paint()..color = AppColors.field;
     final cutFill = Paint()..color = AppColors.cut.withValues(alpha: 0.3);
 
-    // **Un seul trait de joint, quel que soit le remplissage.** Cerner les
-    // coupes en orange sur un fond orange revenait à les effacer : sur une
-    // rangée entièrement rabotée — donc entièrement en coupe — la trame des
-    // joints disparaissait, et avec elle le décalage d'une rangée à l'autre.
-    // C'est le remplissage qui dit « à couper », pas le trait.
+    // Un seul trait de joint : cerné d'orange sur fond orange, une rangée en
+    // coupe perdrait ses joints. Le remplissage signale la coupe.
     final seam = Paint()
       ..color = kExtensionLine
       ..style = PaintingStyle.stroke
@@ -186,8 +167,7 @@ class LayoutPainter extends CustomPainter {
         ),
     ];
 
-    // Deux passes : un joint est centré sur l'arête, et l'aplat de l'élément
-    // voisin, posé après lui, en mangerait la moitié.
+    // Aplats d'abord : posé après, un aplat rognerait le joint voisin.
     for (final (i, element) in r.elements.indexed) {
       canvas.drawRect(rects[i], element.isCut ? cutFill : fullFill);
     }
@@ -197,8 +177,7 @@ class LayoutPainter extends CustomPainter {
     }
   }
 
-  /// Tracé après les éléments : le contour de la surface doit rester net même
-  /// là où une pièce de bord affleure.
+  /// Tracé après les éléments, pour rester net sous une pièce de bord.
   void _paintSurfaceOutline(
     Canvas canvas,
     Offset origin,

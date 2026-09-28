@@ -8,14 +8,9 @@ import 'app_segmented_button.dart';
 import 'field_help.dart';
 import 'haptics.dart';
 
-/// Libellé statique au-dessus du contrôle, façon formulaire web.
+/// Libellé statique au-dessus du contrôle, lisible pendant la saisie.
 ///
-/// Remplace le label flottant de Material : en atelier, le libellé doit rester
-/// lisible une fois la saisie commencée, et à bout de bras un label réduit à
-/// 12 px collé à la bordure ne l'est pas.
-///
-/// S'applique à n'importe quel contrôle, pas seulement aux champs texte :
-/// `DropdownMenu`, [AppSegmentedButton], groupe de boutons…
+/// Pour tout contrôle : champ, `DropdownMenu`, [AppSegmentedButton].
 class LabeledField extends StatelessWidget {
   const LabeledField({
     required this.label,
@@ -28,25 +23,17 @@ class LabeledField extends StatelessWidget {
   final String label;
   final Widget child;
 
-  /// Précision courte sous le contrôle (unité attendue, règle appliquée).
-  ///
-  /// Reste affiché en permanence : c'est une contrainte de saisie, elle se lit
-  /// d'un coup d'œil. À distinguer d'[about], qui explique.
+  /// Précision courte sous le contrôle, toujours affichée. [about] explique.
   final String? help;
 
-  /// Explication ouverte à la demande, derrière un ⓘ posé après le libellé.
-  ///
-  /// `null` = pas d'icône, et le libellé retrouve exactement sa hauteur d'avant
-  /// — un champ sans explication ne doit rien payer.
+  /// Explication ouverte à la demande, derrière un ⓘ après le libellé.
+  /// `null` : ni icône, ni hauteur en plus.
   final FieldHelp? about;
 
   /// Hauteur de la ligne de libellé quand elle porte un ⓘ.
   ///
-  /// Le libellé seul en fait 20. Les 12 de plus achètent la cible tactile :
-  /// c'est la **ligne entière** qui ouvre l'explication, pas la pastille de
-  /// 18 px — même raisonnement que pour [AppSwitchField]. En deçà de
-  /// [kFieldHeight], et c'est assumé : la cible fait la largeur de la carte, et
-  /// rater un ⓘ n'abîme rien, là où rater un champ change une cote.
+  /// Toute la ligne ouvre l'explication. Sous [kFieldHeight], car rater un ⓘ
+  /// ne change aucune cote.
   static const double _labelRowHeight = 32;
 
   @override
@@ -88,11 +75,7 @@ class LabeledField extends StatelessWidget {
 
 /// Ligne de libellé qui ouvre une explication.
 ///
-/// Le ⓘ se pose **après** le texte et non avant : une icône en tête décalerait
-/// le libellé de la colonne que forment tous les autres libellés de la carte —
-/// et c'est cette colonne que l'œil descend. Collé au texte plutôt que rejeté
-/// à droite, il reste lisible comme appartenant à *ce* libellé, y compris
-/// quand deux champs se partagent une ligne.
+/// Le ⓘ se pose après le texte, collé, pour garder l'alignement des libellés.
 class _AboutRow extends StatelessWidget {
   const _AboutRow({
     required this.label,
@@ -119,8 +102,7 @@ class _AboutRow extends StatelessWidget {
           height: LabeledField._labelRowHeight,
           child: Row(
             children: [
-              // `Flexible` et non `Expanded` : le ⓘ doit rester collé au texte,
-              // pas être poussé au bord de la carte.
+              // `Flexible` : le ⓘ reste collé au texte.
               Flexible(child: Text(label, style: style)),
               const SizedBox(width: AppSpacing.xs),
               const Icon(Icons.info_outline, size: 18, color: AppColors.accent),
@@ -135,8 +117,7 @@ class _AboutRow extends StatelessWidget {
 /// Dit aux libellés d'une paire de champs qu'un voisin porte un ⓘ, et qu'ils
 /// doivent prendre la hauteur de sa ligne.
 ///
-/// Une portée et non un paramètre : la paire reçoit des champs déjà construits,
-/// et ne peut pas leur ajouter d'argument.
+/// Une portée : la paire reçoit des champs déjà construits.
 class PairedLabelScope extends InheritedWidget {
   const PairedLabelScope({
     required this.tallLabelRow,

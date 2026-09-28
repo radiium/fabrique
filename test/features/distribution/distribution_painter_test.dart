@@ -13,8 +13,7 @@ void main() {
   for (final l10n in allLocales) {
     group(l10n.localeName, () {
       test('chaque disposition, largeur et marge se rend sans lever', () {
-        // Au moins 2 : un élément seul ne peut pas border les deux côtés. Au
-        // maximum, des éléments de 3 mm pour tenir dans la largeur.
+        // Au moins 2 pour border les deux côtés ; au plus, des éléments de 3 mm.
         const counts = [
           (2, 0.0),
           (2, 18.0),

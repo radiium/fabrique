@@ -23,8 +23,7 @@ import 'drawers_painter.dart';
 /// Un zéro et non `null` : `DropdownMenu` ne rend jamais une sélection nulle.
 const double _autoSlideLength = 0;
 
-/// Les cotes de l'ouverture, seul groupe ouvert à l'arrivée : c'est ce qu'on
-/// vient de mesurer, et ce qui change d'un caisson à l'autre.
+/// Les cotes de l'ouverture, seul groupe ouvert à l'arrivée.
 class DrawersOpeningGroup extends StatelessWidget {
   const DrawersOpeningGroup({
     required this.input,
@@ -51,8 +50,7 @@ class DrawersOpeningGroup extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Dans l'ordre où on mesure le caisson : largeur, hauteur, puis on
-          // plonge le mètre pour la profondeur.
+          // Dans l'ordre de la mesure : largeur, hauteur, profondeur.
           FieldPair(
             first: NumberField(
               label: l10n.drawersOpeningWidth,
@@ -147,9 +145,7 @@ class DrawersFrontsGroup extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          // L'épaisseur de façade reste affichée dans les deux poses : le
-          // calcul ne s'en sert qu'encastrée, mais le schéma dessine la façade
-          // toujours.
+          // Toujours affichée : le schéma dessine la façade dans les deux poses.
           NumberField(
             label: l10n.drawersFrontThickness,
             suffix: 'mm',
@@ -235,8 +231,7 @@ class DrawersSlideGroup extends StatelessWidget {
     );
   }
 
-  /// La famille, puis ce qui s'y règle : les jeux d'une glissière saisie à la
-  /// main, la longueur d'une glissière qu'on achète.
+  /// La famille, puis ses jeux (saisie manuelle) ou sa longueur.
   static String _summary(
     DrawersInput input,
     SlideSpec spec,
@@ -340,8 +335,7 @@ class DrawersBoxGroup extends StatelessWidget {
                 ],
                 value: input.bottomMount,
                 onChanged: form.setBottomMount,
-                // Trois sur une ligne plutôt que 2 + 1 : une tuile seule sur
-                // sa ligne se lirait comme un choix à part.
+                // Trois sur une ligne : une tuile seule semblerait un choix à part.
                 columns: 3,
               ),
             ),
@@ -360,8 +354,7 @@ class DrawersBoxGroup extends StatelessWidget {
     );
   }
 
-  /// Le fond se dit tel qu'il est monté, y compris quand la glissière l'impose
-  /// : c'est là qu'on chercherait pourquoi les tuiles du fond ont disparu.
+  /// Le fond tel qu'il est monté, même imposé par la glissière.
   static String _summary(
     DrawersInput input,
     double? bottomRecess,
@@ -385,8 +378,7 @@ class DrawersBoxGroup extends StatelessWidget {
 
 /// Une valeur que la saisie ne commande pas, à la place de son contrôle.
 ///
-/// Elle garde la hauteur d'un champ : le panneau ne saute pas quand on change
-/// de glissière.
+/// Hauteur d'un champ, pour que le panneau ne saute pas.
 class _LockedValue extends StatelessWidget {
   const _LockedValue({required this.text});
 

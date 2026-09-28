@@ -7,8 +7,7 @@ import 'calc_exception.dart';
 part 'tilt.freezed.dart';
 part 'tilt.g.dart';
 
-/// Lecture brute d'accéléromètre. La lecture `sensors_plus` reste dans le
-/// controller : seule la math vit ici.
+/// Lecture brute d'accéléromètre.
 @freezed
 abstract class AccelReading with _$AccelReading {
   const factory AccelReading(double x, double y, double z) = _AccelReading;
@@ -51,8 +50,8 @@ TiltResult computeTilt(
 
 const double _radToDeg = 180 / math.pi;
 
-/// Norme minimale d'un vecteur exploitable, en m/s² — en dessous, l'orientation
-/// n'a pas de sens et `atan2(0, 0)` rendrait un « à plat » faux.
+/// Norme minimale d'un vecteur exploitable, en m/s² : en dessous,
+/// `atan2(0, 0)` rendrait un faux « à plat ».
 const double _minMagnitude = 1e-6;
 
 double _pitchDeg(AccelReading r) {

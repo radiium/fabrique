@@ -14,34 +14,22 @@ class CardAction {
 
   final IconData icon;
 
-  /// Un verbe, court : le libellé partage la largeur de la carte avec ses
-  /// voisins, et il n'a pas le droit d'être tronqué.
+  /// Un verbe court : les libellés partagent la largeur, sans troncature.
   final String label;
 
-  /// `null` = rien à faire, le bouton s'éteint sans disparaître. Une chrome qui
-  /// s'efface se cherche.
+  /// `null` éteint le bouton sans le masquer.
   final VoidCallback? onTap;
 
-  /// L'action est en cours : le bouton ne répond plus et son contenu cède la
-  /// place au témoin. Un export se compte en dixièmes de seconde, mais deux
-  /// appuis ouvriraient deux feuilles de partage.
+  /// Action en cours : le bouton ne répond plus, pour qu'un double appui
+  /// n'ouvre pas deux feuilles de partage.
   final bool busy;
 }
 
 /// Le pied d'une carte : une rangée de boutons pleins, à parts égales.
 ///
-/// Se pose **hors** du rembourrage de la carte ([ToolScaffold.resultsFooter]),
-/// de bord à bord, et porte lui-même la marge et le filet qui le séparent du
-/// contenu — un pied bordé *et* marginé ferait une carte dans la carte.
-///
-/// Boutons pleins, en [AppColors.accentDeep] sur texte blanc : c'est la
-/// pastille du sélecteur segmenté, donc la seule couleur de l'app qui dise
-/// déjà « ceci est actif ». Une ligne de texte discrète, à cette place, se
-/// lirait comme une note de bas de carte.
-///
-/// Le bas d'une carte de résultats plutôt que l'`AppBar` : on exporte après
-/// avoir lu ses résultats, jamais avant, et c'est là qu'on arrive en fin de
-/// lecture. L'`AppBar` reste à « réinitialiser », l'action à rendre difficile.
+/// Hors du rembourrage de la carte ([ToolScaffold.resultsFooter]), avec sa
+/// marge et son filet. Boutons en [AppColors.accentDeep], la couleur active
+/// du sélecteur.
 class AppCardActions extends StatelessWidget {
   const AppCardActions({required this.actions, super.key});
 
@@ -81,8 +69,7 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final onTap = action.busy ? null : action.onTap;
-    // En cours, le bouton garde son fond plein : le témoin est blanc, et un
-    // fond éteint le rendrait invisible.
+    // En cours, le fond reste plein : le témoin est blanc.
     final isFilled = action.onTap != null;
     final style = controlTextStyle(context)
         ?.copyWith(color: isFilled ? AppColors.onAccent : AppColors.label);
@@ -105,8 +92,7 @@ class _ActionButton extends StatelessWidget {
                   child: SizedBox(
                     width: _iconSize,
                     height: _iconSize,
-                    // Le témoin remplace le libellé à l'écran, pas pour un
-                    // lecteur d'écran : le bouton garde son nom.
+                    // Le bouton garde son nom pour un lecteur d'écran.
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       color: AppColors.onAccent,
@@ -123,11 +109,8 @@ class _ActionButton extends StatelessWidget {
 
 /// L'icône et le libellé, l'icône n'apparaissant que si elle tient.
 ///
-/// **Mesuré, pas supposé.** Deux boutons se partagent la largeur de la carte :
-/// sur un téléphone étroit, ou avec un texte système agrandi, le libellé prend
-/// tout. Le libellé passe alors d'abord — c'est lui qui nomme l'action, l'icône
-/// ne fait que l'illustrer — et il n'est jamais tronqué, ce qu'une simple
-/// `Row` avec `overflow: ellipsis` aurait fait en silence.
+/// Mesuré : sur un téléphone étroit ou en grand texte, l'icône cède la place
+/// au libellé, jamais tronqué.
 class _Content extends StatelessWidget {
   const _Content({required this.action, required this.style});
 
@@ -138,7 +121,7 @@ class _Content extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Mesuré à l'échelle du texte système : c'est elle qui fait déborder.
+        // Mesuré à l'échelle du texte système.
         final text = TextPainter(
           text: TextSpan(text: action.label, style: style),
           textDirection: Directionality.of(context),

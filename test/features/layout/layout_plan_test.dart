@@ -16,11 +16,6 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/app.dart';
 import '../../support/l10n.dart';
 
-/// Le plan est la seule image qui sorte de l'app : une fois partie, personne
-/// ne peut plus la corriger. Ce qui se vérifie ici, c'est ce qu'aucune autre
-/// couche ne voit — un cartouche qui lève sur une combinaison de saisie, une
-/// liste de débit tronquée en silence, et le bouton qui resterait actif sur
-/// une saisie refusée.
 void main() {
   ProviderContainer container() {
     final c = ProviderContainer();
@@ -37,16 +32,12 @@ void main() {
 
   group('le contenu du cartouche', () {
     test('ne répète pas ce que le dessin cote déjà', () {
-      // Les deux cotes de la surface sont sur le schéma, aux mêmes chiffres :
-      // les réécrire remplirait le cartouche de redites, et chaque case
-      // gagnée est une ligne de débit de plus.
       final plan = planOf(container())!.plan;
       final labels = plan.fields.map((f) => f.$1);
 
       expect(labels, isNot(contains('SURFACE X')));
       expect(labels, isNot(contains('LARGEUR')));
       expect(labels, isNot(contains('LONGUEUR')));
-      // L'élément, lui, est dessiné sans être coté.
       expect(labels, contains('ÉLÉMENT'));
       expect(labels, contains('DÉCALAGE'));
     });
@@ -64,9 +55,6 @@ void main() {
     });
 
     test('reprend toutes les cotes de coupe, jamais une partie', () {
-      // La troncature est impossible par construction : le plan passe la liste
-      // entière, et c'est le painter qui choisit entre la poser ou la remplacer
-      // par son repli.
       final c = container();
       final table = planOf(c)!.plan.tables.single;
       final cuts = summarizeCuts(
@@ -78,14 +66,10 @@ void main() {
         table.rows.every((row) => row.length == table.headers.length),
         isTrue,
       );
-      // La première colonne est celle des numéros, étroite et fixe : un nombre
-      // posé là se viderait en silence.
       expect(table.headers.first, 'N°');
     });
 
     test('porte l’avertissement de l’outil', () {
-      // La note est réservée avant tout le reste dans le cartouche : c'est la
-      // seule ligne qu'on n'a pas le droit de perdre sous un débordement.
       final note = planOf(container())!.plan.note;
       expect(note, isNotNull);
       expect(note, contains('réemploi'));
@@ -106,11 +90,7 @@ void main() {
           for (final balance in [false, true]) {
             for (final flip in [false, true]) {
               final c = container();
-              // Une pièce assez grande pour tous : sur la surface par défaut,
-              // une plaque de 2500 et une lame de 4000 ne tiennent pas, et le
-              // preset se fait refuser tout de suite. C'est le comportement
-              // voulu — la surface vient de la pièce, jamais du matériau —
-              // mais ce n'est pas ce qui se teste ici.
+              // Une pièce assez grande pour tous les presets.
               c.read(layoutFormProvider.notifier)
                 ..setSurfaceX(6000)
                 ..setSurfaceY(5000)
@@ -169,8 +149,6 @@ void main() {
     c.read(layoutFormProvider.notifier).setElementX(99999);
     await tester.pumpAndSettle();
 
-    // Éteints, jamais masqués : un bouton gris se lit, une chrome qui s'efface
-    // se cherche.
     expect(footer, findsOneWidget);
     expect(actions().every((a) => a.onTap == null), isTrue);
   });

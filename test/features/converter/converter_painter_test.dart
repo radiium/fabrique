@@ -25,8 +25,7 @@ void main() {
   /// Vignette d'un téléphone, plein écran, et une taille dégénérée.
   const sizes = [Size(336, 210), Size(800, 600), Size(40, 30)];
 
-  /// Zéro, l'unité, une valeur courante, et deux extrêmes qui sortent des
-  /// échelles rondes.
+  /// Zéro, l'unité, une valeur courante, et deux extrêmes hors échelles.
   const values = [0.0, 1.0, 100.0, 0.001, 1e6];
 
   // Les deux langues : un libellé plus long peut déborder autrement.

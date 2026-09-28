@@ -10,12 +10,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../support/app.dart';
 
-/// Le réglage « retour haptique », de bout en bout.
-///
-/// Rien dans le code des contrôles ne montre d'où vient le réglage : ils
-/// interrogent une portée qui, si personne ne la pose, les laisse vibrer. Deux
-/// choses à garder vraies, donc — que la portée coupe bien la vibration, et
-/// que la racine de l'app l'alimente avec le réglage.
 void main() {
   /// Les types de vibration demandés à la plateforme depuis le début du test.
   List<String> captureHaptics(WidgetTester tester) {
@@ -80,8 +74,7 @@ void main() {
   });
 
   testWidgets('sans portée, un contrôle vibre quand même', (tester) async {
-    // Le défaut compte : il rend les contrôles montables seuls, et c'est un
-    // oubli de câblage qui doit faire vibrer de trop, jamais rester muet.
+    // Sans portée, les contrôles vibrent : un oubli de câblage doit s'entendre.
     final fired = captureHaptics(tester);
     await pumpControls(tester);
     await tapControls(tester);
@@ -90,8 +83,7 @@ void main() {
   });
 
   testWidgets('la racine de l’app alimente la portée', (tester) async {
-    // Le seul point de lecture du provider. S'il se débranche, plus rien
-    // n'obéit au réglage et aucun autre test ne le dirait.
+    // Le seul point de lecture du provider.
     await tester.pumpWidget(
       ProviderScope(
         overrides: [hapticsEnabledProvider.overrideWithValue(false)],

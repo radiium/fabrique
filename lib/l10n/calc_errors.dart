@@ -5,8 +5,7 @@ import 'numbers.dart';
 
 /// Les refus du cœur de calcul, rédigés dans la langue de l'app.
 ///
-/// Un refus nomme les cotes comme l'écran et porte les chiffres : c'est ce qui
-/// dit quel champ corriger, et de combien.
+/// Un refus nomme les cotes comme l'écran et porte les chiffres.
 extension CalcErrorText on AppLocalizations {
   String calcError(CalcError error) => switch (error) {
     IncompleteInput() => calcIncompleteInput,

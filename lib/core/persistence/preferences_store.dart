@@ -4,9 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// Fine couche au-dessus de `shared_preferences`.
 ///
-/// Deux usages : les réglages globaux, et la dernière saisie de chaque outil
-/// (une clé par outil, JSON produit par les modèles freezed) pour que rouvrir
-/// l'app restitue l'état.
+/// Les réglages globaux, et la dernière saisie de chaque outil en JSON.
 class PreferencesStore {
   const PreferencesStore(this._prefs);
 

@@ -20,9 +20,7 @@ class ChoiceTile<T> {
 
 /// Un choix exclusif en tuiles pictogramme + texte, sur [columns] colonnes.
 ///
-/// Pour les choix que des segments tronqueraient (« Élément – Élément »,
-/// « Devant et dos recouvrants »), et que le dessin explique mieux que la
-/// phrase.
+/// Pour les choix que des segments tronqueraient et qu'un dessin explique.
 class ChoiceTiles<T> extends StatelessWidget {
   const ChoiceTiles({
     required this.tiles,
@@ -44,8 +42,7 @@ class ChoiceTiles<T> extends StatelessWidget {
       children: [
         for (var row = 0; row < rows; row++) ...[
           if (row > 0) const SizedBox(height: AppSpacing.sm),
-          // `IntrinsicHeight` : une tuile dont le libellé passe à la ligne ne
-          // doit pas laisser sa voisine plus courte.
+          // `IntrinsicHeight` : des tuiles voisines de même hauteur.
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,8 +56,7 @@ class ChoiceTiles<T> extends StatelessWidget {
                         selected: tile.value == value,
                         onTap: () => _select(context, tile.value),
                       ),
-                      // La dernière rangée, incomplète : la case garde sa
-                      // largeur pour que les tuiles restent en colonnes.
+                      // Dernière rangée incomplète : la case vide garde sa largeur.
                       null => const SizedBox.shrink(),
                     },
                   ),
@@ -131,8 +127,7 @@ class _Tile<T> extends StatelessWidget {
                     color: selected ? AppColors.accentDeep : AppColors.label,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
                   ),
-                  // Deux lignes : mieux vaut voir un libellé passer à la ligne
-                  // que se faire couper.
+                  // Deux lignes plutôt qu'une troncature.
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,

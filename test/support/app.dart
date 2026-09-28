@@ -9,8 +9,7 @@ import 'package:go_router/go_router.dart';
 
 /// Monte l'app entière, routeur compris, sur [location].
 ///
-/// Rend le routeur, pour naviguer ensuite sans remonter un second arbre.
-/// Le français par défaut : c'est la langue de référence des textes.
+/// Rend le routeur, pour naviguer ensuite. Français par défaut.
 Future<GoRouter> pumpApp(
   WidgetTester tester,
   String location, {
@@ -41,9 +40,6 @@ Future<GoRouter> pumpApp(
 }
 
 /// Une `MaterialApp` de test : le thème et les textes de l'app, sans routeur.
-///
-/// Tout widget qui lit `AppLocalizations` a besoin de ses délégués, jusqu'au
-/// plus petit contrôle partagé.
 Widget testApp({required Widget home, Locale locale = const Locale('fr')}) =>
     MaterialApp(
       theme: buildAppTheme(),

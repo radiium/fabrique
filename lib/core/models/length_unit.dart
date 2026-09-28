@@ -1,5 +1,4 @@
 /// Unités de longueur supportées par l'app.
 ///
-/// L'unité interne est toujours le millimètre ; ces unités ne servent qu'aux
-/// frontières (saisie et affichage).
+/// Aux frontières seulement : l'unité interne est le millimètre.
 enum LengthUnit { mm, cm, m, inch, foot }

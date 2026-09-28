@@ -7,13 +7,8 @@ import 'number_field.dart';
 /// Deux cotes du même objet, lues ensemble : largeur × longueur, jeu X × jeu Y,
 /// marge de début × marge de fin.
 ///
-/// Jamais pour gagner de la place : deux champs sans lien vont chacun sur leur
-/// ligne. Jamais de `CountField` dedans : ses trois cibles ne tiennent pas dans
-/// une demi-largeur de téléphone.
-///
-/// Si l'un des deux porte un ⓘ, sa ligne de libellé est plus haute : la paire
-/// le dit à l'autre ([PairedLabelScope]), sinon les deux champs démarreraient
-/// à des hauteurs différentes.
+/// Jamais pour gagner de la place, jamais avec un `CountField`. Si l'un porte
+/// un ⓘ, [PairedLabelScope] aligne l'autre.
 class FieldPair extends StatelessWidget {
   const FieldPair({required this.first, required this.second, super.key});
 

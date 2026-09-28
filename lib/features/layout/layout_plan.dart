@@ -15,14 +15,8 @@ import 'layout_schema.dart';
 /// Millimètres carrés dans un mètre carré.
 const double _mm2PerM2 = 1000 * 1000;
 
-/// Point de construction unique du plan du Calepinage.
-///
-/// La page plein écran et l'export le traversent tous les deux, comme la
-/// vignette et le plein écran traversent [LayoutSchema] : c'est ce qui garantit
-/// que le fichier exporté est exactement ce que l'aperçu montre.
-///
-/// `null` quand la saisie est refusée. Il n'y a alors pas de plan à faire — le
-/// cartouche n'aurait que des tirets, et l'écran de l'outil dit déjà pourquoi.
+/// Point de construction unique du plan du Calepinage, pour la page plein
+/// écran et l'export. `null` quand la saisie est refusée.
 PlanPainter? buildLayoutPlan({
   required AppLocalizations l10n,
   required LayoutInput input,
@@ -36,10 +30,7 @@ PlanPainter? buildLayoutPlan({
   return PlanPainter(
     plan: Plan(
       title: Tool.layout.label(l10n),
-      // Le cartouche ne porte **que ce que le dessin ne cote pas**. Les deux
-      // cotes de la surface sont sur le schéma, aux mêmes chiffres exacts.
-      // L'élément, lui, est dessiné sans être coté, et les jeux ne se mesurent
-      // pas à l'œil sur une trame.
+      // Seulement ce que le dessin ne cote pas : l'élément et les jeux.
       fields: [
         (l10n.planDate.toUpperCase(), formatPlanDate(date, l10n)),
         (
@@ -69,14 +60,11 @@ PlanPainter? buildLayoutPlan({
           '${l10n.number(result.wastePercent)} %',
         ),
       ],
-      // La liste de débit : ce qu'on emporte à la scie. Elle remplace la table
-      // des positions de la Répartition, et elle rend inutile une case pour
-      // les rangées de bord équilibrées — leur cote est déjà une ligne ici.
+      // La liste de débit, qui porte aussi les rangées de bord équilibrées.
       tables: [
         PlanTable(
           title: l10n.layoutPlanCuts.toUpperCase(),
-          // La première colonne est celle des numéros, étroite et fixe : les
-          // nombres vont donc dans les colonnes larges qui suivent.
+          // La première colonne, étroite, est celle des numéros.
           headers: [
             l10n.planIndex,
             '${l10n.layoutPlanWidthColumn.toUpperCase()} (mm)',
@@ -97,21 +85,14 @@ PlanPainter? buildLayoutPlan({
               : l10n.layoutPlanCutsFallback(cuts.length),
         ),
       ],
-      // L'avertissement de l'outil, réservé avant tout le reste : c'est la
-      // ligne qu'on n'a pas le droit de perdre sous un débordement.
       note: l10n.layoutPlanNote,
     ),
     drawing: LayoutPainter(result: result, input: input, l10n: l10n),
   );
 }
 
-/// Le plan du Calepinage, branché sur les providers.
-///
-/// C'est ce que montre la page plein écran : le schéma **et** son cartouche,
-/// c'est-à-dire l'image qui sortira. Un aperçu qui ne montrerait que le dessin
-/// laisserait découvrir le cartouche après coup, dans le fichier.
-///
-/// Saisie refusée : on retombe sur le schéma seul, qui pose son tiret.
+/// Le plan du Calepinage, branché sur les providers : schéma et cartouche.
+/// Saisie refusée : le schéma seul.
 class LayoutPlanView extends ConsumerWidget {
   const LayoutPlanView({super.key});
 

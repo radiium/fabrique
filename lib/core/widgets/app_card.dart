@@ -7,9 +7,6 @@ import '../../app/theme.dart';
 /// Deux variantes seulement :
 /// - claire ([AppColors.cardSurface]) : saisie et résultats ;
 /// - teintée ([AppColors.cardTinted], `tinted: true`) : schémas.
-///
-/// Les cartes s'empilent en colonne, espacées de [AppSpacing.md] — jamais de
-/// grille.
 class AppCard extends StatelessWidget {
   const AppCard({
     required this.child,

@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 import 'haptics.dart';
 
-/// `DropdownMenu` calé sur le design system : pleine largeur, et non éditable
-/// — la liste est fermée, ouvrir un clavier en atelier n'aurait aucun sens.
+/// `DropdownMenu` du design system : pleine largeur, non éditable.
 ///
-/// L'habillage (fond, filet, rayon, panneau déroulant) vient du
-/// `dropdownMenuTheme` ; il ne reste ici que la géométrie et les entrées.
-///
-/// La valeur fermée prend [controlTextStyle], comme tous les contrôles :
-/// recopier le style ici le laisserait dériver de celui des champs.
+/// L'habillage vient du `dropdownMenuTheme`, le texte de [controlTextStyle].
 class AppDropdown<T> extends StatelessWidget {
   const AppDropdown({
     required this.value,
@@ -42,9 +37,7 @@ class AppDropdown<T> extends StatelessWidget {
           DropdownMenuEntry(
             value: entry.key,
             label: entry.value,
-            // Le `textStyle` du `menuButtonTheme` n'est pas relayé par
-            // `DropdownMenu` : sans ce style par entrée, le panneau resterait
-            // au défaut Material et ne s'accorderait pas au segmented.
+            // `DropdownMenu` ne relaie pas le `textStyle` du thème : style par entrée.
             style: ButtonStyle(
               textStyle: WidgetStateProperty.resolveWith(
                 (states) => controlTextStyle(

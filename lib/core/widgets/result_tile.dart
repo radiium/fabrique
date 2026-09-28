@@ -18,13 +18,8 @@ class ResultTile extends StatelessWidget {
   final String label;
   final String value;
 
-  /// Unité rendue après la valeur, en plus petit et dans le gris des libellés
-  /// — exactement le `suffixText` d'un `NumberField`.
-  ///
-  /// Sa place est ici et pas entre parenthèses dans [label] : une cote se lit
-  /// d'un bloc (`12,5 %`, `250 mm`), et `Surface (mm²)` en en-tête est aussi
-  /// laid qu'illisible à bout de bras. Le chiffre garde pour lui seul le gros
-  /// style tabulaire, donc les valeurs restent alignées d'une tuile à l'autre.
+  /// Unité après la valeur, plus petite et grise, comme le `suffixText` d'un
+  /// `NumberField`. Hors de [label], pour aligner les chiffres.
   final String? unit;
 
   /// Courte justification optionnelle (ex. règle appliquée).
@@ -35,9 +30,7 @@ class ResultTile extends StatelessWidget {
     final theme = Theme.of(context);
     return InkWell(
       onTap: () => _copy(context),
-      // Pas de rayon : la tuile touche les bords de sa carte, donc une encre
-      // arrondie laisserait quatre coins de fond nu à chaque appui. Les coins
-      // du haut et du bas sont déjà détourés par la carte elle-même.
+      // Sans rayon : la tuile touche les bords, la carte détoure les coins.
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
@@ -51,8 +44,7 @@ class ResultTile extends StatelessWidget {
                 children: [
                   Text(label, style: theme.textTheme.labelLarge),
                   Row(
-                    // Les deux textes posent sur la même ligne de base : sans
-                    // ça, l'unité flotte au milieu de la hauteur du chiffre.
+                    // Même ligne de base pour le chiffre et l'unité.
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
                     children: [
@@ -87,8 +79,7 @@ class ResultTile extends StatelessWidget {
     final messenger = ScaffoldMessenger.of(context);
     final copied = AppLocalizations.of(context).commonCopied;
     await Clipboard.setData(ClipboardData(text: value));
-    // Remplace le « Copié » précédent : des copies à la suite empileraient
-    // leurs SnackBar sur les résultats pendant plusieurs secondes.
+    // Remplace le « Copié » précédent, pour ne pas empiler les SnackBar.
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(copied)));

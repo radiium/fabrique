@@ -8,13 +8,8 @@ import 'haptics.dart';
 
 /// Squelette commun à tous les écrans-outils.
 ///
-/// Mobile : saisie / visualisation / résultats empilés. Web large
-/// (≥ [kWideBreakpoint]) : deux colonnes, saisie + résultats à gauche,
-/// visualisation fixe à droite.
-///
-/// C'est ici que les trois blocs reçoivent leur carte : claire pour la saisie
-/// et les résultats, teintée pour le schéma (via `SchemaCard`). Les écrans
-/// passent donc leur contenu nu.
+/// Mobile : saisie, schéma, résultats empilés. Au-delà de [kWideBreakpoint] :
+/// saisie et résultats à gauche, schéma à droite. Les cartes sont posées ici.
 class ToolScaffold extends StatelessWidget {
   const ToolScaffold({
     required this.title,
@@ -37,53 +32,29 @@ class ToolScaffold extends StatelessWidget {
   /// La saisie d'un seul bloc, dans le rembourrage de la carte.
   final Widget? input;
 
-  /// La saisie découpée en groupes repliables ([AppDisclosure]), empilés de
-  /// bord à bord à la place d'[input].
-  ///
-  /// Pour un outil dont la saisie ne tient pas sur un écran : chaque groupe
-  /// fermé résume ses valeurs, et le schéma remonte d'autant. Un seul groupe
-  /// est ouvert à la fois ([AppDisclosureGroup]).
+  /// La saisie en groupes repliables ([AppDisclosure]), à la place d'[input],
+  /// quand elle ne tient pas sur un écran.
   final List<Widget>? inputGroups;
 
   final Widget visualization;
 
-  /// Le format de la vignette sur mobile.
-  ///
-  /// Un outil ne le relève que s'il a vraiment de quoi remplir la hauteur : ce
-  /// qu'il prend éloigne d'autant les résultats.
+  /// Le format de la vignette sur mobile. Plus haute, elle éloigne les
+  /// résultats.
   final double visualizationAspectRatio;
 
-  /// Les résultats arrivent en liste, pas en `Column` toute faite : c'est la
-  /// carte qui intercale les séparateurs, donc c'est elle qui doit voir les
-  /// éléments un par un.
+  /// Une liste : la carte intercale les séparateurs.
   final List<Widget> results;
 
-  /// Pied de la carte de résultats, posé hors de son rembourrage : il va de
-  /// bord à bord et porte lui-même son filet.
-  ///
-  /// C'est la place d'[AppCardActions] : ce qu'on fait des résultats se propose
-  /// sous les résultats, une fois qu'ils sont lus.
+  /// Pied de la carte de résultats, de bord à bord, avec son filet : la place
+  /// d'[AppCardActions].
   final Widget? resultsFooter;
 
   /// Rend la saisie de l'outil à ses valeurs par défaut.
   ///
-  /// L'action vit dans l'`AppBar` et non dans une barre basse : une barre fixe
-  /// retrancherait ~75 px de chaque écran en permanence — la ressource même
-  /// pour laquelle le schéma se bat — au profit d'une action utilisée une fois
-  /// par chantier. Et le bas d'écran, c'est la zone du pouce : y poser l'action
-  /// la moins rattrapable de l'app, c'est demander l'appui accidentel. Ici
-  /// l'`AppBar` existe déjà, donc le coût vertical est nul et le coin opposé au
-  /// pouce rend l'appui délibéré.
-  ///
-  /// `null` = l'outil n'a rien à réinitialiser (le Niveau, qui ne lit que le
-  /// capteur) et l'action ne s'affiche pas.
+  /// Dans l'`AppBar`, hors de la zone du pouce. `null` masque l'action.
   final VoidCallback? onReset;
 
-  /// Y a-t-il quelque chose à réinitialiser ?
-  ///
-  /// `false` grise l'action au lieu de la faire disparaître : une chrome qui
-  /// s'efface se cherche, une icône éteinte se lit — et elle porte le seul
-  /// signal « rien n'a été restauré, l'écran est neuf ».
+  /// `false` grise l'action sans la masquer : l'écran est neuf.
   final bool canReset;
 
   @override
@@ -130,9 +101,8 @@ class _InputCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (input case final input?) return AppCard(child: input);
 
-    // Les groupes portent leurs marges et leurs filets : la carte n'a rien à
-    // leur prêter. Elle détoure ses coins, sinon l'encre d'un en-tête
-    // déborderait des arrondis. Le filet du premier se confond avec son bord.
+    // Les groupes portent marges et filets. La carte détoure ses coins pour
+    // l'encre des en-têtes.
     return AppCard(
       padding: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
@@ -146,14 +116,9 @@ class _InputCard extends StatelessWidget {
   }
 }
 
-/// Les [ResultTile] portent tout leur rembourrage : la carte n'en pose aucun.
-///
-/// Un rembourrage de carte donnerait à la première et à la dernière tuile un
-/// blanc de plus qu'aux autres, et arrêterait la zone tapable avant le bord —
-/// alors que le tap pour copier doit attraper toute la ligne.
-///
-/// Les filets vont de bord à bord (la carte détoure), et jamais avant le
-/// premier ni après le dernier : ils séparent, ils n'encadrent pas.
+/// La carte de résultats, sans rembourrage : les [ResultTile] portent le
+/// leur, pour que le tap pour copier prenne toute la ligne. Filets entre les
+/// tuiles seulement.
 class _ResultsCard extends StatelessWidget {
   const _ResultsCard({required this.results, required this.footer});
 
@@ -173,8 +138,7 @@ class _ResultsCard extends StatelessWidget {
             if (i > 0) const Divider(),
             result,
           ],
-          // Sans `Divider` : le pied porte son propre filet, comme celui de la
-          // carte de saisie, et deux traits superposés se verraient.
+          // Sans `Divider` : le pied porte son propre filet.
           ?footer,
         ],
       ),
@@ -259,16 +223,9 @@ class _NarrowBody extends StatelessWidget {
   }
 }
 
-/// « Réinitialiser » : un tap, pas de dialogue, pas de SnackBar « Annuler ».
+/// « Réinitialiser » : un tap, sans confirmation ni « Annuler ».
 ///
-/// Les cotes ne vivent pas dans l'app — elles viennent du mètre, du tasseau,
-/// de la pièce. Un reset accidentel ne détruit rien, il fait retaper ce qui
-/// est encore mesurable à un mètre de là. Confirmer punirait les appuis voulus
-/// (l'écrasante majorité) pour couvrir une erreur rare et bon marché, et le
-/// SnackBar recouvrirait les résultats à chaque reset intentionnel.
-///
-/// Le retour haptique est donc le seul accusé de réception : il ne coûte ni
-/// tap ni pixel, et il s'entend quand la scie tourne.
+/// Les cotes se remesurent ; le retour haptique sert d'accusé de réception.
 class _ResetAction extends StatelessWidget {
   const _ResetAction({required this.onReset, required this.enabled});
 

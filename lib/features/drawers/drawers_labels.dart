@@ -1,8 +1,5 @@
 /// Les libellés des choix des Tiroirs, partagés par l'écran et le cartouche du
 /// plan.
-///
-/// Les enums vivent dans `core/calc`, qui ne porte aucun texte : leurs noms
-/// dépendent de la langue.
 library;
 
 import '../../core/calc/drawers.dart';

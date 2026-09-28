@@ -14,8 +14,7 @@ import '../features/settings/settings_screen.dart';
 import '../l10n/app_localizations.dart';
 import 'routes.dart';
 
-/// Navigation déclarative, deep-linking prêt pour le web : accueil, réglages,
-/// et une route paramétrée par outil.
+/// Accueil, réglages, et une route par outil.
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: AppRoutes.home,
@@ -42,9 +41,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               };
             },
             routes: [
-              // Le schéma seul, par-dessus son outil. Empilé et non substitué :
-              // on y entre pour regarder, on en sort par le geste de retour, et
-              // la saisie reste derrière, intacte.
+              // Le schéma empilé sur son outil : la saisie reste derrière.
               GoRoute(
                 path: 'schema',
                 pageBuilder: (context, state) {
@@ -70,10 +67,7 @@ const Duration _riseDuration = Duration(milliseconds: 300);
 
 /// Une page qui monte du bas de l'écran, sur toutes les plateformes.
 ///
-/// Le schéma s'ouvre depuis sa vignette et se referme pour y revenir : un
-/// glissement latéral le lirait comme une étape de plus dans l'outil, pas
-/// comme une vue posée par-dessus. `MaterialPage(fullscreenDialog: true)`
-/// garderait la transition du thème, qui glisse.
+/// Le schéma se lit comme une vue posée sur l'outil, pas comme une étape.
 class _RisingPage extends CustomTransitionPage<void> {
   _RisingPage({required super.child, super.key})
     : super(

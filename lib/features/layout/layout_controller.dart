@@ -49,19 +49,11 @@ class LayoutForm extends _$LayoutForm with PersistedForm<LayoutInput> {
 
   /// Pré-remplit format, jeux et décalage depuis un produit courant.
   ///
-  /// Une seule affectation et non six appels de champ : six `copyWith`
-  /// enchaînés feraient six reconstructions de l'écran, dont cinq sur des
-  /// états intermédiaires que personne n'a demandés.
+  /// Une seule affectation, pour une seule reconstruction.
   void applyPreset(LayoutPreset preset) => state = preset.applyTo(state);
 }
 
-/// Ce que l'écran a à afficher : un calepinage, ou la raison de son absence.
-///
-/// **Écart assumé à la convention `CalcException` → `null`**, le même que la
-/// Répartition. L'outil a huit contrôles et ses refus sont métier — « l'élément
-/// fait 1200 mm pour une zone à couvrir de 980 » : un tiret muet laisserait
-/// chercher lequel des huit est fautif, et le jeu périphérique rend l'écart
-/// invisible puisque la zone à couvrir n'est plus la surface saisie.
+/// Ce que l'écran a à afficher : un calepinage, ou le motif de son refus.
 sealed class LayoutOutcome {
   const LayoutOutcome();
 }

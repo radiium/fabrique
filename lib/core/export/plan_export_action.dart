@@ -11,20 +11,9 @@ import 'plan_export.dart';
 
 /// Les deux gestes du plan d'un outil : l'enregistrer, ou l'envoyer.
 ///
-/// **Enregistrer d'abord.** Le sélecteur de partage d'Android ne liste que des
-/// applications — il n'y a pas d'action « enregistrer » dedans. Sans ce
-/// premier bouton, on ne pourrait pas simplement garder son plan.
-///
-/// En pied de la carte de résultats, et en icône dans l'`AppBar` de la page
-/// plein écran, qui n'a pas de carte de résultats. Là-bas une seule action,
-/// l'enregistrement : « ajuster » et « pivoter » occupent déjà la barre, et
-/// partager reste à un écran de distance.
-///
-/// Les deux s'éteignent tant que la saisie est refusée, jamais ne
-/// disparaissent — même règle que « réinitialiser ».
-///
-/// Sans Riverpod : chaque outil l'enveloppe dans un widget qui lit ses propres
-/// providers, et le passe en [ready] et [buildPlan].
+/// Enregistrer d'abord : le partage Android n'offre pas d'action
+/// « enregistrer ». En icône (`compact`), l'enregistrement seul. Éteints tant
+/// que la saisie est refusée. Chaque outil fournit [ready] et [buildPlan].
 class PlanExportAction extends StatefulWidget {
   const PlanExportAction({
     required this.tool,
@@ -40,13 +29,8 @@ class PlanExportAction extends StatefulWidget {
   /// La saisie est acceptée, il y a un plan à exporter.
   final bool ready;
 
-  /// Construit le plan à l'instant du tap, daté de `date`. `null` quand la
-  /// saisie est refusée.
-  ///
-  /// Une fonction et non un plan tout fait : la saisie est relue au tap,
-  /// jamais observée. Construire le plan à chaque frappe rebâtirait sa table
-  /// (jusqu'à 500 positions, ou une liste de débit tirée de 5000 éléments)
-  /// pour des boutons qui n'ont besoin que de savoir s'il y a un résultat.
+  /// Construit le plan au tap, daté de `date`. `null` si la saisie est
+  /// refusée. Une fonction, pour ne pas rebâtir la table à chaque frappe.
   final PlanPainter? Function(DateTime date) buildPlan;
 
   /// `true` = l'icône de l'`AppBar`, `false` = la rangée en pied de carte.

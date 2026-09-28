@@ -8,15 +8,9 @@ import 'core/persistence/settings_controller.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Le store est ouvert **avant** `runApp` pour être disponible en synchrone :
-  // chaque outil restaure sa dernière saisie dans le `build()` de son notifier,
-  // qui ne peut pas attendre un `Future`. Ouvrir ici, c'est aussi garantir
-  // qu'il n'arrivera jamais après coup — un store en retard rebâtirait un
-  // formulaire déjà rempli, sous les doigts.
-  //
-  // S'il échoue, l'app démarre quand même : les outils partent de leurs
-  // défauts, et l'écran Réglages affiche l'échec puisque le provider non
-  // surchargé retentera l'ouverture pour son compte.
+  // Le store s'ouvre avant `runApp`, pour que les notifiers le lisent en
+  // synchrone dans `build()`. S'il échoue, les outils partent de leurs défauts
+  // et Réglages affiche l'échec.
   PreferencesStore? store;
   try {
     store = await PreferencesStore.open();
