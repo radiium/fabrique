@@ -10,7 +10,7 @@ Dans l'ordre. La signature, la version et la fiche sont en place (voir [release.
 
 - **L'icône de l'app** : c'est encore celle de Flutter, dans `android/app/src/main/res/mipmap-*` et `web/icons/`. F-Droid la tire de l'APK.
 - **Les captures d'écran** de la fiche, une série par langue : `fastlane/metadata/android/fr-FR/images/phoneScreenshots/1.png`, `2.png`… et de même sous `en-US/`.
-- **Un dépôt public**, GitHub ou Codeberg : F-Droid et IzzyOnDroid partent des sources et des tags. Puis le premier tag, `v0.1.0`.
+- **Un dépôt public**, GitHub ou Codeberg : F-Droid et IzzyOnDroid partent des sources et des tags. Son lien va dans « À propos », pour signaler un bug. Puis le premier tag, `v0.1.0`.
 - **Le workflow de release**, sur un tag `v*` : analyse et tests, APK signé (la clé en secret du dépôt, réécrite en `key.properties`), Release avec l'APK joint.
 - **IzzyOnDroid** : demande d'inclusion une fois la première Release publiée. Il reprend l'APK de la Release, signé par notre clé, et publie en un jour.
 - **F-Droid officiel** : merge request sur `fdroiddata`, avec Flutter figé en sous-module git, `UpdateCheckMode: Tags` et le `versionCode` lu dans le `pubspec`. Revue de quelques semaines. F-Droid signe alors avec sa propre clé : passer d'IzzyOnDroid à F-Droid demandera de réinstaller, sauf build reproductible.

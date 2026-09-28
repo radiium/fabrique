@@ -47,6 +47,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLoadFailed => 'Settings unreadable';
 
   @override
+  String get about => 'About';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get aboutDescription =>
+      'Five calculation tools for the shop: surface layout, even spacing, drawers, level and unit conversion.';
+
+  @override
+  String get aboutPrivacy =>
+      'No account, no ads. Your inputs stay on this device.';
+
+  @override
+  String get aboutLicense => 'Free software, licensed under the GNU GPL v3.';
+
+  @override
+  String get aboutLicenses => 'Open source licenses';
+
+  @override
   String get toolLayout => 'Surface layout';
 
   @override

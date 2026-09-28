@@ -24,6 +24,20 @@
   "@settingsLoadFailed": {
     "description": "Titre affiché si shared_preferences échoue à l'ouverture"
   },
+  "about": "À propos",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "description": "Pied des Réglages et en-tête d'À propos",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutDescription": "Cinq outils de calcul pour l’atelier : calepinage, répartition, tiroirs, niveau et conversion d’unités.",
+  "aboutPrivacy": "Sans compte ni publicité. Vos saisies restent sur cet appareil.",
+  "aboutLicense": "Logiciel libre, sous licence GNU GPL v3.",
+  "aboutLicenses": "Licences des composants",
   "toolLayout": "Calepinage",
   "toolLayoutSubtitle": "Pose sur surface, % de perte",
   "@toolLayoutSubtitle": {

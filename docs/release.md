@@ -13,6 +13,7 @@ L'app se publie sur Android, visée F-Droid, et sur le web. Pas d'app iOS : sans
 `version: X.Y.Z+N` dans `pubspec.yaml` : Gradle en tire `versionName` (`X.Y.Z`, ce que l'utilisateur voit) et `versionCode` (`N`).
 
 - **`N` ne fait que monter**, de 1 à chaque version publiée. Android refuse une mise à jour dont le `versionCode` n'est pas plus grand.
+- **`X.Y.Z` se recopie dans `kAppVersion`** (`lib/app/version.dart`), affiché par les Réglages et « À propos ». Un test compare les deux. Pas de `package_info_plus` : sur le web, il lit `version.json` avec un paramètre anti-cache, que le service worker ne retrouve pas hors ligne.
 - **Un tag `vX.Y.Z` par version**, posé sur le commit qui change le `pubspec`. F-Droid détecte les nouvelles versions par ces tags.
 
 ## Signature

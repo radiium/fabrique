@@ -10,6 +10,7 @@ import '../features/home/home_screen.dart';
 import '../features/layout/layout_screen.dart';
 import '../features/level/level_screen.dart';
 import '../features/schema/schema_screen.dart';
+import '../features/settings/about_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../l10n/app_localizations.dart';
 import 'routes.dart';
@@ -26,6 +27,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'settings',
             builder: (context, state) => const SettingsScreen(),
+            routes: [
+              GoRoute(
+                path: 'about',
+                builder: (context, state) => const AboutScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: 'tool/:id',

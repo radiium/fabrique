@@ -170,6 +170,42 @@ abstract class AppLocalizations {
   /// **'Réglages illisibles'**
   String get settingsLoadFailed;
 
+  /// No description provided for @about.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos'**
+  String get about;
+
+  /// Pied des Réglages et en-tête d'À propos
+  ///
+  /// In fr, this message translates to:
+  /// **'Version {version}'**
+  String aboutVersion(String version);
+
+  /// No description provided for @aboutDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cinq outils de calcul pour l’atelier : calepinage, répartition, tiroirs, niveau et conversion d’unités.'**
+  String get aboutDescription;
+
+  /// No description provided for @aboutPrivacy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans compte ni publicité. Vos saisies restent sur cet appareil.'**
+  String get aboutPrivacy;
+
+  /// No description provided for @aboutLicense.
+  ///
+  /// In fr, this message translates to:
+  /// **'Logiciel libre, sous licence GNU GPL v3.'**
+  String get aboutLicense;
+
+  /// No description provided for @aboutLicenses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Licences des composants'**
+  String get aboutLicenses;
+
   /// No description provided for @toolLayout.
   ///
   /// In fr, this message translates to:

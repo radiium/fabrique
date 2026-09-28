@@ -47,6 +47,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsLoadFailed => 'Réglages illisibles';
 
   @override
+  String get about => 'À propos';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get aboutDescription =>
+      'Cinq outils de calcul pour l’atelier : calepinage, répartition, tiroirs, niveau et conversion d’unités.';
+
+  @override
+  String get aboutPrivacy =>
+      'Sans compte ni publicité. Vos saisies restent sur cet appareil.';
+
+  @override
+  String get aboutLicense => 'Logiciel libre, sous licence GNU GPL v3.';
+
+  @override
+  String get aboutLicenses => 'Licences des composants';
+
+  @override
   String get toolLayout => 'Calepinage';
 
   @override

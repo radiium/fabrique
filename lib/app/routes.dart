@@ -7,6 +7,7 @@ import '../core/models/tool.dart';
 abstract final class AppRoutes {
   static const String home = '/';
   static const String settings = '/settings';
+  static const String about = '$settings/about';
 
   static String tool(Tool tool) => '/tool/${tool.id}';
 

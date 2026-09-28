@@ -8,6 +8,7 @@ import 'package:fabrique/features/layout/layout_screen.dart';
 import 'package:fabrique/features/level/level_controller.dart';
 import 'package:fabrique/features/level/level_screen.dart';
 import 'package:fabrique/features/schema/schema_screen.dart';
+import 'package:fabrique/features/settings/about_screen.dart';
 import 'package:fabrique/features/settings/settings_screen.dart';
 import 'package:fabrique/l10n/labels.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,13 +22,19 @@ import '../support/l10n.dart';
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  testWidgets('l’accueil et les réglages ont leur écran', (tester) async {
+  testWidgets('l’accueil, les réglages et « À propos » ont leur écran', (
+    tester,
+  ) async {
     final router = await pumpApp(tester, AppRoutes.home);
     expect(find.byType(HomeScreen), findsOneWidget);
 
     router.go(AppRoutes.settings);
     await tester.pumpAndSettle();
     expect(find.byType(SettingsScreen), findsOneWidget);
+
+    router.go(AppRoutes.about);
+    await tester.pumpAndSettle();
+    expect(find.byType(AboutScreen), findsOneWidget);
   });
 
   for (final tool in Tool.values) {
