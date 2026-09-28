@@ -6,6 +6,7 @@ import '../../core/persistence/settings_controller.dart';
 import '../../core/widgets/app_card.dart';
 import '../../core/widgets/app_dropdown.dart';
 import '../../core/widgets/app_switch_field.dart';
+import '../../core/widgets/haptics.dart';
 import '../../core/widgets/labeled_field.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -57,11 +58,16 @@ class _SettingsForm extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    AppSwitchField(
-                      label: l10n.haptics,
-                      help: l10n.hapticsHelp,
-                      value: settings.haptics,
-                      onChanged: controller.setHaptics,
+                    // Vibre selon la valeur choisie, pas l'ancienne : l'activer se sent,
+                    // le couper reste muet.
+                    HapticsScope(
+                      enabled: !settings.haptics,
+                      child: AppSwitchField(
+                        label: l10n.haptics,
+                        help: l10n.hapticsHelp,
+                        value: settings.haptics,
+                        onChanged: controller.setHaptics,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.md),
                     // Liste déroulante : « Langue du téléphone » ne tient pas en segment.
