@@ -8,7 +8,7 @@ La structure, les couches et le flux saisie → résultat → painter sont dans 
 
 ## Persistance
 
-`shared_preferences` : une clé par outil (la dernière saisie, en JSON), plus les réglages. `PersistedForm<T>` branche un notifier sur le disque sans toucher à ses méthodes de champ.
+`shared_preferences` : une clé par outil (la dernière saisie, en JSON), plus les réglages et le calibrage du Niveau, propre au téléphone et non à une saisie. `PersistedForm<T>` branche un notifier sur le disque sans toucher à ses méthodes de champ.
 
 À ne pas défaire :
 

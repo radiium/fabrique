@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/tilt.dart';
-import '../../core/format.dart';
 import '../../core/models/tool.dart';
 import '../../core/widgets/result_tile.dart';
 import '../../core/widgets/schema_card.dart';
@@ -11,102 +13,112 @@ import '../../core/widgets/tool_scaffold.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
 import '../../l10n/numbers.dart';
+import 'level_calibration.dart';
 import 'level_controller.dart';
 import 'level_schema.dart';
 
-/// Aucune saisie : lecture capteur, plus un bouton de calibrage.
-class LevelScreen extends ConsumerWidget {
+/// Lecture sur la tranche, et calibrage.
+///
+/// Verrouillé en portrait : posé sur la tranche, le téléphone ferait sinon
+/// pivoter l'écran au moment de la mesure. Le dessin se redresse seul.
+class LevelScreen extends ConsumerStatefulWidget {
   const LevelScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LevelScreen> createState() => _LevelScreenState();
+}
+
+class _LevelScreenState extends ConsumerState<LevelScreen> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]),
+    );
+  }
+
+  @override
+  void dispose() {
+    // Liste vide : l'orientation revient au choix du système.
+    unawaited(SystemChrome.setPreferredOrientations(const []));
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final reading = ref.watch(accelStreamProvider);
-    final zero = ref.watch(tiltZeroProvider);
+    final isSilent = ref.watch(sensorSilenceProvider);
     final result = ref.watch(tiltResultProvider);
+    final tilt = result is EdgeTilt ? result : null;
+
+    final isUnavailable = reading.hasError || (isSilent && !reading.hasValue);
 
     return ToolScaffold(
       title: Tool.level.label(l10n),
-      input: reading.hasError
+      input: isUnavailable
           ? const _SensorUnavailable()
-          : _Calibration(reading: reading.value, zero: zero),
+          : LevelCalibrationControls(result: result),
+      // Carré : le tube tourne d'un quart de tour avec le téléphone.
+      visualizationAspectRatio: 1,
       visualization: const SchemaCard(child: LevelSchema()),
       results: [
-        ResultTile(
-          label: l10n.levelRoll,
-          value: l10n.degrees(result?.rollDeg),
-          unit: '°',
-          note: l10n.levelRollNote,
-        ),
-        ResultTile(
-          label: l10n.levelPitch,
-          value: l10n.degrees(result?.pitchDeg),
-          unit: '°',
-          note: l10n.levelPitchNote,
-        ),
-        ResultTile(
-          label: l10n.levelState,
-          value: result == null
-              ? kNoValue
-              : (result.isLevel ? l10n.levelFlat : l10n.levelOff),
-          note: zero == null ? l10n.levelFromHorizontal : l10n.levelFromZero,
-        ),
+        _AngleTile(tilt: tilt),
+        _SlopeTile(tilt: tilt),
       ],
     );
   }
 }
 
-/// Le calibrage : poser un zéro sur une surface de référence, ou revenir au
-/// zéro absolu.
-class _Calibration extends ConsumerWidget {
-  const _Calibration({required this.reading, required this.zero});
+/// L'inclinaison, ou l'écart d'aplomb téléphone debout. Un tiret à plat : le
+/// dessin dit quoi faire.
+class _AngleTile extends StatelessWidget {
+  const _AngleTile({required this.tilt});
 
-  /// `null` tant que le capteur n'a rien livré : le bouton reste inerte.
-  final AccelReading? reading;
-  final AccelReading? zero;
+  final EdgeTilt? tilt;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final current = reading;
-    final controller = ref.read(tiltZeroProvider.notifier);
+    final angle = tilt?.angleDeg;
+    return ResultTile(
+      label: (tilt?.quarterTurns.isEven ?? false)
+          ? l10n.levelPlumbGap
+          : l10n.levelEdgeTilt,
+      value: l10n.degrees(angle),
+      unit: '°',
+    );
+  }
+}
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: kFieldHeight,
-                child: FilledButton.icon(
-                  onPressed: current == null
-                      ? null
-                      : () => controller.calibrate(current),
-                  icon: const Icon(Icons.adjust_outlined),
-                  label: Text(l10n.levelSetZero),
-                ),
-              ),
-            ),
-            if (zero != null) ...[
-              const SizedBox(width: AppSpacing.sm),
-              SizedBox(
-                height: kFieldHeight,
-                child: OutlinedButton(
-                  onPressed: controller.reset,
-                  child: Text(l10n.levelCancelZero),
-                ),
-              ),
-            ],
-          ],
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          zero == null ? l10n.levelHorizontalHelp : l10n.levelZeroHelp,
-          style: Theme.of(context).textTheme.bodySmall
-              ?.copyWith(color: AppColors.label),
-        ),
-      ],
+/// La pente en mm/m, et de quel côté corriger : la cale sous l'extrémité
+/// basse, ou le côté vers lequel penche le haut d'un montant.
+class _SlopeTile extends StatelessWidget {
+  const _SlopeTile({required this.tilt});
+
+  final EdgeTilt? tilt;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final isUpright = tilt?.quarterTurns.isEven ?? false;
+    final angle = tilt?.angleDeg;
+    return ResultTile(
+      label: isUpright ? l10n.levelPlumbOffset : l10n.levelSlope,
+      // Sans signe : la note dit le côté.
+      value: l10n.tenths(angle == null ? null : slopeMmPerM(angle).abs()),
+      unit: 'mm/m',
+      // Positif : l'extrémité droite monte, donc le haut d'un montant part à
+      // gauche.
+      note: switch (angle) {
+        null => null,
+        final angle => switch ((isUpright, angle > 0)) {
+          (true, true) => l10n.levelTopLeansLeft,
+          (true, false) => l10n.levelTopLeansRight,
+          (false, true) => l10n.levelUnderLeftEnd,
+          (false, false) => l10n.levelUnderRightEnd,
+        },
+      },
     );
   }
 }

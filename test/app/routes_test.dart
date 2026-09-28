@@ -5,6 +5,7 @@ import 'package:fabrique/features/distribution/distribution_screen.dart';
 import 'package:fabrique/features/drawers/drawers_screen.dart';
 import 'package:fabrique/features/home/home_screen.dart';
 import 'package:fabrique/features/layout/layout_screen.dart';
+import 'package:fabrique/features/level/level_controller.dart';
 import 'package:fabrique/features/level/level_screen.dart';
 import 'package:fabrique/features/schema/schema_screen.dart';
 import 'package:fabrique/features/settings/settings_screen.dart';
@@ -46,6 +47,9 @@ void main() {
       router.go(AppRoutes.schema(tool));
       await tester.pumpAndSettle();
       expect(find.byType(SchemaScreen), findsOneWidget);
+
+      // Le Niveau guette sa première lecture : le délai doit s'écouler.
+      await tester.pump(kSensorSilenceDelay);
     });
   }
 }

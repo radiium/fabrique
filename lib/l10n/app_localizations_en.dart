@@ -68,7 +68,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toolLevel => 'Level';
 
   @override
-  String get toolLevelSubtitle => 'Bubble and inclinometer';
+  String get toolLevelSubtitle => 'Level and plumb, on edge';
 
   @override
   String get toolConverter => 'Converter';
@@ -228,6 +228,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calcInvalidSensorReading => 'Invalid accelerometer reading';
+
+  @override
+  String get calcUnsteadyReading =>
+      'The phone moved during the reading. Set it down, then leave it untouched until the end.';
+
+  @override
+  String get calcPoseChanged =>
+      'The two readings were not taken on the same edge. Just turn it half a turn on the spot.';
+
+  @override
+  String get calcNotOnEdge =>
+      'The phone was lying flat. Stand it on an edge to calibrate it.';
+
+  @override
+  String calcBiasTooLarge(String max) {
+    return 'The two readings differ by more than $max°: the phone was not turned on the same mark.';
+  }
 
   @override
   String get calcPositiveTotalWidth => 'Total width must be greater than 0';
@@ -457,44 +474,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get converterOutOfScale => 'Ratio off the chart — shapes not to scale';
 
   @override
-  String get levelRoll => 'Side tilt';
-
-  @override
-  String get levelRollNote => 'Left ⇄ right';
-
-  @override
-  String get levelPitch => 'Front tilt';
-
-  @override
-  String get levelPitchNote => 'Front ⇄ back';
-
-  @override
-  String get levelState => 'Status';
-
-  @override
-  String get levelFlat => 'On level';
-
-  @override
   String get levelOff => 'Off level';
-
-  @override
-  String get levelFromHorizontal => 'Relative to horizontal';
-
-  @override
-  String get levelFromZero => 'Relative to the set zero';
-
-  @override
-  String get levelSetZero => 'Set zero';
-
-  @override
-  String get levelCancelZero => 'Cancel';
-
-  @override
-  String get levelHorizontalHelp => 'Angles are given relative to horizontal.';
-
-  @override
-  String get levelZeroHelp =>
-      'Zero set: angles are relative to the calibrated surface.';
 
   @override
   String get levelSensorUnavailable => 'Accelerometer unavailable';
@@ -502,6 +482,91 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get levelSensorUnavailableHelp =>
       'This tool needs a device with an accelerometer.';
+
+  @override
+  String get levelPlaceOnEdge => 'Stand the phone on an edge';
+
+  @override
+  String get levelUnderLeftEnd => 'Shim under the left end';
+
+  @override
+  String get levelUnderRightEnd => 'Shim under the right end';
+
+  @override
+  String get levelEdgeTilt => 'Tilt';
+
+  @override
+  String get levelSlope => 'Slope';
+
+  @override
+  String get levelPlumbGap => 'Out of plumb';
+
+  @override
+  String get levelPlumbOffset => 'Lean';
+
+  @override
+  String get levelTopLeansLeft => 'The top leans left';
+
+  @override
+  String get levelTopLeansRight => 'The top leans right';
+
+  @override
+  String get levelOnLevel => 'On level';
+
+  @override
+  String get levelPlumb => 'Plumb';
+
+  @override
+  String get levelOffPlumb => 'Out of plumb';
+
+  @override
+  String get levelCalibrate => 'Calibrate this phone';
+
+  @override
+  String get levelCalibrated => 'Calibrated on this edge';
+
+  @override
+  String get levelNotCalibrated => 'Not calibrated on this edge';
+
+  @override
+  String get levelCalibrationTitle => 'Reversal calibration';
+
+  @override
+  String get levelCalibrationIntro =>
+      'The surface need not be level: the half turn cancels its slope. Calibrate each edge you measure on.';
+
+  @override
+  String levelCalibrationStep(int step) {
+    return 'Step $step of 2';
+  }
+
+  @override
+  String get levelCalibrationFirst =>
+      'Stand the phone on the edge to calibrate, trace around it in pencil, then tap Measure.';
+
+  @override
+  String get levelCalibrationSecond =>
+      'Turn it half a turn on the spot, inside the same outline and on the same edge, then tap Measure.';
+
+  @override
+  String get levelCalibrationMeasuring => 'Measuring. Do not touch the phone.';
+
+  @override
+  String levelCalibrationDone(String bias) {
+    return 'Calibration saved. Offset corrected: $bias°.';
+  }
+
+  @override
+  String get levelMeasure => 'Measure';
+
+  @override
+  String get levelCalibrationRestart => 'Start over';
+
+  @override
+  String get levelCalibrationFinish => 'Done';
+
+  @override
+  String get levelCalibrationClear => 'Clear calibration';
 
   @override
   String get distributionModeLabel => 'Solve for';

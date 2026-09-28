@@ -48,6 +48,28 @@ final class InvalidSensorReading extends CalcError {
   const InvalidSensorReading();
 }
 
+/// Le téléphone a bougé pendant une mesure qui le voulait immobile.
+final class UnsteadyReading extends CalcError {
+  const UnsteadyReading();
+}
+
+/// Les deux mesures d'un retournement ne portent pas sur la même tranche.
+final class PoseChanged extends CalcError {
+  const PoseChanged();
+}
+
+/// Une mesure de calibrage prise téléphone à plat.
+final class NotOnEdge extends CalcError {
+  const NotOnEdge();
+}
+
+/// Un biais de calibrage au-delà de [maxDeg] degrés.
+final class BiasTooLarge extends CalcError {
+  const BiasTooLarge(this.maxDeg);
+
+  final double maxDeg;
+}
+
 /// Une cote qui doit être strictement positive.
 final class MustBePositive extends CalcError {
   const MustBePositive(this.field);

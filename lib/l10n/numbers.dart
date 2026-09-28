@@ -10,4 +10,8 @@ extension NumberText on AppLocalizations {
 
   String degrees(double? value) =>
       formatDegrees(value, decimalSeparator: decimalSeparator);
+
+  /// Une valeur au dixième, pour ce qui suit le capteur.
+  String tenths(double? value) =>
+      formatTenths(value, decimalSeparator: decimalSeparator);
 }

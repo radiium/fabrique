@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @toolLevelSubtitle.
   ///
   /// In fr, this message translates to:
-  /// **'Bulle et inclinomètre'**
+  /// **'Niveau et aplomb, sur la tranche'**
   String get toolLevelSubtitle;
 
   /// No description provided for @toolConverter.
@@ -522,6 +522,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Lecture accéléromètre invalide'**
   String get calcInvalidSensorReading;
+
+  /// No description provided for @calcUnsteadyReading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le téléphone a bougé pendant la mesure. Posez-le, puis ne le touchez plus jusqu’à la fin.'**
+  String get calcUnsteadyReading;
+
+  /// No description provided for @calcPoseChanged.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les deux mesures n’ont pas été prises sur la même tranche. Faites seulement un demi-tour sur place.'**
+  String get calcPoseChanged;
+
+  /// No description provided for @calcNotOnEdge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le téléphone était à plat. Posez-le sur une tranche pour le calibrer.'**
+  String get calcNotOnEdge;
+
+  /// No description provided for @calcBiasTooLarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart de plus de {max}° entre les deux mesures : le téléphone n’a pas été retourné sur la même marque.'**
+  String calcBiasTooLarge(String max);
 
   /// Refus de saisie : nomme la cote comme l'écran
   ///
@@ -858,83 +882,11 @@ abstract class AppLocalizations {
   /// **'Rapport hors échelle — formes non à l’échelle'**
   String get converterOutOfScale;
 
-  /// No description provided for @levelRoll.
-  ///
-  /// In fr, this message translates to:
-  /// **'Inclinaison latérale'**
-  String get levelRoll;
-
-  /// No description provided for @levelRollNote.
-  ///
-  /// In fr, this message translates to:
-  /// **'Gauche ⇄ droite'**
-  String get levelRollNote;
-
-  /// No description provided for @levelPitch.
-  ///
-  /// In fr, this message translates to:
-  /// **'Inclinaison longitudinale'**
-  String get levelPitch;
-
-  /// No description provided for @levelPitchNote.
-  ///
-  /// In fr, this message translates to:
-  /// **'Avant ⇄ arrière'**
-  String get levelPitchNote;
-
-  /// No description provided for @levelState.
-  ///
-  /// In fr, this message translates to:
-  /// **'État'**
-  String get levelState;
-
-  /// Aussi dessiné sous la fiole
-  ///
-  /// In fr, this message translates to:
-  /// **'À plat'**
-  String get levelFlat;
-
   /// No description provided for @levelOff.
   ///
   /// In fr, this message translates to:
   /// **'Hors niveau'**
   String get levelOff;
-
-  /// No description provided for @levelFromHorizontal.
-  ///
-  /// In fr, this message translates to:
-  /// **'Par rapport à l’horizontale'**
-  String get levelFromHorizontal;
-
-  /// No description provided for @levelFromZero.
-  ///
-  /// In fr, this message translates to:
-  /// **'Par rapport au zéro posé'**
-  String get levelFromZero;
-
-  /// No description provided for @levelSetZero.
-  ///
-  /// In fr, this message translates to:
-  /// **'Mettre à zéro'**
-  String get levelSetZero;
-
-  /// No description provided for @levelCancelZero.
-  ///
-  /// In fr, this message translates to:
-  /// **'Annuler'**
-  String get levelCancelZero;
-
-  /// No description provided for @levelHorizontalHelp.
-  ///
-  /// In fr, this message translates to:
-  /// **'Les angles sont donnés par rapport à l’horizontale.'**
-  String get levelHorizontalHelp;
-
-  /// No description provided for @levelZeroHelp.
-  ///
-  /// In fr, this message translates to:
-  /// **'Zéro posé : les angles sont relatifs à la surface calibrée.'**
-  String get levelZeroHelp;
 
   /// No description provided for @levelSensorUnavailable.
   ///
@@ -947,6 +899,162 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Cet outil demande un appareil équipé d’un accéléromètre.'**
   String get levelSensorUnavailableHelp;
+
+  /// Dessiné à la place du tube, téléphone à plat
+  ///
+  /// In fr, this message translates to:
+  /// **'Posez le téléphone sur une tranche'**
+  String get levelPlaceOnEdge;
+
+  /// No description provided for @levelUnderLeftEnd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caler sous l’extrémité gauche'**
+  String get levelUnderLeftEnd;
+
+  /// No description provided for @levelUnderRightEnd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caler sous l’extrémité droite'**
+  String get levelUnderRightEnd;
+
+  /// No description provided for @levelEdgeTilt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inclinaison'**
+  String get levelEdgeTilt;
+
+  /// No description provided for @levelSlope.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pente'**
+  String get levelSlope;
+
+  /// No description provided for @levelPlumbGap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écart d’aplomb'**
+  String get levelPlumbGap;
+
+  /// No description provided for @levelPlumbOffset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faux aplomb'**
+  String get levelPlumbOffset;
+
+  /// No description provided for @levelTopLeansLeft.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le haut penche à gauche'**
+  String get levelTopLeansLeft;
+
+  /// No description provided for @levelTopLeansRight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le haut penche à droite'**
+  String get levelTopLeansRight;
+
+  /// Dessiné sous le tube, téléphone sur sa grande tranche
+  ///
+  /// In fr, this message translates to:
+  /// **'De niveau'**
+  String get levelOnLevel;
+
+  /// Dessiné sous le tube, téléphone debout
+  ///
+  /// In fr, this message translates to:
+  /// **'D’aplomb'**
+  String get levelPlumb;
+
+  /// No description provided for @levelOffPlumb.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors d’aplomb'**
+  String get levelOffPlumb;
+
+  /// No description provided for @levelCalibrate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calibrer le téléphone'**
+  String get levelCalibrate;
+
+  /// No description provided for @levelCalibrated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calibré sur cette tranche'**
+  String get levelCalibrated;
+
+  /// No description provided for @levelNotCalibrated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non calibré sur cette tranche'**
+  String get levelNotCalibrated;
+
+  /// No description provided for @levelCalibrationTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calibrage par retournement'**
+  String get levelCalibrationTitle;
+
+  /// No description provided for @levelCalibrationIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'La surface n’a pas besoin d’être de niveau : le demi-tour annule sa pente. Calibrez chaque tranche sur laquelle vous mesurez.'**
+  String get levelCalibrationIntro;
+
+  /// No description provided for @levelCalibrationStep.
+  ///
+  /// In fr, this message translates to:
+  /// **'Étape {step} sur 2'**
+  String levelCalibrationStep(int step);
+
+  /// No description provided for @levelCalibrationFirst.
+  ///
+  /// In fr, this message translates to:
+  /// **'Posez le téléphone sur la tranche à calibrer, tracez son contour au crayon, puis touchez Mesurer.'**
+  String get levelCalibrationFirst;
+
+  /// No description provided for @levelCalibrationSecond.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faites-lui faire un demi-tour sur place, dans le même contour et sur la même tranche, puis touchez Mesurer.'**
+  String get levelCalibrationSecond;
+
+  /// No description provided for @levelCalibrationMeasuring.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mesure en cours. Ne touchez pas le téléphone.'**
+  String get levelCalibrationMeasuring;
+
+  /// No description provided for @levelCalibrationDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calibrage enregistré. Écart corrigé : {bias}°.'**
+  String levelCalibrationDone(String bias);
+
+  /// No description provided for @levelMeasure.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mesurer'**
+  String get levelMeasure;
+
+  /// No description provided for @levelCalibrationRestart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recommencer'**
+  String get levelCalibrationRestart;
+
+  /// No description provided for @levelCalibrationFinish.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminer'**
+  String get levelCalibrationFinish;
+
+  /// No description provided for @levelCalibrationClear.
+  ///
+  /// In fr, this message translates to:
+  /// **'Effacer le calibrage'**
+  String get levelCalibrationClear;
 
   /// No description provided for @distributionModeLabel.
   ///

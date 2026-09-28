@@ -8,19 +8,27 @@ import '../../support/l10n.dart';
 
 void main() {
   /// Vignette d'un téléphone, carte large, et une taille dégénérée.
-  const sizes = [Size(336, 210), Size(800, 600), Size(40, 30)];
+  const sizes = [Size(368, 368), Size(800, 600), Size(40, 30)];
 
   for (final l10n in allLocales) {
     group(l10n.localeName, () {
-      test('à plat, incliné ou hors fiole, la bulle se rend sans lever', () {
-        // Au-delà du bord de la fiole, la bulle doit rester dessinable.
-        const angles = [0.0, 0.3, -4.0, 15.0, -89.9, 90.0];
-        for (final pitch in angles) {
-          for (final roll in angles) {
-            final result = TiltResult(
-              pitchDeg: pitch,
-              rollDeg: roll,
-              isLevel: pitch.abs() < 0.5 && roll.abs() < 0.5,
+      test('à plat, la consigne se rend sans lever', () {
+        for (final size in sizes) {
+          LevelPainter(
+            result: const FlatTilt(),
+            l10n: l10n,
+          ).paint(Canvas(PictureRecorder()), size);
+        }
+      });
+
+      test('sur chaque tranche, se rend sans lever', () {
+        for (var turns = 0; turns < 4; turns++) {
+          for (final angle in const [0.0, 0.3, -12.0, 45.0]) {
+            final result = TiltResult.edge(
+              angleDeg: angle,
+              quarterTurns: turns,
+              isLevel: angle.abs() < 0.5,
+              isCalibrated: false,
             );
             for (final size in sizes) {
               LevelPainter(
@@ -32,7 +40,7 @@ void main() {
         }
       });
 
-      test('sans lecture du capteur, la fiole se rend sans lever', () {
+      test('sans lecture du capteur, le dessin se rend sans lever', () {
         for (final size in sizes) {
           LevelPainter(
             result: null,

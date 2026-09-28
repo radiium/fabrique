@@ -7,7 +7,7 @@ import 'level_painter.dart';
 
 /// Le schéma du Niveau, branché sur le flux du capteur.
 ///
-/// Sans densité ni agrandissement : la fiole occupe déjà toute la carte.
+/// Sans densité ni agrandissement : le tube occupe déjà toute la carte.
 class LevelSchema extends ConsumerWidget {
   const LevelSchema({super.key});
 

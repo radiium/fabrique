@@ -288,46 +288,51 @@ as double,
 
 }
 
-/// @nodoc
-mixin _$TiltResult {
 
- double get pitchDeg; double get rollDeg; bool get isLevel;
-/// Create a copy of TiltResult
+/// @nodoc
+mixin _$DeviceCalibration {
+
+/// Biais de chaque tranche, en degrés, par quart de tour
+/// ([EdgeTilt.quarterTurns]).
+ Map<int, double> get edgesDeg;
+/// Create a copy of DeviceCalibration
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$TiltResultCopyWith<TiltResult> get copyWith => _$TiltResultCopyWithImpl<TiltResult>(this as TiltResult, _$identity);
+$DeviceCalibrationCopyWith<DeviceCalibration> get copyWith => _$DeviceCalibrationCopyWithImpl<DeviceCalibration>(this as DeviceCalibration, _$identity);
 
+  /// Serializes this DeviceCalibration to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  final _this = this as TiltResult;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TiltResult&&(identical(other.pitchDeg, _this.pitchDeg) || other.pitchDeg == _this.pitchDeg)&&(identical(other.rollDeg, _this.rollDeg) || other.rollDeg == _this.rollDeg)&&(identical(other.isLevel, _this.isLevel) || other.isLevel == _this.isLevel));
+  final _this = this as DeviceCalibration;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeviceCalibration&&const DeepCollectionEquality().equals(other.edgesDeg, _this.edgesDeg));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-  final _this = this as TiltResult;
-  return Object.hash(runtimeType,_this.pitchDeg,_this.rollDeg,_this.isLevel);
+  final _this = this as DeviceCalibration;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.edgesDeg));
 }
 
 @override
 String toString() {
-  final _this = this as TiltResult;
-  return 'TiltResult(pitchDeg: ${_this.pitchDeg}, rollDeg: ${_this.rollDeg}, isLevel: ${_this.isLevel})';
+  final _this = this as DeviceCalibration;
+  return 'DeviceCalibration(edgesDeg: ${_this.edgesDeg})';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $TiltResultCopyWith<$Res>  {
-  factory $TiltResultCopyWith(TiltResult value, $Res Function(TiltResult) _then) = _$TiltResultCopyWithImpl;
+abstract mixin class $DeviceCalibrationCopyWith<$Res>  {
+  factory $DeviceCalibrationCopyWith(DeviceCalibration value, $Res Function(DeviceCalibration) _then) = _$DeviceCalibrationCopyWithImpl;
 @useResult
 $Res call({
- double pitchDeg, double rollDeg, bool isLevel
+ Map<int, double> edgesDeg
 });
 
 
@@ -335,29 +340,27 @@ $Res call({
 
 }
 /// @nodoc
-class _$TiltResultCopyWithImpl<$Res>
-    implements $TiltResultCopyWith<$Res> {
-  _$TiltResultCopyWithImpl(this._self, this._then);
+class _$DeviceCalibrationCopyWithImpl<$Res>
+    implements $DeviceCalibrationCopyWith<$Res> {
+  _$DeviceCalibrationCopyWithImpl(this._self, this._then);
 
-  final TiltResult _self;
-  final $Res Function(TiltResult) _then;
+  final DeviceCalibration _self;
+  final $Res Function(DeviceCalibration) _then;
 
-/// Create a copy of TiltResult
+/// Create a copy of DeviceCalibration
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? pitchDeg = null,Object? rollDeg = null,Object? isLevel = null,}) {
-  return _then(TiltResult(
-pitchDeg: null == pitchDeg ? _self.pitchDeg : pitchDeg // ignore: cast_nullable_to_non_nullable
-as double,rollDeg: null == rollDeg ? _self.rollDeg : rollDeg // ignore: cast_nullable_to_non_nullable
-as double,isLevel: null == isLevel ? _self.isLevel : isLevel // ignore: cast_nullable_to_non_nullable
-as bool,
+@pragma('vm:prefer-inline') @override $Res call({Object? edgesDeg = null,}) {
+  return _then(DeviceCalibration(
+edgesDeg: null == edgesDeg ? _self.edgesDeg : edgesDeg // ignore: cast_nullable_to_non_nullable
+as Map<int, double>,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [TiltResult].
-extension TiltResultPatterns on TiltResult {
+/// Adds pattern-matching-related methods to [DeviceCalibration].
+extension DeviceCalibrationPatterns on DeviceCalibration {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -370,10 +373,10 @@ extension TiltResultPatterns on TiltResult {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TiltResult value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DeviceCalibration value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _TiltResult() when $default != null:
+case _DeviceCalibration() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -392,10 +395,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TiltResult value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DeviceCalibration value)  $default,){
 final _that = this;
 switch (_that) {
-case _TiltResult():
+case _DeviceCalibration():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -413,10 +416,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TiltResult value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DeviceCalibration value)?  $default,){
 final _that = this;
 switch (_that) {
-case _TiltResult() when $default != null:
+case _DeviceCalibration() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -434,10 +437,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double pitchDeg,  double rollDeg,  bool isLevel)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<int, double> edgesDeg)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _TiltResult() when $default != null:
-return $default(_that.pitchDeg,_that.rollDeg,_that.isLevel);case _:
+case _DeviceCalibration() when $default != null:
+return $default(_that.edgesDeg);case _:
   return orElse();
 
 }
@@ -455,10 +458,10 @@ return $default(_that.pitchDeg,_that.rollDeg,_that.isLevel);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double pitchDeg,  double rollDeg,  bool isLevel)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<int, double> edgesDeg)  $default,) {final _that = this;
 switch (_that) {
-case _TiltResult():
-return $default(_that.pitchDeg,_that.rollDeg,_that.isLevel);case _:
+case _DeviceCalibration():
+return $default(_that.edgesDeg);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -475,10 +478,251 @@ return $default(_that.pitchDeg,_that.rollDeg,_that.isLevel);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double pitchDeg,  double rollDeg,  bool isLevel)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<int, double> edgesDeg)?  $default,) {final _that = this;
 switch (_that) {
-case _TiltResult() when $default != null:
-return $default(_that.pitchDeg,_that.rollDeg,_that.isLevel);case _:
+case _DeviceCalibration() when $default != null:
+return $default(_that.edgesDeg);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _DeviceCalibration implements DeviceCalibration {
+  const _DeviceCalibration({ Map<int, double> edgesDeg = const <int, double>{}}): _edgesDeg = edgesDeg;
+  factory _DeviceCalibration.fromJson(Map<String, dynamic> json) => _$DeviceCalibrationFromJson(json);
+
+/// Biais de chaque tranche, en degrés, par quart de tour
+/// ([EdgeTilt.quarterTurns]).
+ final  Map<int, double> _edgesDeg;
+/// Biais de chaque tranche, en degrés, par quart de tour
+/// ([EdgeTilt.quarterTurns]).
+@override@JsonKey() Map<int, double> get edgesDeg {
+  if (_edgesDeg is EqualUnmodifiableMapView) return _edgesDeg;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_edgesDeg);
+}
+
+
+/// Create a copy of DeviceCalibration
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeviceCalibrationCopyWith<_DeviceCalibration> get copyWith => __$DeviceCalibrationCopyWithImpl<_DeviceCalibration>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$DeviceCalibrationToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeviceCalibration&&const DeepCollectionEquality().equals(other.edgesDeg, _edgesDeg));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_edgesDeg));
+}
+
+@override
+String toString() {
+    return 'DeviceCalibration(edgesDeg: $edgesDeg)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeviceCalibrationCopyWith<$Res> implements $DeviceCalibrationCopyWith<$Res> {
+  factory _$DeviceCalibrationCopyWith(_DeviceCalibration value, $Res Function(_DeviceCalibration) _then) = __$DeviceCalibrationCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<int, double> edgesDeg
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeviceCalibrationCopyWithImpl<$Res>
+    implements _$DeviceCalibrationCopyWith<$Res> {
+  __$DeviceCalibrationCopyWithImpl(this._self, this._then);
+
+  final _DeviceCalibration _self;
+  final $Res Function(_DeviceCalibration) _then;
+
+/// Create a copy of DeviceCalibration
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? edgesDeg = null,}) {
+  return _then(_DeviceCalibration(
+edgesDeg: null == edgesDeg ? _self._edgesDeg : edgesDeg // ignore: cast_nullable_to_non_nullable
+as Map<int, double>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$TiltResult {
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TiltResult);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'TiltResult()';
+}
+
+
+}
+
+/// @nodoc
+class $TiltResultCopyWith<$Res>  {
+$TiltResultCopyWith(TiltResult _, $Res Function(TiltResult) __);
+}
+
+
+/// Adds pattern-matching-related methods to [TiltResult].
+extension TiltResultPatterns on TiltResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( FlatTilt value)?  flat,TResult Function( EdgeTilt value)?  edge,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case FlatTilt() when flat != null:
+return flat(_that);case EdgeTilt() when edge != null:
+return edge(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( FlatTilt value)  flat,required TResult Function( EdgeTilt value)  edge,}){
+final _that = this;
+switch (_that) {
+case FlatTilt():
+return flat(_that);case EdgeTilt():
+return edge(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( FlatTilt value)?  flat,TResult? Function( EdgeTilt value)?  edge,}){
+final _that = this;
+switch (_that) {
+case FlatTilt() when flat != null:
+return flat(_that);case EdgeTilt() when edge != null:
+return edge(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  flat,TResult Function( double angleDeg,  int quarterTurns,  bool isLevel,  bool isCalibrated)?  edge,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case FlatTilt() when flat != null:
+return flat();case EdgeTilt() when edge != null:
+return edge(_that.angleDeg,_that.quarterTurns,_that.isLevel,_that.isCalibrated);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  flat,required TResult Function( double angleDeg,  int quarterTurns,  bool isLevel,  bool isCalibrated)  edge,}) {final _that = this;
+switch (_that) {
+case FlatTilt():
+return flat();case EdgeTilt():
+return edge(_that.angleDeg,_that.quarterTurns,_that.isLevel,_that.isCalibrated);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  flat,TResult? Function( double angleDeg,  int quarterTurns,  bool isLevel,  bool isCalibrated)?  edge,}) {final _that = this;
+switch (_that) {
+case FlatTilt() when flat != null:
+return flat();case EdgeTilt() when edge != null:
+return edge(_that.angleDeg,_that.quarterTurns,_that.isLevel,_that.isCalibrated);case _:
   return null;
 
 }
@@ -489,47 +733,80 @@ return $default(_that.pitchDeg,_that.rollDeg,_that.isLevel);case _:
 /// @nodoc
 
 
-class _TiltResult implements TiltResult {
-  const _TiltResult({required this.pitchDeg, required this.rollDeg, required this.isLevel});
+class FlatTilt implements TiltResult {
+  const FlatTilt();
   
 
-@override final  double pitchDeg;
-@override final  double rollDeg;
-@override final  bool isLevel;
 
-/// Create a copy of TiltResult
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$TiltResultCopyWith<_TiltResult> get copyWith => __$TiltResultCopyWithImpl<_TiltResult>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TiltResult&&(identical(other.pitchDeg, pitchDeg) || other.pitchDeg == pitchDeg)&&(identical(other.rollDeg, rollDeg) || other.rollDeg == rollDeg)&&(identical(other.isLevel, isLevel) || other.isLevel == isLevel));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FlatTilt);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'TiltResult.flat()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class EdgeTilt implements TiltResult {
+  const EdgeTilt({required this.angleDeg, required this.quarterTurns, required this.isLevel, required this.isCalibrated});
+  
+
+ final  double angleDeg;
+ final  int quarterTurns;
+ final  bool isLevel;
+ final  bool isCalibrated;
+
+/// Create a copy of TiltResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EdgeTiltCopyWith<EdgeTilt> get copyWith => _$EdgeTiltCopyWithImpl<EdgeTilt>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EdgeTilt&&(identical(other.angleDeg, angleDeg) || other.angleDeg == angleDeg)&&(identical(other.quarterTurns, quarterTurns) || other.quarterTurns == quarterTurns)&&(identical(other.isLevel, isLevel) || other.isLevel == isLevel)&&(identical(other.isCalibrated, isCalibrated) || other.isCalibrated == isCalibrated));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,pitchDeg,rollDeg,isLevel);
+    return Object.hash(runtimeType,angleDeg,quarterTurns,isLevel,isCalibrated);
 }
 
 @override
 String toString() {
-    return 'TiltResult(pitchDeg: $pitchDeg, rollDeg: $rollDeg, isLevel: $isLevel)';
+    return 'TiltResult.edge(angleDeg: $angleDeg, quarterTurns: $quarterTurns, isLevel: $isLevel, isCalibrated: $isCalibrated)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$TiltResultCopyWith<$Res> implements $TiltResultCopyWith<$Res> {
-  factory _$TiltResultCopyWith(_TiltResult value, $Res Function(_TiltResult) _then) = __$TiltResultCopyWithImpl;
-@override @useResult
+abstract mixin class $EdgeTiltCopyWith<$Res> implements $TiltResultCopyWith<$Res> {
+  factory $EdgeTiltCopyWith(EdgeTilt value, $Res Function(EdgeTilt) _then) = _$EdgeTiltCopyWithImpl;
+@useResult
 $Res call({
- double pitchDeg, double rollDeg, bool isLevel
+ double angleDeg, int quarterTurns, bool isLevel, bool isCalibrated
 });
 
 
@@ -537,20 +814,21 @@ $Res call({
 
 }
 /// @nodoc
-class __$TiltResultCopyWithImpl<$Res>
-    implements _$TiltResultCopyWith<$Res> {
-  __$TiltResultCopyWithImpl(this._self, this._then);
+class _$EdgeTiltCopyWithImpl<$Res>
+    implements $EdgeTiltCopyWith<$Res> {
+  _$EdgeTiltCopyWithImpl(this._self, this._then);
 
-  final _TiltResult _self;
-  final $Res Function(_TiltResult) _then;
+  final EdgeTilt _self;
+  final $Res Function(EdgeTilt) _then;
 
 /// Create a copy of TiltResult
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? pitchDeg = null,Object? rollDeg = null,Object? isLevel = null,}) {
-  return _then(_TiltResult(
-pitchDeg: null == pitchDeg ? _self.pitchDeg : pitchDeg // ignore: cast_nullable_to_non_nullable
-as double,rollDeg: null == rollDeg ? _self.rollDeg : rollDeg // ignore: cast_nullable_to_non_nullable
-as double,isLevel: null == isLevel ? _self.isLevel : isLevel // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? angleDeg = null,Object? quarterTurns = null,Object? isLevel = null,Object? isCalibrated = null,}) {
+  return _then(EdgeTilt(
+angleDeg: null == angleDeg ? _self.angleDeg : angleDeg // ignore: cast_nullable_to_non_nullable
+as double,quarterTurns: null == quarterTurns ? _self.quarterTurns : quarterTurns // ignore: cast_nullable_to_non_nullable
+as int,isLevel: null == isLevel ? _self.isLevel : isLevel // ignore: cast_nullable_to_non_nullable
+as bool,isCalibrated: null == isCalibrated ? _self.isCalibrated : isCalibrated // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

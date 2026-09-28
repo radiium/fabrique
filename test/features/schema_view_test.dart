@@ -1,6 +1,7 @@
 import 'package:fabrique/app/routes.dart';
 import 'package:fabrique/core/models/tool.dart';
 import 'package:fabrique/core/widgets/schema_card.dart';
+import 'package:fabrique/features/level/level_controller.dart';
 import 'package:fabrique/features/schema/schema_screen.dart';
 import 'package:fabrique/l10n/labels.dart';
 import 'package:flutter/material.dart';
@@ -74,5 +75,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(SchemaScreen), findsNothing);
+    // Le Niveau guette sa première lecture : le délai doit s'écouler.
+    await tester.pump(kSensorSilenceDelay);
   });
 }

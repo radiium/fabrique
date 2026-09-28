@@ -34,7 +34,7 @@
   "toolDrawers": "Tiroirs",
   "toolDrawersSubtitle": "Débit, façades, glissières",
   "toolLevel": "Niveau",
-  "toolLevelSubtitle": "Bulle et inclinomètre",
+  "toolLevelSubtitle": "Niveau et aplomb, sur la tranche",
   "toolConverter": "Convertisseur",
   "toolConverterSubtitle": "Cinq grandeurs, unités d’atelier",
   "quantityLength": "Longueur",
@@ -130,6 +130,17 @@
   },
   "calcInvalidLevelThreshold": "Seuil de niveau invalide",
   "calcInvalidSensorReading": "Lecture accéléromètre invalide",
+  "calcUnsteadyReading": "Le téléphone a bougé pendant la mesure. Posez-le, puis ne le touchez plus jusqu’à la fin.",
+  "calcPoseChanged": "Les deux mesures n’ont pas été prises sur la même tranche. Faites seulement un demi-tour sur place.",
+  "calcNotOnEdge": "Le téléphone était à plat. Posez-le sur une tranche pour le calibrer.",
+  "calcBiasTooLarge": "Écart de plus de {max}° entre les deux mesures : le téléphone n’a pas été retourné sur la même marque.",
+  "@calcBiasTooLarge": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
   "calcPositiveTotalWidth": "La largeur totale doit être supérieure à 0",
   "@calcPositiveTotalWidth": {
     "description": "Refus de saisie : nomme la cote comme l'écran"
@@ -336,24 +347,58 @@
   "@converterOutOfScale": {
     "description": "Légende de schéma"
   },
-  "levelRoll": "Inclinaison latérale",
-  "levelRollNote": "Gauche ⇄ droite",
-  "levelPitch": "Inclinaison longitudinale",
-  "levelPitchNote": "Avant ⇄ arrière",
-  "levelState": "État",
-  "levelFlat": "À plat",
-  "@levelFlat": {
-    "description": "Aussi dessiné sous la fiole"
-  },
   "levelOff": "Hors niveau",
-  "levelFromHorizontal": "Par rapport à l’horizontale",
-  "levelFromZero": "Par rapport au zéro posé",
-  "levelSetZero": "Mettre à zéro",
-  "levelCancelZero": "Annuler",
-  "levelHorizontalHelp": "Les angles sont donnés par rapport à l’horizontale.",
-  "levelZeroHelp": "Zéro posé : les angles sont relatifs à la surface calibrée.",
   "levelSensorUnavailable": "Accéléromètre indisponible",
   "levelSensorUnavailableHelp": "Cet outil demande un appareil équipé d’un accéléromètre.",
+  "levelPlaceOnEdge": "Posez le téléphone sur une tranche",
+  "@levelPlaceOnEdge": {
+    "description": "Dessiné à la place du tube, téléphone à plat"
+  },
+  "levelUnderLeftEnd": "Caler sous l’extrémité gauche",
+  "levelUnderRightEnd": "Caler sous l’extrémité droite",
+  "levelEdgeTilt": "Inclinaison",
+  "levelSlope": "Pente",
+  "levelPlumbGap": "Écart d’aplomb",
+  "levelPlumbOffset": "Faux aplomb",
+  "levelTopLeansLeft": "Le haut penche à gauche",
+  "levelTopLeansRight": "Le haut penche à droite",
+  "levelOnLevel": "De niveau",
+  "@levelOnLevel": {
+    "description": "Dessiné sous le tube, téléphone sur sa grande tranche"
+  },
+  "levelPlumb": "D’aplomb",
+  "@levelPlumb": {
+    "description": "Dessiné sous le tube, téléphone debout"
+  },
+  "levelOffPlumb": "Hors d’aplomb",
+  "levelCalibrate": "Calibrer le téléphone",
+  "levelCalibrated": "Calibré sur cette tranche",
+  "levelNotCalibrated": "Non calibré sur cette tranche",
+  "levelCalibrationTitle": "Calibrage par retournement",
+  "levelCalibrationIntro": "La surface n’a pas besoin d’être de niveau : le demi-tour annule sa pente. Calibrez chaque tranche sur laquelle vous mesurez.",
+  "levelCalibrationStep": "Étape {step} sur 2",
+  "@levelCalibrationStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      }
+    }
+  },
+  "levelCalibrationFirst": "Posez le téléphone sur la tranche à calibrer, tracez son contour au crayon, puis touchez Mesurer.",
+  "levelCalibrationSecond": "Faites-lui faire un demi-tour sur place, dans le même contour et sur la même tranche, puis touchez Mesurer.",
+  "levelCalibrationMeasuring": "Mesure en cours. Ne touchez pas le téléphone.",
+  "levelCalibrationDone": "Calibrage enregistré. Écart corrigé : {bias}°.",
+  "@levelCalibrationDone": {
+    "placeholders": {
+      "bias": {
+        "type": "String"
+      }
+    }
+  },
+  "levelMeasure": "Mesurer",
+  "levelCalibrationRestart": "Recommencer",
+  "levelCalibrationFinish": "Terminer",
+  "levelCalibrationClear": "Effacer le calibrage",
   "distributionModeLabel": "Mode de calcul",
   "distributionModeSpacing": "Calcul écart",
   "@distributionModeSpacing": {

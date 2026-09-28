@@ -68,7 +68,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get toolLevel => 'Niveau';
 
   @override
-  String get toolLevelSubtitle => 'Bulle et inclinomètre';
+  String get toolLevelSubtitle => 'Niveau et aplomb, sur la tranche';
 
   @override
   String get toolConverter => 'Convertisseur';
@@ -228,6 +228,23 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get calcInvalidSensorReading => 'Lecture accéléromètre invalide';
+
+  @override
+  String get calcUnsteadyReading =>
+      'Le téléphone a bougé pendant la mesure. Posez-le, puis ne le touchez plus jusqu’à la fin.';
+
+  @override
+  String get calcPoseChanged =>
+      'Les deux mesures n’ont pas été prises sur la même tranche. Faites seulement un demi-tour sur place.';
+
+  @override
+  String get calcNotOnEdge =>
+      'Le téléphone était à plat. Posez-le sur une tranche pour le calibrer.';
+
+  @override
+  String calcBiasTooLarge(String max) {
+    return 'Écart de plus de $max° entre les deux mesures : le téléphone n’a pas été retourné sur la même marque.';
+  }
 
   @override
   String get calcPositiveTotalWidth =>
@@ -472,45 +489,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Rapport hors échelle — formes non à l’échelle';
 
   @override
-  String get levelRoll => 'Inclinaison latérale';
-
-  @override
-  String get levelRollNote => 'Gauche ⇄ droite';
-
-  @override
-  String get levelPitch => 'Inclinaison longitudinale';
-
-  @override
-  String get levelPitchNote => 'Avant ⇄ arrière';
-
-  @override
-  String get levelState => 'État';
-
-  @override
-  String get levelFlat => 'À plat';
-
-  @override
   String get levelOff => 'Hors niveau';
-
-  @override
-  String get levelFromHorizontal => 'Par rapport à l’horizontale';
-
-  @override
-  String get levelFromZero => 'Par rapport au zéro posé';
-
-  @override
-  String get levelSetZero => 'Mettre à zéro';
-
-  @override
-  String get levelCancelZero => 'Annuler';
-
-  @override
-  String get levelHorizontalHelp =>
-      'Les angles sont donnés par rapport à l’horizontale.';
-
-  @override
-  String get levelZeroHelp =>
-      'Zéro posé : les angles sont relatifs à la surface calibrée.';
 
   @override
   String get levelSensorUnavailable => 'Accéléromètre indisponible';
@@ -518,6 +497,92 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get levelSensorUnavailableHelp =>
       'Cet outil demande un appareil équipé d’un accéléromètre.';
+
+  @override
+  String get levelPlaceOnEdge => 'Posez le téléphone sur une tranche';
+
+  @override
+  String get levelUnderLeftEnd => 'Caler sous l’extrémité gauche';
+
+  @override
+  String get levelUnderRightEnd => 'Caler sous l’extrémité droite';
+
+  @override
+  String get levelEdgeTilt => 'Inclinaison';
+
+  @override
+  String get levelSlope => 'Pente';
+
+  @override
+  String get levelPlumbGap => 'Écart d’aplomb';
+
+  @override
+  String get levelPlumbOffset => 'Faux aplomb';
+
+  @override
+  String get levelTopLeansLeft => 'Le haut penche à gauche';
+
+  @override
+  String get levelTopLeansRight => 'Le haut penche à droite';
+
+  @override
+  String get levelOnLevel => 'De niveau';
+
+  @override
+  String get levelPlumb => 'D’aplomb';
+
+  @override
+  String get levelOffPlumb => 'Hors d’aplomb';
+
+  @override
+  String get levelCalibrate => 'Calibrer le téléphone';
+
+  @override
+  String get levelCalibrated => 'Calibré sur cette tranche';
+
+  @override
+  String get levelNotCalibrated => 'Non calibré sur cette tranche';
+
+  @override
+  String get levelCalibrationTitle => 'Calibrage par retournement';
+
+  @override
+  String get levelCalibrationIntro =>
+      'La surface n’a pas besoin d’être de niveau : le demi-tour annule sa pente. Calibrez chaque tranche sur laquelle vous mesurez.';
+
+  @override
+  String levelCalibrationStep(int step) {
+    return 'Étape $step sur 2';
+  }
+
+  @override
+  String get levelCalibrationFirst =>
+      'Posez le téléphone sur la tranche à calibrer, tracez son contour au crayon, puis touchez Mesurer.';
+
+  @override
+  String get levelCalibrationSecond =>
+      'Faites-lui faire un demi-tour sur place, dans le même contour et sur la même tranche, puis touchez Mesurer.';
+
+  @override
+  String get levelCalibrationMeasuring =>
+      'Mesure en cours. Ne touchez pas le téléphone.';
+
+  @override
+  String levelCalibrationDone(String bias) {
+    return 'Calibrage enregistré. Écart corrigé : $bias°.';
+  }
+
+  @override
+  String get levelMeasure => 'Mesurer';
+
+  @override
+  String get levelCalibrationRestart => 'Recommencer';
+
+  @override
+  String get levelCalibrationFinish => 'Terminer';
+
+  @override
+  String get levelCalibrationClear => 'Effacer le calibrage';
 
   @override
   String get distributionModeLabel => 'Mode de calcul';

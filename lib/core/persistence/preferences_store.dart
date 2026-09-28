@@ -29,4 +29,7 @@ class PreferencesStore {
   static String toolInputKey(String toolId) => 'tool_input_$toolId';
 
   static const String settingsKey = 'settings';
+
+  /// Calibrage du Niveau : propre au téléphone, pas à une saisie.
+  static const String levelCalibrationKey = 'level_calibration';
 }

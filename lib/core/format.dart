@@ -27,11 +27,15 @@ String formatNumber(double? value, {String decimalSeparator = '.'}) {
       .replaceFirst('.', decimalSeparator);
 }
 
-/// Formate un angle au dixième de degré, sans le symbole.
+/// Formate au dixième une valeur qui bouge en continu, sans unité.
 ///
-/// Précision fixe, pour une valeur qui bouge en continu. `-0.0` devient `0.0`.
-String formatDegrees(double? value, {String decimalSeparator = '.'}) {
+/// Précision fixe, pour que le chiffre ne saute pas. `-0.0` devient `0.0`.
+String formatTenths(double? value, {String decimalSeparator = '.'}) {
   if (value == null || !value.isFinite) return kNoValue;
   final text = value.toStringAsFixed(1);
   return (text == '-0.0' ? '0.0' : text).replaceFirst('.', decimalSeparator);
 }
+
+/// Formate un angle au dixième de degré, sans le symbole.
+String formatDegrees(double? value, {String decimalSeparator = '.'}) =>
+    formatTenths(value, decimalSeparator: decimalSeparator);
