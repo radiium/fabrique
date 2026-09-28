@@ -5,7 +5,7 @@ Five calculation tools for the woodworking shop, on Android and the web. Results
 - **Calepinage** (layout): lay identical pieces on a surface, with cuts and waste %.
 - **Répartition** (spacing): distribute pieces across a width, by count or by gap.
 - **Tiroirs** (drawers): cut list for boxes and fronts, slide mounting.
-- **Niveau** (level): spirit level and inclinometer.
+- **Niveau** (level): spirit level and plumb, with the phone on its edge.
 - **Convertisseur** (converter): lengths, areas, volumes, masses and pressures, in shop units.
 
 Everything is in millimetres. No ads, no account, no Internet access.
