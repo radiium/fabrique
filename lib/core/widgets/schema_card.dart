@@ -35,7 +35,7 @@ class SchemaSheet extends StatelessWidget {
 /// Le schéma d'un outil sur son écran : une vignette, tapable pour l'agrandir.
 ///
 /// Sans zoom, coincé entre deux zones de scroll : toute la carte ouvre le plein
-/// écran. [expandFor] `null` rend la carte inerte (le Niveau).
+/// écran. [expandFor] `null` rend la carte inerte (Niveau, Convertisseur).
 class SchemaCard extends StatelessWidget {
   const SchemaCard({required this.child, this.expandFor, super.key});
 

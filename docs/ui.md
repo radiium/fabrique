@@ -27,7 +27,7 @@ Les choix d'interface qui ne se lisent pas dans les widgets : surtout ce qui a �
 - **La vignette ne zoome pas.** Un pincement dans une carte de 200 px, coincée entre deux zones de scroll, se déclenche de travers. Toute la carte ouvre la page plein écran : un bouton d'agrandissement se viserait.
 - **La page plein écran est une page, pas une boîte de dialogue.** Le geste de retour la ferme, la rotation en paysage donne sa largeur au Calepinage, et le web y gagne une URL.
 - **Les libellés ne se contre-pivotent pas** quand on fait pivoter le schéma : ils se redressent quand la main tourne le téléphone verrouillé en portrait, et c'est le geste visé.
-- **La carte du Niveau n'est pas tapable** : sa bulle n'a pas de détail à aller chercher, et une page par-dessus couperait des yeux le flux du capteur.
+- **Les cartes du Niveau et du Convertisseur ne sont pas tapables** : rien à aller chercher en plein écran. Pour le Niveau, une page par-dessus couperait en plus des yeux le flux du capteur.
 
 ## Retour haptique
 

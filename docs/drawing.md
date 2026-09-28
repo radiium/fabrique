@@ -15,7 +15,7 @@ Les règles de tracé sont portées par les primitives de `lib/core/painting.dar
 
 ## Plan exporté
 
-Le schéma sort en **PNG**, sur une **A4 à l'italienne** portant son **cartouche** et une table. Câblé pour la Répartition, le Calepinage et les Tiroirs. Le Niveau en est exclu : un flux capteur figé n'est pas un plan.
+Le schéma sort en **PNG**, sur une **A4 à l'italienne** portant son **cartouche** et une table. Câblé pour la Répartition, le Calepinage et les Tiroirs. Le Niveau en est exclu (un flux capteur figé n'est pas un plan), le Convertisseur aussi (tout est dans ses tuiles).
 
 - **Le dessin seul ne s'exporte pas.** Une partie des cotes vit dans les tuiles de résultat : parti sans elles, le dessin ferait deviner.
 - **L'aperçu est le fichier.** La page plein écran et l'export traversent le même `build<Outil>Plan`.

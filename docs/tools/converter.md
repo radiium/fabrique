@@ -35,4 +35,6 @@ Les pivots de calcul (mm³, Pa…) ne sont pas proposés quand personne ne s'en 
 
 - **Longueur : double règle**, métrique en haut, impérial en bas, **à la même échelle physique**. Un curseur les traverse d'un seul trait : une position, deux lectures.
 - **Autres grandeurs : comparaison à un repère rond** (1 m², 1 L, 1 kg, 1 bar). Carrés pour une surface, cubes pour un volume (un facteur 1000 ne fait que 10 sur l'arête), barres pour ce qui n'a pas de forme.
-- **Pas de plan exporté pour l'instant**, ni de visu plus riche hors longueur : voir [roadmap.md](../roadmap.md).
+- **Pas de plan exporté** : toutes les valeurs sont dans les tuiles, et une conversion ne part pas à l'atelier.
+- **La carte n'est pas tapable** : les painters règlent seuls leur densité, le plein écran n'aurait rien de plus à montrer.
+- **Pas de visu plus riche hors longueur** pour l'instant : voir [roadmap.md](../roadmap.md).

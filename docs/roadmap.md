@@ -1,15 +1,8 @@
 # Reste à faire
 
-- [À faire](#à-faire)
 - [Publication](#publication)
 - [Si l'usage le demande](#si-lusage-le-demande)
 - [Plus tard](#plus-tard)
-
-## À faire
-
-- **Vérifier sur appareil le cartouche des Tiroirs** : la police de test est trop pessimiste pour dire si `Personnalisée`, `Encastrée, jeu 3` ou une cote à deux décimales tiennent dans leur case.
-- **Le plan du Convertisseur.** `core/export/` est générique, boutons compris : il manque un `converter_plan.dart` (le cartouche, et une enveloppe de `PlanExportAction`), branché dans `resultsFooter` et dans le `switch` sur `Tool` de `schema_screen.dart`. Un schéma plus large que 4/3 laissera du blanc au-dessus et en dessous.
-- **Vérifier sur appareil le libellé du sélecteur de matériau** du Calepinage. Un nom de produit et deux cotes ne peuvent pas passer la mesure pessimiste de la police de test, donc son test garde le rapport au lieu du seuil.
 
 ## Publication
 

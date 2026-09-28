@@ -10,8 +10,11 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support/app.dart';
 import '../support/l10n.dart';
 
+/// Les outils sans plan : leur carte ne s'ouvre pas.
+const _inertTools = {Tool.level, Tool.converter};
+
 void main() {
-  for (final tool in Tool.values.where((t) => t != Tool.level)) {
+  for (final tool in Tool.values.where((t) => !_inertTools.contains(t))) {
     testWidgets('${tool.label(fr)} — la vignette ouvre le schéma, qui pivote', (
       tester,
     ) async {
@@ -68,14 +71,16 @@ void main() {
     expect(view.value.isIdentity(), isTrue);
   });
 
-  testWidgets('le Niveau n’a rien à agrandir', (tester) async {
-    await pumpApp(tester, AppRoutes.tool(Tool.level));
+  for (final tool in _inertTools) {
+    testWidgets('${tool.label(fr)} — la vignette n’ouvre rien', (tester) async {
+      await pumpApp(tester, AppRoutes.tool(tool));
 
-    await tester.tap(find.byType(SchemaCard));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byType(SchemaCard));
+      await tester.pumpAndSettle();
 
-    expect(find.byType(SchemaScreen), findsNothing);
-    // Le Niveau guette sa première lecture : le délai doit s'écouler.
-    await tester.pump(kSensorSilenceDelay);
-  });
+      expect(find.byType(SchemaScreen), findsNothing);
+      // Le Niveau guette sa première lecture : le délai doit s'écouler.
+      await tester.pump(kSensorSilenceDelay);
+    });
+  }
 }

@@ -83,10 +83,7 @@ class ConverterScreen extends ConsumerWidget {
         ],
       ),
       // Double règle pour les longueurs, comparaison à un repère sinon.
-      visualization: const SchemaCard(
-        expandFor: Tool.converter,
-        child: ConverterSchema(),
-      ),
+      visualization: const SchemaCard(child: ConverterSchema()),
       results: [
         for (final unit in quantity.units)
           ResultTile(
