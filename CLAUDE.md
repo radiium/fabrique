@@ -1,113 +1,113 @@
 # CLAUDE.md
 
-**Fabrique** : cinq outils de calcul pour l'atelier (Calepinage, Répartition, Tiroirs, Niveau, Convertisseur), sur Android et Web.
+**Fabrique**: five calculation tools for the shop (Calepinage, Répartition, Tiroirs, Niveau, Convertisseur), on Android and Web.
 
 ## Documentation
 
-`docs/` est la référence : la suivre plutôt qu'inventer une structure, et la mettre à jour dans le même commit qu'une décision qui change. [`docs/README.md`](docs/README.md) dit quoi lire avant de toucher à quoi. En bref :
+`docs/` is the reference: follow it rather than inventing a structure, and update it in the same commit as a decision that changes. [`docs/README.md`](docs/README.md) says what to read before touching what. In short:
 
-- un outil → `docs/tools/<outil>.md` (même nom que `lib/features/<outil>/`)
-- un painter, l'export du plan → `docs/drawing.md`
-- un contrôle, un écran → `docs/ui.md`
-- la persistance, une dépendance, la langue → `docs/architecture.md`
-- la version, la signature → `docs/release.md`
+- a tool → `docs/tools/<tool>.md` (same name as `lib/features/<tool>/`)
+- a painter, the drawing export → `docs/drawing.md`
+- a control, a screen → `docs/ui.md`
+- persistence, a dependency, the language → `docs/architecture.md`
+- the version, signing → `docs/release.md`
 
-`docs/` ne garde que ce que le code ne peut pas dire (règle métier, choix écarté, procédure) : ni ce qui se lit dans le code, ni ce qui vaut pour toute l'app. Chaque fichier ouvre sur un sommaire.
+`docs/` only keeps what the code cannot say (business rule, rejected option, procedure): neither what can be read in the code nor what applies to the whole app. Each file opens with a table of contents. `docs/` is written in French.
 
-## Commandes
+## Commands
 
 ```bash
-flutter run                  # -d chrome pour le web
+flutter run                  # -d chrome for the web
 flutter test
-dart run build_runner build  # après toute modif @freezed / @riverpod
-flutter gen-l10n             # après édition de lib/l10n/app_*.arb
+dart run build_runner build  # after any @freezed / @riverpod change
+flutter gen-l10n             # after editing lib/l10n/app_*.arb
 ```
 
-Avant de rendre la main : `dart fix --apply`, `dart format lib test`, `flutter analyze` propre, `flutter test` vert.
+Before handing back: `dart fix --apply`, `dart format lib test`, clean `flutter analyze`, green `flutter test`.
 
-Flutter 3.47 / Dart 3.13. Le code généré (`*.g.dart`, `*.freezed.dart`, `lib/l10n/app_localizations*.dart`) ne s'édite jamais à la main.
+Flutter 3.47 / Dart 3.13. Generated code (`*.g.dart`, `*.freezed.dart`, `lib/l10n/app_localizations*.dart`) is never edited by hand.
 
-## Pièges connus
+## Known pitfalls
 
-- `riverpod_lint` / `custom_lint` sont absents exprès : ils ne résolvent pas avec Riverpod 3.4 + `freezed_annotation` 3.x.
-- Riverpod 3 : un provider-fonction généré prend un `Ref` simple, et `AsyncValue` expose `.value` (plus de `valueOrNull`).
+- `riverpod_lint` / `custom_lint` are deliberately absent: they do not resolve with Riverpod 3.4 + `freezed_annotation` 3.x.
+- Riverpod 3: a generated function provider takes a plain `Ref`, and `AsyncValue` exposes `.value` (no `valueOrNull`).
 
-## Conventions non négociables
+## Non-negotiable conventions
 
-- **Le painter peint, le core calcule.** Aucune math dans le rendu.
-- **`lib/core/calc` n'importe jamais Flutter** : c'est ce qui le rend testable sans appareil.
-- **Tout est en millimètres** (`double`). Conversions aux frontières de l'UI seulement.
-- **Une saisie invalide lève `CalcException`**, jamais une valeur fausse. Elle porte un motif typé (`CalcError`), avec ses chiffres, et l'UI le rédige dans la langue de l'app (`l10n.calcError`).
-- **Modèles `@freezed`, providers `@riverpod`.** Le résultat d'un outil est un provider dérivé de sa saisie : ni `setState` dans le calcul, ni bouton « calculer ». `setState` reste permis pour un état d'interface local (rotation, export en cours).
-- **Une feature-outil** : `*_screen`, `*_controller`, `*_schema` (seul point de construction du painter), `*_painter`. Le reste seulement si besoin.
-- **Atelier** : cibles ≥ 48 px (`kFieldHeight`), aucun libellé tronqué en silence. Le schéma peut passer sous la ligne de flottaison : un outil riche ne tient pas dans un écran.
-- **Tout texte lu passe par `AppLocalizations`**, en français et en anglais, painters et plan exporté compris. Une clé ajoutée l'est dans les deux ARB (un test compare). Un nombre affiché passe par `l10n.number`, pour le séparateur décimal. `core/` ne porte aucun texte : ses enums se nomment par une extension côté UI.
-- **Un texte lu emploie le mot de l'écran** : une cote porte le même nom dans son champ, son aide et ses refus. Dans une explication (aide, refus), ni tiret cadratin ni point-virgule : deux phrases, un deux-points ou une parenthèse. Le tiret reste là où il sépare visuellement (`Surface — largeur`, légende de schéma).
+- **The painter paints, the core computes.** No math in rendering.
+- **`lib/core/calc` never imports Flutter**: that is what makes it testable without a device.
+- **Everything is in millimetres** (`double`). Conversions only at the UI boundaries.
+- **Invalid input throws `CalcException`**, never a wrong value. It carries a typed reason (`CalcError`) with its figures, and the UI words it in the app language (`l10n.calcError`).
+- **`@freezed` models, `@riverpod` providers.** A tool's result is a provider derived from its input: no `setState` in the calculation, no "calculate" button. `setState` remains allowed for local UI state (rotation, export in progress).
+- **A tool feature**: `*_screen`, `*_controller`, `*_schema` (the only place the painter is built), `*_painter`. Anything else only if needed.
+- **Shop use**: targets ≥ 48 px (`kFieldHeight`), no label silently truncated. The drawing may fall below the fold: a rich tool does not fit on one screen.
+- **All read text goes through `AppLocalizations`**, in French and English, painters and exported drawing included. A key added is added to both ARB files (a test compares them). A displayed number goes through `l10n.number`, for the decimal separator. `core/` carries no text: its enums are named by an extension on the UI side.
+- **Read text uses the screen's word**: a dimension has the same name in its field, its help and its refusals. In an explanation (help, refusal), no em dash and no semicolon: two sentences, a colon or parentheses. The dash stays where it separates visually (`Surface — largeur`, drawing legend).
 
-## Règles de code
+## Code rules
 
-`analysis_options.yaml` impose le mode strict et des lints en plus de `flutter_lints`. Ce qui suit, l'analyseur ne le vérifie pas.
+`analysis_options.yaml` enforces strict mode and lints on top of `flutter_lints`. What follows, the analyzer does not check.
 
 ### Dart
 
-- **Pas de joker `_` dans un `switch` sur un enum ou une classe scellée.** Un cas ajouté doit casser la compilation, pas passer en silence. Le joker reste permis sur des plages de valeurs (`>= 100 =>`).
-- **Une table qui doit couvrir tout un enum est un `switch`, pas une `Map`**, pour la même raison.
-- **Pas de `!` sans garantie.** Préférer un motif (`if (x case final v?)`, `AsyncData(:final value)`). Un `!` qui reste dit pourquoi il est sûr.
-- **`catch` typé.** Un `catch` large seulement à une frontière système (export, stockage), et l'échec ne se tait pas : `debugPrint` ou message à l'écran.
-- **Nommage** : un booléen se lit comme une question (`isCut`), une constante de module prend le préfixe `k`, une privée `_`.
+- **No `_` wildcard in a `switch` over an enum or sealed class.** An added case must break compilation, not slip through silently. The wildcard remains allowed on value ranges (`>= 100 =>`).
+- **A table that must cover a whole enum is a `switch`, not a `Map`**, for the same reason.
+- **No `!` without a guarantee.** Prefer a pattern (`if (x case final v?)`, `AsyncData(:final value)`). A remaining `!` says why it is safe.
+- **Typed `catch`.** A broad `catch` only at a system boundary (export, storage), and the failure is never silent: `debugPrint` or an on-screen message.
+- **Naming**: a boolean reads as a question (`isCut`), a module constant takes the `k` prefix, a private one `_`.
 
 ### Flutter
 
-- **Des classes de widget, pas de méthodes `_buildX()`** : c'est ce qui permet `const` et une reconstruction ciblée.
-- **Un écran de plus de ~400 lignes se découpe**, un fichier par composant (`distribution_positions_table.dart`).
-- **Un widget dupliqué entre deux features monte dans `core/widgets`.**
-- **Tokens de thème uniquement** (`AppColors`, `AppSpacing`, `AppRadii`) : une couleur en dur finit par dériver du thème. Un nombre qui porte une décision (marge, seuil, taille) est une constante nommée. Un `2` évident reste en ligne.
-- **`ref.watch` dans `build`, `ref.read` dans les callbacks** : un `read` dans `build` rate les mises à jour, et Riverpod ne prend pas en charge un `watch` hors de `build`. Exception : `ref.read(….notifier)` dans `build`, pour brancher les méthodes de champ.
-- **Tout contrôleur ou `Timer` créé est libéré** (`dispose`, `ref.onDispose`).
-- **Tout `IconButton` a un `tooltip`** : c'est son libellé pour un lecteur d'écran, et son infobulle sur le web.
+- **Widget classes, not `_buildX()` methods**: that is what allows `const` and targeted rebuilds.
+- **A screen over ~400 lines gets split**, one file per component (`distribution_positions_table.dart`).
+- **A widget duplicated across two features moves up to `core/widgets`.**
+- **Theme tokens only** (`AppColors`, `AppSpacing`, `AppRadii`): a hard-coded color ends up drifting from the theme. A number that carries a decision (margin, threshold, size) is a named constant. An obvious `2` stays inline.
+- **`ref.watch` in `build`, `ref.read` in callbacks**: a `read` in `build` misses updates, and Riverpod does not support a `watch` outside `build`. Exception: `ref.read(….notifier)` in `build`, to wire field methods.
+- **Every controller or `Timer` created is disposed** (`dispose`, `ref.onDispose`).
+- **Every `IconButton` has a `tooltip`**: it is its label for a screen reader, and its tooltip on the web.
 
 ### Architecture
 
-- **Une feature n'importe jamais une autre feature**, seulement `core/` et `app/`. Exception : `features/schema/`, qui aiguille vers le schéma de chaque outil.
-- **Un chemin se construit par `AppRoutes`** (`app/routes.dart`), jamais en dur : une faute de frappe dans une route ne casse qu'à l'exécution.
-- **Pas de nouvelle dépendance sans sa justification dans `docs/architecture.md`** : pourquoi elle, et pourquoi pas le SDK.
+- **A feature never imports another feature**, only `core/` and `app/`. Exception: `features/schema/`, which dispatches to each tool's drawing.
+- **A path is built through `AppRoutes`** (`app/routes.dart`), never hard-coded: a typo in a route only breaks at runtime.
+- **No new dependency without its justification in `docs/architecture.md`**: why it, and why not the SDK.
 
 ### Tests
 
-- **Un test reproduit le chemin du fichier testé** (`lib/core/calc/layout.dart` → `test/core/calc/layout_test.dart`). Les tests transversaux (reset, persistance, haptique) vivent à la racine de `test/features/`.
-- **Chaque painter a un test « se rend sans lever »** : trois tailles (vignette, plein écran, canvas dégénéré) et une saisie refusée. Un painter qui lève ne se voit qu'au rendu.
-- **Un test d'écran se monte sur le téléphone de référence** (`usePhone`, `test/support/phone.dart`) : c'est sur lui que se mesurent les libellés tronqués.
-- **Le nom d'un test décrit un comportement**, en français. C'est son commentaire.
+- **A test mirrors the path of the file under test** (`lib/core/calc/layout.dart` → `test/core/calc/layout_test.dart`). Cross-cutting tests (reset, persistence, haptics) live at the root of `test/features/`.
+- **Every painter has a "renders without throwing" test**: three sizes (thumbnail, full screen, degenerate canvas) and a refused input. A painter that throws only shows up at render time.
+- **A screen test mounts on the reference phone** (`usePhone`, `test/support/phone.dart`): truncated labels are measured on it.
+- **A test's name describes a behavior**, in French. It is its comment.
 
 ### Commits
 
-En français, au format `Portée : description` (`Calepinage : …`, `Docs : …`).
+In French, in the format `Portée : description` (`Calepinage : …`, `Docs : …`).
 
-## Commentaires
+## Comments
 
-En français. Un commentaire dit ce que le code ne peut pas dire : une unité, une borne, une contrainte métier, un piège vérifié. S'il se devine en lisant le code, il n'existe pas. Jamais comment le code a évolué : c'est le rôle de git.
+In French. A comment says what the code cannot say: a unit, a bound, a business constraint, a verified pitfall. If it can be guessed by reading the code, it does not exist. Never how the code evolved: that is git's job.
 
-**Longueur**
-- Une ligne par défaut. Au plus trois pour un `///` (hors la liste des cas qui lèvent `CalcException`), deux pour un `//`. Une décision qui en demande plus va dans `docs/`, pas dans le code.
-- Une raison, pas un plaidoyer : ni alternatives écartées, ni défense du choix. Seule exception : « ne pas faire X » quand X est la correction tentante et fausse, en une phrase.
+**Length**
+- One line by default. At most three for a `///` (excluding the list of cases that throw `CalcException`), two for a `//`. A decision that needs more goes in `docs/`, not in the code.
+- A reason, not a plea: no rejected alternatives, no defense of the choice. Only exception: "don't do X" when X is the tempting but wrong fix, in one sentence.
 
-**Ton** : celui d'une notice technique.
-- Phrases déclaratives simples. Pas de maximes, pas de formules (« c'est tout l'intérêt », « c'est voulu », « d'où »), pas de personnification (un libellé ne « ment » pas, une valeur ne « parle » pas).
-- Ni gras, ni ⚠️ : l'emphase ne remplace pas la clarté.
+**Tone**: that of a technical manual.
+- Simple declarative sentences. No maxims, no stock phrases (« c'est tout l'intérêt », « c'est voulu », « d'où »), no personification (a label does not « mentir », a value does not « parler »).
+- No bold, no ⚠️: emphasis does not replace clarity.
 
-**Forme**
-- `///` sur les types, les API publiques et tout ce qui porte une décision. Pas sur un champ dont le nom dit tout (`final Widget child;`). `//` pour une subtilité dans un corps.
-- Première ligne : une phrase qui se suffit, commençant par un verbe (« Répartit… ») ou un nom (« Vue de dessus : … »). S'il faut plus, une ligne vide, puis l'explication.
-- Symboles entre crochets : `[computeDistribution]`.
-- `// TODO(scope):` seulement pour ce qui figure dans `docs/roadmap.md`.
-- Tiret cadratin et point-virgule sont permis ici : la règle de ponctuation vise les textes de l'app.
+**Form**
+- `///` on types, public APIs and anything that carries a decision. Not on a field whose name says it all (`final Widget child;`). `//` for a subtlety inside a body.
+- First line: a self-contained sentence, starting with a verb (« Répartit… ») or a noun (« Vue de dessus : … »). If more is needed, a blank line, then the explanation.
+- Symbols in brackets: `[computeDistribution]`.
+- `// TODO(scope):` only for what is listed in `docs/roadmap.md`.
+- Em dash and semicolon are allowed here: the punctuation rule targets app text.
 
-**Par couche**
-- `core/calc` : l'unité, les bornes, ce qui lève `CalcException`. C'est ce dartdoc que lisent les écrans.
-- Painters : un ordre de tracé ou un seuil, jamais de géométrie (elle est dans `core`).
-- Widgets partagés : les hauteurs et les valeurs de thème, surtout les pièges vérifiés à la mesure.
-- Tests : un nombre magique ou un garde-fou, en une ligne. Le nom du test dit le reste.
+**By layer**
+- `core/calc`: the unit, the bounds, what throws `CalcException`. This dartdoc is what the screens read.
+- Painters: a drawing order or a threshold, never geometry (it lives in `core`).
+- Shared widgets: heights and theme values, especially pitfalls verified by measurement.
+- Tests: a magic number or a safeguard, in one line. The test name says the rest.
 
-**À supprimer** : la paraphrase, le code commenté, les commentaires devenus faux, les séparateurs décoratifs, toute référence à un document (`docs/` compris : un document bouge, le commentaire reste et devient faux), et l'historique, y compris déguisé : « n'avait pas », « ne … plus », « avant », une comparaison avec une ancienne valeur.
+**To remove**: paraphrase, commented-out code, comments that became false, decorative separators, any reference to a document (`docs/` included: a document moves, the comment stays and becomes false), and history, even disguised: « n'avait pas », « ne … plus », « avant », a comparison with a former value.
 
-Une passe de commentaires ne touche jamais la logique. Dans le doute, raccourcir.
+A comment pass never touches logic. When in doubt, shorten.
