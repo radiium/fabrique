@@ -67,8 +67,9 @@ class _AppSegmentedButtonState<T> extends State<AppSegmentedButton<T>> {
         child: Stack(
           children: [
             if (selected >= 0)
-              _overlay(
+              _ThumbLayer(
                 index: selected,
+                count: segments.length,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: AppColors.accentDeep,
@@ -80,8 +81,9 @@ class _AppSegmentedButtonState<T> extends State<AppSegmentedButton<T>> {
               ),
             // Filet accent de 2 px, comme un champ qui prend le focus.
             if (_focused case final focused?)
-              _overlay(
+              _ThumbLayer(
                 index: focused,
+                count: segments.length,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(
@@ -122,35 +124,48 @@ class _AppSegmentedButtonState<T> extends State<AppSegmentedButton<T>> {
     );
   }
 
-  /// Une couche posée sur le segment [index], à la géométrie de la pastille.
-  Widget _overlay({required int index, required Widget child}) {
+  void _select(T next) {
+    if (next == widget.value) return;
+    hapticSelection(context);
+    widget.onChanged(next);
+  }
+}
+
+/// Une couche posée sur le segment [index], à la géométrie de la pastille.
+///
+/// Rend un [Positioned] : à poser directement dans le `Stack` de la piste.
+class _ThumbLayer extends StatelessWidget {
+  const _ThumbLayer({
+    required this.index,
+    required this.count,
+    required this.child,
+  });
+
+  final int index;
+  final int count;
+  final Widget child;
+
+  /// Position de la pastille en coordonnées d'[Alignment] : -1 à gauche,
+  /// +1 à droite.
+  double get _x => count == 1 ? 0 : -1 + 2 * index / (count - 1);
+
+  @override
+  Widget build(BuildContext context) {
     return Positioned.fill(
       child: Padding(
         padding: const EdgeInsets.all(AppSegmentedButton._inset),
         child: AnimatedAlign(
           duration: AppSegmentedButton._duration,
           curve: Curves.easeOutCubic,
-          alignment: Alignment(_thumbX(index), 0),
+          alignment: Alignment(_x, 0),
           child: FractionallySizedBox(
-            widthFactor: 1 / widget.segments.length,
+            widthFactor: 1 / count,
             heightFactor: 1,
             child: child,
           ),
         ),
       ),
     );
-  }
-
-  /// Position de la pastille en coordonnées d'[Alignment] : -1 à gauche,
-  /// +1 à droite.
-  double _thumbX(int index) => widget.segments.length == 1
-      ? 0
-      : -1 + 2 * index / (widget.segments.length - 1);
-
-  void _select(T next) {
-    if (next == widget.value) return;
-    hapticSelection(context);
-    widget.onChanged(next);
   }
 }
 
