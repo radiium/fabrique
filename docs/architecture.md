@@ -41,5 +41,6 @@ Les versions font foi dans `pubspec.yaml`.
 | `web` | télécharger le plan sur le web | accès au DOM, qui remplace `dart:html` |
 | `freezed`, `json_serializable` | modèles immuables et leur JSON | `copyWith`, égalité et sérialisation écrits à la main pour chaque saisie |
 | `flutter_localizations`, `intl` | i18n | livrés avec Flutter, requis par `gen-l10n` |
+| `flutter_launcher_icons` (dev) | icônes Android et web depuis `assets/icon/` | le SDK ne produit ni les `mipmap` ni l'icône adaptative : `dart run flutter_launcher_icons` après toute retouche de l'image |
 
 **Écartés** : toute base locale (Isar, Drift) tant qu'il n'y a pas de « projets », toute DI tierce.
