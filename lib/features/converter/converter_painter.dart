@@ -1,9 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/calc/units/imperial.dart';
+import '../../core/calc/units/scales.dart';
 import '../../core/models/measure_unit.dart';
 import '../../core/painting.dart';
 import '../../l10n/app_localizations.dart';
@@ -16,54 +15,11 @@ const double _sideMargin = 24;
 const double _majorTick = 13;
 const double _minorTick = 7;
 
-/// Millimètres dans un pouce : les deux règles partagent la même échelle.
-const double _mmPerInch = 25.4;
-
-/// Échelons « ronds » pour la règle métrique, en mm.
-const List<double> _metricSteps = [
-  1,
-  2,
-  5,
-  10,
-  20,
-  25,
-  50,
-  100,
-  200,
-  250,
-  500,
-  1000,
-  2000,
-  2500,
-  5000,
-  10000,
-  20000,
-  50000,
-  100000,
-];
-
-/// Échelons usuels pour la règle impériale, en pouces : fractions binaires,
-/// puis pouces, puis pieds.
-const List<double> _imperialSteps = [
-  1 / 16,
-  1 / 8,
-  1 / 4,
-  1 / 2,
-  1,
-  2,
-  3,
-  6,
-  12,
-  24,
-  36,
-  72,
-  144,
-  288,
-  720,
-];
-
 /// Nombre visé de graduations principales sur la largeur du canvas.
 const int _targetTicks = 7;
+
+/// Écart minimal entre deux graduations principales, en pixels.
+const double _minTickGap = 24;
 
 /// Double règle graduée (métrique en haut, impérial en bas) avec curseur sur
 /// la valeur courante.
@@ -94,8 +50,7 @@ class RulerPainter extends CustomPainter {
     final usable = size.width - 2 * _sideMargin;
     if (usable <= 0) return;
 
-    // Un cran rond au-dessus de la valeur, pour que le curseur quitte le bord.
-    final span = _niceCeil(math.max(r.base, 1) * 1.25);
+    final span = rulerSpan(r.base);
     double dx(double mm) => _sideMargin + usable * (mm / span);
 
     final centerY = size.height / 2;
@@ -115,7 +70,11 @@ class RulerPainter extends CustomPainter {
     double span,
     double usable,
   ) {
-    final step = _pickStep(_metricSteps, span, usable);
+    final step = metricRulerStep(
+      span,
+      maxTicks: _targetTicks,
+      minStepMm: _minTickGap * span / usable,
+    );
     _paintRuler(
       canvas,
       dx: dx,
@@ -137,13 +96,17 @@ class RulerPainter extends CustomPainter {
     double span,
     double usable,
   ) {
-    final stepInches = _pickStep(_imperialSteps, span / _mmPerInch, usable);
+    final step = imperialRulerStep(
+      span,
+      maxTicks: _targetTicks,
+      minStepMm: _minTickGap * span / usable,
+    );
     _paintRuler(
       canvas,
       dx: dx,
       baseline: baseline,
       span: span,
-      step: stepInches * _mmPerInch,
+      step: step,
       direction: 1,
       unit: l10n.unitInchSymbol,
       label: (mm) => formatImperial(mmToImperial(mm, denominator: 64)),
@@ -248,30 +211,6 @@ class RulerPainter extends CustomPainter {
     // Les deux valeurs entre les règles, de part et d'autre du trait.
     drawSchemaLabel(canvas, metric, Offset(x, metricBaseline + 14));
     drawSchemaLabel(canvas, imperialText, Offset(x, imperialBaseline - 14));
-  }
-
-  /// Le plus petit échelon de [ladder] qui reste sous [_targetTicks]
-  /// graduations, à 24 px d'écart au moins.
-  ///
-  /// Sinon, une division brute, pour borner le nombre de traits.
-  double _pickStep(List<double> ladder, double span, double usable) {
-    for (final step in ladder) {
-      if (span / step <= _targetTicks && usable * step / span >= 24) {
-        return step;
-      }
-    }
-    return span / _targetTicks;
-  }
-
-  /// Arrondit vers le haut sur l'échelle 1 / 2 / 2.5 / 5 / 10.
-  double _niceCeil(double value) {
-    if (value <= 0 || !value.isFinite) return 1;
-    final magnitude = math.pow(10, (math.log(value) / math.ln10).floor());
-    final base = magnitude.toDouble();
-    for (final multiple in [1.0, 2.0, 2.5, 5.0, 10.0]) {
-      if (value <= multiple * base + 1e-9) return multiple * base;
-    }
-    return 10 * base;
   }
 
   @override

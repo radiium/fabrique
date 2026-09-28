@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import '../../core/calc/units/scales.dart';
 import '../../core/models/measure_unit.dart';
 import '../../core/painting.dart';
 import '../../l10n/app_localizations.dart';
@@ -36,32 +37,17 @@ class ComparisonPainter extends CustomPainter {
 
   final AppLocalizations l10n;
 
-  /// Le repère de chaque famille, une quantité familière.
-  static const Map<Quantity, MeasureUnit> _reference = {
-    Quantity.area: MeasureUnit.m2,
-    Quantity.volume: MeasureUnit.liter,
-    Quantity.mass: MeasureUnit.kilogram,
-    Quantity.pressure: MeasureUnit.bar,
-  };
-
   @override
   void paint(Canvas canvas, Size size) {
     if (size.width <= 0 || size.height <= 0) return;
 
     final r = result;
-    final reference = r == null ? null : _reference[r.quantity];
+    final reference = r == null ? null : comparisonReference(r.quantity);
     final value = r == null || reference == null ? null : r.perUnit[reference];
     if (r == null || reference == null || value == null || !value.isFinite) {
       drawSchemaPlaceholder(canvas, size);
       return;
     }
-
-    // Rapport linéaire : √ pour une surface, ∛ pour un volume.
-    final k = switch (r.quantity) {
-      Quantity.area => math.sqrt(value),
-      Quantity.volume => math.pow(value, 1 / 3).toDouble(),
-      Quantity.length || Quantity.mass || Quantity.pressure => value,
-    };
 
     final box = Rect.fromLTWH(
       _margin,
@@ -77,7 +63,15 @@ class ComparisonPainter extends CustomPainter {
         ? math.min(box.width / 2.3, box.height - 26)
         : box.width;
 
-    final (valueExtent, refExtent, outOfScale) = _extents(k, maxExtent);
+    final (
+      value: valueExtent,
+      reference: refExtent,
+      :isOutOfScale,
+    ) = comparisonExtents(
+      linearRatio(value, r.quantity),
+      maxExtent: maxExtent,
+      minExtent: _minExtent,
+    );
 
     final valueLabel = '${l10n.number(r.perUnit[unit])} ${unit.symbol(l10n)}';
     final refLabel = '1 ${reference.symbol(l10n)}';
@@ -101,26 +95,9 @@ class ComparisonPainter extends CustomPainter {
         return;
     }
 
-    if (outOfScale) {
+    if (isOutOfScale) {
       _paintCaption(canvas, box, l10n.converterOutOfScale);
     }
-  }
-
-  /// Répartit [maxExtent] entre la valeur et le repère : la plus grande des
-  /// deux remplit la place, l'autre suit le rapport [k].
-  ///
-  /// Sous [_minExtent], la petite forme est relevée et le retour vaut `true`.
-  (double, double, bool) _extents(double k, double maxExtent) {
-    if (!k.isFinite || k <= 0) return (0, maxExtent, false);
-
-    final (value, reference) = k >= 1
-        ? (maxExtent, maxExtent / k)
-        : (maxExtent * k, maxExtent);
-
-    final smallest = math.min(value, reference);
-    if (smallest >= _minExtent) return (value, reference, false);
-
-    return (math.max(value, _minExtent), math.max(reference, _minExtent), true);
   }
 
   /// Surfaces : deux carrés côte à côte sur la même ligne de sol.

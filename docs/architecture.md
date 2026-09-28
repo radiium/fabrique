@@ -10,7 +10,7 @@ lib/
 ├── app/                 app.dart · router.dart · routes.dart (les chemins) · theme.dart (design system)
 ├── core/
 │   ├── calc/            ★ Dart pur, aucun import Flutter
-│   │   ├── units/       longueurs, impérial composé, les cinq grandeurs
+│   │   ├── units/       longueurs, impérial composé, les cinq grandeurs, échelles du Convertisseur
 │   │   └── distribution.dart · layout.dart · tilt.dart
 │   ├── models/          value objects partagés (LengthUnit, MeasureUnit, JointOffset, Tool)
 │   ├── format.dart      rendu des nombres (formatNumber, formatDegrees, kNoValue)

@@ -4,7 +4,7 @@ Une valeur, convertie dans toutes les unités de sa grandeur à la fois.
 
 | Couche | Fichiers |
 |---|---|
-| Calcul | `lib/core/calc/units/` (`measures.dart`, `imperial.dart`, `units.dart`) · `test/core/calc/units_test.dart`, `measures_test.dart` |
+| Calcul | `lib/core/calc/units/` (`measures.dart`, `imperial.dart`, `units.dart`, `scales.dart`) · `test/core/calc/units_test.dart`, `measures_test.dart`, `scales_test.dart` |
 | Modèles | `lib/core/models/measure_unit.dart`, `length_unit.dart` |
 | Écran | `lib/features/converter/` : `_screen`, `_controller` |
 | Schéma | `_schema`, `converter_painter.dart` (`RulerPainter`), `comparison_painter.dart` |
@@ -36,6 +36,8 @@ Les pivots de surface et de volume ne sont pas proposés à l'écran (personne n
 - `toBase` / `fromBase` et `baseFactor(unit)` : le passage par le pivot.
 - `toMm` / `fromMm` et `mmPerUnit(unit)` (`units.dart`, enum `LengthUnit`) : la même chose pour les seules longueurs. Aucun écran ne s'en sert aujourd'hui : il est gardé pour le réglage métrique / impérial (voir [roadmap.md](../roadmap.md)), et un test garde ses facteurs alignés sur `baseFactor`.
 - `mmToImperial`, `imperialToMm`, `formatImperial` : l'impérial composé (`ImperialParts` : pieds, pouces, fraction), écrit `2' 6 3/8"`.
+
+- `scales.dart` : les échelles des schémas. `rulerSpan`, `metricRulerStep` et `imperialRulerStep` pour la double règle (plage, pas des graduations) ; `comparisonReference`, `linearRatio` et `comparisonExtents` pour la comparaison à un repère. Les seuils en pixels restent dans les painters et arrivent convertis en mm.
 
 **Impérial composé** : arrondi au 1/`denominator` de pouce le plus proche, **retenues propagées** (16/16 → +1 po, 12 po → +1 pi), **fraction réduite** (6/16 → 3/8). Une valeur entière rend `num: 0, den: 1`.
 
