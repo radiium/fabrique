@@ -121,23 +121,20 @@ abstract class _$SettingsController extends $AsyncNotifier<Settings> {
 
 /// Le réglage haptique prêt à consommer, sans `AsyncValue` à déballer.
 ///
-/// `true` tant que les réglages chargent : le premier appui doit répondre
-/// comme les suivants, pas attendre le disque.
+/// `true` tant que les réglages chargent, pour que le premier appui vibre.
 
 @ProviderFor(hapticsEnabled)
 final hapticsEnabledProvider = HapticsEnabledProvider._();
 
 /// Le réglage haptique prêt à consommer, sans `AsyncValue` à déballer.
 ///
-/// `true` tant que les réglages chargent : le premier appui doit répondre
-/// comme les suivants, pas attendre le disque.
+/// `true` tant que les réglages chargent, pour que le premier appui vibre.
 
 final class HapticsEnabledProvider extends $FunctionalProvider<bool, bool, bool>
     with $Provider<bool> {
   /// Le réglage haptique prêt à consommer, sans `AsyncValue` à déballer.
   ///
-  /// `true` tant que les réglages chargent : le premier appui doit répondre
-  /// comme les suivants, pas attendre le disque.
+  /// `true` tant que les réglages chargent, pour que le premier appui vibre.
   HapticsEnabledProvider._()
     : super(
         from: null,
@@ -175,24 +172,21 @@ String _$hapticsEnabledHash() => r'2c7eb9d115de8cee1f52a74531b1435a709c7b41';
 
 /// La locale imposée par le réglage, `null` pour suivre le téléphone.
 ///
-/// `null` aussi tant que les réglages chargent : le premier écran s'affiche
-/// dans la langue du téléphone plutôt que d'attendre le disque.
+/// `null` aussi pendant le chargement : langue du téléphone d'abord.
 
 @ProviderFor(appLocale)
 final appLocaleProvider = AppLocaleProvider._();
 
 /// La locale imposée par le réglage, `null` pour suivre le téléphone.
 ///
-/// `null` aussi tant que les réglages chargent : le premier écran s'affiche
-/// dans la langue du téléphone plutôt que d'attendre le disque.
+/// `null` aussi pendant le chargement : langue du téléphone d'abord.
 
 final class AppLocaleProvider
     extends $FunctionalProvider<Locale?, Locale?, Locale?>
     with $Provider<Locale?> {
   /// La locale imposée par le réglage, `null` pour suivre le téléphone.
   ///
-  /// `null` aussi tant que les réglages chargent : le premier écran s'affiche
-  /// dans la langue du téléphone plutôt que d'attendre le disque.
+  /// `null` aussi pendant le chargement : langue du téléphone d'abord.
   AppLocaleProvider._()
     : super(
         from: null,

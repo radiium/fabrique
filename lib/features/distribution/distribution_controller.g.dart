@@ -66,12 +66,12 @@ abstract class _$DistributionForm extends $Notifier<DistributionFormState> {
   }
 }
 
-/// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
+/// Le résultat, dérivé de la saisie.
 
 @ProviderFor(distributionResult)
 final distributionResultProvider = DistributionResultProvider._();
 
-/// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
+/// Le résultat, dérivé de la saisie.
 
 final class DistributionResultProvider
     extends
@@ -81,7 +81,7 @@ final class DistributionResultProvider
           DistributionOutcome
         >
     with $Provider<DistributionOutcome> {
-  /// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
+  /// Le résultat, dérivé de la saisie.
   DistributionResultProvider._()
     : super(
         from: null,
@@ -117,4 +117,4 @@ final class DistributionResultProvider
 }
 
 String _$distributionResultHash() =>
-    r'1b7b30544beba31beed812b1895f79219f5ad41f';
+    r'4a6cb48cb2090fd2e4151ce4547dc3b2f02f38fc';

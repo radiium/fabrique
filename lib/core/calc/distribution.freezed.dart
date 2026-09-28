@@ -21,11 +21,8 @@ mixin _$DistributionInput {
  int get count;/// Largeur d'un élément, en mm. `0` = répartition de points purs.
  double get elementWidth;/// Bord de départ, à l'origine.
  DistributionEdge get startEdge;/// Bord d'arrivée.
- DistributionEdge get endEdge;/// « Marge » de début : une bande de largeur soustraite avant toute
-/// répartition. Sert à réserver une largeur imposée — un chant, un tasseau
-/// existant — que le calcul n'a pas à redistribuer.
- double get startOffset;/// « Marge » de fin. Distinct de [startOffset] : une répartition
-/// asymétrique est un cas courant dès qu'un bord est contraint.
+ DistributionEdge get endEdge;/// Bande soustraite au début avant de répartir : un chant, un tasseau.
+ double get startOffset;/// Bande soustraite à la fin.
  double get endOffset;
 /// Create a copy of DistributionInput
 /// with the given fields replaced by the non-null parameter values.
@@ -244,12 +241,9 @@ class _DistributionInput implements DistributionInput {
 @override@JsonKey() final  DistributionEdge startEdge;
 /// Bord d'arrivée.
 @override@JsonKey() final  DistributionEdge endEdge;
-/// « Marge » de début : une bande de largeur soustraite avant toute
-/// répartition. Sert à réserver une largeur imposée — un chant, un tasseau
-/// existant — que le calcul n'a pas à redistribuer.
+/// Bande soustraite au début avant de répartir : un chant, un tasseau.
 @override@JsonKey() final  double startOffset;
-/// « Marge » de fin. Distinct de [startOffset] : une répartition
-/// asymétrique est un cas courant dès qu'un bord est contraint.
+/// Bande soustraite à la fin.
 @override@JsonKey() final  double endOffset;
 
 /// Create a copy of DistributionInput
@@ -325,8 +319,7 @@ as double,
 mixin _$DistributionTargetInput {
 
 /// Largeur totale à garnir, en mm.
- double get length;/// Écart visé entre deux éléments, en mm. Presque jamais atteignable
-/// exactement — voir [computeDistributionForSpacing].
+ double get length;/// Écart visé entre deux éléments, en mm, rarement atteignable exactement.
  double get targetSpacing;/// Largeur d'un élément, en mm.
  double get elementWidth; DistributionEdge get startEdge; DistributionEdge get endEdge; double get startOffset; double get endOffset;
 /// Create a copy of DistributionTargetInput
@@ -538,8 +531,7 @@ class _DistributionTargetInput implements DistributionTargetInput {
 
 /// Largeur totale à garnir, en mm.
 @override final  double length;
-/// Écart visé entre deux éléments, en mm. Presque jamais atteignable
-/// exactement — voir [computeDistributionForSpacing].
+/// Écart visé entre deux éléments, en mm, rarement atteignable exactement.
 @override final  double targetSpacing;
 /// Largeur d'un élément, en mm.
 @override@JsonKey() final  double elementWidth;
@@ -619,17 +611,14 @@ as double,
 /// @nodoc
 mixin _$DistributionResult {
 
-/// Nombre d'éléments effectivement répartis. Redondant avec la saisie dans
-/// le premier mode, mais c'est *le* résultat cherché dans le second.
- int get count;/// Nombre de jeux. C'est la règle de l'outil, rendue explicite : `N + 1`
-/// bordé de deux écarts, `N - 1` bordé de deux éléments.
+/// Nombre d'éléments répartis : le résultat cherché en mode écart visé.
+ int get count;/// Nombre de jeux : `N + 1` entre deux écarts, `N - 1` entre deux éléments.
  int get gapCount;/// Jeu libre entre deux éléments voisins, en mm.
- double get spacing;/// Entraxe : `spacing + elementWidth`. C'est lui que l'on reporte au
-/// crayon — le jeu, on ne le mesure jamais directement.
+ double get spacing;/// Entraxe : `spacing + elementWidth`, la cote que l'on reporte.
  double get pitch;/// Largeur réellement répartie : `length` moins les deux marges.
  double get span;/// Bord d'attaque de chaque élément depuis l'origine, en mm. Pour une
-/// largeur nulle, c'est la position du point.
- List<double> get positions;/// Centre de chaque élément, en mm — l'axe de perçage ou de vissage.
+/// largeur nulle, la position du point.
+ List<double> get positions;/// Centre de chaque élément, en mm : l'axe de perçage ou de vissage.
  List<double> get centers;
 /// Create a copy of DistributionResult
 /// with the given fields replaced by the non-null parameter values.
@@ -836,33 +825,30 @@ class _DistributionResult implements DistributionResult {
   const _DistributionResult({required this.count, required this.gapCount, required this.spacing, required this.pitch, required this.span, required  List<double> positions, required  List<double> centers}): _positions = positions,_centers = centers;
   
 
-/// Nombre d'éléments effectivement répartis. Redondant avec la saisie dans
-/// le premier mode, mais c'est *le* résultat cherché dans le second.
+/// Nombre d'éléments répartis : le résultat cherché en mode écart visé.
 @override final  int count;
-/// Nombre de jeux. C'est la règle de l'outil, rendue explicite : `N + 1`
-/// bordé de deux écarts, `N - 1` bordé de deux éléments.
+/// Nombre de jeux : `N + 1` entre deux écarts, `N - 1` entre deux éléments.
 @override final  int gapCount;
 /// Jeu libre entre deux éléments voisins, en mm.
 @override final  double spacing;
-/// Entraxe : `spacing + elementWidth`. C'est lui que l'on reporte au
-/// crayon — le jeu, on ne le mesure jamais directement.
+/// Entraxe : `spacing + elementWidth`, la cote que l'on reporte.
 @override final  double pitch;
 /// Largeur réellement répartie : `length` moins les deux marges.
 @override final  double span;
 /// Bord d'attaque de chaque élément depuis l'origine, en mm. Pour une
-/// largeur nulle, c'est la position du point.
+/// largeur nulle, la position du point.
  final  List<double> _positions;
 /// Bord d'attaque de chaque élément depuis l'origine, en mm. Pour une
-/// largeur nulle, c'est la position du point.
+/// largeur nulle, la position du point.
 @override List<double> get positions {
   if (_positions is EqualUnmodifiableListView) return _positions;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_positions);
 }
 
-/// Centre de chaque élément, en mm — l'axe de perçage ou de vissage.
+/// Centre de chaque élément, en mm : l'axe de perçage ou de vissage.
  final  List<double> _centers;
-/// Centre de chaque élément, en mm — l'axe de perçage ou de vissage.
+/// Centre de chaque élément, en mm : l'axe de perçage ou de vissage.
 @override List<double> get centers {
   if (_centers is EqualUnmodifiableListView) return _centers;
   // ignore: implicit_dynamic_type
@@ -939,8 +925,8 @@ as List<double>,
 mixin _$DistributionTargetResult {
 
 /// Celle dont l'écart réel est le plus proche de la cible.
- DistributionResult get best;/// L'autre borne, de l'autre côté de la cible. `null` quand la cible tombe
-/// juste, ou quand ce voisin n'est pas réalisable.
+ DistributionResult get best;/// La borne de l'autre côté de la cible. `null` si la cible tombe juste ou si
+/// ce voisin est irréalisable.
  DistributionResult? get other;
 /// Create a copy of DistributionTargetResult
 /// with the given fields replaced by the non-null parameter values.
@@ -1165,8 +1151,8 @@ class _DistributionTargetResult implements DistributionTargetResult {
 
 /// Celle dont l'écart réel est le plus proche de la cible.
 @override final  DistributionResult best;
-/// L'autre borne, de l'autre côté de la cible. `null` quand la cible tombe
-/// juste, ou quand ce voisin n'est pas réalisable.
+/// La borne de l'autre côté de la cible. `null` si la cible tombe juste ou si
+/// ce voisin est irréalisable.
 @override final  DistributionResult? other;
 
 /// Create a copy of DistributionTargetResult

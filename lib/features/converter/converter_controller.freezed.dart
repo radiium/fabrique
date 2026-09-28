@@ -18,9 +18,7 @@ mixin _$ConverterInput {
 
  double get value; MeasureUnit get unit;/// Affiche l'impérial en composé (pied + pouce + fraction).
 ///
-/// N'a de sens qu'en longueur : on ne décompose pas une pression en
-/// fractions de pouce. Le réglage est conservé au changement de catégorie
-/// pour qu'un aller-retour ne le perde pas, mais l'écran le masque ailleurs.
+/// Longueurs seulement. Conservé au changement de catégorie.
  bool get compoundImperial;
 /// Create a copy of ConverterInput
 /// with the given fields replaced by the non-null parameter values.
@@ -229,9 +227,7 @@ class _ConverterInput extends ConverterInput {
 @override final  MeasureUnit unit;
 /// Affiche l'impérial en composé (pied + pouce + fraction).
 ///
-/// N'a de sens qu'en longueur : on ne décompose pas une pression en
-/// fractions de pouce. Le réglage est conservé au changement de catégorie
-/// pour qu'un aller-retour ne le perde pas, mais l'écran le masque ailleurs.
+/// Longueurs seulement. Conservé au changement de catégorie.
 @override@JsonKey() final  bool compoundImperial;
 
 /// Create a copy of ConverterInput

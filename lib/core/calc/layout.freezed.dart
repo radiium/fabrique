@@ -16,28 +16,16 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LayoutInput {
 
- double get surfaceX; double get surfaceY; double get elementX; double get elementY; double get gapX; double get gapY;/// Retrait sur les **quatre bords** avant de poser, en mm.
+ double get surfaceX; double get surfaceY; double get elementX; double get elementY; double get gapX; double get gapY;/// Retrait sur les quatre bords avant de poser, en mm.
 ///
-/// Joint de dilatation d'un parquet, joint au mur d'un carrelage, jeu au
-/// sol d'une plaque : la pose recule, mais la pièce ne rétrécit pas —
 /// [LayoutResult.surfaceArea] reste l'aire de la surface entière.
  double get perimeterGap;/// Ne jamais finir sur un filet.
 ///
-/// Quand la dernière bande tombe sous un demi-élément, on sacrifie une
-/// bande pleine et on partage son épaisseur avec le reliquat entre la
-/// première et la dernière, qui deviennent identiques.
+/// Sous un demi-élément, la dernière bande partage son épaisseur avec la
+/// première. Seul [LayoutResult.cutCount] change : deux bandes à couper.
+ bool get balanceRows;/// Pivote le motif d'un quart de tour : l'élément se pose le long de Y.
 ///
-/// ⚠️ Cela ne consomme **pas** un élément de plus : même nombre de bandes,
-/// même aire couverte, donc [LayoutResult.totalCount] et la perte sont
-/// inchangés. Seul [LayoutResult.cutCount] monte — deux bandes de bord à
-/// couper au lieu d'une. Le coût matière n'apparaîtrait qu'avec le
-/// réemploi des chutes, où deux petites chutes valent moins qu'une grande.
- bool get balanceRows;/// Pivote le motif d'un quart de tour : l'élément se pose le long de Y et
-/// les rangées s'empilent selon X.
-///
-/// Le décalage des joints **suit** la rotation — c'est tout l'intérêt :
-/// décaler les joints d'un bardage vertical n'a de sens que le long des
-/// lames, pas en travers.
+/// Le décalage des joints suit la rotation, le long des lames.
  bool get flip; JointOffset get offset;
 /// Create a copy of LayoutInput
 /// with the given fields replaced by the non-null parameter values.
@@ -255,30 +243,18 @@ class _LayoutInput implements LayoutInput {
 @override final  double elementY;
 @override@JsonKey() final  double gapX;
 @override@JsonKey() final  double gapY;
-/// Retrait sur les **quatre bords** avant de poser, en mm.
+/// Retrait sur les quatre bords avant de poser, en mm.
 ///
-/// Joint de dilatation d'un parquet, joint au mur d'un carrelage, jeu au
-/// sol d'une plaque : la pose recule, mais la pièce ne rétrécit pas —
 /// [LayoutResult.surfaceArea] reste l'aire de la surface entière.
 @override@JsonKey() final  double perimeterGap;
 /// Ne jamais finir sur un filet.
 ///
-/// Quand la dernière bande tombe sous un demi-élément, on sacrifie une
-/// bande pleine et on partage son épaisseur avec le reliquat entre la
-/// première et la dernière, qui deviennent identiques.
-///
-/// ⚠️ Cela ne consomme **pas** un élément de plus : même nombre de bandes,
-/// même aire couverte, donc [LayoutResult.totalCount] et la perte sont
-/// inchangés. Seul [LayoutResult.cutCount] monte — deux bandes de bord à
-/// couper au lieu d'une. Le coût matière n'apparaîtrait qu'avec le
-/// réemploi des chutes, où deux petites chutes valent moins qu'une grande.
+/// Sous un demi-élément, la dernière bande partage son épaisseur avec la
+/// première. Seul [LayoutResult.cutCount] change : deux bandes à couper.
 @override@JsonKey() final  bool balanceRows;
-/// Pivote le motif d'un quart de tour : l'élément se pose le long de Y et
-/// les rangées s'empilent selon X.
+/// Pivote le motif d'un quart de tour : l'élément se pose le long de Y.
 ///
-/// Le décalage des joints **suit** la rotation — c'est tout l'intérêt :
-/// décaler les joints d'un bardage vertical n'a de sens que le long des
-/// lames, pas en travers.
+/// Le décalage des joints suit la rotation, le long des lames.
 @override@JsonKey() final  bool flip;
 @override@JsonKey() final  JointOffset offset;
 
@@ -638,11 +614,9 @@ as bool,
 /// @nodoc
 mixin _$LayoutResult {
 
- List<PlacedElement> get elements; int get fullCount; int get cutCount;/// `fullCount + cutCount` — stock sans réemploi des chutes.
- int get totalCount; double get surfaceArea; double get coveredArea; double get wastePercent;/// Épaisseur commune des deux rangées de bord, si l'équilibrage a joué.
-///
-/// Nul quand la règle ne s'est pas appliquée — c'est ce qui permet à
-/// l'écran de ne montrer sa tuile que lorsqu'il y a quelque chose à dire.
+ List<PlacedElement> get elements; int get fullCount; int get cutCount;/// `fullCount + cutCount` : stock sans réemploi des chutes.
+ int get totalCount; double get surfaceArea; double get coveredArea; double get wastePercent;/// Épaisseur commune des deux rangées de bord, si l'équilibrage a joué ;
+/// sinon `null`.
  double? get balancedRow;/// Longueur commune des deux pièces de bout, si l'équilibrage a joué sur
 /// l'axe de pose. Nul sous tout décalage autre que droit.
  double? get balancedEnd;
@@ -862,15 +836,13 @@ class _LayoutResult implements LayoutResult {
 
 @override final  int fullCount;
 @override final  int cutCount;
-/// `fullCount + cutCount` — stock sans réemploi des chutes.
+/// `fullCount + cutCount` : stock sans réemploi des chutes.
 @override final  int totalCount;
 @override final  double surfaceArea;
 @override final  double coveredArea;
 @override final  double wastePercent;
-/// Épaisseur commune des deux rangées de bord, si l'équilibrage a joué.
-///
-/// Nul quand la règle ne s'est pas appliquée — c'est ce qui permet à
-/// l'écran de ne montrer sa tuile que lorsqu'il y a quelque chose à dire.
+/// Épaisseur commune des deux rangées de bord, si l'équilibrage a joué ;
+/// sinon `null`.
 @override final  double? balancedRow;
 /// Longueur commune des deux pièces de bout, si l'équilibrage a joué sur
 /// l'axe de pose. Nul sous tout décalage autre que droit.

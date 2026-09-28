@@ -66,17 +66,17 @@ abstract class _$DrawersForm extends $Notifier<DrawersInput> {
   }
 }
 
-/// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
+/// Le résultat, dérivé de la saisie.
 
 @ProviderFor(drawersResult)
 final drawersResultProvider = DrawersResultProvider._();
 
-/// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
+/// Le résultat, dérivé de la saisie.
 
 final class DrawersResultProvider
     extends $FunctionalProvider<DrawersOutcome, DrawersOutcome, DrawersOutcome>
     with $Provider<DrawersOutcome> {
-  /// Le résultat est une dérivation, pas de l'état : temps réel, sans bouton.
+  /// Le résultat, dérivé de la saisie.
   DrawersResultProvider._()
     : super(
         from: null,
@@ -110,4 +110,4 @@ final class DrawersResultProvider
   }
 }
 
-String _$drawersResultHash() => r'435c9f9f6eadde058dde60af9c3ee5599d00521d';
+String _$drawersResultHash() => r'4f6db2f076f88d20af3e535582b949e874f2e925';

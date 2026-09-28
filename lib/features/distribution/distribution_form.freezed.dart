@@ -17,8 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$DistributionFormState {
 
  DistributionMode get mode; double get length;/// `0` = répartition de points purs.
- double get elementWidth; int get count; double get targetSpacing; DistributionEdge get startEdge; DistributionEdge get endEdge;/// Les deux marges sont-elles liées ? N'a d'effet que sur la saisie : le
-/// calcul ne voit jamais que [startOffset] et [endOffset].
+ double get elementWidth; int get count; double get targetSpacing; DistributionEdge get startEdge; DistributionEdge get endEdge;/// Marges liées. Le calcul ne voit que [startOffset] et [endOffset].
  bool get symmetricOffsets; double get startOffset; double get endOffset;
 /// Create a copy of DistributionFormState
 /// with the given fields replaced by the non-null parameter values.
@@ -238,8 +237,7 @@ class _DistributionFormState extends DistributionFormState {
 @override@JsonKey() final  double targetSpacing;
 @override@JsonKey() final  DistributionEdge startEdge;
 @override@JsonKey() final  DistributionEdge endEdge;
-/// Les deux marges sont-elles liées ? N'a d'effet que sur la saisie : le
-/// calcul ne voit jamais que [startOffset] et [endOffset].
+/// Marges liées. Le calcul ne voit que [startOffset] et [endOffset].
 @override@JsonKey() final  bool symmetricOffsets;
 @override@JsonKey() final  double startOffset;
 @override@JsonKey() final  double endOffset;
