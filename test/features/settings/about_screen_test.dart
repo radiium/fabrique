@@ -46,7 +46,19 @@ void main() {
     usePhone(tester);
     await pumpApp(tester, AppRoutes.about, locale: const Locale('en'));
 
-    expect(find.text('Open source licenses'), findsOneWidget);
+    expect(find.text('Third-party licenses'), findsOneWidget);
+    expect(find.text('Source code and bug reports'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('« À propos » mène au dépôt et porte la mention de garantie', (
+    tester,
+  ) async {
+    usePhone(tester);
+    await pumpApp(tester, AppRoutes.about);
+
+    expect(find.text('Code source et signalements'), findsOneWidget);
+    expect(find.text('github.com/radiium/fabrique'), findsOneWidget);
+    expect(find.textContaining('sans aucune garantie'), findsOneWidget);
   });
 }

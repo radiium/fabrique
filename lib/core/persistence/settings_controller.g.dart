@@ -99,7 +99,7 @@ final class SettingsControllerProvider
 }
 
 String _$settingsControllerHash() =>
-    r'4b262d663bee82589c646c49bd1ff7fe16287445';
+    r'7f72151688059f972f0a1fda8e313d319bda9a1a';
 
 abstract class _$SettingsController extends $AsyncNotifier<Settings> {
   FutureOr<Settings> build();
@@ -118,6 +118,53 @@ abstract class _$SettingsController extends $AsyncNotifier<Settings> {
     return element.handleCreate(ref, build);
   }
 }
+
+/// `true` si le stockage n'a pas pu s'ouvrir : rien ne sera enregistré.
+
+@ProviderFor(settingsStorageFailed)
+final settingsStorageFailedProvider = SettingsStorageFailedProvider._();
+
+/// `true` si le stockage n'a pas pu s'ouvrir : rien ne sera enregistré.
+
+final class SettingsStorageFailedProvider
+    extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// `true` si le stockage n'a pas pu s'ouvrir : rien ne sera enregistré.
+  SettingsStorageFailedProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'settingsStorageFailedProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$settingsStorageFailedHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return settingsStorageFailed(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$settingsStorageFailedHash() =>
+    r'953106590b066e6f45f33595aa4e04a6a84b1259';
 
 /// Le réglage haptique prêt à consommer, sans `AsyncValue` à déballer.
 ///

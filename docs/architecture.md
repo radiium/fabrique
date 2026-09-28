@@ -38,6 +38,7 @@ Les versions font foi dans `pubspec.yaml`.
 | `shared_preferences` | persistance | le SDK n'a pas de stockage durable |
 | `share_plus` | partager le plan | la feuille de partage du système est native |
 | `gal` | enregistrer le plan dans les photos | l'écriture dans la galerie est native |
+| `url_launcher` | ouvrir le dépôt depuis « À propos » | ouvrir un navigateur passe par une intention Android, et un nouvel onglet sur le web |
 | `web` | télécharger le plan sur le web | accès au DOM, qui remplace `dart:html` |
 | `freezed`, `json_serializable` | modèles immuables et leur JSON | `copyWith`, égalité et sérialisation écrits à la main pour chaque saisie |
 | `flutter_localizations`, `intl` | i18n | livrés avec Flutter, requis par `gen-l10n` |

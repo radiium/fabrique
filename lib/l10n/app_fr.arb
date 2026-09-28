@@ -5,39 +5,54 @@
     "description": "Nom de l'app, barre de titre et accueil"
   },
   "settings": "Réglages",
-  "theme": "Thème",
-  "themeLightLocked": "Clair",
   "haptics": "Retour haptique",
   "hapticsHelp": "Vibration brève sur les boutons − / + et les sélecteurs.",
   "language": "Langue",
-  "languageSystem": "Langue du téléphone",
+  "languageSystem": "Langue de l’appareil ({language})",
   "@languageSystem": {
-    "description": "Suivre la langue du téléphone"
+    "description": "Suivre la langue de l'appareil, entre parenthèses celle que l'app en retient",
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
   },
   "languageFrench": "Français",
   "@languageFrench": {
     "description": "Chaque langue s'affiche dans sa propre langue : identique dans tous les ARB"
   },
   "languageEnglish": "English",
-  "settingsLockedSection": "Verrouillé pour cette version",
-  "settingsLoadFailed": "Réglages illisibles",
-  "@settingsLoadFailed": {
-    "description": "Titre affiché si shared_preferences échoue à l'ouverture"
+  "settingsNotSaved": "Réglages non enregistrés : le stockage de cet appareil est indisponible.",
+  "@settingsNotSaved": {
+    "description": "Bandeau des Réglages si shared_preferences échoue à l'ouverture"
   },
   "about": "À propos",
   "aboutVersion": "Version {version}",
   "@aboutVersion": {
-    "description": "Pied des Réglages et en-tête d'À propos",
+    "description": "En-tête d'À propos",
     "placeholders": {
       "version": {
         "type": "String"
       }
     }
   },
-  "aboutDescription": "Cinq outils de calcul pour l’atelier : calepinage, répartition, tiroirs, niveau et conversion d’unités.",
+  "aboutDescription": "Cinq outils de calcul pour l’atelier : Calepinage, Répartition, Tiroirs, Niveau et Convertisseur.",
+  "@aboutDescription": {
+    "description": "Les noms des outils tels que l'accueil les affiche"
+  },
   "aboutPrivacy": "Sans compte ni publicité. Vos saisies restent sur cet appareil.",
-  "aboutLicense": "Logiciel libre, sous licence GNU GPL v3.",
+  "aboutLicense": "Logiciel libre sous licence GNU GPL v3, fourni sans aucune garantie.",
+  "aboutCopyright": "© 2026 radiium",
   "aboutLicenses": "Licences des composants",
+  "aboutSource": "Code source et signalements",
+  "aboutLinkFailed": "Impossible d’ouvrir le lien : {url}",
+  "@aboutLinkFailed": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
   "toolLayout": "Calepinage",
   "toolLayoutSubtitle": "Pose sur surface, % de perte",
   "@toolLayoutSubtitle": {

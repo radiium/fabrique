@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 
-/// Le motif d'un refus de calcul.
+/// Un message d'erreur en bandeau : le motif d'un refus de calcul, un stockage
+/// indisponible.
 ///
-/// Dans la carte de saisie, en bas, près des champs : sur mobile, les
-/// résultats sont sous le schéma.
+/// Un refus va dans la carte de saisie, en bas, près des champs : sur mobile,
+/// les résultats sont sous le schéma.
 class ErrorBanner extends StatelessWidget {
   const ErrorBanner({required this.message, super.key});
 

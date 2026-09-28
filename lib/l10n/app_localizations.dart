@@ -110,18 +110,6 @@ abstract class AppLocalizations {
   /// **'Réglages'**
   String get settings;
 
-  /// No description provided for @theme.
-  ///
-  /// In fr, this message translates to:
-  /// **'Thème'**
-  String get theme;
-
-  /// No description provided for @themeLightLocked.
-  ///
-  /// In fr, this message translates to:
-  /// **'Clair'**
-  String get themeLightLocked;
-
   /// No description provided for @haptics.
   ///
   /// In fr, this message translates to:
@@ -140,11 +128,11 @@ abstract class AppLocalizations {
   /// **'Langue'**
   String get language;
 
-  /// Suivre la langue du téléphone
+  /// Suivre la langue de l'appareil, entre parenthèses celle que l'app en retient
   ///
   /// In fr, this message translates to:
-  /// **'Langue du téléphone'**
-  String get languageSystem;
+  /// **'Langue de l’appareil ({language})'**
+  String languageSystem(String language);
 
   /// Chaque langue s'affiche dans sa propre langue : identique dans tous les ARB
   ///
@@ -158,17 +146,11 @@ abstract class AppLocalizations {
   /// **'English'**
   String get languageEnglish;
 
-  /// No description provided for @settingsLockedSection.
+  /// Bandeau des Réglages si shared_preferences échoue à l'ouverture
   ///
   /// In fr, this message translates to:
-  /// **'Verrouillé pour cette version'**
-  String get settingsLockedSection;
-
-  /// Titre affiché si shared_preferences échoue à l'ouverture
-  ///
-  /// In fr, this message translates to:
-  /// **'Réglages illisibles'**
-  String get settingsLoadFailed;
+  /// **'Réglages non enregistrés : le stockage de cet appareil est indisponible.'**
+  String get settingsNotSaved;
 
   /// No description provided for @about.
   ///
@@ -176,16 +158,16 @@ abstract class AppLocalizations {
   /// **'À propos'**
   String get about;
 
-  /// Pied des Réglages et en-tête d'À propos
+  /// En-tête d'À propos
   ///
   /// In fr, this message translates to:
   /// **'Version {version}'**
   String aboutVersion(String version);
 
-  /// No description provided for @aboutDescription.
+  /// Les noms des outils tels que l'accueil les affiche
   ///
   /// In fr, this message translates to:
-  /// **'Cinq outils de calcul pour l’atelier : calepinage, répartition, tiroirs, niveau et conversion d’unités.'**
+  /// **'Cinq outils de calcul pour l’atelier : Calepinage, Répartition, Tiroirs, Niveau et Convertisseur.'**
   String get aboutDescription;
 
   /// No description provided for @aboutPrivacy.
@@ -197,14 +179,32 @@ abstract class AppLocalizations {
   /// No description provided for @aboutLicense.
   ///
   /// In fr, this message translates to:
-  /// **'Logiciel libre, sous licence GNU GPL v3.'**
+  /// **'Logiciel libre sous licence GNU GPL v3, fourni sans aucune garantie.'**
   String get aboutLicense;
+
+  /// No description provided for @aboutCopyright.
+  ///
+  /// In fr, this message translates to:
+  /// **'© 2026 radiium'**
+  String get aboutCopyright;
 
   /// No description provided for @aboutLicenses.
   ///
   /// In fr, this message translates to:
   /// **'Licences des composants'**
   String get aboutLicenses;
+
+  /// No description provided for @aboutSource.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code source et signalements'**
+  String get aboutSource;
+
+  /// No description provided for @aboutLinkFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’ouvrir le lien : {url}'**
+  String aboutLinkFailed(String url);
 
   /// No description provided for @toolLayout.
   ///

@@ -45,4 +45,33 @@ void main() {
     final store = await PreferencesStore.open();
     expect(store.readJson(PreferencesStore.settingsKey)?['language'], 'en');
   });
+
+  test('une entrée illisible rend les défauts au lieu d’échouer', () async {
+    final container = await open({'settings': '{"haptics":"oui"}'});
+    final settings = await container.read(settingsControllerProvider.future);
+
+    expect(settings, const Settings());
+  });
+
+  test(
+    'sans stockage, les réglages restent modifiables et le signalent',
+    () async {
+      final container = ProviderContainer(
+        overrides: [
+          preferencesStoreProvider.overrideWith(
+            (ref) => Future.error(StateError('stockage indisponible')),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(settingsControllerProvider.future);
+      await container
+          .read(settingsControllerProvider.notifier)
+          .setLanguage(AppLanguage.en);
+
+      expect(container.read(appLocaleProvider), const Locale('en'));
+      expect(container.read(settingsStorageFailedProvider), isTrue);
+    },
+  );
 }

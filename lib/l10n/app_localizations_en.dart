@@ -16,12 +16,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get theme => 'Theme';
-
-  @override
-  String get themeLightLocked => 'Light';
-
-  @override
   String get haptics => 'Haptic feedback';
 
   @override
@@ -32,7 +26,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
-  String get languageSystem => 'Phone language';
+  String languageSystem(String language) {
+    return 'Device language ($language)';
+  }
 
   @override
   String get languageFrench => 'Français';
@@ -41,10 +37,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageEnglish => 'English';
 
   @override
-  String get settingsLockedSection => 'Locked for this version';
-
-  @override
-  String get settingsLoadFailed => 'Settings unreadable';
+  String get settingsNotSaved =>
+      'Settings not saved: this device’s storage is unavailable.';
 
   @override
   String get about => 'About';
@@ -56,17 +50,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutDescription =>
-      'Five calculation tools for the shop: surface layout, even spacing, drawers, level and unit conversion.';
+      'Five calculation tools for the shop: Surface layout, Even spacing, Drawers, Level and Converter.';
 
   @override
   String get aboutPrivacy =>
       'No account, no ads. Your inputs stay on this device.';
 
   @override
-  String get aboutLicense => 'Free software, licensed under the GNU GPL v3.';
+  String get aboutLicense =>
+      'Free software under the GNU GPL v3, provided without any warranty.';
 
   @override
-  String get aboutLicenses => 'Open source licenses';
+  String get aboutCopyright => '© 2026 radiium';
+
+  @override
+  String get aboutLicenses => 'Third-party licenses';
+
+  @override
+  String get aboutSource => 'Source code and bug reports';
+
+  @override
+  String aboutLinkFailed(String url) {
+    return 'Couldn’t open the link: $url';
+  }
 
   @override
   String get toolLayout => 'Surface layout';

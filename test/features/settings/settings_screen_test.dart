@@ -36,7 +36,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Réglages'), findsOneWidget);
 
-    await tester.tap(find.text('Langue du téléphone'));
+    await tester.tap(find.text('Langue de l’appareil (Français)'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('English').last);
     await tester.pumpAndSettle();
@@ -68,6 +68,48 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Réglages'), findsOneWidget);
+    expect(find.text('Langue de l’appareil (Français)'), findsOneWidget);
+  });
+
+  testWidgets('en « système », un téléphone en anglais nomme l’anglais', (
+    tester,
+  ) async {
+    usePhone(tester);
+    tester.platformDispatcher.localesTestValue = const [Locale('en', 'GB')];
+    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+    SharedPreferences.setMockInitialValues({});
+    await pumpApp(tester, AppRoutes.settings);
+
+    expect(find.text('Langue de l’appareil (English)'), findsOneWidget);
+  });
+
+  testWidgets('sans stockage, un bandeau prévient et le formulaire reste', (
+    tester,
+  ) async {
+    usePhone(tester);
+    tester.platformDispatcher.localesTestValue = const [Locale('fr')];
+    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+    final container = ProviderContainer(
+      overrides: [
+        preferencesStoreProvider.overrideWith(
+          (ref) => Future.error(StateError('stockage indisponible')),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    container.read(routerProvider).go(AppRoutes.settings);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const FabriqueApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Réglages non enregistrés'), findsOneWidget);
+    expect(find.text('Retour haptique'), findsOneWidget);
+    expect(find.textContaining('StateError'), findsNothing);
   });
 
   testWidgets(
@@ -113,12 +155,16 @@ void main() {
     },
   );
 
-  testWidgets('la version s’affiche au pied des réglages', (tester) async {
+  testWidgets('la version s’affiche dans la carte « À propos »', (
+    tester,
+  ) async {
     usePhone(tester);
     SharedPreferences.setMockInitialValues({});
     await pumpApp(tester, AppRoutes.settings);
 
-    final version = tester.getRect(find.text('Version $kAppVersion'));
-    expect(version.bottom, greaterThan(kReferencePhone.height * 0.9));
+    final about = tester.getRect(find.text('À propos'));
+    final version = tester.getRect(find.text(kAppVersion));
+    expect(version.center.dy, closeTo(about.center.dy, 1));
+    expect(version.left, greaterThan(about.right));
   });
 }

@@ -16,12 +16,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings => 'Réglages';
 
   @override
-  String get theme => 'Thème';
-
-  @override
-  String get themeLightLocked => 'Clair';
-
-  @override
   String get haptics => 'Retour haptique';
 
   @override
@@ -32,7 +26,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get language => 'Langue';
 
   @override
-  String get languageSystem => 'Langue du téléphone';
+  String languageSystem(String language) {
+    return 'Langue de l’appareil ($language)';
+  }
 
   @override
   String get languageFrench => 'Français';
@@ -41,10 +37,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get languageEnglish => 'English';
 
   @override
-  String get settingsLockedSection => 'Verrouillé pour cette version';
-
-  @override
-  String get settingsLoadFailed => 'Réglages illisibles';
+  String get settingsNotSaved =>
+      'Réglages non enregistrés : le stockage de cet appareil est indisponible.';
 
   @override
   String get about => 'À propos';
@@ -56,17 +50,29 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get aboutDescription =>
-      'Cinq outils de calcul pour l’atelier : calepinage, répartition, tiroirs, niveau et conversion d’unités.';
+      'Cinq outils de calcul pour l’atelier : Calepinage, Répartition, Tiroirs, Niveau et Convertisseur.';
 
   @override
   String get aboutPrivacy =>
       'Sans compte ni publicité. Vos saisies restent sur cet appareil.';
 
   @override
-  String get aboutLicense => 'Logiciel libre, sous licence GNU GPL v3.';
+  String get aboutLicense =>
+      'Logiciel libre sous licence GNU GPL v3, fourni sans aucune garantie.';
+
+  @override
+  String get aboutCopyright => '© 2026 radiium';
 
   @override
   String get aboutLicenses => 'Licences des composants';
+
+  @override
+  String get aboutSource => 'Code source et signalements';
+
+  @override
+  String aboutLinkFailed(String url) {
+    return 'Impossible d’ouvrir le lien : $url';
+  }
 
   @override
   String get toolLayout => 'Calepinage';

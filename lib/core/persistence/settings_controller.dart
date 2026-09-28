@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -42,11 +43,24 @@ Future<PreferencesStore> preferencesStore(Ref ref) => PreferencesStore.open();
 
 @Riverpod(keepAlive: true)
 class SettingsController extends _$SettingsController {
+  /// Les défauts si le stockage est indisponible ou l'entrée illisible :
+  /// l'écran reste réglable, et [settingsStorageFailedProvider] le signale.
   @override
   Future<Settings> build() async {
-    final store = await ref.watch(preferencesStoreProvider.future);
-    final json = store.readJson(PreferencesStore.settingsKey);
-    return json == null ? const Settings() : Settings.fromJson(json);
+    final PreferencesStore store;
+    try {
+      store = await ref.watch(preferencesStoreProvider.future);
+    } on Object catch (error) {
+      debugPrint('Réglages : stockage indisponible ($error)');
+      return const Settings();
+    }
+    try {
+      final json = store.readJson(PreferencesStore.settingsKey);
+      return json == null ? const Settings() : Settings.fromJson(json);
+    } on Object catch (error) {
+      debugPrint('Réglages : entrée illisible, défauts repris ($error)');
+      return const Settings();
+    }
   }
 
   Future<void> setHaptics(bool enabled) =>
@@ -59,10 +73,21 @@ class SettingsController extends _$SettingsController {
     final current = await future;
     final next = change(current);
     state = AsyncData(next);
-    final store = await ref.read(preferencesStoreProvider.future);
-    await store.writeJson(PreferencesStore.settingsKey, next.toJson());
+    // Stockage indisponible : le réglage vaut jusqu'à la fermeture de l'app.
+    final store = ref.read(preferencesStoreProvider).value;
+    if (store == null) return;
+    try {
+      await store.writeJson(PreferencesStore.settingsKey, next.toJson());
+    } on Object catch (error) {
+      debugPrint('Réglages : écriture impossible ($error)');
+    }
   }
 }
+
+/// `true` si le stockage n'a pas pu s'ouvrir : rien ne sera enregistré.
+@riverpod
+bool settingsStorageFailed(Ref ref) =>
+    ref.watch(preferencesStoreProvider).hasError;
 
 /// Le réglage haptique prêt à consommer, sans `AsyncValue` à déballer.
 ///

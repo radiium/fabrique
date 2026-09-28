@@ -6,6 +6,7 @@ Les choix d'interface qui ne se lisent pas dans les widgets : surtout ce qui a �
 - [Saisie](#saisie)
 - [Schéma](#schéma)
 - [Retour haptique](#retour-haptique)
+- [Réglages](#réglages)
 
 ## Écran d'un outil
 
@@ -36,3 +37,10 @@ Les choix d'interface qui ne se lisent pas dans les widgets : surtout ce qui a �
 - **Une portée, pas un paramètre** : chaque contrôle partagé est appelé une trentaine de fois, et un paramètre oublié une fois ferait vibrer un contrôle contre le réglage.
 - **Pas Riverpod** : `core/widgets` reste du Flutter nu, montable dans un test sans `ProviderScope`.
 - **Hors portée, ça vibre** : un câblage oublié vibre de trop, jamais ne reste muet.
+
+## Réglages
+
+- **Pas de réglage affiché s'il ne se règle pas.** Un thème « verrouillé » occupait une carte sans action possible et laissait attendre un thème sombre que rien ne prévoit.
+- **Pas de retour haptique sur le web** : le navigateur ne vibre pas, l'interrupteur ne changerait rien.
+- **« Langue de l'appareil » nomme la langue retenue** : un appareil en allemand donne du français, ce qui ne se devine pas.
+- **Stockage indisponible : l'écran reste réglable**, avec les défauts et un bandeau. Une page d'erreur empêcherait jusqu'au choix de la langue.
