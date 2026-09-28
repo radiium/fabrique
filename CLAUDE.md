@@ -84,23 +84,29 @@ En français, au format `Portée : description` (`Calepinage : …`, `Docs : …
 
 ## Commentaires
 
-En français. Ils disent **pourquoi** le code est ainsi, jamais comment il a évolué (c'est le rôle de git).
+En français. Un commentaire dit ce que le code ne peut pas dire : une unité, une borne, une contrainte métier, un piège vérifié. S'il se devine en lisant le code, il n'existe pas. Jamais comment le code a évolué : c'est le rôle de git.
+
+**Longueur**
+- Une ligne par défaut. Au plus trois pour un `///` (hors la liste des cas qui lèvent `CalcException`), deux pour un `//`. Une décision qui en demande plus va dans `docs/`, pas dans le code.
+- Une raison, pas un plaidoyer : ni alternatives écartées, ni défense du choix. Seule exception : « ne pas faire X » quand X est la correction tentante et fausse, en une phrase.
+
+**Ton** : celui d'une notice technique.
+- Phrases déclaratives simples. Pas de maximes, pas de formules (« c'est tout l'intérêt », « c'est voulu », « d'où »), pas de personnification (un libellé ne « ment » pas, une valeur ne « parle » pas).
+- Ni gras, ni ⚠️ : l'emphase ne remplace pas la clarté.
 
 **Forme**
 - `///` sur les types, les API publiques et tout ce qui porte une décision. Pas sur un champ dont le nom dit tout (`final Widget child;`). `//` pour une subtilité dans un corps.
-- Première ligne : une phrase qui se suffit, commençant par un verbe (« Répartit… ») ou un nom (« Vue de dessus : … »). Puis une ligne vide, puis l'explication.
+- Première ligne : une phrase qui se suffit, commençant par un verbe (« Répartit… ») ou un nom (« Vue de dessus : … »). S'il faut plus, une ligne vide, puis l'explication.
 - Symboles entre crochets : `[computeDistribution]`.
 - `// TODO(scope):` seulement pour ce qui figure dans `docs/roadmap.md`.
 - Tiret cadratin et point-virgule sont permis ici : la règle de ponctuation vise les textes de l'app.
-
-**À garder** : une contrainte métier, une mesure (les 198 px de la police de test), une unité ou un invariant, un choix non trivial, une décision à ne pas défaire. Une décision a le droit d'être longue : on la resserre, on ne la tronque pas. Le reste tient en une ou deux lignes.
 
 **Par couche**
 - `core/calc` : l'unité, les bornes, ce qui lève `CalcException`. C'est ce dartdoc que lisent les écrans.
 - Painters : un ordre de tracé ou un seuil, jamais de géométrie (elle est dans `core`).
 - Widgets partagés : les hauteurs et les valeurs de thème, surtout les pièges vérifiés à la mesure.
-- Tests : un nombre magique ou la raison d'un garde-fou, rien d'autre.
+- Tests : un nombre magique ou un garde-fou, en une ligne. Le nom du test dit le reste.
 
-**À supprimer** : la paraphrase du code, le code commenté, l'historique (« avant on faisait… »), les commentaires devenus faux, les séparateurs décoratifs, et toute référence à un document, `docs/` compris : un document bouge, le commentaire reste et ment.
+**À supprimer** : la paraphrase, le code commenté, les commentaires devenus faux, les séparateurs décoratifs, toute référence à un document (`docs/` compris : un document bouge, le commentaire reste et devient faux), et l'historique, y compris déguisé : « n'avait pas », « ne … plus », « avant », une comparaison avec une ancienne valeur.
 
-Une passe de commentaires ne touche jamais la logique. Dans le doute, garder.
+Une passe de commentaires ne touche jamais la logique. Dans le doute, raccourcir.
