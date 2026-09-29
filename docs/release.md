@@ -8,6 +8,7 @@ L'app se publie sur Android, visée F-Droid, et sur le web. Pas d'app iOS : sans
 - [Fiche F-Droid](#fiche-f-droid)
 - [Web](#web)
 - [Intégration continue](#intégration-continue)
+- [Publier une version](#publier-une-version)
 
 ## Version
 
@@ -78,4 +79,27 @@ flutter build web --no-web-resources-cdn
 
 - **Servi sous `/fabrique/`**, d'où `--base-href /fabrique/`. Les routes vivent dans le fragment (`#/…`) : pas de `404.html` à prévoir.
 - **Flutter figé à la version locale** dans le workflow, à monter avec elle : la liste du moteur dans `sw.js` en dépend.
+- **Actions épinglées par SHA**, la version en commentaire : un tag d'action se déplace, un SHA non. Dependabot (`.github/dependabot.yml`) propose les mises à jour chaque mois.
+- **Droits au plus juste** : aucun par défaut, chaque job déclare les siens. Le jeton n'est pas laissé dans `.git` (`persist-credentials: false`).
 - Une seule fois, dans le dépôt : Settings › Pages › Source : « GitHub Actions ».
+
+## Publier une version
+
+`.github/workflows/release.yml`, sur un tag `v*` : analyse, tests, APK signé, puis une Release GitHub avec `fabrique-X.Y.Z.apk` et les changelogs des deux langues.
+
+1. Monter `version` dans le `pubspec` et `kAppVersion`, écrire `changelogs/<N>.txt` en `fr-FR` et `en-US`, le tout dans un commit poussé sur `main`.
+2. `git tag vX.Y.Z` sur ce commit, puis `git push origin vX.Y.Z`.
+
+- **Le workflow refuse** un tag hors de `main`, un tag qui ne correspond pas au `X.Y.Z` du `pubspec`, ou un changelog manquant pour `N`. Rien n'est publié.
+- **Pas de cache Flutter** pour l'APK signé : il se construit depuis les seules sources.
+- **L'APK doit porter notre certificat** : son empreinte SHA-256 est figée dans le workflow. Une mauvaise clé en secret donnerait un APK signé qui ne met pas à jour l'app installée.
+- **Un tag déjà publié ne se rejoue pas** : `gh release create` échoue si la Release existe. Supprimer la Release, pas le tag, pour relancer.
+
+Les secrets du dépôt (Settings › Secrets and variables › Actions), une seule fois :
+
+| Secret | Valeur |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | `base64 -i ~/keys/fabrique-release.jks` |
+| `ANDROID_STORE_PASSWORD` | `storePassword` de `key.properties` |
+| `ANDROID_KEY_ALIAS` | `fabrique` |
+| `ANDROID_KEY_PASSWORD` | `keyPassword` de `key.properties` |

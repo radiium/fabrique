@@ -1,0 +1,127 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions: {}
+
+# Deux tags poussés ensemble se publient l'un après l'autre, sans s'annuler.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  # Empreinte SHA-256 du certificat de la clé de release. Un APK signé par une
+  # autre clé ne pourrait pas mettre à jour l'app installée.
+  KEY_SHA256: 1ac96843d509919040cafc851d597bdc08132a3c10ea1bba9a639b5899d10f0e
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      # Historique complet : le tag doit être dans `main`.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Tag sur main, pubspec et changelogs concordent
+        id: version
+        run: |
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Le tag $GITHUB_REF_NAME n'est pas sur main."
+            exit 1
+          fi
+          version=$(sed -n 's/^version: *//p' pubspec.yaml)
+          name=${version%+*}
+          code=${version#*+}
+          if [ "v$name" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Le tag $GITHUB_REF_NAME ne correspond pas au pubspec ($name)."
+            exit 1
+          fi
+          for lang in fr-FR en-US; do
+            file="fastlane/metadata/android/$lang/changelogs/$code.txt"
+            if [ ! -f "$file" ]; then
+              echo "::error::Changelog manquant : $file"
+              exit 1
+            fi
+          done
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          flutter-version: 3.47.5
+          channel: stable
+          # Pas de cache pour l'APK signé : il se construit depuis les seules sources.
+          cache: false
+
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+      # Sans `key.properties`, Gradle sortirait un APK non signé sans erreur.
+      - name: Clé de release
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          for secret in KEYSTORE_BASE64 STORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!secret}" ]; then
+              echo "::error::Secret manquant : $secret"
+              exit 1
+            fi
+          done
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          # Le format .properties lit `\` comme un échappement.
+          escape() { printf '%s' "${1//\\/\\\\}"; }
+          {
+            echo "storeFile=$RUNNER_TEMP/release.jks"
+            echo "storePassword=$(escape "$STORE_PASSWORD")"
+            echo "keyAlias=$(escape "$KEY_ALIAS")"
+            echo "keyPassword=$(escape "$KEY_PASSWORD")"
+          } > android/key.properties
+
+      - run: flutter build apk --release
+
+      - name: APK signé par la clé de release
+        run: |
+          apksigner=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)apksigner
+          certs=$("$apksigner" verify --print-certs build/app/outputs/flutter-apk/app-release.apk)
+          echo "$certs"
+          if ! grep -q "SHA-256 digest: $KEY_SHA256" <<< "$certs"; then
+            echo "::error::L'APK n'est pas signé par la clé de release."
+            exit 1
+          fi
+
+      - name: Effacer la clé
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks" android/key.properties
+
+      - name: Release GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ steps.version.outputs.name }}
+          CODE: ${{ steps.version.outputs.code }}
+        run: |
+          apk="fabrique-$NAME.apk"
+          cp build/app/outputs/flutter-apk/app-release.apk "$apk"
+          {
+            cat "fastlane/metadata/android/fr-FR/changelogs/$CODE.txt"
+            echo
+            cat "fastlane/metadata/android/en-US/changelogs/$CODE.txt"
+          } > notes.md
+          gh release create "$GITHUB_REF_NAME" "$apk" \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag --title "Fabrique $NAME" --notes-file notes.md

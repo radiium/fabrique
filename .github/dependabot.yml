@@ -1,0 +1,9 @@
+version: 2
+updates:
+  # Tient à jour les actions épinglées par SHA, commentaire de version compris.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: 'CI :'
