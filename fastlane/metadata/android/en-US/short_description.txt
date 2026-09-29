@@ -1,1 +1,1 @@
-Shop calculators: tile layout, spacing, drawers, level, unit conversion
+Shop calculators: surface layout, even spacing, drawers, level, units

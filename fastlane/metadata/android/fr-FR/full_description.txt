@@ -6,9 +6,9 @@ Cinq outils de calcul pour l'atelier de menuiserie. Chaque résultat se met à j
 
 <b>Tiroirs</b> : à partir de l'ouverture du caisson, la fiche de débit des caisses et des façades, la longueur des glissières et la position de leurs vis.
 
-<b>Niveau</b> : niveau à bulle et inclinomètre par l'accéléromètre du téléphone, avec mise à zéro.
+<b>Niveau</b> : niveau et aplomb, le téléphone posé sur la tranche, par son accéléromètre. Calibrage par retournement : la surface n'a pas besoin d'être de niveau.
 
-<b>Convertisseur</b> : longueurs, surfaces, volumes, masses et pressions, limités aux unités qu'on croise sur un chantier. Pouces en fractions au 1/16, pied-planche.
+<b>Convertisseur</b> : longueurs, surfaces, volumes, masses et pressions, limités aux unités qu'on croise à l'atelier. Pouces en fractions au 1/16, pied-planche.
 
 Le plan de chaque calcul s'exporte en image, dans les photos ou par le partage.
 
