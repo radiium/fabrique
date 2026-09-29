@@ -1,5 +1,9 @@
 # Fabrique
 
+[![CI](https://github.com/radiium/fabrique/actions/workflows/ci.yml/badge.svg)](https://github.com/radiium/fabrique/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/radiium/fabrique)](https://github.com/radiium/fabrique/releases/latest)
+[![License: GPL v3](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
+
 **English** · [Français](README.fr.md)
 
 Five calculators for the woodworking shop, on Android and the web. Every result updates as you type, with a dimensioned drawing you can export as an image.

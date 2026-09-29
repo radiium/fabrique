@@ -1,5 +1,9 @@
 # Fabrique
 
+[![CI](https://github.com/radiium/fabrique/actions/workflows/ci.yml/badge.svg)](https://github.com/radiium/fabrique/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/radiium/fabrique)](https://github.com/radiium/fabrique/releases/latest)
+[![License: GPL v3](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
+
 [English](README.md) · **Français**
 
 Cinq outils de calcul pour l'atelier de menuiserie, sur Android et sur le web. Chaque résultat se met à jour pendant la saisie, avec un schéma coté qui s'exporte en image.
