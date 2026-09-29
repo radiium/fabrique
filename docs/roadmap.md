@@ -6,12 +6,8 @@
 
 ## Publication
 
-Dans l'ordre. La signature, la version et la fiche sont en place (voir [release.md](release.md)).
+Dans l'ordre. La signature, la version, la fiche, l'icône, les captures et le workflow de release sont en place, `v0.1.0` est publiée (voir [release.md](release.md)).
 
-- **L'icône de l'app** : c'est encore celle de Flutter, dans `android/app/src/main/res/mipmap-*` et `web/icons/`. F-Droid la tire de l'APK.
-- **Les captures d'écran** de la fiche, une série par langue : `fastlane/metadata/android/fr-FR/images/phoneScreenshots/1.png`, `2.png`… et de même sous `en-US/`.
-- **Le dépôt public**, `github.com/radiium/fabrique`, déjà lié depuis « À propos » : F-Droid et IzzyOnDroid partent des sources et des tags. Puis le premier tag, `v0.1.0`.
-- **Le workflow de release**, sur un tag `v*` : analyse et tests, APK signé (la clé en secret du dépôt, réécrite en `key.properties`), Release avec l'APK joint.
 - **IzzyOnDroid** : demande d'inclusion une fois la première Release publiée. Il reprend l'APK de la Release, signé par notre clé, et publie en un jour.
 - **F-Droid officiel** : merge request sur `fdroiddata`, avec Flutter figé en sous-module git, `UpdateCheckMode: Tags` et le `versionCode` lu dans le `pubspec`. Revue de quelques semaines. F-Droid signe alors avec sa propre clé : passer d'IzzyOnDroid à F-Droid demandera de réinstaller, sauf build reproductible.
 
